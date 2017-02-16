@@ -1,0 +1,42 @@
+.DS_Store
+.rbenv-version
+.sass-cache
+.bundle
+.rubocop.yml
+.byebug_history
+
+# All logfiles and tempfiles.
+log/
+tmp/
+
+# Cundled gems
+./vendor/bundle
+
+# Simplecov generated files
+./coverage
+
+# DB schema
+./db/schema.rb
+./db/schema.sql
+
+# Brakeman report
+./public/brakeman.html
+
+# Ignore application configuration
+./config/application.yml
+
+# Node modules
+./node_modules
+
+# Vim
+**/*.swp
+**/*.swo
+/.tags
+/.tags_sorted_by_file
+
+# Ignore Byebug command history file.
+.byebug_history
+
+# other
+**/*.DS_Store
+
