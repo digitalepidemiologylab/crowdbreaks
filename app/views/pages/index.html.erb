@@ -1,6 +1,26 @@
-<div class="row">
+<div class="row" id="background-image">
   <div class="col-xs-12">
-    <h1>Pages#index</h1>
-    <p>Find me in app/views/pages/index.html.erb</p>
+    <div class="row row-welcome">
+      <div class="col-xs-12">
+        <div class="welcome">
+          <h1>Welcome to</h1>
+        </div>
+        <div class="welcome-logo">
+          <%= image_tag("logo.svg", :class => "welcome-logo-img img-responsive") %>
+        </div>
+      </div>
+    </div>
+    <div class="row row-goal">
+      <div class="col-xs-12">
+        <h3>This platform aims to track disease outbreaks in real time. For this we need your help!</h3>
+      </div>
+    </div>
+    <div class="row row-button">
+      <div class="col-xs-12">
+        <%= link_to "Contribute!", '#', :class => "btn btn-default" %>
+      </div>
+    </div>
   </div>
 </div>
+
+

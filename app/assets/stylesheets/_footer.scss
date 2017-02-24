@@ -1,0 +1,49 @@
+.logo {
+  padding-left: 0px;
+  padding-bottom: 10px;
+  max-width: 40%;
+}
+.epfl-logo {
+  max-width: 30%;
+}
+ul {
+  list-style-type:none;
+}
+
+// make all columns same height
+.row {
+  overflow: hidden;
+}
+[class*="col-"]{
+  margin-bottom: -99999px;
+  padding-bottom: 99999px;
+}
+.footer {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.footer-hr {
+  color: #000; /* old IE */
+  background-color: #000; /* Modern Browsers */
+  height: 1px;
+  max-width: 40%;
+  margin: 0;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+// desktop
+@media (min-width: $screen-desktop) {
+  .epfl-logo {
+    max-width: 50%;
+    display: block;
+    margin: 0 auto;
+  }
+  .border-right {
+    border-right: 2px solid black;
+  }
+  .footer-hr {
+    display: none;
+  }
+}
+

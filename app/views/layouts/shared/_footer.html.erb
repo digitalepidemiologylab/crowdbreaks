@@ -1,1 +1,32 @@
-<h1>Footer</h1>
+<div class="row footer">
+  <div class="col-md-4 border-right">
+    <div class="row">
+      <div class="col-xs-12">
+        <%= image_tag("logo.svg", :class => "navbar-brand logo") %>
+      </div>
+      <div class="col-xs-12">
+        Crowdbreaks is developed by the <%= link_to 'Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', :target => "_blank" %> at EPFL.
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 border-right">
+    <div class="row">
+      <div class="col-xs-12">
+        <hr class="footer-hr">
+        <%= image_tag("epfl_logo.svg", :class => "epfl-logo") %>
+        <hr class="footer-hr">
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="row">
+      <div class="col-xs-12">
+       <ul>
+         <li><%= link_to "Home", root_path %></li>
+         <li><%= link_to "Projects", "#" %></li>
+         <li><%= link_to "About", "#" %></li>
+       </ul> 
+      </div>
+    </div>
+  </div>
+</div>

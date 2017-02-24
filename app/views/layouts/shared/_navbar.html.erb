@@ -1,1 +1,25 @@
-<h1>Header</h1>
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-mobile" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <%= image_tag("logo.svg", :class => "navbar-brand img-responsive") %>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbar-collapse-mobile">
+      <ul class="nav navbar-nav navbar-right">
+        <li class="active">
+          <%= link_to root_path do %> 
+            Home <span class="sr-only">(current)</span>
+          <% end %>
+        </li>
+        <li><%= link_to 'Projects', '#' %></li>
+        <li><%= link_to 'About', '#' %></li>
+      </ul>
+    </div>
+  </div>
+</nav>
