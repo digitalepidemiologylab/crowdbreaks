@@ -8,6 +8,12 @@
 }
 ul {
   list-style-type:none;
+  padding-left: 0px;
+}
+li {
+  a {
+    color: $text-color;
+  }
 }
 
 // make all columns same height
@@ -23,10 +29,11 @@ ul {
   margin-bottom: 30px;
 }
 .footer-hr {
-  color: #000; /* old IE */
-  background-color: #000; /* Modern Browsers */
+  color: $gray; /* old IE */
+  background-color: $gray; /* Modern Browsers */
+  border: none;
   height: 1px;
-  max-width: 40%;
+  max-width: 20%;
   margin: 0;
   margin-top: 30px;
   margin-bottom: 30px;
@@ -40,7 +47,7 @@ ul {
     margin: 0 auto;
   }
   .border-right {
-    border-right: 2px solid black;
+    border-right: 1px solid $gray;
   }
   .footer-hr {
     display: none;

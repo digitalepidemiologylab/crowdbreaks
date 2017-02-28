@@ -3,10 +3,20 @@ $bootstrap-sass-asset-helper: false !default;
 // Variables
 // --------------------------------------------------
 
-
 //== Colors
 //
 //## Gray and brand colors for use across Bootstrap.
+
+// own colors
+$green: #2ecc71;
+$dark-green: darken($green, 5%);
+$red: #e74c3c;
+$heavy-dark-blue: #2c3e50;
+$dark-blue: #2574a9;
+$blue: #208ac3;
+$light-blue: #e4f1fe;
+$gray: #c9c9c9;
+$dark-gray: #b5b5b5;
 
 $gray-base:              #000 !default;
 $gray-darker:            lighten($gray-base, 13.5%) !default; // #222
@@ -21,7 +31,6 @@ $brand-info:            #5bc0de !default;
 $brand-warning:         #f0ad4e !default;
 $brand-danger:          #d9534f !default;
 
-
 //== Scaffolding
 //
 //## Settings for some of the most global styles.
@@ -32,7 +41,7 @@ $body-bg:               #fff !default;
 $text-color:            $gray-dark !default;
 
 //** Global textual link color.
-$link-color:            $brand-primary !default;
+$link-color:            $dark-blue !default;
 //** Link hover color set via `darken()` function.
 $link-hover-color:      darken($link-color, 15%) !default;
 //** Link hover decoration.
@@ -43,7 +52,7 @@ $link-hover-decoration: underline !default;
 //
 //## Font, line-height, and color for body text, headings, and more.
 
-$font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$font-family-sans-serif:  "Noto Sans", Helvetica, Arial, sans-serif !default;
 $font-family-serif:       Georgia, "Times New Roman", Times, serif !default;
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
 $font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace !default;
@@ -92,8 +101,8 @@ $icon-font-svg-id:        "glyphicons_halflingsregular" !default;
 //
 //## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
 
-$padding-base-vertical:     6px !default;
-$padding-base-horizontal:   12px !default;
+$padding-base-vertical:     10px !default;
+$padding-base-horizontal:   16px !default;
 
 $padding-large-vertical:    10px !default;
 $padding-large-horizontal:  16px !default;

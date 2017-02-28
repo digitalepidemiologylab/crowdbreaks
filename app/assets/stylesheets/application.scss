@@ -12,8 +12,17 @@
  *
  */
 
+// overridden bootstrap global variables
 @import "global_vars";
+
+// boostrap
 @import "bootstrap-sprockets";
 @import "bootstrap";
-@import "footer";
+
+// layouts
+@import "layout/fonts";
+@import "layout/footer";
+@import "layout/buttons";
+
+// controller based
 @import "pages";
