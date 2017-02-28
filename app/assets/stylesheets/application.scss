@@ -20,9 +20,12 @@
 @import "bootstrap";
 
 // layouts
+@import "layout/navbar";
 @import "layout/fonts";
 @import "layout/footer";
 @import "layout/buttons";
+@import "layout/banner";
 
 // controller based
 @import "pages";
+@import "projects";

@@ -49,6 +49,7 @@ group :development, :test do
   gem 'guard-livereload'
   gem 'rb-fsevent'
   gem 'byebug', platform: :mri
+  gem 'faker', '1.6.6'
 end
 
 group :development do

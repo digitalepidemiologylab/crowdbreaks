@@ -11,6 +11,9 @@
   <body>
     <div class="container-fluid">
       <%= render 'layouts/shared/navbar' %>
+      <% if content_for?(:banner) %>
+        <%= render 'layouts/shared/banner' %>
+      <% end %>
       <%= yield %>
       <%= render 'layouts/shared/footer' %>
     </div>

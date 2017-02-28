@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 body {
-  padding-top: 50px;
+  padding-top: $navbar-height;
 }
 
 #background-image {
@@ -12,7 +12,7 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  height: calc(100vh - 50px);
+  min-height: calc(100vh - #{$navbar-height});
 }
 
 .row-welcome {
@@ -40,7 +40,7 @@ body {
   text-align: center;
 }
 
-// desktop
+// tablet
 @media (min-width: $screen-tablet) {
   .welcome-logo-img {
     max-width: 50%;

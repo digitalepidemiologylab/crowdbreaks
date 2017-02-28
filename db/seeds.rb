@@ -5,3 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+#
+Project.destroy_all
+Project.create!(title: "Project 1", description: Faker::Lorem.paragraph(paragraph_count=4))
+Project.create!(title: "Project 2", description: Faker::Lorem.paragraph(paragraph_count=4))
+Project.create!(title: "Project 3", description: Faker::Lorem.paragraph(paragraph_count=4))

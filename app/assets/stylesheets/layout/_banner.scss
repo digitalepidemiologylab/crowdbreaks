@@ -1,0 +1,29 @@
+.banner {
+  background-color: $heavy-dark-blue;
+}
+.banner-hr {
+  color: $white; /* old IE */
+  background-color: $white; /* Modern Browsers */
+  border: none;
+  height: 4px;
+  max-width: 100px;
+  margin: 0;
+  margin-top: 25px;
+  margin-bottom: 45px;
+}
+.banner-title {
+  color: $white;
+  margin-top: 30px;
+}
+
+// tablet
+@media (min-width: $screen-tablet) {
+  .banner-hr {
+    margin-top: 25px;
+    margin-bottom: 55px;
+  }
+  .banner-title {
+    margin-top: 40px;
+  }
+}
+
