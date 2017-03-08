@@ -41,14 +41,14 @@ body {
 }
 
 // tablet
-@media (min-width: $screen-tablet) {
+@media (min-width: $screen-sm) {
   .welcome-logo-img {
     max-width: 50%;
   }
 }
 
 // desktop
-@media (min-width: $screen-desktop) {
+@media (min-width: $screen-md) {
   .welcome-logo-img {
     max-width: 30%;
   }

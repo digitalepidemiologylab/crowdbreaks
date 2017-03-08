@@ -14,10 +14,13 @@
 .banner-title {
   color: $white;
   margin-top: 30px;
+  h1 {
+    font-weight: 700;
+  }
 }
 
 // tablet
-@media (min-width: $screen-tablet) {
+@media (min-width: $screen-sm) {
   .banner-hr {
     margin-top: 25px;
     margin-bottom: 55px;

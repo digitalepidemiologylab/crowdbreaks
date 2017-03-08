@@ -1,11 +1,26 @@
-<div class="jumbotron project-jumbotron">
-  <div class="row">
-    <div class="col-xs-12">
-      <%= project.title %>
-    </div>
-    <div class="col-xs-12">
-      <%= project.description %>
-      
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="jumbotron jumbotron-project">
+      <div class="row row-project">
+        <div class="col-md-2 equal-height image-col">
+          <div class="full-height">
+            <div class="project-image"></div>
+          </div>
+        </div>
+        <div class="col-md-10 equal-height">
+          <div class="project-description">
+            <h3>
+              <%= project.title.html_safe if project.title %>
+            </h3>
+            <p>
+            <%= project.description.html_safe if project.description %>
+            </p>
+            <%= link_to '#', :class => 'btn-start-project' do %>
+              Start Project! 
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

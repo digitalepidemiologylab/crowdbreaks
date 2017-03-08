@@ -1,0 +1,7 @@
+// This file overrides bootstrap defaults
+
+.jumbotron {
+  p {
+    font-size: $font-size-base;
+  }
+}

@@ -19,6 +19,9 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+// override bootstrap selectors
+@import "custom";
+
 // layouts
 @import "layout/navbar";
 @import "layout/fonts";
