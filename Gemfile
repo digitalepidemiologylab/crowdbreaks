@@ -25,7 +25,7 @@ gem 'jbuilder', '~> 2.5'
 # ENV vars management
 gem 'figaro', '~> 1.1.1'
 # authentication
-gem 'devise', '~> 4.2.0'
+gem 'devise', '~> 4.2.1'
 # font icons
 gem 'font-awesome-rails', '~> 4.7.0.1'
 # Pagination
@@ -36,6 +36,12 @@ gem 'paperclip', '~> 5.0.0'
 gem 'simple_form', '3.4.0' 
 # Bootstrap
 gem 'bootstrap-sass', '3.3.6' 
+# Use autoprefixes for CSS
+gem 'autoprefixer-rails', '6.7.6'
+# Active admin
+gem 'activeadmin', github: 'activeadmin'
+gem 'inherited_resources', github: 'activeadmin/inherited_resources'
+gem 'activemodel-serializers-xml', github: 'rails/activemodel-serializers-xml'
 
 group :development, :test do
   gem "rspec-rails"
