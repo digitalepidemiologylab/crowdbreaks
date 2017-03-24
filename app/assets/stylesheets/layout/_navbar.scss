@@ -1,1 +1,14 @@
 $navbar-height: 50px;  // default navbar height
+
+.dropdown-menu {
+  background-color: $gray-lightest;
+  .logged-in-as {
+    padding: 10px;
+  }
+  li a {
+    padding: 10px;
+  }
+  li a:hover {
+    background-color: $gray-lighter;
+  }
+}

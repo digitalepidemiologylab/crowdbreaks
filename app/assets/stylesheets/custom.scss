@@ -1,7 +1,15 @@
 // This file overrides bootstrap defaults
+// ** These should be incorportated into _global_vars.scss at some point **
 
 .jumbotron {
   p {
     font-size: $font-size-base;
   }
+}
+
+
+// alerts
+.alert {
+  border-radius: 0px;
+  margin: 0px;
 }

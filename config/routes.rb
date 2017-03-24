@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
-  devise_for :users
+  ActiveAdmin.routes(self)
+  devise_for :users, controllers: {
+            registrations: 'users/registrations'
+  }
   root 'pages#index'
-  resources :projects, path: 'projects', only: [:index, :show]
+  resources :projects, only: [:index, :show]
   get '/projects', to: 'projects#index'
 end

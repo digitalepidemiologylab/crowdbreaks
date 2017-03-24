@@ -14,7 +14,9 @@
       <% if content_for?(:banner) %>
         <%= render 'layouts/shared/banner' %>
       <% end %>
-      <%= flash_messages %>
+      <div class="row">
+        <%= flash_messages %>
+      </div>
       <%= yield %>
       <%= render 'layouts/shared/footer' %>
     </div>

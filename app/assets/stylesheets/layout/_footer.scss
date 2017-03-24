@@ -29,8 +29,8 @@ li {
   margin-bottom: 30px;
 }
 .footer-hr {
-  color: $gray; /* old IE */
-  background-color: $gray; /* Modern Browsers */
+  color: $gray-light; /* old IE */
+  background-color: $gray-light; /* Modern Browsers */
   border: none;
   height: 1px;
   max-width: 20%;
@@ -47,7 +47,7 @@ li {
     margin: 0 auto;
   }
   .border-right {
-    border-right: 1px solid $gray;
+    border-right: 1px solid $gray-light;
   }
   .footer-hr {
     display: none;

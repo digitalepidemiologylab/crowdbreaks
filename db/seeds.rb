@@ -10,3 +10,4 @@ Project.destroy_all
 Project.create!(title: "Project 1", description: Faker::Lorem.paragraph(paragraph_count=8))
 Project.create!(title: "Project 2", description: Faker::Lorem.paragraph(paragraph_count=8))
 Project.create!(title: "Project 3", description: Faker::Lorem.paragraph(paragraph_count=8))
+AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password')
