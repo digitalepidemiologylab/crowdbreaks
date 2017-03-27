@@ -49,13 +49,14 @@ group :development, :test do
   gem 'rspec-activemodel-mocks'
   # gem 'quiet_assets' # don't show asset pipeline log
   gem 'guard', git: "https://github.com/guard/guard.git"
-  gem 'guard-rspec', git: "https://github.com/yannis/guard-rspec.git"
+  gem 'guard-rspec'
   gem 'guard-bundler'
   gem 'guard-sidekiq'
   gem 'guard-livereload'
   gem 'rb-fsevent'
   gem 'byebug', platform: :mri
-  gem 'faker', '1.6.6'
+  gem 'ffaker'
+  gem 'shoulda-matchers'
 end
 
 group :development do

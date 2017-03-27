@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/activeadmin/activeadmin.git
-  revision: 5b711b6e22230e6e28be2a9d7367e9423d5dcc25
+  revision: fc08c0faff09d8257860c80fd81ee4278fc186be
   specs:
     activeadmin (1.0.0.pre5)
       arbre (>= 1.1.1)
@@ -49,15 +49,6 @@ GIT
       activemodel (> 5.x)
       activesupport (> 5.x)
       builder (~> 3.1)
-
-GIT
-  remote: https://github.com/yannis/guard-rspec.git
-  revision: 82384cfaa95f5e6d794b9400af3b4945b0cefd9e
-  specs:
-    guard-rspec (4.6.4)
-      guard (~> 2.1)
-      guard-compat (~> 1.1)
-      rspec (< 4.0)
 
 GEM
   remote: https://rubygems.org/
@@ -156,8 +147,7 @@ GEM
     factory_girl_rails (4.8.0)
       factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
-    faker (1.6.6)
-      i18n (~> 0.5)
+    ffaker (2.5.0)
     ffi (1.9.18)
     figaro (1.1.1)
       thor (~> 0.14)
@@ -179,6 +169,10 @@ GEM
       guard (~> 2.8)
       guard-compat (~> 1.0)
       multi_json (~> 1.8)
+    guard-rspec (4.7.3)
+      guard (~> 2.1)
+      guard-compat (~> 1.1)
+      rspec (>= 2.99.0, < 4.0)
     guard-sidekiq (0.1.0)
       guard (>= 2)
       sidekiq
@@ -365,9 +359,9 @@ GEM
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.0)
-    tzinfo (1.2.2)
+    tzinfo (1.2.3)
       thread_safe (~> 0.1)
-    uglifier (3.1.9)
+    uglifier (3.1.10)
       execjs (>= 0.3.0, < 3)
     warden (1.2.7)
       rack (>= 1.0)
@@ -395,13 +389,13 @@ DEPENDENCIES
   database_cleaner
   devise (~> 4.2.1)
   factory_girl_rails
-  faker (= 1.6.6)
+  ffaker
   figaro (~> 1.1.1)
   font-awesome-rails (~> 4.7.0.1)
   guard!
   guard-bundler
   guard-livereload
-  guard-rspec!
+  guard-rspec
   guard-sidekiq
   inherited_resources!
   jbuilder (~> 2.5)
