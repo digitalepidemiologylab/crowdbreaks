@@ -16,7 +16,10 @@
             <%= project.description.html_safe if project.description %>
             </p>
             <%= link_to '#', :class => 'btn-start-project', data: {toggle: 'modal', target: '#project-modal'}  do %>
-              Start Project! 
+              Start Project through modal 
+            <% end %>
+            <%= link_to '#', :class => 'btn-start-project', data: {toggle: 'modal', target: '#project-modal'}  do %>
+              Start Project through modal 
             <% end %>
           </div>
         </div>
