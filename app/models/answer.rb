@@ -1,5 +1,6 @@
 class Answer < ApplicationRecord
   has_many :answer_sets
+  has_many :transitions
 
   before_validation :set_key
 
