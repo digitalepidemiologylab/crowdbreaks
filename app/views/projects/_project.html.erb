@@ -1,27 +1,27 @@
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <div class="jumbotron jumbotron-project">
-      <div class="row row-project">
-        <div class="col-md-2 equal-height image-col">
-          <div class="full-height">
-            <div class="project-image"></div>
-          </div>
+  <div class="col-md-8 col-md-offset-2 projects">
+    <div class="row row-project">
+      <div class="col-md-2 equal-height image-col">
+        <div class="full-height">
+          <div class="project-image"></div>
         </div>
-        <div class="col-md-10 equal-height">
-          <div class="project-description">
-            <h3>
-              <%= project.title.html_safe if project.title %>
-            </h3>
-            <p>
-            <%= project.description.html_safe if project.description %>
-            </p>
-            <%= link_to '#', :class => 'btn-start-project', data: {toggle: 'modal', target: '#project-modal'}  do %>
-              Start Project through modal 
+      </div>
+      <div class="col-md-10 equal-height description-col">
+        <div class="project-description">
+          <h3>
+            <%= project.title.html_safe if project.title %>
+          </h3>
+          <p>
+          <%= project.description.html_safe if project.description %>
+          </p>
+          <%= link_to '#', :class => 'btn-start-project', data: {toggle: 'modal', target: '#project-modal'}  do %>
+            Start Project through modal 
+          <% end %>
+          <% unless project.initial_question.nil? %>
+            <%= link_to new_question_result_path(project.initial_question), :class => 'btn-start-project'  do %>
+              Start Project
             <% end %>
-            <%= link_to '#', :class => 'btn-start-project', data: {toggle: 'modal', target: '#project-modal'}  do %>
-              Start Project through modal 
-            <% end %>
-          </div>
+          <% end %>
         </div>
       </div>
     </div>

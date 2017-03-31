@@ -1,30 +1,30 @@
 .logo {
   padding-left: 0px;
   padding-bottom: 10px;
-  max-width: 40%;
+  max-width: 200px;
 }
 .epfl-logo {
-  max-width: 30%;
+  max-width: 200px;
 }
-ul {
+.footer-links {
   list-style-type:none;
   padding-left: 0px;
-}
-li {
-  a {
-    color: $text-color;
+  li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    a {
+      color: $text-color;
+    }
   }
 }
 
 // make all columns same height
-.row {
-  overflow: hidden;
-}
-[class*="col-"]{
+.footer-same-height {
   margin-bottom: -99999px;
   padding-bottom: 99999px;
 }
 .footer {
+  overflow: hidden;
   margin-top: 30px;
   margin-bottom: 30px;
 }
@@ -42,7 +42,6 @@ li {
 // desktop
 @media (min-width: $screen-desktop) {
   .epfl-logo {
-    max-width: 50%;
     display: block;
     margin: 0 auto;
   }

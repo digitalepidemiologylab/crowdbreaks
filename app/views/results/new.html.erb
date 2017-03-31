@@ -1,2 +1,7 @@
-<h1>Results#new</h1>
-<p>Find me in app/views/results/new.html.erb</p>
+<%= form_for @result, url: question_results_path do |f|  %>
+  <h3><%= @question.question %></h3>
+  <%# <%= f.button "Yes", type: 'submit', name: 'result[clicked_yes]', value: true, class: 'btn btn-success' %>
+  <%# <%= f.button "No", type: 'submit', name: 'result[clicked_yes]', value: false, class: 'btn btn-danger' %>
+  <%= render partial: "answer", collection: @answers, locals: {f: f} %> 
+
+<% end %>

@@ -7,16 +7,17 @@
   min-height: calc(100vh - #{$navbar-height});
 }
 
-
 // index page
-.jumbotron-project {
+.row-project {
+  display: flex;
   margin-top: 15px;
   margin-bottom: 15px;
-  background-color: $light-blue;
-  .row {
-    display: flex;
-  }
 }
+
+.description-col {
+  background-color: $light-blue;
+}
+
 .project-description {
   h3 {
     font-weight: 700;
@@ -49,35 +50,31 @@
 // buttons
 .btn-start-project {
   @extend .btn, .btn-success;
-  margin-top: 10px;
+  float: right;
+  margin-left: 10px;
   margin-bottom: 10px;
 }
 
 
 // tablet
 @media (min-width: $screen-sm) {
-  .jumbotron-project {
-    padding: 20px !important;
-  }
 }
 
 // desktop
 @media (min-width: $screen-md) {
-  .jumbotron-project {
-    padding: 0 !important;
-    padding-right: 20px !important;
+  .projects {
+    max-width: 850px;
   }
-
+  .description-col {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
   // background image
   .image-col {
     display: flex;  // reveal column
   }
   .project-image {
     visibility: visible;
-  }
-
-  .btn-start-project {
-    float: right;
   }
 }
 

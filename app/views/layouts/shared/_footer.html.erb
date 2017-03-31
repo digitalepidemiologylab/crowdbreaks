@@ -1,5 +1,5 @@
 <div class="row footer">
-  <div class="col-md-4 border-right">
+  <div class="col-md-4 border-right footer-same-height">
     <div class="row">
       <div class="col-xs-12">
         <%= image_tag("logo.svg", :class => "navbar-brand logo") %>
@@ -9,7 +9,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4 border-right">
+  <div class="col-md-4 border-right footer-same-height">
     <div class="row">
       <div class="col-xs-12">
         <hr class="footer-hr">
@@ -18,10 +18,10 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 footer-same-height">
     <div class="row">
       <div class="col-xs-12">
-       <ul>
+       <ul class="footer-links">
          <li><%= link_to "Home", root_path %></li>
          <li><%= link_to "Projects", projects_path %></li>
          <li><%= link_to "About", "#" %></li>

@@ -19,7 +19,7 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-// override bootstrap selectors
+// override bootstrap/html selectors
 @import "custom";
 
 // layouts
@@ -32,3 +32,4 @@
 // controller based
 @import "pages";
 @import "projects";
+@import "results";

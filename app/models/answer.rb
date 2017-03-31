@@ -2,8 +2,9 @@ class Answer < ApplicationRecord
   has_many :answer_sets
   has_many :transitions
 
-  before_validation :set_key
+  default_scope { order(order: :asc) }
 
+  before_validation :set_key
 
   def display_name
     answer
