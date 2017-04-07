@@ -42,6 +42,10 @@ gem 'autoprefixer-rails', '6.7.6'
 gem 'activeadmin', github: 'activeadmin'
 gem 'inherited_resources', github: 'activeadmin/inherited_resources'
 gem 'activemodel-serializers-xml', github: 'rails/activemodel-serializers-xml'
+# HTTP requests
+gem 'httparty', '~> 0.13.7'
+
+gem 'jquery-turbolinks'
 
 group :development, :test do
   gem "rspec-rails"

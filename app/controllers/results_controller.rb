@@ -4,12 +4,17 @@ class ResultsController < ApplicationController
     @question = Question.find_by(id: params[:question_id])
     valid_answers = @question.answer_set.get_valid_answers
     @answers = Answer.where(id: valid_answers)
+    if params[:tweet_id]
+      tweet_id = params[:tweet_id]
+    else
+      tweet_id = get_tweet_id()
+    end
+    @tweet = TweetEmbedding.new(tweet_id).get_tweet
   end
 
   def create
     # Find next question 
-    next_question = get_next_question(results_params)
-
+    next_question = NextQuestion.new(results_params).get_next_question
     @result = Result.new(results_params)
     if @result.save
       if next_question.nil?
@@ -31,33 +36,13 @@ class ResultsController < ApplicationController
 
   private
 
-  def get_next_question(rp)
-    possible_transitions = Transition.where(project_id: rp[:project_id], from_question: rp[:question_id])
-    if possible_transitions.size == 0
-      # End question sequence
-      return nil
-    elsif possible_transitions.size == 1
-      possible_answer = possible_transitions.first.answer_id
-      if !possible_answer.nil? and possible_answer != rp[:answer_id]
-        # Answer given is not valid for transition, stop question sequence
-        return nil
-      end
-      return possible_transitions.first.to_question
-    else
-      # case multiple possibilities, find the right transition based on the given answer
-      transitions = possible_transitions.where(answer_id: rp[:answer_id])
-      if transitions.size == 1
-        return transitions.first.to_question
-      elsif transitions.size == 0
-        # End question sequence
-        return nil
-      else
-        raise Exception.new('Multiple transitions defined for given answer!')
-      end
-    end
+  def get_tweet_id
+    # 847769197962723328
+    847878099614171136
   end
 
   def results_params
+    # params.require(:result).permit(:answer_id).merge({user_id: get_user_id, question_id: params[:question_id], tweet_id: params[:tweet_id] , project_id: get_current_project})
     params.require(:result).permit(:answer_id).merge({user_id: get_user_id, question_id: params[:question_id], project_id: get_current_project})
   end
 

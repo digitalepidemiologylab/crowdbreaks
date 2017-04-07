@@ -1,7 +1,15 @@
-<%= form_for @result, url: question_results_path do |f|  %>
-  <h3><%= @question.question %></h3>
-  <%# <%= f.button "Yes", type: 'submit', name: 'result[clicked_yes]', value: true, class: 'btn btn-success' %>
-  <%# <%= f.button "No", type: 'submit', name: 'result[clicked_yes]', value: false, class: 'btn btn-danger' %>
-  <%= render partial: "answer", collection: @answers, locals: {f: f} %> 
-
-<% end %>
+<div class="row" id="question-answer-container">
+  <div class="col-md-8 col-md-offset-2 result-new">
+  <%= form_for @result, url: question_results_path do |f|  %>
+    <div id="tweet-container">
+      <%= raw @tweet %>
+    </div>
+    <div id="tweet-container-2">
+    </div>
+    <div id='question'>
+      <h3><%= @question.question %></h3>
+    </div>
+    <%= render partial: "answer", collection: @answers, locals: {f: f} %> 
+  <% end %>
+  </div>
+</div>

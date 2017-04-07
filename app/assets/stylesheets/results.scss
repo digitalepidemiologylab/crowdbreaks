@@ -4,4 +4,30 @@
 
 
 // new action
+.result-new {
+  text-align: center;
+  // background-color: $gray-lighter;
+}
+.tweet {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.twitter-tweet {
+  margin: auto;
+}
+.question {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
 
+// See Answer table, key column to create new stylings called .btn-"key"
+.btn-yes {
+  background-color: $green;
+}
+.btn-no {
+  background-color: $red;
+}
+
+#question-answer-container {
+  min-height: calc(100vh - #{$navbar-height});
+}
