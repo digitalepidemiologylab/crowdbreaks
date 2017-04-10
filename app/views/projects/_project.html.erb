@@ -18,7 +18,7 @@
             Start Project through modal 
           <% end %>
           <% unless project.initial_question.nil? %>
-            <%= link_to new_question_result_path(project.initial_question), :class => 'btn-start-project', 'data-no-turbolink' => true do %>
+            <%= link_to new_question_result_path(project.initial_question), :class => 'btn-start-project'  do %>
               Start Project
             <% end %>
           <% end %>

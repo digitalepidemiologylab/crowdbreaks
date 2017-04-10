@@ -4,11 +4,8 @@
     <div id="tweet-container">
       <%= raw @tweet %>
     </div>
-    <div id="tweet-container-2">
-    </div>
-    <div id='question'>
-      <h3><%= @question.question %></h3>
-    </div>
+    <div id='question'> <h3><%= @question.question %></h3> </div>
+    <%= f.hidden_field(:tweet_id, value: @tweet_id) %>
     <%= render partial: "answer", collection: @answers, locals: {f: f} %> 
   <% end %>
   </div>
