@@ -8,8 +8,8 @@
 #
 if Project.all.size == 0
   Project.create!(title: "Vaccine sentiment tracking", description: "This project revolves around the question on how people feel about the topic of vaccination. Vaccine sentiment is strongly tied to vaccination coverage which in turn is an important factor in disease prevention. Tracking vaccine sentiment can improve models on how we predict and what decisions we take in order to fight diseases. Additionally, our aim is to properly determine the vaccine sentiments based on geographical location.")
-  Project.create!(title: "Project 2", description: Faker::Lorem.paragraph(paragraph_count=8))
-  Project.create!(title: "Project 3", description: Faker::Lorem.paragraph(paragraph_count=8))
+  Project.create!(title: "Project 2", description: Faker::Lorem.paragraph(8))
+  Project.create!(title: "Project 3", description: Faker::Lorem.paragraph(8))
 end
 
 if User.all.size == 0

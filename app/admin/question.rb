@@ -8,13 +8,11 @@ ActiveAdmin.register Question do
     actions
   end
 
-
-  form do |f| 
+  form do |f|
     f.inputs "Question" do
       f.input :question
       f.input :project
       f.input :answer_set
     end
   end
-
 end

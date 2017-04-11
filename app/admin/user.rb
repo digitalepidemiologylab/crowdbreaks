@@ -19,15 +19,16 @@ ActiveAdmin.register User do
       f.input :email
       f.input :password
       f.input :password_confirmation
-      f.input :admin, :label => "Admin status"
+      f.input :admin, label: 'Admin status'
     end
     f.actions
   end
 
   controller do
-    before_create do |user|
-      user.skip_confirmation!
-    end
+    before_create(&:skip_confirmation!)
+    # before_create do |user|
+    #   user.skip_confirmation!
+    # end
   end
 
 end

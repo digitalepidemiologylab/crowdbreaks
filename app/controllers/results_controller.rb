@@ -2,30 +2,32 @@ class ResultsController < ApplicationController
   def new
     @result = Result.new
     @question = Question.find_by(id: params[:question_id])
-    valid_answers = @question.answer_set.get_valid_answers
+    valid_answers = @question.answer_set.valid_answers
     @answers = Answer.where(id: valid_answers)
-    if params[:tweet_id]
-      # Check if tweet_id is valid
+
+    # case beginning of question sequence
+    if !params[:tweet_id]
+      # Check if this is a valid beginning of the question sequence
+      if @question.id == @question.project.initial_question.to_question.id
+        # Find initial tweet
+        @tweet_id = ActiveTweet.initial_tweet
+      else
+        raise ActionController::BadRequest, 'Invalid starting question ID'
+      end
+    else
+      # Check if given tweet_id is valid
       if ActiveTweet.exists?(tweet_id: params[:tweet_id], project_id: @question.project)
         @tweet_id = params[:tweet_id]
       else
-        raise ActionController::BadRequest.new('Invalid tweet ID')
-      end
-    else
-      # Check if this is the beginning of the Question sequence
-      if @question.id == @question.project.initial_question.to_question.id
-        # Find initial tweet
-        @tweet_id = ActiveTweet.get_initial_tweet
-      else
-        raise ActionController::BadRequest.new('Invalid starting question ID')
+        raise ActionController::BadRequest, 'Invalid tweet ID'
       end
     end
-    @tweet = TweetEmbedding.new(@tweet_id).get_tweet
+    @tweet = TweetEmbedding.new(@tweet_id).tweet_embedding
   end
 
   def create
-    # Find next question 
-    next_question = NextQuestion.new(results_params).get_next_question
+    # Find next question
+    next_question = NextQuestion.new(results_params).next_question
     @result = Result.new(results_params)
     if @result.save
       if next_question.nil?
@@ -44,23 +46,23 @@ class ResultsController < ApplicationController
     end
   end
 
-
   private
 
   def results_params
-    params.require(:result).permit(:answer_id, :tweet_id).merge({user_id: get_user_id, question_id: params[:question_id], project_id: get_current_project})
+    # params.require(:result).permit(:answer_id, :tweet_id).merge({ user_id: user_id, question_id: params[:question_id], project_id: current_project })
+    params.require(:result).permit(:answer_id, :tweet_id).merge(user_id: user_id, question_id: params[:question_id], project_id: current_project)
   end
 
-  def get_user_id
+  def user_id
     if current_user
-      return current_user.id 
+      current_user.id
     else
-      # TODO: return guest user ID
-      return nil
+      # TODO: return guest user IDI
+      nil
     end
   end
 
-  def get_current_project
-    return Question.find_by(id: params[:question_id]).try(:project_id) || nil
+  def current_project
+    Question.find_by(id: params[:question_id]).try(:project_id) || nil
   end
 end

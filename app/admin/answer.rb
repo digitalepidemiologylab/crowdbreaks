@@ -4,11 +4,10 @@ ActiveAdmin.register Answer do
 
   index do
     column :answer
-    column "Key (automatically generated)", :key 
+    column "Key (automatically generated)", :key
     column :order
     actions
   end
-
 
   form do |f|
     f.inputs "Answer" do

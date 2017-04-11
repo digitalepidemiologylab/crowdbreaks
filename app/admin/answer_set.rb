@@ -7,12 +7,10 @@ ActiveAdmin.register AnswerSet do
       f.input :name
     end
     f.inputs "Answers" do
-      for i in 0..9
-        f.input eval(":answer"+i.to_s)
+      (0..9).each do |i|
+        f.input eval(':answer' + i.to_s)
       end
     end
     f.actions
   end
-
-
 end

@@ -1,7 +1,7 @@
 ActiveAdmin.register Transition do
   permit_params :from_question_id, :answer_id, :to_question_id, :project_id, :transition_probability
 
-  index do 
+  index do
     column 'From Question' do |f|
       f.from_question.question.slice(0, 30) unless f.from_question.nil?
     end
@@ -14,8 +14,7 @@ ActiveAdmin.register Transition do
     actions
   end
 
-
-  form do |f| 
+  form do |f|
     f.inputs "Transition" do
       f.input :from_question
       f.input :answer
@@ -24,6 +23,4 @@ ActiveAdmin.register Transition do
     end
     f.actions
   end
-
-
 end

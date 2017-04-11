@@ -1,18 +1,15 @@
 class AnswerSet < ApplicationRecord
-  for i in 0..9
-    belongs_to eval(":answer"+i.to_s), class_name: 'Answer'
+  (0..9).each do |i|
+    belongs_to eval(":answer" + i.to_s), class_name: 'Answer'
   end
   has_many :questions
 
-
   # get all answer_id's not nil
-  def get_valid_answers
+  def valid_answers
     valid_answers = []
-    col_names = (0..9).map{|i| "answer"+i.to_s+"_id" }
-    self.attributes.each_pair do |name, value|
-      if col_names.include? name and value
-        valid_answers.push(value)
-      end
+    col_names = (0..9).map { |i| "answer" + i.to_s + "_id" }
+    attributes.each_pair do |name, value|
+      valid_answers.push(value) if col_names.include?(name) && value
     end
     valid_answers
   end

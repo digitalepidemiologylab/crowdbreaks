@@ -1,10 +1,10 @@
 FactoryGirl.define do
   factory :user do
-    username { FFaker::Name.name  }
-    email { FFaker::Internet.email  }
-    password { FFaker::Internet.password  }
+    username { FFaker::Name.name }
+    email { FFaker::Internet.email }
+    password { FFaker::Internet.password }
     trait :confirmed do
-      confirmed_at { Time.zone.now  }
+      confirmed_at { Time.zone.now }
     end
     trait :admin do
       admin true

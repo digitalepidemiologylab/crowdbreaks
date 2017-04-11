@@ -30,12 +30,12 @@ gem 'devise', '~> 4.2.1'
 gem 'font-awesome-rails', '~> 4.7.0.1'
 # Pagination
 gem 'kaminari', '~> 1.0.1'
-# File upload 
+# File upload
 gem 'paperclip', '~> 5.0.0'
-# Forms 
-gem 'simple_form', '3.4.0' 
+# Forms
+gem 'simple_form', '3.4.0'
 # Bootstrap
-gem 'bootstrap-sass', '3.3.6' 
+gem 'bootstrap-sass', '3.3.6'
 # Use autoprefixes for CSS
 gem 'autoprefixer-rails', '6.7.6'
 # Active admin
@@ -60,7 +60,6 @@ group :development, :test do
   gem 'rb-fsevent'
   gem 'byebug', platform: :mri
   gem 'ffaker'
-  gem 'shoulda-matchers'
 end
 
 group :development do
@@ -70,20 +69,21 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'rubocop', require: false
 end
 
 group :test do
-    gem 'capybara'
-    # nice rspec factories
-    gem 'factory_girl_rails'
-    # leave your test db clean after you
-    gem 'database_cleaner'
-    # freeze/manage time in tests
-    gem 'timecop'
-    # extra RSpec matchers
-    gem 'shoulda-matchers'
-    # check test coverage
-    gem 'simplecov', require: false
+  gem 'capybara'
+  # nice rspec factories
+  gem 'factory_girl_rails'
+  # leave your test db clean after you
+  gem 'database_cleaner'
+  # freeze/manage time in tests
+  gem 'timecop'
+  # extra RSpec matchers
+  gem 'shoulda-matchers'
+  # check test coverage
+  gem 'simplecov', require: false
 end
 
 group :production do
@@ -91,4 +91,4 @@ group :production do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

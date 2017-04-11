@@ -1,4 +1,4 @@
-<div class="row" id="question-answer-container">
+<div class='row' id='question-answer-container'>
   <div class="col-md-8 col-md-offset-2 result-new">
   <%= form_for @result, url: question_results_path do |f|  %>
     <div id="tweet-container">
@@ -6,7 +6,7 @@
     </div>
     <div id='question'> <h3><%= @question.question %></h3> </div>
     <%= f.hidden_field(:tweet_id, value: @tweet_id) %>
-    <%= render partial: "answer", collection: @answers, locals: {f: f} %> 
+    <%= render partial: 'answer', collection: @answers, locals: {f: f} %> 
   <% end %>
   </div>
 </div>
