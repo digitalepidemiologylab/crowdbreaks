@@ -5,7 +5,7 @@
         <%= image_tag("logo.svg", :class => "navbar-brand logo") %>
       </div>
       <div class="col-xs-12">
-        Crowdbreaks is developed by the <%= link_to 'Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', :target => "_blank" %> at EPFL.
+        <%= t('footer.developed_by_html', :href => link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank')) %>
       </div>
     </div>
   </div>
@@ -22,9 +22,9 @@
     <div class="row">
       <div class="col-xs-12">
        <ul class="footer-links">
-         <li><%= link_to "Home", root_path %></li>
-         <li><%= link_to "Projects", projects_path %></li>
-         <li><%= link_to "About", "#" %></li>
+         <li><%= link_to t('navbar.buttons.home'), root_path %></li>
+         <li><%= link_to t('navbar.buttons.projects'), projects_path %></li>
+         <li><%= link_to t('navbar.buttons.about'), "#" %></li>
        </ul> 
       </div>
     </div>

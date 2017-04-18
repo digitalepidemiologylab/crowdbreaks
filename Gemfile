@@ -26,6 +26,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'figaro', '~> 1.1.1'
 # authentication
 gem 'devise', '~> 4.2.1'
+gem 'devise-i18n'
 # font icons
 gem 'font-awesome-rails', '~> 4.7.0.1'
 # Pagination

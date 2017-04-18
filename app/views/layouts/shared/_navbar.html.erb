@@ -16,7 +16,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li class="<%= current_page?(root_path)? "active" : "" %>">
           <%= link_to root_path do %> 
-            Home 
+            <%= t 'navbar.buttons.home' %>
             <% if current_page?(root_path) %>
               <span class="sr-only">(current)</span>
             <% end %>
@@ -24,13 +24,13 @@
         </li>
         <li class="<%= current_page?(projects_path)? "active" : "" %>">
           <%= link_to projects_path do %> 
-            Projects 
+            <%= t 'navbar.buttons.projects' %>
             <% if current_page?(projects_path) %>
               <span class="sr-only">(current)</span>
             <% end %>
           <% end %>
         </li>
-        <li><%= link_to 'About', '#' %></li>
+        <li><%= link_to t('navbar.buttons.about'), '#' %></li>
         <%= render 'layouts/shared/nav_login' %>
         <%= render 'layouts/shared/switch_language' %>
       </ul>

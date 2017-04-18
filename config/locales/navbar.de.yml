@@ -1,0 +1,15 @@
+de:
+  navbar:
+    buttons:
+      home: "Home"
+      projects: "Projekte"
+      about: "Über uns"
+    account:
+      account_label: "Konto"
+      login: "Login"
+      logged_in_html: "Eingeloggt als:<br>"
+      edit: "Profil ändern"
+      logout_label: "Logout"
+      sign_up_label: "Anmelden"
+
+
