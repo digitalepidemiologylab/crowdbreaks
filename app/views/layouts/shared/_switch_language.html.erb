@@ -1,0 +1,13 @@
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <%= I18n.locale %>
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <% Crowdbreaks::Locales.reject {|l| l == I18n.locale.to_s }.each do |locale| %>
+      <li>
+        <%= link_to locale.to_s, { locale: locale } %>
+      </li>
+    <% end %>
+  </ul>
+</li>

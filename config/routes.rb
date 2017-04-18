@@ -7,8 +7,10 @@ Rails.application.routes.draw do
 
   root 'pages#index'
 
-  resources :projects, only: [:index]
-  resources :questions, only: [] do
-    resources :results, only: [:create, :new]
+  scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
+    resources :projects, only: [:index]
+    resources :questions, only: [] do
+      resources :results, only: [:create, :new]
+    end
   end
 end

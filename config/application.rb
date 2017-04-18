@@ -18,6 +18,9 @@ Bundler.require(*Rails.groups)
 
 
 module Crowdbreaks
+
+  Locales = ['en', 'de']
+
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -27,5 +30,9 @@ module Crowdbreaks
     config.generators do |g|
       g.javascript_engine :js
     end
+
+    # Internationalization
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+    config.i18n.default_locale = :en
   end
 end

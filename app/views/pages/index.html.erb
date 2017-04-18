@@ -3,7 +3,7 @@
     <div class="row row-welcome">
       <div class="col-xs-12">
         <div class="welcome">
-          <h1>Welcome to</h1>
+          <h1><%= t '.welcome' %></h1>
         </div>
         <div class="welcome-logo">
           <%= image_tag("logo.svg", :class => "welcome-logo-img img-responsive") %>
@@ -12,12 +12,12 @@
     </div>
     <div class="row row-goal">
       <div class="col-xs-12">
-        <h3>This platform aims to track disease outbreaks in real time.<br>For this we need your help!</h3>
+        <h3><%= t '.goal_html' %></h3>
       </div>
     </div>
     <div class="row row-button">
       <div class="col-xs-12">
-        <%= link_to "Contribute!", projects_path, :class => "btn btn-green" %>
+        <%= link_to t('.contribute'), projects_path, :class => "btn btn-green" %>
       </div>
     </div>
   </div>

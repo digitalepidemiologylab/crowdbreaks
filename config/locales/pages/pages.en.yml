@@ -1,0 +1,10 @@
+en:
+  pages:
+    index:
+      welcome: 
+        "Welcome to"
+      goal_html:
+        "This platform aims to track disease outbreaks in real time.<br>For this we need your help!"
+      contribute:
+        "Contribute!"
+        
