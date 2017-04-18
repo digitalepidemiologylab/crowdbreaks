@@ -7,6 +7,9 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'ffaker'
 require 'devise'
+require 'simplecov'
+require 'database_cleaner'
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -27,6 +30,7 @@ require 'devise'
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
+SimpleCov.start
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

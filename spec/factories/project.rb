@@ -1,6 +1,7 @@
 FactoryGirl.define do
+  sequence(:title) { |n| "Title #{n}" }
   factory :project do
-    title { FFaker::Name.name }
-    description { FFaker::Lorem.paragraphs(3) }
+    title 
+    description "Description"
   end
 end

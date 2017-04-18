@@ -2,13 +2,14 @@ class ResultsController < ApplicationController
   def new
     @result = Result.new
     @question = Question.find_by(id: params[:question_id])
+    raise 'Question not found' if @question.nil?
     valid_answers = @question.answer_set.valid_answers
     @answers = Answer.where(id: valid_answers)
 
     # case beginning of question sequence
     if !params[:tweet_id]
       # Check if this is a valid beginning of the question sequence
-      if @question.id == @question.project.initial_question.to_question.id
+      if @question.id == @question.project.initial_question.id
         # Find initial tweet
         @tweet_id = ActiveTweet.initial_tweet
       else
@@ -49,7 +50,6 @@ class ResultsController < ApplicationController
   private
 
   def results_params
-    # params.require(:result).permit(:answer_id, :tweet_id).merge({ user_id: user_id, question_id: params[:question_id], project_id: current_project })
     params.require(:result).permit(:answer_id, :tweet_id).merge(user_id: user_id, question_id: params[:question_id], project_id: current_project)
   end
 

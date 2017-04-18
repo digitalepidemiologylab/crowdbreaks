@@ -13,7 +13,7 @@ class NextQuestion
       return nil
     when 1
       possible_answer = possible_transitions.first.answer_id
-      if !possible_answer.nil? && possible_answer != params[:answer_id]
+      if !possible_answer.nil? && possible_answer != params[:answer_id].to_i
         # Answer given is not valid for transition, stop question sequence
         return nil
       end
@@ -27,7 +27,7 @@ class NextQuestion
         # End question sequence
         return nil
       else
-        raise Exception 'Multiple transitions defined for given answer!'
+        raise Exception, 'Multiple transitions defined for given answer!'
       end
     end
   end

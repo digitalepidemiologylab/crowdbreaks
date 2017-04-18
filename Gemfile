@@ -84,6 +84,10 @@ group :test do
   gem 'shoulda-matchers'
   # check test coverage
   gem 'simplecov', require: false
+  # Clean test db
+  gem 'database_cleaner'
+  # additional controller testing functionality
+  gem 'rails-controller-testing'
 end
 
 group :production do

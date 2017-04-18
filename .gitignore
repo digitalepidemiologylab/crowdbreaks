@@ -13,7 +13,7 @@ tmp/
 ./vendor/bundle
 
 # Simplecov generated files
-./coverage
+coverage/*
 
 # DB schema
 ./db/schema.rb

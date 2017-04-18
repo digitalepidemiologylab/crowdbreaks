@@ -14,11 +14,11 @@
           <p>
           <%= project.description.html_safe if project.description %>
           </p>
-          <%= link_to '#', :class => 'btn-start-project', data: {toggle: 'modal', target: '#project-modal'}  do %>
-            Start Project through modal 
-          <% end %>
+          <%# <%= link_to '#', :class => 'btn-start-project', data: {toggle: 'modal', target: '#project-modal'}  do %>
+          <%#   Start Project through modal 
+          <%# <% end %>
           <% unless project.initial_question.nil? %>
-            <%= link_to new_question_result_path(project.initial_question), :class => 'btn-start-project'  do %>
+            <%= link_to new_question_result_path(project.initial_question), class: 'btn-start-project', id: "btn-start-project-#{project.id}"  do %>
               Start Project
             <% end %>
           <% end %>

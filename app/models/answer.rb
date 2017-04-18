@@ -4,7 +4,11 @@ class Answer < ApplicationRecord
 
   default_scope { order(order: :asc) }
 
-  before_validation :set_key
+  before_validation :set_key!
+
+  validates_presence_of :answer
+  validates :key, presence: true, uniqueness: true
+
 
   def display_name
     answer
@@ -12,7 +16,9 @@ class Answer < ApplicationRecord
 
   private
 
-  def set_key
+  def set_key!
+    # raise ActiveModel::ValidationError, "Answer can't be empty" unless answer
+    return unless answer
     key = answer.strip.downcase
 
     # blow away apostrophes

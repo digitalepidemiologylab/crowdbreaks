@@ -3,7 +3,11 @@ class Project < ApplicationRecord
   has_many :transitions
   has_many :active_tweets
 
+  validates_presence_of :title, :description
+
   def initial_question
-    transitions.find_by(from_question: nil)
+    first_transition = transitions.find_by(from_question: nil)
+    raise "Project #{self.title} does not have a valid first Question" if first_transition.nil?
+    first_transition.to_question
   end
 end
