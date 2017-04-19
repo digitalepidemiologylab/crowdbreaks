@@ -1,9 +1,15 @@
 ActiveAdmin.register Answer do
-  permit_params :answer, :order
+  answer_translations = []
+  Crowdbreaks::Locales.each do |l|
+    answer_translations.push(('answer_'+l).to_sym)
+  end
+  permit_params *answer_translations, :order
   config.sort_order = 'order_asc'
 
   index do
-    column :answer
+    column "Answer" do |p|
+      p.answer_translations['en'] if p.answer_translations
+    end
     column "Key (automatically generated)", :key
     column :order
     actions
@@ -11,7 +17,9 @@ ActiveAdmin.register Answer do
 
   form do |f|
     f.inputs "Answer" do
-      f.input :answer
+      answer_translations.each do |t|
+        f.input t
+      end
       f.input :order
     end
     f.actions

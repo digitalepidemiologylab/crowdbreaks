@@ -19,7 +19,7 @@
           <%# <% end %>
           <% unless project.initial_question.nil? %>
             <%= link_to new_question_result_path(project.initial_question), class: 'btn-start-project', id: "btn-start-project-#{project.id}"  do %>
-              Start Project
+              <%= t('projects.index.start_button') %>
             <% end %>
           <% end %>
         </div>

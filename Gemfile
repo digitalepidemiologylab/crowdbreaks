@@ -45,6 +45,8 @@ gem 'inherited_resources', github: 'activeadmin/inherited_resources'
 gem 'activemodel-serializers-xml', github: 'rails/activemodel-serializers-xml'
 # HTTP requests
 gem 'httparty', '~> 0.13.7'
+# I18n for model columns using JSONB
+gem 'json_translate'
 
 gem 'jquery-turbolinks'
 

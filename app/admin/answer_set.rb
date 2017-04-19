@@ -8,7 +8,7 @@ ActiveAdmin.register AnswerSet do
     end
     f.inputs "Answers" do
       (0..9).each do |i|
-        f.input eval(':answer' + i.to_s)
+        f.input ('answer' + i.to_s).to_sym
       end
     end
     f.actions

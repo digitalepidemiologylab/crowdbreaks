@@ -9,6 +9,7 @@ class Answer < ApplicationRecord
   validates_presence_of :answer
   validates :key, presence: true, uniqueness: true
 
+  translates :answer
 
   def display_name
     answer

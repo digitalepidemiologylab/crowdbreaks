@@ -3,6 +3,8 @@ class Project < ApplicationRecord
   has_many :transitions
   has_many :active_tweets
 
+  translates :title, :description
+
   validates_presence_of :title, :description
 
   def initial_question

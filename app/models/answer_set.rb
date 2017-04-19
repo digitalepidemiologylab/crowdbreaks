@@ -1,6 +1,6 @@
 class AnswerSet < ApplicationRecord
   (0..9).each do |i|
-    belongs_to eval(":answer" + i.to_s), class_name: 'Answer'
+    belongs_to ('answer' + i.to_s).to_sym, class_name: 'Answer'
   end
   has_many :questions
 
