@@ -47,7 +47,7 @@ gem 'activemodel-serializers-xml', github: 'rails/activemodel-serializers-xml'
 gem 'httparty', '~> 0.13.7'
 # I18n for model columns using JSONB
 gem 'json_translate'
-
+# use jquery with turbolinks
 gem 'jquery-turbolinks'
 
 group :development, :test do

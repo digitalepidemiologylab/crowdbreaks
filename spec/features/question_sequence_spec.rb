@@ -6,6 +6,7 @@ RSpec.feature "Question sequence", :type => :feature do
   let!(:answer_2) { create(:answer, answer: "Answer 2") }
   let!(:answer_3) { create(:answer, answer: "Answer 3") }
   let!(:answer_set) { create(:answer_set, name: 'default', answer0: answer_1, answer1: answer_2, answer2: answer_3) }
+  let(:locale) { :en }
 
   # linear 1
   # Q1 +----> Q2 +----> END
@@ -72,7 +73,7 @@ RSpec.feature "Question sequence", :type => :feature do
 
     # Answer last question
     click_button "Answer 2"
-    expect(current_path).to eq(projects_path)
+    expect(current_path).to eq projects_path(locale: locale)
     expect(page).to have_text('successfully completed')
   end
 
