@@ -4,21 +4,24 @@
 
 
 #background-projects {
+  margin-top: 15px;
   min-height: calc(100vh - #{$navbar-height});
 }
 
 // index page
 .row-project {
   display: flex;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .description-col {
   background-color: $light-blue;
+  width: 100%;
 }
 
 .project-description {
+  width: 100%;
   h3 {
     font-weight: 700;
   }
@@ -64,6 +67,8 @@
 @media (min-width: $screen-md) {
   .projects {
     max-width: 850px;
+    float: none;
+    margin: 0 auto;
   }
   .description-col {
     border-top-right-radius: 5px;

@@ -13,7 +13,7 @@ ActiveAdmin.register Project do
       p.title_translations['en']
     end
     column "Description" do |p|
-      p.description_translations['en'] if p.desc_translations
+      p.description_translations['en'] if p.description_translations
     end
     column :created_at
     column :updated_at
