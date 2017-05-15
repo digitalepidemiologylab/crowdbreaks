@@ -12,6 +12,9 @@
  *
  */
 
+// fonts
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans');
+
 // overridden bootstrap global variables
 @import "global_vars";
 
@@ -24,7 +27,6 @@
 
 // layouts
 @import "layout/navbar";
-@import "layout/fonts";
 @import "layout/footer";
 @import "layout/buttons";
 @import "layout/banner";

@@ -15,6 +15,9 @@ tmp/
 # Simplecov generated files
 coverage/*
 
+# public folders
+/public/assets
+
 # DB schema
 ./db/schema.rb
 ./db/schema.sql
