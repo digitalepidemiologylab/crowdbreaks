@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: answers
+#
+#  id                  :integer          not null, primary key
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  key                 :string
+#  order               :integer          default(0)
+#  answer_translations :jsonb
+#
+
 class Answer < ApplicationRecord
   has_many :answer_sets
   has_many :transitions

@@ -2,8 +2,9 @@ class ProjectsController < ApplicationController
   def index
     @projects = Project.all
     @first_questions = {}
-    # @projects.each do |project|
-    #   @first_questions[project.id] = project.transitions.find_by(:from_question => nil)
-    # end
+  end
+
+  def show
+    redirect_to question_sequence_path(project_id: @project.id)
   end
 end

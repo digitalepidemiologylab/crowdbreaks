@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419094950) do
+ActiveRecord::Schema.define(version: 20170615143646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 20170419094950) do
     t.datetime "updated_at",               null: false
     t.jsonb    "title_translations"
     t.jsonb    "description_translations"
+    t.string   "es_index_name"
   end
 
   create_table "questions", force: :cascade do |t|
@@ -86,6 +87,7 @@ ActiveRecord::Schema.define(version: 20170419094950) do
     t.datetime "updated_at",            null: false
     t.integer  "answer_set_id"
     t.jsonb    "question_translations"
+    t.string   "meta_field"
     t.index ["answer_set_id"], name: "index_questions_on_answer_set_id", using: :btree
     t.index ["project_id"], name: "index_questions_on_project_id", using: :btree
   end

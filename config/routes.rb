@@ -6,9 +6,12 @@ Rails.application.routes.draw do
   root 'pages#index'
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
-    resources :projects, only: [:index]
-    resources :questions, only: [] do
-      resources :results, only: [:create, :new]
+    resources :projects, only: [:show, :index]
+    scope "(:project_id)" do
+      resource :question_sequence, only: [:show, :create]
+      root to: 'projects#show'
+      # get :question_seq, to: 'QuestionSequences#show'
+      # post :question_seq, to: 'QuestionSequences#create'
     end
   end
 end

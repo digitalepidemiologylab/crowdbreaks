@@ -3,7 +3,7 @@ ActiveAdmin.register Question do
   Crowdbreaks::Locales.each do |l|
     question_translations.push(('question_'+l).to_sym)
   end
-  permit_params *question_translations, :project_id, :answer_set_id
+  permit_params *question_translations, :project_id, :answer_set_id, :meta_field
 
   index do
     column "Question" do |p|
@@ -11,6 +11,7 @@ ActiveAdmin.register Question do
     end
     column :project
     column :answer_set
+    column :meta_field
     actions
   end
 
@@ -21,6 +22,7 @@ ActiveAdmin.register Question do
       end
       f.input :project
       f.input :answer_set
+      f.input :meta_field, label: 'Meta field name in ES (optional)'
     end
     f.actions
   end

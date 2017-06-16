@@ -49,6 +49,8 @@ gem 'httparty', '~> 0.13.7'
 gem 'json_translate'
 # use jquery with turbolinks
 gem 'jquery-turbolinks'
+# elasticsearch
+gem 'elasticsearch', '~> 5.0', '>= 5.0.4'
 
 group :development, :test do
   gem "rspec-rails"
