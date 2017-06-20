@@ -38,9 +38,36 @@ class Elastic
   end
 
 
-  def add_answer(tweet_id, question_id, answer_id)
-    p tweet_id
-    p question_id
-    p answer_id
+  def add_answer(result)
+    # only add stuff to ES if meta_field is provided for question
+    unless result.question.meta_field.blank?
+      # make sure meta field exists
+      response = @client.perform_request('POST', "#{self.index_name}/#{self.document_type}/#{result.tweet_id}/_update", {},
+                                         {
+        "script": {
+          "inline": "if (!ctx._source.containsKey(\"meta\")) { 
+              ctx._source.meta = params.initial
+            }",
+          "params": {
+            "initial": {
+              "#{result.question.meta_field}": { }
+            }
+          }
+        }
+      })
+
+      # increase counter for answer given
+      answer = Answer.find_by(id: result.answer_id).key
+      
+      response = @client.perform_request('POST', "#{self.index_name}/#{self.document_type}/#{result.tweet_id}/_update", {},
+        "script": {
+          "inline": "
+            if (ctx._source.meta.#{result.question.meta_field}.containsKey(\"#{answer}\")) { 
+              ctx._source.meta.#{result.question.meta_field}.#{answer} += 1
+            } else {
+              ctx._source.meta.#{result.question.meta_field}.#{answer} = 1
+            }"
+          })
+    end
   end
 end

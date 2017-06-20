@@ -15,7 +15,8 @@ class QuestionSequencesController < ApplicationController
         # Find initial tweet id
         response = elastic.initial_tweet
         if !response['hits']['hits'].empty?
-          @tweet_id = response['hits']['hits'].first['_id']
+          # @tweet_id = response['hits']['hits'].first['_id']
+          @tweet_id = 876758796906975232
         else
           raise "This index contains no tweets"
         end
@@ -32,14 +33,14 @@ class QuestionSequencesController < ApplicationController
   end
 
   def create
-    # Find next question
-    next_question = NextQuestion.new(results_params).next_question
     @result = Result.new(results_params)
     if @result.save
-      # also store in meta field of tweet in ES 
+      # also store in meta field of tweet in ES if meta field is provided
       elastic = Elastic.new(@project.es_index_name)
-      elastic.add_answer(@result.tweet_id, @result.question_id, @result.answer_id)
+      elastic.add_answer(@result)
 
+      # Find next question
+      next_question = NextQuestion.new(results_params).next_question
       if next_question.nil?
         # End of question sequence
         redirect_to projects_path
@@ -47,7 +48,6 @@ class QuestionSequencesController < ApplicationController
       else
         # Go to next question
         respond_to do |format|
-          # format.html { redirect_to new_question_result_path(next_question, tweet_id: results_params[:tweet_id]) }
           @question = next_question
           @tweet_id = results_params[:tweet_id]
           @tweet = TweetEmbedding.new(@tweet_id).tweet_embedding

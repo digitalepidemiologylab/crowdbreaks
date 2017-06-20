@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170615143646) do
+ActiveRecord::Schema.define(version: 20170616173723) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,16 +27,6 @@ ActiveRecord::Schema.define(version: 20170615143646) do
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
     t.index ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
-  end
-
-  create_table "active_tweets", force: :cascade do |t|
-    t.bigint   "tweet_id"
-    t.integer  "project_id"
-    t.integer  "num_answers", default: 0
-    t.float    "uncertainty", default: 1.0
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.index ["project_id"], name: "index_active_tweets_on_project_id", using: :btree
   end
 
   create_table "answer_sets", force: :cascade do |t|
