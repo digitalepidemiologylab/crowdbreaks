@@ -13,7 +13,7 @@ gem 'pg', '~> 0.18'
 # Ruby server
 gem 'puma', '~> 3.0'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 5.0', '>= 5.0.4'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use jquery as the JavaScript library
@@ -36,7 +36,7 @@ gem 'paperclip', '~> 5.0.0'
 # Forms
 gem 'simple_form', '3.4.0'
 # Bootstrap
-gem 'bootstrap-sass', '3.3.6'
+gem 'bootstrap-sass', '~> 3.3', '>= 3.3.6'
 # Use autoprefixes for CSS
 gem 'autoprefixer-rails', '6.7.6'
 # Active admin

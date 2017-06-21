@@ -1,0 +1,12 @@
+de:
+  question_sequences:
+    final:
+      thank_you:
+        "Vielen Dank für deine Hilfe!"
+      continue:
+        "Weiter zum nächsten Tweet..."
+      continue_button:
+        "Weiter"
+      back_to_projects_button:
+        "Zurück zu den Projekten"
+

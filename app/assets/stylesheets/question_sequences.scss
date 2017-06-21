@@ -6,7 +6,6 @@
 // new action
 .result-new {
   text-align: center;
-  // background-color: $gray-lighter;
 }
 #tweet-container {
   margin-top: 30px;
@@ -21,13 +20,26 @@
 }
 
 // See Answer table, key column to create new stylings called .btn-"key"
-.btn-yes {
+.btn-yes, .btn-positive {
   background-color: $green;
 }
-.btn-no {
+.btn-no, .btn-negative {
   background-color: $red;
 }
 
 #question-answer-container {
   min-height: calc(100vh - #{$navbar-height});
+}
+
+// final action
+.final {
+  text-align: center;
+  p {
+    margin-top: 50px;
+  }
+}
+.btn-final {
+  @extend .btn, .btn-success;
+  float: center;
+  margin: 50px 50px 0px 50px;
 }

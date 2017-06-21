@@ -1,0 +1,13 @@
+en:
+  question_sequences:
+    final:
+      thank_you:
+        "Thanks for your help!"
+      continue:
+        "Feel free to continue..."
+      continue_button:
+        "Continue"
+      back_to_projects_button:
+        "Back to projects"
+
+

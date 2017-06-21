@@ -1,7 +1,6 @@
 class QuestionSequencesController < ApplicationController
   def show
     @result = Result.new
-    # @question = Question.find_by(id: params[:question_id])
     @question = @project.initial_question
     raise 'Question not found' if @question.nil?
     valid_answers = @question.answer_set.valid_answers
@@ -43,8 +42,7 @@ class QuestionSequencesController < ApplicationController
       next_question = NextQuestion.new(results_params).next_question
       if next_question.nil?
         # End of question sequence
-        redirect_to projects_path
-        flash[:notice] = "Question sequence successfully completed!"
+        render :final
       else
         # Go to next question
         respond_to do |format|
@@ -61,6 +59,9 @@ class QuestionSequencesController < ApplicationController
       redirect_to projects_path
       flash[:alert] = "An error has occurred"
     end
+  end
+
+  def final
   end
 
   private
