@@ -1,0 +1,21 @@
+<%= provide(:banner, t('.banner')) %>
+
+<div class="row">
+  <div class="col-md-8 about">
+    <h3><%= t('.about_crowdbreaks_title') %></h3>
+    <p> <%= t('.about_crowdbreaks_html', 
+              href_group: link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank'))%> </p>
+
+    <h3><%= t('.how_does_it_work_title') %></h3>
+    <p><%= t('.how_does_it_work') %></p>
+
+    <h3><%= t('.why_crowdsourcing_title') %></h3>
+    <p><%= t('.why_crowdsourcing_html') %></p>
+
+    <h3><%= t('.help_title') %></h3>
+    <p><%= t('.help_html', mail: mail_to("crowdbreaks@salathegroup.com")) %></p>
+
+    <h3><%= t('.reliable_title') %></h3>
+    <p><%= t('.reliable') %></p>
+  </div>
+</div>

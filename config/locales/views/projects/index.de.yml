@@ -1,4 +1,5 @@
 de:
   projects:
     index:
+      banner: "PROJEKTE"
       start_button: "Projekt starten"

@@ -1,8 +1,12 @@
-// This file overrides bootstrap defaults
-// ** These should be incorportated into _global_vars.scss at some point **
+// This file defines shared styles across the page
+// ** These could be incorportated into _global_vars.scss at some point **
 
 body {
   padding-top: $navbar-height;
+}
+
+h3 {
+  color: $blue;
 }
 
 .jumbotron {

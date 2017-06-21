@@ -24,6 +24,7 @@
   width: 100%;
   h3 {
     font-weight: 700;
+    color: black;
   }
 }
 
@@ -66,7 +67,7 @@
 // desktop
 @media (min-width: $screen-md) {
   .projects {
-    max-width: 850px;
+    max-width: 930px;
     float: none;
     margin: 0 auto;
   }
