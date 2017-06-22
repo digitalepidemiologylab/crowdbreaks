@@ -3,6 +3,7 @@ class Project < ApplicationRecord
   friendly_id :title, use: :slugged
   has_many :questions
   has_many :transitions
+  has_many :results
 
   translates :title, :description
 

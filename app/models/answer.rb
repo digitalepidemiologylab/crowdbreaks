@@ -13,6 +13,7 @@
 class Answer < ApplicationRecord
   has_many :answer_sets
   has_many :transitions
+  has_many :results
 
   default_scope { order(order: :asc) }
 

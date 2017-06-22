@@ -3,7 +3,12 @@
     <div class="row row-welcome">
       <div class="col-xs-12">
         <div class="welcome">
-          <h1><%= t '.welcome' %></h1>
+          <% if current_user %>
+            <h1><%= t '.welcome-back' %><%= current_user.username %></h1>
+          <% else %>
+            <h1><%= t '.welcome' %></h1>
+          <% end %>
+
         </div>
         <div class="welcome-logo">
           <%= image_tag("logo.svg", :class => "welcome-logo-img img-responsive") %>

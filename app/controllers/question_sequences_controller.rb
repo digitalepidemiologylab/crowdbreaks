@@ -71,11 +71,6 @@ class QuestionSequencesController < ApplicationController
   end
 
   def user_id
-    if current_user
-      current_user.id
-    else
-      # TODO: return guest user IDI
-      nil
-    end
+    current_or_guest_user.id
   end
 end

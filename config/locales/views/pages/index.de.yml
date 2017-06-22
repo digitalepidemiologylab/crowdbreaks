@@ -3,6 +3,8 @@ de:
     index:
       welcome: 
         "Willkommen auf"
+      welcome-back:
+        "Willkommen zurück "
       goal_html:
         "Diese Plattform versucht Krankheiten in Echtzeit zu verfolgen.<br>Dafür brauchen wir deine Hilfe!"
       contribute:

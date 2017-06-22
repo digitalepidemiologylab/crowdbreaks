@@ -15,6 +15,7 @@ class Question < ApplicationRecord
   belongs_to :project
   belongs_to :answer_set
   has_many :transitions
+  has_many :results
 
   translates :question
 
