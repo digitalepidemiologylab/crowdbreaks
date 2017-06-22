@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     devise_for :users, controllers: { registrations: 'users/registrations' }
     get 'about', to: 'pages#about'
     resources :projects, only: [:show, :index]
-    scope "(:project_id)" do
+    scope "(:id)" do
       root to: 'projects#show'
       resource :question_sequence, only: [:show, :create]
     end

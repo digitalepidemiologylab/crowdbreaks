@@ -12,8 +12,8 @@ class ApplicationController < ActionController::Base
   private
 
   def set_project
-    return unless params[:project_id]
-    @project = Project.find(params[:project_id])
+    return unless params[:id]
+    @project = Project.friendly.find(params[:id])
   end
 
   def set_locale

@@ -1,6 +1,6 @@
 <div class='row' id='question-answer-container'>
   <div class="col-md-8 col-md-offset-2 result-new">
-  <%= form_for @result, url: question_sequence_path(project_id: @project.id) do |f|  %>
+  <%= form_for @result, url: question_sequence_path(@project) do |f|  %>
     <div id="tweet-container">
       <%= raw @tweet %>
     </div>

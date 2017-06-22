@@ -36,6 +36,16 @@
   text-align: center;
 }
 
+
+//about
+.about {
+  h3 {
+    color: $blue;
+  }
+}
+
+
+
 // tablet
 @media (min-width: $screen-sm) {
   .welcome-logo-img {
@@ -49,7 +59,7 @@
     max-width: 30%;
   }
   .about {
-    max-width: 930px;
+    max-width: $desktop-text-width;
     float: none;
     margin: 0 auto;
     h3 {

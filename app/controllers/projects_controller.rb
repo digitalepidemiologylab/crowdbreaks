@@ -5,6 +5,6 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    redirect_to question_sequence_path(project_id: @project.id)
+    redirect_to question_sequence_path(@project)
   end
 end

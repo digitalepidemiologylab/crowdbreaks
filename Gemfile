@@ -51,6 +51,8 @@ gem 'json_translate'
 gem 'jquery-turbolinks'
 # elasticsearch
 gem 'elasticsearch', '~> 5.0', '>= 5.0.4'
+# slug creation
+gem 'friendly_id', '~> 5.1'
 
 group :development, :test do
   gem "rspec-rails"
