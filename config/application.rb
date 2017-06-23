@@ -35,5 +35,8 @@ module Crowdbreaks
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
     config.i18n.default_locale = :en
     config.i18n.available_locales = Locales
+
+    # Dummy image path
+    config.dummy_image_url = "https://dummyimage.com/300.png/09f/fff"
   end
 end

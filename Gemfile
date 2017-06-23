@@ -31,8 +31,6 @@ gem 'devise-i18n'
 gem 'font-awesome-rails', '~> 4.7.0.1'
 # Pagination
 gem 'kaminari', '~> 1.0.1'
-# File upload
-gem 'paperclip', '~> 5.0.0'
 # Forms
 gem 'simple_form', '3.4.0'
 # Bootstrap
@@ -53,9 +51,12 @@ gem 'jquery-turbolinks'
 gem 'elasticsearch', '~> 5.0', '>= 5.0.4'
 # slug creation
 gem 'friendly_id', '~> 5.1'
+# file upload to s3
+gem 'paperclip', '~> 5.0.0'
+gem 'aws-sdk', '~> 2.10', '>= 2.10.1'
 
 group :development, :test do
-  gem "rspec-rails"
+  gem 'rspec-rails'
   gem 'rspec-its'
   gem 'rspec-activemodel-mocks'
   # gem 'quiet_assets' # don't show asset pipeline log
@@ -92,8 +93,6 @@ group :test do
   gem 'shoulda-matchers'
   # check test coverage
   gem 'simplecov', require: false
-  # Clean test db
-  gem 'database_cleaner'
   # additional controller testing functionality
   gem 'rails-controller-testing'
 end

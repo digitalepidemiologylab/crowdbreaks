@@ -43,7 +43,9 @@
 }
 .project-image {
   visibility: hidden;  // set to hidden for mobile
-  background: url('https://dummyimage.com/300.png/09f/fff') 50% 50% no-repeat;
+  // background: url('https://dummyimage.com/300.png/09f/fff') 50% 50% no-repeat;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
   background-size: cover;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;

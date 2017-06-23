@@ -3,7 +3,8 @@
     <div class="row row-project">
       <div class="col-md-2 equal-height image-col">
         <div class="full-height">
-          <div class="project-image"></div>
+          <div class="project-image", style="background-image: url(<%= project.image_file_name ? project.image.url(:medium) : Rails.application.config.dummy_image_url %>)">
+          </div>
         </div>
       </div>
       <div class="col-md-10 equal-height description-col">

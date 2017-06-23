@@ -5,7 +5,7 @@ ActiveAdmin.register Project do
     title_translations.push(('title_'+l).to_sym)
     desc_translations.push(('description_'+l).to_sym)
   end
-  permit_params *title_translations, *desc_translations, :es_index_name
+  permit_params *title_translations, *desc_translations, :es_index_name, :image
 
 
   index do
@@ -31,6 +31,7 @@ ActiveAdmin.register Project do
       desc_translations.each do |t|
         f.input t, as: :text
       end
+      f.input :image, as: :file, hint: f.object.image.present? ? image_tag(f.object.image.url(:thumb)) : content_tag(:span, "No image yet")
       f.input :es_index_name
     end
     f.actions

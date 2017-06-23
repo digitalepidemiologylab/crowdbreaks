@@ -5,9 +5,16 @@ class Project < ApplicationRecord
   has_many :transitions
   has_many :results
 
+  has_attached_file :image, styles: {
+    thumb: '100x100>',
+    square: '200x200#',
+    medium: '300x300>'
+  }
+
   translates :title, :description
 
   validates_presence_of :title, :description
+  validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/
 
   def initial_question
     first_transition = transitions.find_by(from_question: nil)
