@@ -1,4 +1,6 @@
 class QuestionSequencesController < ApplicationController
+  before_action :set_project
+
   def show
     @result = Result.new
     @question = @project.initial_question
@@ -63,6 +65,7 @@ class QuestionSequencesController < ApplicationController
 
   def final
   end
+
 
   private
 

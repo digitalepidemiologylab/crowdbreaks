@@ -2,8 +2,6 @@ Rails.application.routes.draw do
 
   ActiveAdmin.routes(self)
 
-
-
   root 'pages#index'
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|

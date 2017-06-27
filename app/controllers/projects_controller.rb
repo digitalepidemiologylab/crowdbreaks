@@ -1,4 +1,6 @@
 class ProjectsController < ApplicationController
+  before_action :set_project
+
   def index
     @projects = Project.all
     @first_questions = {}
