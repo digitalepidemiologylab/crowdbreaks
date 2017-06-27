@@ -13,22 +13,22 @@ if Project.all.size == 0
     es_index_name: "project_vaccine_sentiment")
   
   # create example question sequence
-  a1 = Answer.new(order: 0, answer_translations: {"de"=>"Ja", "en"=>"Yes"})
-  a2 = Answer.new(order: 1, answer_translations: {"de"=>"Vielleicht", "en"=>"Maybe"})
-  a3 = Answer.new(order: 2, answer_translations: {"de"=>"Nein", "en"=>"No"})
-  a4 = Answer.new(order: 0, answer_translations: {"de"=>"Positiv", "en"=>"Negativ"})
-  a5 = Answer.new(order: 1, answer_translations: {"de"=>"Neutral", "en"=>"Neutral"})
-  a6 = Answer.new(order: 2, answer_translations: {"de"=>"Negativ", "en"=>"Negative"})
-  as1 = AnswerSet.new(name: 'Default', answer0_id: a1.id, answer1_id: a2.id, answer2_id: a3.id)
-  as2 = AnswerSet.new(name: 'positive_negative', answer0_id: a4.id, answer1_id: a5.id, answer2_id: a6.id)
-  q1 = Question.new(project_id: project.id, answer_set_id: as1.id, 
+  a1 = Answer.create(order: 0, answer_translations: {"de"=>"Ja", "en"=>"Yes"})
+  a2 = Answer.create(order: 1, answer_translations: {"de"=>"Vielleicht", "en"=>"Maybe"})
+  a3 = Answer.create(order: 2, answer_translations: {"de"=>"Nein", "en"=>"No"})
+  a4 = Answer.create(order: 0, answer_translations: {"de"=>"Positiv", "en"=>"Negativ"})
+  a5 = Answer.create(order: 1, answer_translations: {"de"=>"Neutral", "en"=>"Neutral"})
+  a6 = Answer.create(order: 2, answer_translations: {"de"=>"Negativ", "en"=>"Negative"})
+  as1 = AnswerSet.create(name: 'Default', answer0_id: a1.id, answer1_id: a2.id, answer2_id: a3.id)
+  as2 = AnswerSet.create(name: 'positive_negative', answer0_id: a4.id, answer1_id: a5.id, answer2_id: a6.id)
+  q1 = Question.create(project_id: project.id, answer_set_id: as1.id, 
                        question_translations: {"de"=>"Geht es bei diesem Tweet um Impfungen?", "en"=>"Is this tweet related to vaccines?"},
                        meta_field: "relevant_to_vaccines")
-  q2 = Question.new(project_id: project.id, answer_set_id: as2.id, 
+  q2 = Question.create(project_id: project.id, answer_set_id: as2.id, 
                        question_translations: {"de"=>"Äussert sich dieser Tweet positiv oder negativ über Impfungen?", "en"=>"Is this tweet positive or negative about the idea of vaccinations?"},
                        meta_field: "sentiment")
-  t1 = Transition.new(from_question: nil, to_question:q1.id, project_id: project.id)
-  t2 = Transition.new(from_question: q1.id, to_question:q2.id, project_id: project.id, answer_id: a1.id)
+  t1 = Transition.create(from_question: nil, to_question:q1.id, project_id: project.id)
+  t2 = Transition.create(from_question: q1.id, to_question:q2.id, project_id: project.id, answer_id: a1.id)
 end
 
 if User.all.size == 0
