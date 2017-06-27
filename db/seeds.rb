@@ -27,8 +27,8 @@ if Project.all.size == 0
   q2 = Question.create(project_id: project.id, answer_set_id: as2.id, 
                        question_translations: {"de"=>"Äussert sich dieser Tweet positiv oder negativ über Impfungen?", "en"=>"Is this tweet positive or negative about the idea of vaccinations?"},
                        meta_field: "sentiment")
-  t1 = Transition.create(from_question: nil, to_question:q1.id, project_id: project.id)
-  t2 = Transition.create(from_question: q1.id, to_question:q2.id, project_id: project.id, answer_id: a1.id)
+  t1 = Transition.create(from_question_id: nil, to_question_id: q1.id, project_id: project.id)
+  t2 = Transition.create(from_question_id: q1.id, to_question_id: q2.id, project_id: project.id, answer_id: a1.id)
 end
 
 if User.all.size == 0
