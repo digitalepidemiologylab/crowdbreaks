@@ -7,6 +7,12 @@ ActiveAdmin.register Project do
   end
   permit_params *title_translations, *desc_translations, :es_index_name, :image
 
+  controller do
+    def find_resource
+      scoped_collection.friendly.find(params[:id])
+    end
+  end
+
 
   index do
     column "Title" do |p|
