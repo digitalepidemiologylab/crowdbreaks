@@ -55,6 +55,8 @@ gem 'friendly_id', '~> 5.1'
 gem 'paperclip', '~> 5.0.0'
 gem 'aws-sdk', '~> 2.10', '>= 2.10.1'
 gem 'searchkick', '~> 1.1', '>= 1.1.2'
+gem 'oj'
+gem 'typhoeus'
 
 group :development, :test do
   gem 'rspec-rails'
