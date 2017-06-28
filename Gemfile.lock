@@ -171,6 +171,9 @@ GEM
       railties (>= 3.0.0)
     faraday (0.12.1)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware-aws-signers-v4 (0.1.7)
+      aws-sdk-resources (~> 2)
+      faraday (~> 0.9)
     ffaker (2.5.0)
     ffi (1.9.18)
     figaro (1.1.1)
@@ -473,6 +476,7 @@ DEPENDENCIES
   devise-i18n
   elasticsearch (~> 5.0, >= 5.0.4)
   factory_girl_rails
+  faraday_middleware-aws-signers-v4
   ffaker
   figaro (~> 1.1.1)
   font-awesome-rails (~> 4.7.0.1)
