@@ -57,6 +57,7 @@ gem 'aws-sdk', '~> 2.10', '>= 2.10.1'
 gem 'searchkick', '~> 1.1', '>= 1.1.2'
 gem 'oj'
 gem 'typhoeus'
+gem 'faraday_middleware-aws-signers-v4'
 
 group :development, :test do
   gem 'rspec-rails'
