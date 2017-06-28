@@ -58,6 +58,7 @@ gem 'searchkick', '~> 1.1', '>= 1.1.2'
 gem 'oj'
 gem 'typhoeus'
 gem 'faraday_middleware-aws-signers-v4'
+gem 'patron', '~> 0.7.1'
 
 group :development, :test do
   gem 'rspec-rails'
