@@ -1,6 +1,22 @@
-require 'patron'
 require 'faraday_middleware/aws_signers_v4'
-require 'typhoeus/adapters/faraday'
+# require 'typhoeus/adapters/faraday'
+
+
+Searchkick.client = Elasticsearch::Client.new(
+  hosts: [
+    {
+      host: ENV["ELASTICSEARCH_HOST"],
+      port: ENV["ELASTICSEARCH_PORT"]
+    }
+  ],
+  transport_options: {request: {timeout: 10}}) do |f|
+  f.request :aws_signers_v4, {credentials: Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]),
+                              service_name: "es",
+                              region: ENV['AWS_REGION']
+  }
+end
+
+
 # Crowdbreaks::Client = Elasticsearch::Client.new(
 #   hosts: [
 #     {
@@ -27,12 +43,3 @@ require 'typhoeus/adapters/faraday'
 #     region: ENV['AWS_REGION']
 # end
 #
-#
-
-client = Elasticsearch::Client.new url: ENV['ELASTICSEARCH_URL'] do |f|
-  f.request :aws_signers_v4,
-    credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY'], ENV['AWS_SECRET_ACCESS_KEY']),
-    service_name: 'es',
-    region: 'us-east-1'
-  f.adapter :patron
-end
