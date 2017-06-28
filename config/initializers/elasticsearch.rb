@@ -1,4 +1,5 @@
 require 'faraday_middleware/aws_signers_v4'
+require 'typhoeus/adapters/faraday'
 # Crowdbreaks::Client = Elasticsearch::Client.new(
 #   hosts: [
 #     {
