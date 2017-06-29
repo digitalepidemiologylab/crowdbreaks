@@ -16,7 +16,7 @@ if Project.all.size == 0
   a1 = Answer.create(order: 0, answer_translations: {"de"=>"Ja", "en"=>"Yes"})
   a2 = Answer.create(order: 1, answer_translations: {"de"=>"Vielleicht", "en"=>"Maybe"})
   a3 = Answer.create(order: 2, answer_translations: {"de"=>"Nein", "en"=>"No"})
-  a4 = Answer.create(order: 0, answer_translations: {"de"=>"Positiv", "en"=>"Negativ"})
+  a4 = Answer.create(order: 0, answer_translations: {"de"=>"Positiv", "en"=>"Positive"})
   a5 = Answer.create(order: 1, answer_translations: {"de"=>"Neutral", "en"=>"Neutral"})
   a6 = Answer.create(order: 2, answer_translations: {"de"=>"Negativ", "en"=>"Negative"})
   as1 = AnswerSet.create(name: 'Default', answer0_id: a1.id, answer1_id: a2.id, answer2_id: a3.id)
