@@ -57,7 +57,8 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "crowdbreaks_#{Rails.env}"
 
   # Use sendgrid config
-  config.action_mailer.default_url_options = { :host => ENV['HOST']  }
+  # config.action_mailer.default_url_options = { :host => ENV['HOST']  }
+
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default :charset => "utf-8"
   config.action_mailer.perform_caching = false
@@ -115,3 +116,6 @@ Rails.application.configure do
     path: '/:class/:attachment/:id_partition/:style/:filename',
   }
 end
+
+# Default Mailer host
+Rails.application.routes.default_url_options[:host] = ENV['HOST']
