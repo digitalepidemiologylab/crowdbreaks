@@ -55,7 +55,23 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "crowdbreaks_#{Rails.env}"
+
+  # Use sendgrid config
+  config.action_mailer.default_url_options = { :host => ENV['HOST']  }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.default :charset => "utf-8"
   config.action_mailer.perform_caching = false
+  config.action_mailer.default_options = {from: 'no-reply@example.com'}
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :user_name => ENV['EMAIL_USERNAME'],
+    :password => ENV['EMAIL_PASSWORD'],
+    :domain => ENV['EMAIL_DOMAIN'],
+    :address => ENV['EMAIL_ADDRESS'],
+    :port => 587,
+    :authentication => :plain,
+    :enable_starttls_auto => true
+  }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
