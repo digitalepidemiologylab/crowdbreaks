@@ -16,8 +16,7 @@ class QuestionSequencesController < ApplicationController
         # Find initial tweet id
         response = elastic.initial_tweet
         if !response['hits']['hits'].empty?
-          # @tweet_id = response['hits']['hits'].first['_id']
-          @tweet_id = 876758796906975232
+          @tweet_id = response['hits']['hits'].first['_id']
         else
           raise "This index contains no tweets"
         end

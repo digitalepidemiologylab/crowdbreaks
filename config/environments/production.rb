@@ -117,5 +117,5 @@ Rails.application.configure do
   }
 end
 
-# Default Mailer host
+# Default Mailer host (this is apparently needed for devise to work)
 Rails.application.routes.default_url_options[:host] = ENV['HOST']
