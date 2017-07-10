@@ -14,12 +14,7 @@ class QuestionSequencesController < ApplicationController
       # Check if this is a valid beginning of the question sequence
       if @question.id == @project.initial_question.id
         # Find initial tweet id
-        response = elastic.initial_tweet
-        if !response['hits']['hits'].empty?
-          @tweet_id = response['hits']['hits'].first['_id']
-        else
-          raise "This index contains no tweets"
-        end
+        @tweet_id = elastic.initial_tweet(user_id)
       else
         raise ActionController::BadRequest, 'Invalid starting question ID'
       end
