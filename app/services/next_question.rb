@@ -3,8 +3,6 @@ class NextQuestion
 
   def initialize(params)
     @params = params
-    puts "params"
-    p @params
   end
 
   def next_question

@@ -69,8 +69,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_project
-    puts "Parameters: "
-    p params
     return unless params[:id]
     @project = Project.friendly.find(params[:id])
   end
