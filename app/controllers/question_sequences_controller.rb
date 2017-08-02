@@ -9,6 +9,13 @@ class QuestionSequencesController < ApplicationController
     @answers = Answer.where(id: valid_answers)
     elastic = Elastic.new(@project.es_index_name)
 
+    # fetch mturk token if provided
+    @mturk_token ||= params[:mturk_token]
+    MturkToken.validate_token(@mturk_token)
+
+    # initialize question counter
+    @question_counter ||= 0
+
     # case beginning of question sequence
     if !params[:tweet_id]
       # Check if this is a valid beginning of the question sequence
@@ -36,8 +43,11 @@ class QuestionSequencesController < ApplicationController
 
       # Find next question
       next_question = NextQuestion.new(results_params).next_question
+      # fetch mturk token if provided
+      @mturk_token ||= params[:mturk_token]
       if next_question.nil?
         # End of question sequence
+        @mturk_key = MturkToken.return_key(@mturk_token)
         render :final
       else
         # Go to next question
@@ -48,6 +58,7 @@ class QuestionSequencesController < ApplicationController
           valid_answers = @question.answer_set.valid_answers
           @answers = Answer.where(id: valid_answers)
           @result = Result.new
+          @question_counter = params[:question_counter].to_i + 1
           format.html { render :show }
         end
       end
@@ -59,7 +70,6 @@ class QuestionSequencesController < ApplicationController
 
   def final
   end
-
 
   private
 

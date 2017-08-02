@@ -1,13 +1,18 @@
 <div class='row' id='question-answer-container'>
   <div class="col-md-8 col-md-offset-2 final">
     <h1><%= t('.thank_you') %></h1>
-    <%= link_to projects_path, class: 'btn-final' do %>
-      <i class='glyphicon glyphicon-chevron-left'></i>
-      <%= t('.back_to_projects_button') %>
-    <% end %>
-    <%= link_to "/#{@project.id}", class: 'btn-final' do %>
-      <%= t('.continue_button') %>
-      <i class='glyphicon glyphicon-chevron-right'></i>
+    <% if @mturk_token.present? %>
+      <%= render partial: 'mturk_instructions_final', 
+        locals: {question_counter: @question_counter, key: @mturk_key} %>
+    <% else %>
+      <%= link_to projects_path, class: 'btn-final' do %>
+        <i class='glyphicon glyphicon-chevron-left'></i>
+        <%= t('.back_to_projects_button') %>
+      <% end %>
+      <%= link_to "/#{@project.id}", class: 'btn-final' do %>
+        <%= t('.continue_button') %>
+        <i class='glyphicon glyphicon-chevron-right'></i>
+      <% end %>
     <% end %>
   </div>
 </div>

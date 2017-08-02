@@ -31,6 +31,15 @@
   min-height: calc(100vh - #{$navbar-height});
 }
 
+// mturk instructions
+.mturk {
+  background: $brand-warning;
+  ol { 
+    padding-left: 0;
+    list-style-position: inside;
+  }
+}
+
 // final action
 .final {
   text-align: center;

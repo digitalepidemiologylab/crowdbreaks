@@ -57,6 +57,8 @@ gem 'aws-sdk', '~> 2.10', '>= 2.10.1'
 gem 'faraday_middleware-aws-signers-v4'
 # email
 gem 'sendgrid-ruby'
+# mturk
+gem 'mturk', '~> 1.8', '>= 1.8.1'
 
 
 group :development, :test do

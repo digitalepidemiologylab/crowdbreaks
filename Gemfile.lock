@@ -1,20 +1,18 @@
 GIT
   remote: https://github.com/activeadmin/activeadmin.git
-  revision: 417ff4be6d44ef2ef4b35e24f25ac686478f9e3c
+  revision: 6ada3ccb66a3418ea8941b98f6b9a2da6a9a3db4
   specs:
-    activeadmin (1.0.0)
+    activeadmin (1.1.0)
       arbre (>= 1.1.1)
-      bourbon
       coffee-rails
       formtastic (~> 3.1)
       formtastic_i18n
       inherited_resources (~> 1.7)
       jquery-rails
-      jquery-ui-rails
       kaminari (>= 0.15, < 2.0)
       railties (>= 4.2, < 5.2)
       ransack (~> 1.3)
-      sass-rails
+      sass (~> 3.1)
       sprockets (< 4.1)
 
 GIT
@@ -43,7 +41,7 @@ GIT
 
 GIT
   remote: https://github.com/rails/activemodel-serializers-xml.git
-  revision: dd9c0acf26aab111ebc647cd8deb99ebc6946531
+  revision: 675d3e8489e3a9f4d605feb4c9a1c71a082fc63f
   specs:
     activemodel-serializers-xml (1.0.1)
       activemodel (> 5.x)
@@ -98,22 +96,19 @@ GEM
     ast (2.3.0)
     autoprefixer-rails (6.7.6)
       execjs
-    aws-sdk (2.10.4)
-      aws-sdk-resources (= 2.10.4)
-    aws-sdk-core (2.10.4)
+    aws-sdk (2.10.17)
+      aws-sdk-resources (= 2.10.17)
+    aws-sdk-core (2.10.17)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.10.4)
-      aws-sdk-core (= 2.10.4)
-    aws-sigv4 (1.0.0)
+    aws-sdk-resources (2.10.17)
+      aws-sdk-core (= 2.10.17)
+    aws-sigv4 (1.0.1)
     bcrypt (3.1.11)
     bindex (0.5.0)
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
-    bourbon (4.3.4)
-      sass (~> 3.4)
-      thor (~> 0.19)
     builder (3.2.3)
     byebug (9.0.6)
     capybara (2.14.4)
@@ -143,7 +138,7 @@ GEM
       railties (>= 4.1.0, < 5.1)
       responders
       warden (~> 1.2.3)
-    devise-i18n (1.1.2)
+    devise-i18n (1.2.0)
     diff-lcs (1.3)
     docile (1.1.5)
     domain_name (0.5.20170404)
@@ -167,7 +162,7 @@ GEM
     factory_girl_rails (4.8.0)
       factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
-    faraday (0.12.1)
+    faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
     faraday_middleware-aws-signers-v4 (0.1.7)
       aws-sdk-resources (~> 2)
@@ -206,13 +201,14 @@ GEM
     has_scope (0.7.1)
       actionpack (>= 4.1, < 5.2)
       activesupport (>= 4.1, < 5.2)
+    highline (1.7.8)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http_parser.rb (0.6.0)
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    i18n (0.8.4)
+    i18n (0.8.6)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -224,8 +220,6 @@ GEM
     jquery-turbolinks (2.1.0)
       railties (>= 3.1.0)
       turbolinks
-    jquery-ui-rails (6.0.1)
-      railties (>= 3.2.16)
     json (1.8.6)
     json_translate (3.0.1)
       activerecord (>= 4.2.0)
@@ -255,7 +249,10 @@ GEM
     mime-types-data (3.2016.0521)
     mimemagic (0.3.2)
     mini_portile2 (2.2.0)
-    minitest (5.10.2)
+    minitest (5.10.3)
+    mturk (1.9.1)
+      highline (>= 1.2.7)
+      nokogiri (>= 1.4)
     multi_json (1.12.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -275,7 +272,7 @@ GEM
       cocaine (~> 0.5.5)
       mime-types
       mimemagic (~> 0.3.0)
-    parallel (1.11.2)
+    parallel (1.12.0)
     parser (2.4.0.0)
       ast (~> 2.2)
     pg (0.21.0)
@@ -339,7 +336,7 @@ GEM
       activesupport (>= 3.0)
       i18n
       polyamorous (~> 1.3)
-    rb-fsevent (0.9.8)
+    rb-fsevent (0.10.2)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     redis (3.3.3)
@@ -388,7 +385,11 @@ GEM
     ruby-progressbar (1.8.1)
     ruby_http_client (3.1.0)
     rubyzip (1.2.1)
-    sass (3.4.24)
+    sass (3.5.1)
+      sass-listen (~> 4.0.0)
+    sass-listen (4.0.0)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
       sass (~> 3.1)
@@ -399,9 +400,9 @@ GEM
       ruby_http_client (~> 3.0)
       sinatra (>= 1.4.7, < 3)
     shellany (0.0.1)
-    shoulda-matchers (3.1.1)
+    shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
-    sidekiq (5.0.3)
+    sidekiq (5.0.4)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
@@ -434,8 +435,8 @@ GEM
       sprockets (>= 3.0.0)
     thor (0.19.4)
     thread_safe (0.3.6)
-    tilt (2.0.7)
-    timecop (0.9.0)
+    tilt (2.0.8)
+    timecop (0.9.1)
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.3)
@@ -494,6 +495,7 @@ DEPENDENCIES
   json_translate
   kaminari (~> 1.0.1)
   listen (~> 3.0.5)
+  mturk (~> 1.8, >= 1.8.1)
   paperclip (~> 5.0.0)
   pg (~> 0.18)
   puma (~> 3.0)

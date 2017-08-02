@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   get 'test', to: 'pages#test'
   post 'test', to: 'pages#es_test'
 
+  get 'mturk_tokens', to: 'pages#mturk_tokens'
+
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
     devise_for :users, controllers: { registrations: 'users/registrations' }
     get 'about', to: 'pages#about'
