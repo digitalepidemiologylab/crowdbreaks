@@ -11,7 +11,7 @@ class QuestionSequencesController < ApplicationController
 
     # fetch mturk token if provided
     @mturk_token ||= params[:mturk_token]
-    MturkToken.validate_token(@mturk_token)
+    MturkToken.validate_token(@mturk_token) if @mturk_token.present?
 
     # initialize question counter
     @question_counter ||= 0
