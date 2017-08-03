@@ -47,7 +47,7 @@ class QuestionSequencesController < ApplicationController
       @mturk_token ||= params[:mturk_token]
       if next_question.nil?
         # End of question sequence
-        @mturk_key = MturkToken.return_key(@mturk_token)
+        @mturk_key = MturkToken.return_key(@mturk_token) if @mturk_token.present?
         render :final
       else
         # Go to next question

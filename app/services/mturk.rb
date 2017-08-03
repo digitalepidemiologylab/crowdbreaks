@@ -1,4 +1,5 @@
 class Mturk
+  @@layoutID = '3CM3A9T0031BGE9WDNU4QBP9FUA0SG'
 
   def self.create_hits
     STDOUT.puts 'Which environement do you want to use? Sandbox (s) or Production (p)?'
@@ -17,8 +18,17 @@ class Mturk
     keywords = 'twitter, science, sentiment, vaccinations'
     reward_amount = 0.10 # 10 cents
     bonus_amount = 0.10 # 10 cents
-    layoutID = '3DS6MGEQ987I3LAPF4Z6A885OALEXN'
+    layoutID = @@layoutID
+    puts "Using the following LayoutID: #{layoutID}"
+    puts "Would you like to change the layout ID? (y/n)"
+    change = STDIN.gets.chomp
+    if change == 'y'
+      puts 'Fill in your new layout ID: '
+      @@layoutID = STDIN.gets.chomp
+      puts "New layoutID is #{@@layoutID}"
+    end
     
+    puts "Creating #{num_assignments} HITs..."
     num_assignments.times do |i|
       puts "Creating Hit number #{i}..."
       token_set = MturkToken.create
@@ -35,12 +45,12 @@ class Mturk
         HITLayoutId: layoutID,
         HITLayoutParameter: [
           {Name: 'bonus', Value: bonus_amount.to_s},
-          {Name: 'reward', Value: reward_amount.to_s}
+          {Name: 'reward', Value: reward_amount.to_s},
+          {Name: 'token', Value: token_set.token.to_s}
         ]
       }
       result = mechanical_turk_requester.createHIT(props)
       if result[:HITTypeId].present?
-        # create token pair
         token_set.update_attributes!(hit_id: result[:HITTypeId])
         puts "Find HIT at: https://workersandbox.mturk.com/mturk/preview?groupId=#{result[:HITTypeId]} with token: #{token_set.token}"
       else
