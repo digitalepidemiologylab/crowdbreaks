@@ -131,9 +131,6 @@ class Elastic
         }
       })
 
-      # update answer count
-      self.update_answer_count(result.tweet_id, num_results_for_tweet)
-
       # update relevance score
       self.update_relevance_score(result.tweet_id, result.question.meta_field) if result.question.use_for_relevance_score
     end
@@ -156,7 +153,9 @@ class Elastic
     })
   end
 
-  def update_answer_count(tweet_id, num_answers)
+  def update_answer_count(tweet_id)
+    puts "Updating answer count..."
+    num_answers = Result.where(tweet_id: tweet_id).count
     client.update(index: self.index_name, type: self.document_type, id: tweet_id, body: { 
       doc: {
         meta: {

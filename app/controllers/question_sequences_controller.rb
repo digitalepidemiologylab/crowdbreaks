@@ -48,6 +48,8 @@ class QuestionSequencesController < ApplicationController
       if next_question.nil?
         # End of question sequence
         @mturk_key = MturkToken.return_key(@mturk_token) if @mturk_token.present?
+        # update answer count only at the end of the question sequence
+        elastic.update_answer_count(@result.tweet_id)
         render :final
       else
         # Go to next question
