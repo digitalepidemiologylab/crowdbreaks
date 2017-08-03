@@ -1,5 +1,6 @@
 class Elastic
   attr_reader :index_name, :client, :document_type
+  @@client = Crowdbreaks::Client
 
   # Number of times a tweet should be answered (by unique users)
   MAX_ANSWERS = 5 
@@ -22,6 +23,8 @@ class Elastic
     else
       # exclude tweets previously answered by user
       exclude_ids = Result.where(user_id: user_id).pluck(:tweet_id).uniq
+      puts "Excluding the following ids"
+      p exclude_ids
       exclude_ids.delete(nil)
       response = pick_old_tweet(exclude_ids)
     end
@@ -170,5 +173,21 @@ class Elastic
     else
       nil
     end
+  end
+
+
+  # class methods
+  def self.remove_meta_data(index="project_vaccine_sentiment")
+    puts "You are about to delete the field  'meta'  from the index #{index}. Are you sure? (y/n)"
+    yes_no = STDIN.gets.chomp
+    return unless yes_no == 'y'
+    @@client.update_by_query(index: index, wait_for_completion: false, conflicts: 'proceed', body: {
+      script: {
+        inline: "ctx._source.remove(\"meta\")" 
+      },
+      query: {
+        match_all: {}
+      }
+    })
   end
 end
