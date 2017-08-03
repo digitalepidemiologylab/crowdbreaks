@@ -78,12 +78,14 @@ class Elastic
       "sort": [
         {
           "meta.answer_count": {
-            "order": "asc"
+            "order": "asc",
+            "ignore_unmapped": true
           }
         },
         {
           "meta.relevance_score": {
-            "order": "desc"
+            "order": "desc",
+            "ignore_unmapped": true
           }
         }
       ]
