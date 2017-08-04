@@ -18,7 +18,6 @@ class Mturk
     keywords = 'twitter, science, sentiment, vaccinations'
     reward_amount = 0.10 # 10 cents
     bonus_amount = 0.10 # 10 cents
-    layoutID = @@layoutID
     puts "Using the following LayoutID: #{layoutID}"
     puts "Would you like to change the layout ID? (y/n)"
     change = STDIN.gets.chomp
@@ -28,6 +27,7 @@ class Mturk
       puts "New layoutID is #{@@layoutID}"
     end
     
+    layoutID = @@layoutID
     puts "Creating #{num_assignments} HITs..."
     num_assignments.times do |i|
       puts "Creating Hit number #{i}..."
