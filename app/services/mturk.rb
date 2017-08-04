@@ -18,7 +18,7 @@ class Mturk
     keywords = 'twitter, science, sentiment, vaccinations'
     reward_amount = 0.10 # 10 cents
     bonus_amount = 0.10 # 10 cents
-    puts "Using the following LayoutID: #{layoutID}"
+    puts "Using the following LayoutID: #{@@layoutID}"
     puts "Would you like to change the layout ID? (y/n)"
     change = STDIN.gets.chomp
     if change == 'y'
@@ -27,7 +27,6 @@ class Mturk
       puts "New layoutID is #{@@layoutID}"
     end
     
-    layoutID = @@layoutID
     puts "Creating #{num_assignments} HITs..."
     num_assignments.times do |i|
       puts "Creating Hit number #{i}..."
@@ -42,7 +41,7 @@ class Mturk
         },
         Keywords: keywords,
         LifetimeInSeconds: 60 * 60 * 24 * 1,
-        HITLayoutId: layoutID,
+        HITLayoutId: @@layoutID,
         HITLayoutParameter: [
           {Name: 'bonus', Value: bonus_amount.to_s},
           {Name: 'reward', Value: reward_amount.to_s},
