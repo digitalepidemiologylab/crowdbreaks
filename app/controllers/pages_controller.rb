@@ -17,6 +17,7 @@ class PagesController < ApplicationController
   end
 
   def mturk_tokens
+    puts "starting request"
     unless params[:token].present? and params[:key].present?
       head 400 # bad request
       return
