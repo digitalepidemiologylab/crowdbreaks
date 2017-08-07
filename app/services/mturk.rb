@@ -1,5 +1,5 @@
 class Mturk
-  @@layoutID = '3CM3A9T0031BGE9WDNU4QBP9FUA0SG'
+  @@layoutID = '3TWWBMKU94TCKLWG04TCWEF5VEQXWM'
 
   def self.create_hits
     STDOUT.puts 'Which environement do you want to use? Sandbox (s) or Production (p)?'
@@ -18,7 +18,14 @@ class Mturk
     keywords = 'twitter, science, sentiment, vaccinations'
     reward_amount = 0.10 # 10 cents
     bonus_amount = 0.10 # 10 cents
+    project_name = 'vaccine-sentiment-tracking'
+    base_url = ENV['HOST']
+    if base_url.include? 'localhost' 
+      warn('Use in staging or production for this to work...')
+    end
     puts "Using the following LayoutID: #{@@layoutID}"
+
+    # LayoutID
     puts "Would you like to change the layout ID? (y/n)"
     change = STDIN.gets.chomp
     if change == 'y'
@@ -26,7 +33,7 @@ class Mturk
       @@layoutID = STDIN.gets.chomp
       puts "New layoutID is #{@@layoutID}"
     end
-    
+
     puts "Creating #{num_assignments} HITs..."
     num_assignments.times do |i|
       puts "Creating Hit number #{i}..."
@@ -45,7 +52,9 @@ class Mturk
         HITLayoutParameter: [
           {Name: 'bonus', Value: bonus_amount.to_s},
           {Name: 'reward', Value: reward_amount.to_s},
-          {Name: 'token', Value: token_set.token.to_s}
+          {Name: 'token', Value: token_set.token.to_s},
+          {Name: 'project_name', Value: project_name},
+          {Name: 'base_url', Value: base_url}
         ]
       }
       result = mechanical_turk_requester.createHIT(props)
@@ -77,30 +86,39 @@ class Mturk
     puts "Are you sure (y/n)"
     yes_no = STDIN.gets.chomp
     return if yes_no == 'n'
-    ids = client.list_hits.hits.pluck(:hit_id)
-    ids.each do |id|
+    hits = client.list_hits.hits
+    host = (production ? :Production : :Sandbox)
+    p "HOST: #{host}"
+    mechanical_turk_requester = Amazon::WebServices::MechanicalTurkRequester.new Host: host, AWSAccessKeyId: ENV['AWS_ACCESS_KEY_ID'], AWSAccessKey: ENV['AWS_SECRET_ACCESS_KEY']
+    hits.each do |hit|
       begin
-        resp = client.delete_hit(hit_id: id)
-      rescue 
-        p resp
-        print "Hit cannot be deleted. Try expiring hit? (y/n)"
-        yes_no = STDIN.gets.chomp
-        if yes_no == 'y'
-          resp = client.update_expiration_for_hit(hit_id: id, expire_at: Time.now)
+        puts "----------------------------"
+        puts "Deleting HIT #{hit.hit_id} ..."
+        puts "Hit has status of #{hit.hit_status}"
+        if hit.hit_status == 'Unassignable'
+          raise 'The hit is currently being processed by a worker and can therefore not be deleted...'
         end
-        # in the future: try (for HITs with status 'Reviewable')
-        # resp = list_assignments_for_hit(hit_id: id, assignment_statuses: ["Submitted"])
-        # ai = resp.assignments[0].assignment_id
-        # client.approve_assignment(assignment_id: ai)
+        if ['Assignable', 'Unassignable'].include? hit.hit_status
+          puts "Force expiring hit..."
+          mechanical_turk_requester.forceExpireHIT(HITId: hit.hit_id)
+          resp = client.delete_hit(hit_id: hit.hit_id)
+        elsif ['Reviewing', 'Reviewable'].include? hit.hit_status
+          resp = client.delete_hit(hit_id: hit.hit_id)
+        end
+      rescue Exception => e   # this is bad style, please forgive me
+        puts "Could not delete hit... caught following exception:"
+        p e
+        # resp = client.delete_hit(hit_id: id)
       else
-        puts "Hit successfully deleted."
+        puts "Successfully deleted hit!"
       end
-    end
+    end; nil
   end
 
   def self.delete_hit(hit_id, production=false)
     client = production ? self.production_client : self.client
     resp = client.delete_hit(hit_id: hit_id)
+    record = MturkToken.find_by(hit_id: hit_id)
   end
 
 

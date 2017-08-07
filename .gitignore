@@ -8,6 +8,7 @@
 # All logfiles and tempfiles.
 log/
 tmp/
+mturk.log
 
 # Cundled gems
 ./vendor/bundle
