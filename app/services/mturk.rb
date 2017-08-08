@@ -129,6 +129,10 @@ class Mturk
     resp = client.delete_hit(hit_id: hit_id)
   end
 
+  def self.calculate_bonus(num_questions)
+    (num_questions - 1) * BONUS_AMOUNT
+  end
+
   def self.grant_bonus(assignment_id:, worker_id:, num_questions_answered:)
     bonus_amount = (num_questions_answered - 1)* BONUS_AMOUNT
     resp = client.send_bonus(

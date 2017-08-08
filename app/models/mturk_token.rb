@@ -1,4 +1,5 @@
 class MturkToken < ApplicationRecord
+  has_many :results
   has_secure_token  # defaults to token field
   has_secure_token :key
 

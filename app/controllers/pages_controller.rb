@@ -28,20 +28,11 @@ class PagesController < ApplicationController
     # existence test for key pair
     record = MturkToken.find_by(token: params[:token], key: params[:key], used: false)
     if record.present?
-      begin
-        # This should probably run in a background job...
-        Mturk.grant_bonus(assignment_id: params[:assignment_id], worker_id: params[:worker_id], num_questions_answered: record.questions_answered)
-      rescue Exception => e
-        puts "COULD NOT SEND BONUS"
-        p e
-      else
-        record.update_attributes!(bonus_sent: true) 
-      ensure
-        record.update_attributes!(used: true, worker_id: params[:worker_id], assignment_id: params[:assignment_id])
-      end
+      bonus = Mturk.calculate_bonus(record.questions_answered)
+      record.update_attributes!(used: true, worker_id: params[:worker_id], assignment_id: params[:assignment_id])
       render json: {
         status: 200, # ok
-        message: "Key was verfied successfully. You were automatically granted a bonus."
+        message: "Key was verfied successfully. You will receive a bonus of #{bonus} upon approval of the assignment."
       }
     else
       render json: {

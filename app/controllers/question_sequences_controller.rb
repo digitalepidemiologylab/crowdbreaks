@@ -9,12 +9,10 @@ class QuestionSequencesController < ApplicationController
     @answers = Answer.where(id: valid_answers)
     elastic = Elastic.new(@project.es_index_name)
 
-    # initialize question counter
-    @question_counter ||= 0
-
-    # fetch tweet
+    # case beginning of question sequence
     if !@tweet_id.present?
-      # case beginning of question sequence
+      # initialize question counter (this also happens if user hits refresh)
+      @question_counter = 0
       @tweet_id = elastic.initial_tweet(user_id)
     end
     @tweet = TweetEmbedding.new(@tweet_id).tweet_embedding
@@ -78,10 +76,14 @@ class QuestionSequencesController < ApplicationController
   private
 
   def results_params
-    params.require(:result).permit(:answer_id, :tweet_id, :question_id).merge(user_id: user_id, project_id: @project.id)
+    params.require(:result).permit(:answer_id, :tweet_id, :question_id).merge(user_id: user_id, project_id: @project.id, mturk_token_id: mturk_token_id)
   end
 
   def user_id
     current_or_guest_user.id
+  end
+
+  def mturk_token_id
+    MturkToken.find_by(token: params[:mturk_token]).try(:id)
   end
 end

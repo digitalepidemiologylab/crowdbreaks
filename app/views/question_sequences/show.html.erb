@@ -1,16 +1,16 @@
 <div class='row' id='question-answer-container'>
   <div class="col-md-8 col-md-offset-2 result-new">
     <%= form_for @result, url: question_sequence_path(@project, mturk_token: @mturk_token) do |f|  %>
-    <% if @mturk_token.present? %>
-      <%= render partial: 'mturk_instructions', locals: {question_counter: @question_counter} %>
+      <% if @mturk_token.present? %>
+        <%= render partial: 'mturk_instructions', locals: {question_counter: @question_counter} %>
+      <% end %>
+      <div id="tweet-container">
+        <%= raw @tweet %>
+      </div>
+      <div id='question'> <h3><%= @question.question %></h3> </div>
+      <%= f.hidden_field(:tweet_id, value: @tweet_id) %>
+      <%= f.hidden_field(:question_id, value: @question.id) %>
+      <%= render partial: 'answer', collection: @answers, locals: {f: f} %> 
     <% end %>
-    <div id="tweet-container">
-      <%= raw @tweet %>
-    </div>
-    <div id='question'> <h3><%= @question.question %></h3> </div>
-    <%= f.hidden_field(:tweet_id, value: @tweet_id) %>
-    <%= f.hidden_field(:question_id, value: @question.id) %>
-    <%= render partial: 'answer', collection: @answers, locals: {f: f} %> 
-  <% end %>
   </div>
 </div>
