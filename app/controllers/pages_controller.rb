@@ -31,12 +31,13 @@ class PagesController < ApplicationController
       begin
         # This should probably run in a background job...
         Mturk.grant_bonus(assignment_id: params[:assignment_id], worker_id: params[:worker_id], num_questions_answered: record.questions_answered)
-      rescue
+      rescue Exception => e
         puts "COULD NOT SEND BONUS"
+        p e
       else
         record.update_attributes!(bonus_sent: true) 
       ensure
-        record.update_attributes!(worker_id: params[:worker_id], assignment_id: params[:assignment_id])
+        record.update_attributes!(used: true, worker_id: params[:worker_id], assignment_id: params[:assignment_id])
       end
       render json: {
         status: 200, # ok

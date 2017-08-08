@@ -20,7 +20,7 @@ class MturkToken < ApplicationRecord
     record.key
   end
 
-  def self.update_answer_count(token, count)
+  def self.update_answer_count(token:, count:)
     record = MturkToken.find_by(token: token)
     raise 'Record for token could not be found' unless record
     record.update_attributes!(questions_answered: count)
