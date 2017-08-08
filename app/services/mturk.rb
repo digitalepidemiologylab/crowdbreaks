@@ -134,10 +134,17 @@ class Mturk
     # Cycle through hits and approve
     client = production ? self.production_client : self.client
     reviewable_hits = client.list_reviewable_hits(status: "Reviewable").hits 
-    puts "No HITs to in state 'Reviewable'"; return if reviewable_hits.length == 0
+    if reviewable_hits.length == 0
+      puts "No HITs to in state 'Reviewable'"
+      return     
+    end
     puts "There are #{reviewable_hits.length} HITs in state 'Reviewable'"
     reviewable_hits.each do |hit|
       rec = MturkToken.find_by(hit_id: hit.hit_id)
+      if !rec.present?
+        puts "HIT id could not be found in table... continuing to next reviewable HIT"
+        next
+      end
       num_answers = rec.questions_answered
       bonus = self.calculate_bonus(num_answers)
       puts "------------------------------"
@@ -147,14 +154,17 @@ class Mturk
       puts "Do you want to approve the hit? (y/n)"
       yes_no = STDIN.gets.chomp
       if yes_no == 'y'
+        puts "Approving assignment..."
         client.approve_assignment(assignment_id: rec.assignment_id, requester_feedback: "Thank you for your work!")
         if bonus > 0
           # pay bonus
+          puts "Paying bonus of $#{bonus}"
           self.grant_bonus(assignment_id: rec.assignment_id, worker_id: rec.worker_id, num_questions_answered: num_answers)
           rec.update_attributes!(bonus_sent: true)
-        end
-      end
-    end
+        end; nil
+      end; nil
+    end; nil
+    puts "End reviewing process..."
   end
 
   def self.calculate_bonus(num_questions)
