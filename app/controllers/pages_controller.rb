@@ -30,7 +30,7 @@ class PagesController < ApplicationController
     if record.present?
       begin
         # This should probably run in a background job...
-        Mturk.grant_bonus(assignment_id: params[:assignment_id], worker_id: params[:worker_id], record.questions_answered)
+        Mturk.grant_bonus(assignment_id: params[:assignment_id], worker_id: params[:worker_id], num_questions_answered: record.questions_answered)
       rescue
         puts "COULD NOT SEND BONUS"
       else

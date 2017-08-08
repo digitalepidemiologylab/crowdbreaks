@@ -33,8 +33,8 @@ class Mturk
     change = STDIN.gets.chomp
     if change == 'y'
       puts 'Fill in your new layout ID: '
-      LAYOUT_ID = STDIN.gets.chomp
-      puts "New layoutID is #{LAYOUT_ID}"
+      layout_id = STDIN.gets.chomp
+      puts "New layoutID is #{layout_id}"
     end
 
     puts "Creating #{num_assignments} HITs..."
@@ -51,7 +51,7 @@ class Mturk
         },
         Keywords: keywords,
         LifetimeInSeconds: 60 * 60 * 24 * 1,
-        HITLayoutId: LAYOUT_ID,
+        HITLayoutId: layout_id,
         HITLayoutParameter: [
           {Name: 'bonus', Value: bonus_amount.to_s},
           {Name: 'reward', Value: reward_amount.to_s},
@@ -129,12 +129,12 @@ class Mturk
     resp = client.delete_hit(hit_id: hit_id)
   end
 
-  def self.grant_bonus(assignment_id, worker_id, num_questions_answered)
+  def self.grant_bonus(assignment_id:, worker_id:, num_questions_answered:)
     bonus_amount = (num_questions_answered - 1)* BONUS_AMOUNT
     resp = client.send_bonus(
-      worker_id: worker_id,
-      bonus_amount: bonus_amount,
-      assignment_id: assignment_id,
+      worker_id: worker_id.to_s,
+      bonus_amount: bonus_amount.to_s,
+      assignment_id: assignment_id.to_s,
       reason: "You answered a total of #{num_questions_answered} questions. Therefore your bonus is #{num_questions_answered-1} * #{BONUS_AMOUNT}. Thank you for your help.",
       unique_request_token: rand(36**20).to_s(36)  # creates random string of length 19 or 20
     )
