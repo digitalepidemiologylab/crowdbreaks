@@ -103,6 +103,7 @@ class Elastic
   end
 
   def validate_tweet_id(tweet_id)
+    # this can probably be removed soon...
     begin
       response = client.perform_request('HEAD', "#{self.index_name}/#{self.document_type}/#{tweet_id}")
     rescue

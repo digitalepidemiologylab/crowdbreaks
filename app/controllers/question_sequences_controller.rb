@@ -9,29 +9,25 @@ class QuestionSequencesController < ApplicationController
     @answers = Answer.where(id: valid_answers)
     elastic = Elastic.new(@project.es_index_name)
 
-    # fetch mturk token if provided
-    @mturk_token ||= params[:mturk_token]
-    MturkToken.validate_token(@mturk_token) if @mturk_token.present?
-
     # initialize question counter
     @question_counter ||= 0
 
-    # case beginning of question sequence
-    if !params[:tweet_id]
-      # Check if this is a valid beginning of the question sequence
-      if @question.id == @project.initial_question.id
-        # Find initial tweet id
-        @tweet_id = elastic.initial_tweet(user_id)
-      else
-        raise ActionController::BadRequest, 'Invalid starting question ID'
-      end
-    else
-      @tweet_id = params[:tweet_id]
-      if !elastic.validate_tweet_id(@tweet_id)
-        raise ActionController::BadRequest, 'Invalid tweet ID'
-      end
+    # fetch tweet
+    if !@tweet_id.present?
+      # case beginning of question sequence
+      @tweet_id = elastic.initial_tweet(user_id)
     end
     @tweet = TweetEmbedding.new(@tweet_id).tweet_embedding
+    
+    # fetch mturk token if provided
+    @mturk_token ||= params[:mturk_token]
+    if @mturk_token.present?
+      valid, message = MturkToken.validate_token(@mturk_token)
+      if !valid
+        redirect_to project_path
+        flash[:alert] = message
+      end
+    end
   end
 
   def create
@@ -43,11 +39,18 @@ class QuestionSequencesController < ApplicationController
 
       # Find next question
       next_question = NextQuestion.new(results_params).next_question
+
       # fetch mturk token if provided
       @mturk_token ||= params[:mturk_token]
+      @question_counter = params[:question_counter].to_i + 1
+      MturkToken.update_answer_count(token: @mturk_token, count: @question_counter) if @mturk_token.present?
+
       if next_question.nil?
         # End of question sequence
-        @mturk_key = MturkToken.return_key(@mturk_token) if @mturk_token.present?
+        if @mturk_token.present?
+          @mturk_key = MturkToken.return_key(@mturk_token)        
+        end
+
         # update answer count only at the end of the question sequence
         elastic.update_answer_count(@result.tweet_id)
         render :final
@@ -60,7 +63,6 @@ class QuestionSequencesController < ApplicationController
           valid_answers = @question.answer_set.valid_answers
           @answers = Answer.where(id: valid_answers)
           @result = Result.new
-          @question_counter = params[:question_counter].to_i + 1
           format.html { render :show }
         end
       end

@@ -1,6 +1,9 @@
 class Mturk
-  @@layoutID = '3TWWBMKU94TCKLWG04TCWEF5VEQXWM'
+  LAYOUT_ID = '3TWWBMKU94TCKLWG04TCWEF5VEQXWM'
+  BONUS_AMOUNT = 0.1
+  REWARD_AMOUNT = 0.1
 
+  # class methods
   def self.create_hits
     STDOUT.puts 'Which environement do you want to use? Sandbox (s) or Production (p)?'
     host_type = STDIN.gets.chomp
@@ -23,15 +26,15 @@ class Mturk
     if base_url.include? 'localhost' 
       warn('Use in staging or production for this to work...')
     end
-    puts "Using the following LayoutID: #{@@layoutID}"
+    puts "Using the following LayoutID: #{LAYOUT_ID}"
 
     # LayoutID
     puts "Would you like to change the layout ID? (y/n)"
     change = STDIN.gets.chomp
     if change == 'y'
       puts 'Fill in your new layout ID: '
-      @@layoutID = STDIN.gets.chomp
-      puts "New layoutID is #{@@layoutID}"
+      LAYOUT_ID = STDIN.gets.chomp
+      puts "New layoutID is #{LAYOUT_ID}"
     end
 
     puts "Creating #{num_assignments} HITs..."
@@ -48,7 +51,7 @@ class Mturk
         },
         Keywords: keywords,
         LifetimeInSeconds: 60 * 60 * 24 * 1,
-        HITLayoutId: @@layoutID,
+        HITLayoutId: LAYOUT_ID,
         HITLayoutParameter: [
           {Name: 'bonus', Value: bonus_amount.to_s},
           {Name: 'reward', Value: reward_amount.to_s},
@@ -95,16 +98,22 @@ class Mturk
         puts "----------------------------"
         puts "Deleting HIT #{hit.hit_id} ..."
         puts "Hit has status of #{hit.hit_status}"
+
+        # hits in state 'Unassignable' can't be deleted until hit is returned/completed
         if hit.hit_status == 'Unassignable'
           raise 'The hit is currently being processed by a worker and can therefore not be deleted...'
-        end
-        if ['Assignable', 'Unassignable'].include? hit.hit_status
+        elsif hit.hit_status == 'Reviewable'
+          # approve hit if in 'Reviewable' status
+          puts "Auto-approving hit..."
+          resp = client.list_assignments_for_hit(hit_id: hit.hit_id)
+          a_id = resp.assignments[0].assignment_id
+          client.approve_assignment(assignment_id: a_id)
+        elsif hit.hit_status == 'Assignable'
           puts "Force expiring hit..."
           mechanical_turk_requester.forceExpireHIT(HITId: hit.hit_id)
-          resp = client.delete_hit(hit_id: hit.hit_id)
-        elsif ['Reviewing', 'Reviewable'].include? hit.hit_status
-          resp = client.delete_hit(hit_id: hit.hit_id)
         end
+        # try deleting
+        resp = client.delete_hit(hit_id: hit.hit_id)
       rescue Exception => e   # this is bad style, please forgive me
         puts "Could not delete hit... caught following exception:"
         p e
@@ -118,9 +127,18 @@ class Mturk
   def self.delete_hit(hit_id, production=false)
     client = production ? self.production_client : self.client
     resp = client.delete_hit(hit_id: hit_id)
-    record = MturkToken.find_by(hit_id: hit_id)
   end
 
+  def self.grant_bonus(assignment_id, worker_id, num_questions_answered)
+    bonus_amount = (num_questions_answered - 1)* BONUS_AMOUNT
+    resp = client.send_bonus(
+      worker_id: worker_id,
+      bonus_amount: bonus_amount,
+      assignment_id: assignment_id,
+      reason: "You answered a total of #{num_questions_answered} questions. Therefore your bonus is #{num_questions_answered-1} * #{BONUS_AMOUNT}. Thank you for your help.",
+      unique_request_token: rand(36**20).to_s(36)  # creates random string of length 19 or 20
+    )
+  end
 
   private
 

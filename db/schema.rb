@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170727140210) do
+ActiveRecord::Schema.define(version: 20170807193203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,9 +79,13 @@ ActiveRecord::Schema.define(version: 20170727140210) do
     t.string   "hit_id"
     t.string   "token"
     t.string   "key"
-    t.boolean  "used",       default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.boolean  "used",               default: false, null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.string   "assignment_id"
+    t.string   "worker_id"
+    t.integer  "questions_answered"
+    t.boolean  "bonus_sent",         default: false, null: false
     t.index ["key"], name: "index_mturk_tokens_on_key", unique: true, using: :btree
     t.index ["token"], name: "index_mturk_tokens_on_token", unique: true, using: :btree
   end
