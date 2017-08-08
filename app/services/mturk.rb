@@ -62,8 +62,9 @@ class Mturk
       }
       result = mechanical_turk_requester.createHIT(props)
       if result[:HITTypeId].present?
-        token_set.update_attributes!(hit_id: result[:HITTypeId])
-        puts "Find HIT at: https://workersandbox.mturk.com/mturk/preview?groupId=#{result[:HITTypeId]} with token: #{token_set.token}, and key: #{token_set.key}"
+        hit_id = result[:HITId]
+        token_set.update_attributes!(hit_id: hit_id)
+        puts "Find HIT at: https://workersandbox.mturk.com/mturk/preview?groupId=#{result[:HITTypeId]} with token: #{token_set.token}, key: #{token_set.key}, hit_id: #{hit_id}"
       else
         puts "No HITTypeID is present"
       end
