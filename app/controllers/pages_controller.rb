@@ -32,7 +32,7 @@ class PagesController < ApplicationController
       record.update_attributes!(used: true, worker_id: params[:worker_id], assignment_id: params[:assignment_id])
       render json: {
         status: 200, # ok
-        message: "Key was verfied successfully. You will receive a bonus of #{bonus} upon approval of the assignment."
+        message: "Key was verfied successfully. You will receive an additional bonus of $#{bonus} upon approval of the assignment."
       }
     else
       render json: {

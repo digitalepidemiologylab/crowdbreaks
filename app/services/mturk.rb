@@ -129,6 +129,33 @@ class Mturk
     resp = client.delete_hit(hit_id: hit_id)
   end
 
+  def self.approve_hits(production=false)
+    # Cycle through hits and approve
+    client = production ? self.production_client : self.client
+    reviewable_hits = client.list_reviewable_hits(status: "Reviewable").hits 
+    puts "No HITs to in state 'Reviewable'"; return if reviewable_hits.length == 0
+    puts "There are #{reviewable_hits.length} HITs in state 'Reviewable'"
+    reviewable_hits.each do |hit|
+      rec = MturkToken.find_by(hit_id: hit.hit_id)
+      num_answers = rec.questions_answered
+      bonus = self.calculate_bonus(num_answers)
+      puts "------------------------------"
+      puts "Processing HIT #{hit.hit_id}, with assignment_id: #{rec.assignment_id}"
+      puts "Number of questions answered: #{num_answers}, by worker: #{rec.worker_id}"
+      puts "The following bonus will be paid out: $#{bonus}"
+      puts "Do you want to approve the hit? (y/n)"
+      yes_no = STDIN.gets.chomp
+      if yes_no == 'y'
+        client.approve_assignment(assignment_id: rec.assignment_id, requester_feedback: "Thank you for your work!")
+        if bonus > 0
+          # pay bonus
+          self.grant_bonus(assignment_id: rec.assignment_id, worker_id: rec.worker_id, num_questions_answered: num_answers)
+          rec.update_attributes!(bonus_sent: true)
+        end
+      end
+    end
+  end
+
   def self.calculate_bonus(num_questions)
     (num_questions - 1) * BONUS_AMOUNT
   end
