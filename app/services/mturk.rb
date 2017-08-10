@@ -53,8 +53,6 @@ class Mturk
         LifetimeInSeconds: 60 * 60 * 24 * 1,
         HITLayoutId: layout_id,
         HITLayoutParameter: [
-          {Name: 'bonus', Value: bonus_amount.to_s},
-          {Name: 'reward', Value: reward_amount.to_s},
           {Name: 'token', Value: token_set.token.to_s},
           {Name: 'project_name', Value: project_name},
           {Name: 'base_url', Value: base_url}
