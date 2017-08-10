@@ -5,8 +5,8 @@
       <li> Please read the message of the tweet (without clicking any links) </li>
       <li> Please answer the question below to get to the next question (you cannot skip it) </li>
     </ol>
-    <p> <b>NOTE:</b> The total number of questions in this sequence depends on your answers!</p>
-    <p>Number of questions answered in this sequence: <%= question_counter %></p>
+    <p> <b>NOTE:</b>Do not refresh the page (otherwise your progress will be lost)</p>
+    <p>Number of questions answered so far: <%= question_counter %></p>
     <%= hidden_field_tag 'question_counter', question_counter %>
   </div>
 </div>

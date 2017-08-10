@@ -1,7 +1,7 @@
 class Mturk
   LAYOUT_ID = '3TWWBMKU94TCKLWG04TCWEF5VEQXWM'
-  BONUS_AMOUNT = 0.1
-  REWARD_AMOUNT = 0.1
+  BONUS_AMOUNT = 0.0
+  REWARD_AMOUNT = 0.3
 
   # class methods
   def self.create_hits
@@ -19,8 +19,8 @@ class Mturk
     title = 'Crowdbreaks'
     desc = 'Answer a sequence of questions about a tweet'
     keywords = 'twitter, science, sentiment, vaccinations'
-    reward_amount = 0.10 # 10 cents
-    bonus_amount = 0.10 # 10 cents
+    reward_amount = REWARD_AMOUNT
+    bonus_amount = BONUS_AMOUNT
     project_name = 'vaccine-sentiment-tracking'
     base_url = ENV['HOST']
     if base_url.include? 'localhost' 
