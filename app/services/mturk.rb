@@ -116,7 +116,6 @@ class Mturk
       rescue Exception => e   # this is bad style, please forgive me
         puts "Could not delete hit... caught following exception:"
         p e
-        # resp = client.delete_hit(hit_id: id)
       else
         puts "Successfully deleted hit!"
       end
@@ -153,11 +152,22 @@ class Mturk
       yes_no = STDIN.gets.chomp
       if yes_no == 'y'
         puts "Approving assignment..."
-        client.approve_assignment(assignment_id: rec.assignment_id, requester_feedback: "Thank you for your work!")
+        begin
+          client.approve_assignment(assignment_id: rec.assignment_id, requester_feedback: "Thank you for your work!")
+        rescue Exception => e
+          puts "Could not delete hit... caught following exception:"
+          p e
+        end
+
         if bonus > 0
           # pay bonus
           puts "Paying bonus of $#{bonus}"
-          self.grant_bonus(assignment_id: rec.assignment_id, worker_id: rec.worker_id, num_questions_answered: num_answers)
+          begin
+            self.grant_bonus(assignment_id: rec.assignment_id, worker_id: rec.worker_id, num_questions_answered: num_answers)
+          rescue Exception => e
+            puts "Could not delete hit... caught following exception:"
+            p e
+          end
           rec.update_attributes!(bonus_sent: true)
         end; nil
       end; nil
