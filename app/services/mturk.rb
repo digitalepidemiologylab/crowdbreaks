@@ -19,16 +19,35 @@ class Mturk
     title = 'Crowdbreaks'
     desc = 'Answer a sequence of questions about a tweet'
     keywords = 'twitter, science, sentiment, vaccinations'
+
+    # Reward
     reward_amount = REWARD_AMOUNT
+    puts "Using the following reward: $#{reward_amount}. Change reward? (y/n)"
+    yes_no = STDIN.gets.chomp
+    if yes_no == 'y'
+      puts 'Fill in your new reward'
+      reward_amount = STDIN.gets.chomp.to_f
+      puts "New reward is $#{reward_amount}"
+    end
+
+    # Bonus
     bonus_amount = BONUS_AMOUNT
+    puts "Using the following bonus: $#{bonus_amount}. Change bonus? (y/n)"
+    yes_no = STDIN.gets.chomp
+    if yes_no == 'y'
+      puts 'Fill in your new bonus'
+      bonus_amount = STDIN.gets.chomp.to_f
+      puts "New bonus is $#{bonus_amount}"
+    end
+
     project_name = 'vaccine-sentiment-tracking'
     base_url = ENV['HOST']
     if base_url.include? 'localhost' 
       warn('Use in staging or production for this to work...')
     end
-    puts "Using the following LayoutID: #{LAYOUT_ID}"
 
     # LayoutID
+    puts "Using the following LayoutID: #{LAYOUT_ID}"
     puts "Would you like to change the layout ID? (y/n)"
     change = STDIN.gets.chomp
     if change == 'y'
