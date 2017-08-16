@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808123318) do
+ActiveRecord::Schema.define(version: 20170816121748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170808123318) do
     t.string   "key"
     t.integer  "order",               default: 0
     t.jsonb    "answer_translations"
+    t.string   "color"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|

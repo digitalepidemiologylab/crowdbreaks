@@ -3,7 +3,7 @@ ActiveAdmin.register Answer do
   Crowdbreaks::Locales.each do |l|
     answer_translations.push(('answer_'+l).to_sym)
   end
-  permit_params *answer_translations, :order
+  permit_params *answer_translations, :order, :color
   config.sort_order = 'order_asc'
 
   index do
@@ -12,6 +12,7 @@ ActiveAdmin.register Answer do
     end
     column "Key (automatically generated)", :key
     column :order
+    column :color
     actions
   end
 
@@ -21,6 +22,7 @@ ActiveAdmin.register Answer do
         f.input t
       end
       f.input :order
+      f.input :color, as: 'select', collection: Answer::COLORS
     end
     f.actions
   end

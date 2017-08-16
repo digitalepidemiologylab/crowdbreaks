@@ -24,6 +24,19 @@ class Answer < ApplicationRecord
 
   translates :answer
 
+  # color constants
+  COLORS = {
+    'green': '#2ecc71',
+    'red': '#e74c3c',
+    'blue': '#208ac3',
+    'dark-green': '#29b765',
+    'dark-red': '#e43725',
+    'light-blue': '#e4f1fe',
+    'heavy-dark-blue': '#2c3e50',
+    'white': '#ffffff',
+    'gray': '#c9c9c9',
+  }
+
   def display_name
     answer
   end
@@ -46,6 +59,7 @@ class Answer < ApplicationRecord
     key.gsub!(/-+/, '-')
     # strip off leading/trailing underscore
     key.gsub!(/\A[-\.]+|[-\.]+\z/, '')
-    self.key = key
+    random_string = rand(36**8).to_s(36)
+    self.key = key + '_' + random_string
   end
 end

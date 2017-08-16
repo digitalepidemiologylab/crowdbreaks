@@ -19,14 +19,6 @@
   margin-bottom: 30px;
 }
 
-// See Answer table, key column to create new stylings called .btn-"key"
-.btn-yes, .btn-positive {
-  background-color: $green;
-}
-.btn-no, .btn-negative {
-  background-color: $red;
-}
-
 #question-answer-container {
   min-height: calc(100vh - #{$navbar-height});
 }

@@ -10,7 +10,9 @@
       <div id='question'> <h3><%= @question.question %></h3> </div>
       <%= f.hidden_field(:tweet_id, value: @tweet_id) %>
       <%= f.hidden_field(:question_id, value: @question.id) %>
-      <%= render partial: 'answer', collection: @answers, locals: {f: f} %> 
+      <div id="answers">
+        <%= render partial: 'answer', collection: @answers, locals: {f: f} %> 
+      </div>
     <% end %>
   </div>
 </div>
