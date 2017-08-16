@@ -25,7 +25,7 @@ class Answer < ApplicationRecord
   # color constants
   COLORS = {
     'green': '#2ecc71',
-    'light-green': '#e43725',
+    'light-green': '#40d47e',
     'dark-green': '#29b765',
     'red': '#e74c3c',
     'light-red': '#ea6153',
