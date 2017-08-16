@@ -22,6 +22,9 @@
   button:hover {
     filter: brightness(85%);
   }
+  button {
+    min-width: 100px;
+  }
 }
 
 #question-answer-container {
