@@ -29,7 +29,7 @@ class AnswerSet < ApplicationRecord
     valid_answers = []
     col_names = (0..9).map { |i| "answer" + i.to_s + "_id" }
     attributes.each_pair do |name, value|
-      valid_answers.push(value) if col_names.include?(name) && value
+      valid_answers.push(Answer.find_by(id: value)) if col_names.include?(name) && value
     end
     valid_answers
   end

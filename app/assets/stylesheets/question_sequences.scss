@@ -18,6 +18,11 @@
   margin-top: 30px;
   margin-bottom: 30px;
 }
+#answers {
+  button:hover {
+    filter: brightness(85%);
+  }
+}
 
 #question-answer-container {
   min-height: calc(100vh - #{$navbar-height});

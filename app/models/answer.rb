@@ -15,8 +15,6 @@ class Answer < ApplicationRecord
   has_many :transitions
   has_many :results
 
-  default_scope { order(order: :asc) }
-
   before_validation :set_key!
 
   validates_presence_of :answer
@@ -27,14 +25,16 @@ class Answer < ApplicationRecord
   # color constants
   COLORS = {
     'green': '#2ecc71',
-    'red': '#e74c3c',
-    'blue': '#208ac3',
+    'light-green': '#e43725',
     'dark-green': '#29b765',
+    'red': '#e74c3c',
+    'light-red': '#ea6153',
     'dark-red': '#e43725',
+    'blue': '#208ac3',
     'light-blue': '#e4f1fe',
     'heavy-dark-blue': '#2c3e50',
     'white': '#ffffff',
-    'gray': '#c9c9c9',
+    'gray': '#c9c9c9'
   }
 
   def display_name

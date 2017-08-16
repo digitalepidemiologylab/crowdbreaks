@@ -14,20 +14,17 @@ $desktop-text-width: 560px;
 // own colors
 $green: #2ecc71;
 $dark-green: darken($green, 5%); // #29b765
+$light-green: lighten($green, 5%); // #40d47e
 $red: #e74c3c;
 $dark-red: darken($red, 5%); // #e43725
+$light-red: lighten($red, 5%); // #ea6153
 $heavy-dark-blue: #2c3e50;
 $dark-blue: #2574a9;
 $blue: #208ac3;
 $light-blue: #e4f1fe;
-// $gray: #c9c9c9;
+$gray: #c9c9c9;
 $dark-gray: #b5b5b5;
 $white: #fff;
-
-.test {
-  background-color: $dark-red;
-  color: $dark-gray;
-}
 
 $gray-base:              #000 !default;
 $gray-darker:            lighten($gray-base, 13.5%) !default; // #222

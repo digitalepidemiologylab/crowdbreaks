@@ -5,8 +5,7 @@ class QuestionSequencesController < ApplicationController
     @result = Result.new
     @question = @project.initial_question
     raise 'Question not found' if @question.nil?
-    valid_answers = @question.answer_set.valid_answers
-    @answers = Answer.where(id: valid_answers)
+    @answers = @question.answer_set.valid_answers
     elastic = Elastic.new(@project.es_index_name)
 
     # case beginning of question sequence
@@ -16,13 +15,17 @@ class QuestionSequencesController < ApplicationController
       @tweet_id = elastic.initial_tweet(user_id)
     end
     @tweet = TweetEmbedding.new(@tweet_id).tweet_embedding
+    if @tweet.nil?
+      redirect_to projects_path
+      flash[:alert] = "Tweet with ID #{@tweet_id} is not available anymore."
+    end
     
     # fetch mturk token if provided
     @mturk_token ||= params[:mturk_token]
     if @mturk_token.present?
       valid, message = MturkToken.validate_token(@mturk_token)
       if !valid
-        redirect_to project_path
+        redirect_to projects_path
         flash[:alert] = message
       end
     end
@@ -58,8 +61,7 @@ class QuestionSequencesController < ApplicationController
           @question = next_question
           @tweet_id = results_params[:tweet_id]
           @tweet = TweetEmbedding.new(@tweet_id).tweet_embedding
-          valid_answers = @question.answer_set.valid_answers
-          @answers = Answer.where(id: valid_answers)
+          @answers = @question.answer_set.valid_answers
           @result = Result.new
           format.html { render :show }
         end
