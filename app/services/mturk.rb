@@ -1,7 +1,7 @@
 class Mturk
   LAYOUT_ID = '3TWWBMKU94TCKLWG04TCWEF5VEQXWM'
   BONUS_AMOUNT = 0.0
-  REWARD_AMOUNT = 0.3
+  REWARD_AMOUNT = 0.03
 
   # class methods
   def self.create_hits

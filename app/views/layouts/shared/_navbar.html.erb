@@ -30,7 +30,14 @@
             <% end %>
           <% end %>
         </li>
-        <li><%= link_to t('navbar.buttons.about'), about_path  %></li>
+        <li class="<%= current_page?(about_path)? "active" : "" %>">
+          <%= link_to about_path do %> 
+            <%= t 'navbar.buttons.about' %>
+            <% if current_page?(about_path) %>
+              <span class="sr-only">(current)</span>
+            <% end %>
+          <% end %>
+        </li>
         <%= render 'layouts/shared/nav_login' %>
         <%= render 'layouts/shared/switch_language' %>
       </ul>
