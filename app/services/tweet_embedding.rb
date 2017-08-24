@@ -4,7 +4,7 @@ class TweetEmbedding
   def initialize(tweet_id)
     @options = { id: tweet_id,
                  hide_media: 'true',
-                 conversation: 'none',
+                 hide_thread: 'true',
                  omit_script: 'true' }
     self.class.base_uri 'https://api.twitter.com'
   end
