@@ -16,6 +16,8 @@ class Project < ApplicationRecord
   validates_presence_of :title, :description
   validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/
 
+  default_scope { order(created_at: :desc)  }
+
   def initial_question
     first_transition = transitions.find_by(from_question: nil)
     raise "Project #{self.title} does not have a valid first Question" if first_transition.nil?
