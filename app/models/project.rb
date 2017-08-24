@@ -16,7 +16,7 @@ class Project < ApplicationRecord
   validates_presence_of :title, :description
   validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/
 
-  default_scope { order(created_at: :desc)  }
+  default_scope { order(created_at: :asc)  }
 
   def initial_question
     first_transition = transitions.find_by(from_question: nil)
