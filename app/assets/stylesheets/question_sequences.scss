@@ -28,7 +28,8 @@
 }
 
 #question-answer-container {
-  min-height: calc(100vh - #{$navbar-height});
+  min-height: calc(100vh - #{$navbar-height} - 160px);
+  // min-height: calc(100vh - 150 px);
 }
 
 // mturk instructions
