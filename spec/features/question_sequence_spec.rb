@@ -10,21 +10,21 @@ RSpec.feature "Question sequence", :type => :feature do
 
   # linear 1
   # Q1 +----> Q2 +----> END
-  let!(:project_1) { create(:project, title: "Scenario 1") }
+  let!(:project_1) { create(:project, title: "Scenario 1", es_index_name: "project_vaccine_sentiment") }
   let!(:question_1_1) { create(:question, question: 'Question 1.1', project: project_1, answer_set: answer_set) }
   let!(:question_1_2) { create(:question, question: 'Question 1.2', project: project_1, answer_set: answer_set) } 
   let!(:transition_1_1) { create(:transition, project: project_1, from_question: nil, to_question: question_1_1) } 
   let!(:transition_1_2) { create(:transition, project: project_1, from_question: question_1_1, to_question: question_1_2) } 
-  let!(:active_tweet_1) { create(:active_tweet, project: project_1) }
+  # let!(:active_tweet_1) { create(:active_tweet, project: project_1) }
 
   # linear 2
   # Q1 +--A1--> Q2 +----> END
-  let!(:project_2) { create(:project, title: "Scenario 2") }
+  let!(:project_2) { create(:project, title: "Scenario 2", es_index_name: "project_vaccine_sentiment") }
   let!(:question_2_1) { create(:question, question: 'Question 2.1', project: project_2, answer_set: answer_set) }
   let!(:question_2_2) { create(:question, question: 'Question 2.2', project: project_2, answer_set: answer_set) } 
   let!(:transition_2_1) { create(:transition, project: project_2, from_question: nil, to_question: question_2_1) } 
   let!(:transition_2_2) { create(:transition, project: project_2, from_question: question_2_1, to_question: question_2_2, answer: answer_1) } 
-  let!(:active_tweet_2) { create(:active_tweet, project: project_2) }
+  # let!(:active_tweet_2) { create(:active_tweet, project: project_2) }
 
   #  non-linear 3
   #     A1 +--Q2--+
@@ -32,7 +32,7 @@ RSpec.feature "Question sequence", :type => :feature do
   # Q1 +---+      +--> Q4 +--> END
   #        |      |
   #     A2 +--Q3--+
-  let!(:project_3) { create(:project, title: "Scenario 3") }
+  let!(:project_3) { create(:project, title: "Scenario 3", es_index_name: "project_vaccine_sentiment") }
   let!(:question_3_1) { create(:question, question: 'Question 3.1', project: project_3, answer_set: answer_set) }
   let!(:question_3_2) { create(:question, question: 'Question 3.2', project: project_3, answer_set: answer_set) } 
   let!(:question_3_3) { create(:question, question: 'Question 3.3', project: project_3, answer_set: answer_set) } 
@@ -42,10 +42,10 @@ RSpec.feature "Question sequence", :type => :feature do
   let!(:transition_3_3) { create(:transition, project: project_3, from_question: question_3_1, to_question: question_3_3, answer: answer_2) } 
   let!(:transition_3_4) { create(:transition, project: project_3, from_question: question_3_2, to_question: question_3_4) } 
   let!(:transition_3_5) { create(:transition, project: project_3, from_question: question_3_3, to_question: question_3_4) } 
-  let!(:active_tweet_3) { create(:active_tweet, project: project_3) }
+  # let!(:active_tweet_3) { create(:active_tweet, project: project_3) }
   
   # invalid 4 
-  let!(:project_4) { create(:project, title: "Scenario 4") }
+  let!(:project_4) { create(:project, title: "Scenario 4", es_index_name: "project_vaccine_sentiment") }
   let!(:question_4_1) { create(:question, question: 'Question 4.1', project: project_4, answer_set: answer_set) }
   let!(:question_4_2) { create(:question, question: 'Question 4.2', project: project_4, answer_set: answer_set) }
   let!(:question_4_3) { create(:question, question: 'Question 4.3', project: project_4, answer_set: answer_set) }
@@ -73,8 +73,7 @@ RSpec.feature "Question sequence", :type => :feature do
 
     # Answer last question
     click_button "Answer 2"
-    expect(current_path).to eq projects_path(locale: locale)
-    expect(page).to have_text('successfully completed')
+    expect(page).to have_text('Thanks for your help!')
   end
 
   scenario "is linear 2.1, continues on giving the specified answer for question" do
@@ -82,7 +81,7 @@ RSpec.feature "Question sequence", :type => :feature do
 
     # get to initial  question
     click_link "btn-start-project-#{project_2.id}"
-    
+
     # click Answer 1 button to get to next question
     click_button "Answer 1"
     expect(page).to have_text("Question 2.2")
@@ -91,10 +90,10 @@ RSpec.feature "Question sequence", :type => :feature do
   scenario "is linear 2.2, stops on giving the non-specified answer for question" do
     # get to initial  question
     click_link "btn-start-project-#{project_2.id}"
-    
+
     # click Answer 2 should find no possible transition (as transition is only defined for answer_1)
     click_button "Answer 2"
-    expect(page).to have_text("successfully completed")
+    expect(page).to have_text('Thanks for your help!')
   end
 
   scenario "is non-linear 3.1, first branch" do
@@ -112,7 +111,7 @@ RSpec.feature "Question sequence", :type => :feature do
 
     # finish sequence
     click_button "Answer 1"
-    expect(page).to have_text("successfully completed")
+    expect(page).to have_text('Thanks for your help!')
   end
 
   scenario "is non-linear 3.2, second branch" do
@@ -129,7 +128,7 @@ RSpec.feature "Question sequence", :type => :feature do
 
     # finish sequence
     click_button "Answer 2"
-    expect(page).to have_text("successfully completed")
+    expect(page).to have_text('Thanks for your help!')
   end
 
   scenario "is non-linear 3.3, invalid branch" do
@@ -138,7 +137,7 @@ RSpec.feature "Question sequence", :type => :feature do
 
     # invalid/undefined branch
     click_button "Answer 3"
-    expect(page).to have_text("successfully completed")
+    expect(page).to have_text('Thanks for your help!')
   end
 
   scenario "is invalid (multiple transition for same answer)" do
