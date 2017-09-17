@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 5.0.1'
+gem 'rails', '~> 5.1.0'
 
 # Postgresql db
 gem 'pg', '~> 0.18'
@@ -25,14 +25,15 @@ gem 'jbuilder', '~> 2.5'
 # ENV vars management
 gem 'figaro', '~> 1.1.1'
 # authentication
-gem 'devise', '~> 4.2.1'
+# gem 'devise', '~> 4.2.1'
+gem 'devise', '~> 4.3'
 gem 'devise-i18n'
 # font icons
 gem 'font-awesome-rails', '~> 4.7.0.1'
 # Pagination
 gem 'kaminari', '~> 1.0.1'
 # Forms
-gem 'simple_form', '3.4.0'
+gem 'simple_form', github: 'elsurudo/simple_form', branch: 'rails-5.1.0'
 # Bootstrap
 gem 'bootstrap-sass', '~> 3.3', '>= 3.3.6'
 # Use autoprefixes for CSS
