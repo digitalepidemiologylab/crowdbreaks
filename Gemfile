@@ -60,6 +60,8 @@ gem 'faraday_middleware-aws-signers-v4'
 gem 'sendgrid-ruby'
 # mturk
 gem 'mturk', '~> 1.8', '>= 1.8.1'
+# JS build
+gem 'webpacker', '~> 3.0'
 
 
 group :development, :test do
@@ -75,6 +77,7 @@ group :development, :test do
   gem 'rb-fsevent'
   gem 'byebug', platform: :mri
   gem 'ffaker'
+  gem 'foreman'
 end
 
 group :development do
