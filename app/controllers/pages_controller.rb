@@ -16,6 +16,31 @@ class PagesController < ApplicationController
     render :test
   end
 
+  def react_test
+    project = Project.first
+    all_questions = project.questions
+    
+    @questions = {}
+    # collect possible answers for each question
+    all_questions.each do |q|
+      # @questions[q.id] = {'question': q.as_json, 'possible_answers': q.answer_set.valid_answers.as_json}
+      @questions[q.id] = {'question': q, 'possible_answers': q.answer_set.valid_answers}
+    end
+
+    # transitions
+    @transitions = Hash.new{|h, k| h[k] = []}
+    project.transitions.each do |t|
+      key = t.from_question_id.nil? ? 'start' : t.from_question_id
+      @transitions[key] << {'to_question': t.to_question_id.as_json, 'answer': t.answer_id.as_json}
+    end
+
+    # find starting question
+    @initial_question_id = @transitions['start'][0][:to_question]
+
+    # find tweetId
+    @tweet_id = "20"
+  end
+
   def mturk_tokens
     unless params[:token].present? and params[:key].present?
       render json: {

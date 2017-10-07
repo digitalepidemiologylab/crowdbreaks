@@ -9,8 +9,21 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-import { Container } from './../components/Container';
+import { QSContainer } from './../components/QSContainer';
 
 document.addEventListener('turbolinks:load', () => {
-  render(<Container/>, document.body.appendChild(document.createElement('div')));
+  var div_to_render_in = document.getElementById('question-sequence-component');
+  if (div_to_render_in) {
+    var questions = JSON.parse(div_to_render_in.dataset.questions);
+    var initialQuestionId = div_to_render_in.dataset.initialQuestionId;
+    var transitions = JSON.parse(div_to_render_in.dataset.transitions);
+    var tweetId = div_to_render_in.dataset.tweetId;
+    render(
+      <QSContainer 
+        initialQuestionId={initialQuestionId}
+        questions={questions}
+        transitions={transitions}
+        tweetId={tweetId}
+      />, div_to_render_in);
+  }
 });

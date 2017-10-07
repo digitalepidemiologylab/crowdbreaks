@@ -1,0 +1,9 @@
+// This contains the styling for the QSContainer.js React component
+#question-answer-container {
+  text-align: center;
+  .answers {
+    button {
+      margin-right: 15px;
+    }
+  }
+}
