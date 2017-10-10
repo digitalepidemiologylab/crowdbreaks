@@ -25,7 +25,6 @@ gem 'jbuilder', '~> 2.5'
 # ENV vars management
 gem 'figaro', '~> 1.1.1'
 # authentication
-# gem 'devise', '~> 4.2.1'
 gem 'devise', '~> 4.3'
 gem 'devise-i18n'
 # font icons
@@ -41,7 +40,6 @@ gem 'autoprefixer-rails', '6.7.6'
 # Active admin
 gem 'activeadmin', github: 'activeadmin'
 gem 'inherited_resources', github: 'activeadmin/inherited_resources'
-gem 'activemodel-serializers-xml', github: 'rails/activemodel-serializers-xml'
 # HTTP requests
 gem 'httparty', '~> 0.13.7'
 # I18n for model columns using JSONB
@@ -62,7 +60,8 @@ gem 'sendgrid-ruby'
 gem 'mturk', '~> 1.8', '>= 1.8.1'
 # JS build
 gem 'webpacker', '~> 3.0'
-
+# JSON serializer
+gem 'active_model_serializers', '~> 0.9.3'
 
 group :development, :test do
   gem 'rspec-rails'
