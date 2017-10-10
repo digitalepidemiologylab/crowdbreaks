@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Answer } from './../components/Answer';
 import { Question } from './../components/Question';
 import { TweetEmbedding } from './../components/TweetEmbedding';
+import { Final } from './../components/Final';
 
 export class QSContainer extends React.Component {
   constructor(props) {
@@ -12,7 +13,8 @@ export class QSContainer extends React.Component {
     var initialQuestion = props.questions[props.initialQuestionId];
     this.state = {
       'currentQuestion': initialQuestion.question,
-      'currentAnswers': initialQuestion.possible_answers
+      'currentAnswers': initialQuestion.possible_answers,
+      'questionSequenceHasEnded': false,
     }
   }
 
@@ -48,6 +50,9 @@ export class QSContainer extends React.Component {
     var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
     if (nextQuestion === null) {
       console.log('End of question sequence!')
+      this.setState({
+        'questionSequenceHasEnded': true
+      });
     } else {
       // Go to next question
       this.setState({
@@ -57,25 +62,43 @@ export class QSContainer extends React.Component {
     }
   }
 
+  onNextQuestionSequence() {
+    // simply reload page to get new question sequence
+    window.location.reload(false);
+  }
+
   render() {
-    var parentThis = this;
-    return (
-      <div id='question-answer-container' className='col-md-8 col-md-offset-2'>
+    let questionSequenceBody = null
+
+    if (!this.state.questionSequenceHasEnded) {
+      let parentThis = this;
+      questionSequenceBody = <div>
         <TweetEmbedding tweetId={this.props.tweetId}/>
         <div id='question' className="question">
-          <Question question={this.state.currentQuestion.question_translations.en}/>
+          <Question question={this.state.currentQuestion.question_translations[parentThis.props.locale]}/>
         </div>
         <div className="answers">
           <span>
             {this.state.currentAnswers.map(function(answer) {
               return <Answer 
                 key={answer.id} 
-                answer={answer.answer_translations.en} 
+                answer={answer.answer_translations[parentThis.props.locale]} 
                 submit={() => parentThis.onSubmitAnswer(answer.id)}
-                />
+              />
             })}
           </span>
         </div>
+      </div>
+    } else {
+      questionSequenceBody = <Final 
+        onNextQuestionSequence={() => this.onNextQuestionSequence()}
+        projectsPath={this.props.projectsPath}
+        translations={this.props.translations}
+      />
+    }
+    return (
+      <div id='question-answer-container' className='col-md-8 col-md-offset-2'>
+        {questionSequenceBody}
       </div>
     );
   }
@@ -85,5 +108,8 @@ QSContainer.propTypes = {
   questions: PropTypes.object,
   initialQuestionID: PropTypes.string,
   transitions: PropTypes.object,
-  tweetId: PropTypes.string
+  tweetId: PropTypes.string,
+  projectsPath: PropTypes.string,
+  translations: PropTypes.object,
+  locale: PropTypes.string
 };

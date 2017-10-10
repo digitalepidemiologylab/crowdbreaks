@@ -23,7 +23,6 @@ class PagesController < ApplicationController
     @questions = {}
     # collect possible answers for each question
     all_questions.each do |q|
-      # @questions[q.id] = {'question': q.as_json, 'possible_answers': q.answer_set.valid_answers.as_json}
       @questions[q.id] = {'question': q, 'possible_answers': q.answer_set.valid_answers}
     end
 

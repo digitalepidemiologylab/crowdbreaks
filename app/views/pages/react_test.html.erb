@@ -5,6 +5,9 @@
     questions: @questions,
     initial_question_id: @initial_question_id,
     transitions: @transitions,
-    tweet_id: @tweet_id
+    tweet_id: @tweet_id,
+    projects_path: projects_path,
+    translations: I18n.backend.send(:translations)[I18n.locale][:question_sequences],
+    locale: I18n.locale
   }
 %>

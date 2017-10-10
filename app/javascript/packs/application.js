@@ -14,16 +14,22 @@ import { QSContainer } from './../components/QSContainer';
 document.addEventListener('turbolinks:load', () => {
   var div_to_render_in = document.getElementById('question-sequence-component');
   if (div_to_render_in) {
-    var questions = JSON.parse(div_to_render_in.dataset.questions);
     var initialQuestionId = div_to_render_in.dataset.initialQuestionId;
+    var questions = JSON.parse(div_to_render_in.dataset.questions);
     var transitions = JSON.parse(div_to_render_in.dataset.transitions);
     var tweetId = div_to_render_in.dataset.tweetId;
+    var projectsPath = div_to_render_in.dataset.projectsPath;
+    var translations = JSON.parse(div_to_render_in.dataset.translations);
+    var locale = div_to_render_in.dataset.locale;
     render(
       <QSContainer 
         initialQuestionId={initialQuestionId}
         questions={questions}
         transitions={transitions}
         tweetId={tweetId}
+        projectsPath={projectsPath}
+        translations={translations}
+        locale={locale}
       />, div_to_render_in);
   }
 });
