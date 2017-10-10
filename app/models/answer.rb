@@ -1,6 +1,6 @@
 class Answer < ApplicationRecord
-  has_many :answer_sets, dependent: :destroy
-  has_many :questions, through: :answer_sets
+  has_many :question_answers, dependent: :destroy
+  has_many :questions, through: :question_answers
   has_many :transitions
   has_many :results
 
