@@ -84,6 +84,7 @@ export class QSContainer extends React.Component {
                 key={answer.id} 
                 answer={answer.answer_translations[parentThis.props.locale]} 
                 submit={() => parentThis.onSubmitAnswer(answer.id)}
+                color={answer.color}
               />
             })}
           </span>
