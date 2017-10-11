@@ -18,6 +18,10 @@ class Project < ApplicationRecord
 
   default_scope { order(created_at: :asc)  }
 
+  def display_name
+    title
+  end
+
   def initial_question
     first_transition = transitions.find_by(from_question: nil)
     raise "Project #{self.title} does not have a valid first Question" if first_transition.nil?

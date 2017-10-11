@@ -26,9 +26,6 @@ ActiveAdmin.register User do
 
   controller do
     before_create(&:skip_confirmation!)
-    # before_create do |user|
-    #   user.skip_confirmation!
-    # end
   end
 
 end

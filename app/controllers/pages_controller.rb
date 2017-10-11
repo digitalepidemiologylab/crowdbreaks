@@ -23,7 +23,7 @@ class PagesController < ApplicationController
     @questions = {}
     # collect possible answers for each question
     all_questions.each do |q|
-      @questions[q.id] = {'question': q, 'possible_answers': q.answer_set.valid_answers}
+      @questions[q.id] = {'question': q, 'possible_answers': q.answers}
     end
 
     # transitions
