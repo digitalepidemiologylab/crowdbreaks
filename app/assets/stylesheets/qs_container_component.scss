@@ -1,9 +1,38 @@
 // This contains the styling for the QSContainer.js React component
+
+// Main component
 #question-answer-container {
+  min-height: calc(100vh - #{$navbar-height} - 140px);
   text-align: center;
-  .answers {
-    button {
-      margin-right: 15px;
-    }
+}
+
+.answers {
+  button {
+    margin-right: 15px;
+    min-width: 100px;
   }
+  button:hover {
+    filter: brightness(85%);
+  }
+}
+
+.question {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+// Tweet embedding
+.twitter-tweet {
+  margin: auto;
+}
+
+// final
+.final {
+  text-align: center;
+  margin-top: 50px;
+}
+.btn-final {
+  @extend .btn, .btn-success;
+  float: center;
+  margin: 50px 50px 0px 50px;
 }

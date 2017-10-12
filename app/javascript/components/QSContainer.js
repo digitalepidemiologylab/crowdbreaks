@@ -99,7 +99,7 @@ export class QSContainer extends React.Component {
       let parentThis = this;
       questionSequenceBody = <div>
         <TweetEmbedding tweetId={this.props.tweetId}/>
-        <div id='question' className="question">
+        <div className="question">
           <Question question={this.state.currentQuestion.question_translations[parentThis.props.locale]}/>
         </div>
         <div className="answers">
