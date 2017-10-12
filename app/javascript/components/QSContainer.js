@@ -1,10 +1,17 @@
+// React
 import React from 'react'
 import PropTypes from 'prop-types';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
+
+// Other 
+var humps = require('humps');
+
+// Sub-components
 import { Answer } from './../components/Answer';
 import { Question } from './../components/Question';
 import { TweetEmbedding } from './../components/TweetEmbedding';
 import { Final } from './../components/Final';
-var humps = require('humps');
 
 export class QSContainer extends React.Component {
   constructor(props) {
