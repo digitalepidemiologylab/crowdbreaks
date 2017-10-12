@@ -127,11 +127,11 @@ QSContainer.propTypes = {
   initialQuestionID: PropTypes.string,
   questions: PropTypes.object,
   transitions: PropTypes.object,
-  tweetId: PropTypes.number,
+  tweetId: PropTypes.string,
   projectsPath: PropTypes.string,
   resultsPath: PropTypes.string,
   translations: PropTypes.object,
   locale: PropTypes.string,
   userId: PropTypes.number,
-  projectId: PropTypes.string
+  projectId: PropTypes.number
 };

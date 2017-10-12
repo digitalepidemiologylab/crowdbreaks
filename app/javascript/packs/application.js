@@ -26,6 +26,7 @@ document.addEventListener('turbolinks:load', () => {
         translations={data_attr.translations}
         locale={data_attr.locale}
         userId={data_attr.userId}
+        projectId={data_attr.projectId}
       />, div_to_render_in);
   }
 });

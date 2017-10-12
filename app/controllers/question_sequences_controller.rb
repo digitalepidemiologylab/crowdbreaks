@@ -1,91 +1,54 @@
 class QuestionSequencesController < ApplicationController
-  before_action :set_project
+  before_action :set_project, :only => [:show]
 
   def show
-    @result = Result.new
-    @question = @project.initial_question
-    raise 'Question not found' if @question.nil?
-    @answers = @question.answer_set.valid_answers
-    elastic = Elastic.new(@project.es_index_name)
-
-    # case beginning of question sequence
-    if !@tweet_id.present?
-      # initialize question counter (this also happens if user hits refresh)
-      @question_counter = 0
-      @tweet_id = elastic.initial_tweet(user_id)
-    end
-    @tweet = TweetEmbedding.new(@tweet_id).tweet_embedding
-    if @tweet.nil?
-      redirect_to projects_path
-      flash[:alert] = "Tweet with ID #{@tweet_id} is not available anymore."
-    end
+    p @project
+    all_questions = @project.questions
     
-    # fetch mturk token if provided
-    @mturk_token ||= params[:mturk_token]
-    if @mturk_token.present?
-      valid, message = MturkToken.validate_token(@mturk_token)
-      if !valid
-        redirect_to projects_path
-        flash[:alert] = message
-      end
+    @questions = {}
+    # collect possible answers for each question
+    all_questions.each do |q|
+      @questions[q.id] = {'question': q, 'possible_answers': q.answers}
     end
+
+    # transitions
+    @transitions = Hash.new{|h, k| h[k] = []}
+    @project.transitions.each do |t|
+      key = t.from_question_id.nil? ? 'start' : t.from_question_id
+      @transitions[key] << {'to_question': t.to_question_id.as_json, 'answer': t.answer_id.as_json}
+    end
+
+    # user
+    @user_id = current_or_guest_user.id
+
+    # find starting question
+    @initial_question_id = @transitions['start'][0][:to_question]
+    elastic = Elastic.new(@project.es_index_name)
+    @tweet_id = elastic.initial_tweet(@user_id)
   end
 
   def create
-    @result = Result.new(results_params)
-    if @result.save
-      # also store in meta field of tweet in ES if meta field is provided
-      elastic = Elastic.new(@project.es_index_name)
-      elastic.add_answer(@result)
+    # Store result
+    result = Result.new(results_params)
+    project = Project.find_by(id: results_params[:project_id])
+    if result.save
+      elastic = Elastic.new(project.es_index_name)
+      elastic.add_answer(result)
 
-      # Find next question
-      next_question = NextQuestion.new(results_params).next_question
-
-      # fetch mturk token if provided
-      @mturk_token ||= params[:mturk_token]
-      @question_counter = params[:question_counter].to_i + 1
-      MturkToken.update_answer_count(token: @mturk_token, count: @question_counter) if @mturk_token.present?
-
-      if next_question.nil?
-        # End of question sequence
-        if @mturk_token.present?
-          @mturk_key = MturkToken.return_key(@mturk_token)        
-        end
-
-        # update answer count only at the end of the question sequence
-        elastic.update_answer_count(@result.tweet_id)
-        render :final
-      else
-        # Go to next question
-        respond_to do |format|
-          @question = next_question
-          @tweet_id = results_params[:tweet_id]
-          @tweet = TweetEmbedding.new(@tweet_id).tweet_embedding
-          @answers = @question.answer_set.valid_answers
-          @result = Result.new
-          format.html { render :show }
-        end
-      end
+      head :ok, content_type: "text/html"
     else
-      redirect_to projects_path
-      flash[:alert] = "An error has occurred"
+      head :bad_request
     end
-  end
-
-  def final
   end
 
   private
 
   def results_params
-    params.require(:result).permit(:answer_id, :tweet_id, :question_id).merge(user_id: user_id, project_id: @project.id, mturk_token_id: mturk_token_id)
+    params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)
   end
 
-  def user_id
-    current_or_guest_user.id
-  end
-
-  def mturk_token_id
-    MturkToken.find_by(token: params[:mturk_token]).try(:id)
+  def set_project
+    return unless params[:id]
+    @project = Project.friendly.find(params[:id])
   end
 end

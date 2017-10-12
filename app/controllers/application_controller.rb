@@ -68,11 +68,6 @@ class ApplicationController < ActionController::Base
     u
   end
 
-  def set_project
-    return unless params[:id]
-    @project = Project.friendly.find(params[:id])
-  end
-
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
   end
