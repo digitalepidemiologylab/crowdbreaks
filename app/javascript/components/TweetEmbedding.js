@@ -6,6 +6,7 @@ export const TweetEmbedding = (props) => {
   var options = {
     cards: 'hidden',
     conversation: 'none'
+  };
   return (
     <Tweet 
       tweetId={props.tweetId} 
@@ -16,5 +17,4 @@ export const TweetEmbedding = (props) => {
 
 TweetEmbedding.propTypes = {
   tweetId: PropTypes.string
-  };
 };
