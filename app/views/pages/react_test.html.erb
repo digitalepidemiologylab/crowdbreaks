@@ -7,7 +7,10 @@
     transitions: @transitions,
     tweet_id: @tweet_id,
     projects_path: projects_path,
+    results_path: react_test_path,
     translations: I18n.backend.send(:translations)[I18n.locale][:question_sequences],
-    locale: I18n.locale
+    locale: I18n.locale,
+    user_id: current_or_guest_user.id,
+    project_id: @project
   }
 %>

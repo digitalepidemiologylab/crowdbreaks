@@ -17,8 +17,8 @@ class PagesController < ApplicationController
   end
 
   def react_test
-    project = Project.first
-    all_questions = project.questions
+    @project = Project.first
+    all_questions = @project.questions
     
     @questions = {}
     # collect possible answers for each question
@@ -28,7 +28,7 @@ class PagesController < ApplicationController
 
     # transitions
     @transitions = Hash.new{|h, k| h[k] = []}
-    project.transitions.each do |t|
+    @project.transitions.each do |t|
       key = t.from_question_id.nil? ? 'start' : t.from_question_id
       @transitions[key] << {'to_question': t.to_question_id.as_json, 'answer': t.answer_id.as_json}
     end
@@ -38,6 +38,12 @@ class PagesController < ApplicationController
 
     # find tweetId
     @tweet_id = "20"
+  end
+
+  def react_test_post
+    puts "POST request from react_test!"
+    p results_params
+    head :ok, content_type: "text/html"
   end
 
   def mturk_tokens
@@ -69,5 +75,11 @@ class PagesController < ApplicationController
         message: "Key is not valid. Please make sure you enter the correct key."
       }
     end
+  end
+
+  private
+
+  def results_params
+    params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)
   end
 end

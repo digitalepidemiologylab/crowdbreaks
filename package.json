@@ -2,6 +2,7 @@
   "dependencies": {
     "@rails/webpacker": "^3.0.1",
     "babel-preset-react": "^6.24.1",
+    "humps": "^2.0.1",
     "jquery": "^3.2.1",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",

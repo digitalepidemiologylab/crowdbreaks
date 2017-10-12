@@ -4,6 +4,7 @@ import { Answer } from './../components/Answer';
 import { Question } from './../components/Question';
 import { TweetEmbedding } from './../components/TweetEmbedding';
 import { Final } from './../components/Final';
+var humps = require('humps');
 
 export class QSContainer extends React.Component {
   constructor(props) {
@@ -47,9 +48,26 @@ export class QSContainer extends React.Component {
   }
 
   onSubmitAnswer(answerId) {
+    // submit answer asynchronously
+    var resultData = humps.decamelizeKeys({
+      result: {
+        answerId: answerId,
+        questionId: this.state.currentQuestion.id,
+        userId: this.props.userId,
+        tweetId: this.props.tweetId,
+        projectId: this.props.projectId
+      }
+    });
+    
+    $.ajax({
+      type: "POST",
+      url: this.props.resultsPath,
+      data: resultData,
+    });
+    
+    // find next question
     var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
     if (nextQuestion === null) {
-      console.log('End of question sequence!')
       this.setState({
         'questionSequenceHasEnded': true
       });
@@ -106,11 +124,14 @@ export class QSContainer extends React.Component {
 }
 
 QSContainer.propTypes = {
-  questions: PropTypes.object,
   initialQuestionID: PropTypes.string,
+  questions: PropTypes.object,
   transitions: PropTypes.object,
-  tweetId: PropTypes.string,
+  tweetId: PropTypes.number,
   projectsPath: PropTypes.string,
+  resultsPath: PropTypes.string,
   translations: PropTypes.object,
-  locale: PropTypes.string
+  locale: PropTypes.string,
+  userId: PropTypes.number,
+  projectId: PropTypes.string
 };

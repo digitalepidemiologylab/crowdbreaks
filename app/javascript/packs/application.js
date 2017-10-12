@@ -14,22 +14,18 @@ import { QSContainer } from './../components/QSContainer';
 document.addEventListener('turbolinks:load', () => {
   var div_to_render_in = document.getElementById('question-sequence-component');
   if (div_to_render_in) {
-    var initialQuestionId = div_to_render_in.dataset.initialQuestionId;
-    var questions = JSON.parse(div_to_render_in.dataset.questions);
-    var transitions = JSON.parse(div_to_render_in.dataset.transitions);
-    var tweetId = div_to_render_in.dataset.tweetId;
-    var projectsPath = div_to_render_in.dataset.projectsPath;
-    var translations = JSON.parse(div_to_render_in.dataset.translations);
-    var locale = div_to_render_in.dataset.locale;
+    var data_attr = $(div_to_render_in).data();
     render(
       <QSContainer 
-        initialQuestionId={initialQuestionId}
-        questions={questions}
-        transitions={transitions}
-        tweetId={tweetId}
-        projectsPath={projectsPath}
-        translations={translations}
-        locale={locale}
+        initialQuestionId={data_attr.initialQuestionId}
+        questions={data_attr.questions}
+        transitions={data_attr.transitions}
+        tweetId={data_attr.tweetId}
+        projectsPath={data_attr.projectsPath}
+        resultsPath={data_attr.resultsPath}
+        translations={data_attr.translations}
+        locale={data_attr.locale}
+        userId={data_attr.userId}
       />, div_to_render_in);
   }
 });
