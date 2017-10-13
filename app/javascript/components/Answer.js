@@ -7,6 +7,7 @@ export const Answer = (props) => {
   };
   return (
     <button 
+      key={props.answer}
       style={buttonStyle}
       onClick={ props.submit }
       className='btn'>{ props.answer }

@@ -8,7 +8,7 @@
 
 .answers {
   button {
-    margin-right: 15px;
+    margin: 10px;
     min-width: 100px;
   }
   button:hover {
@@ -17,8 +17,32 @@
 }
 
 .question {
+  font-size: $font-size-h3;
+  font-weight: bold;
+  max-width: 500px;
+  // text-align: center;
+  margin: auto;
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+// Question transitions
+.fade-enter {
+  opacity: 0.01;
+}
+.fade-enter-active {
+  opacity: 1.0;
+  transition: opacity 700ms ease-in;
+}
+.fade-leave {
+  // hide div
+  height: 0px;
+  width: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  visibility:hidden;
+
+  opacity: 0;
 }
 
 // Tweet embedding

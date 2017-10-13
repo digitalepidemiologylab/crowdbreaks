@@ -13,6 +13,8 @@ import { Question } from './../components/Question';
 import { TweetEmbedding } from './../components/TweetEmbedding';
 import { Final } from './../components/Final';
 
+// Styling for this component: app/assets/stylesheets/qs_container_component.scss
+
 export class QSContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -97,6 +99,7 @@ export class QSContainer extends React.Component {
 
     if (!this.state.questionSequenceHasEnded) {
       let parentThis = this;
+
       questionSequenceBody = <div>
         <TweetEmbedding tweetId={this.props.tweetId}/>
         <div className="question">
