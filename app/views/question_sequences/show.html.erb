@@ -8,8 +8,7 @@
     tweet_id: @tweet_id,
     projects_path: projects_path,
     results_path: question_sequence_path,
-    translations: I18n.backend.send(:translations)[I18n.locale][:question_sequences],
-    locale: I18n.locale,
+    translations: @translations,
     user_id: @user_id,
     project_id: @project.id
   }

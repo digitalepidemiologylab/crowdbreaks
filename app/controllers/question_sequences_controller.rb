@@ -2,29 +2,35 @@ class QuestionSequencesController < ApplicationController
   before_action :set_project, :only => [:show]
 
   def show
-    p @project
-    all_questions = @project.questions
-    
+    # collect JSON data
+    options = {locale: I18n.locale.to_s}
+    questions_serialized = ActiveModelSerializers::SerializableResource.new(@project.questions, options).as_json
+    transitions_serialized = ActiveModelSerializers::SerializableResource.new(@project.transitions, options).as_json
+
+    # questions
     @questions = {}
     # collect possible answers for each question
-    all_questions.each do |q|
-      @questions[q.id] = {'question': q, 'possible_answers': q.answers}
+    questions_serialized.each do |q|
+      @questions[q[:id]] = {
+        'id': q[:id],
+        'question': q[:question],
+        'answers': q[:answers]
+      }
     end
 
     # transitions
     @transitions = Hash.new{|h, k| h[k] = []}
-    @project.transitions.each do |t|
-      key = t.from_question_id.nil? ? 'start' : t.from_question_id
-      @transitions[key] << {'to_question': t.to_question_id.as_json, 'answer': t.answer_id.as_json}
+    transitions_serialized.each do |t|
+      @transitions[t[:from_question]] << t[:transition]
     end
-
-    # user
-    @user_id = current_or_guest_user.id
-
+    
     # find starting question
-    @initial_question_id = @transitions['start'][0][:to_question]
-    elastic = Elastic.new(@project.es_index_name)
-    @tweet_id = elastic.initial_tweet(@user_id)
+    @initial_question_id = @project.initial_question.id
+    @tweet_id = Elastic.new(@project.es_index_name).initial_tweet(@user_id)
+    
+    # other
+    @user_id = current_or_guest_user.id
+    @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
   end
 
   def create
@@ -34,7 +40,6 @@ class QuestionSequencesController < ApplicationController
     if result.save
       elastic = Elastic.new(project.es_index_name)
       elastic.add_answer(result)
-
       head :ok, content_type: "text/html"
     else
       head :bad_request

@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-
 // Other 
 var humps = require('humps');
 
@@ -20,12 +19,10 @@ export class QSContainer extends React.Component {
     super(props);
 
     // set initial question state
-    var initialQuestion = props.questions[props.initialQuestionId];
     this.state = {
-      'currentQuestion': initialQuestion.question,
-      'currentAnswers': initialQuestion.possible_answers,
-      'questionSequenceHasEnded': false,
-    }
+      'currentQuestion': props.questions[props.initialQuestionId],
+      'questionSequenceHasEnded': false
+    };
   }
 
   nextQuestion(currentQuestionId, answerId) {
@@ -83,8 +80,7 @@ export class QSContainer extends React.Component {
     } else {
       // Go to next question
       this.setState({
-        'currentQuestion': this.props.questions[nextQuestion].question,
-        'currentAnswers': this.props.questions[nextQuestion].possible_answers
+        'currentQuestion': this.props.questions[nextQuestion]
       });
     }
   }
@@ -103,14 +99,14 @@ export class QSContainer extends React.Component {
       questionSequenceBody = <div>
         <TweetEmbedding tweetId={this.props.tweetId}/>
         <div className="question">
-          <Question question={this.state.currentQuestion.question_translations[parentThis.props.locale]}/>
+          <Question question={this.state.currentQuestion.question}/>
         </div>
         <div className="answers">
           <span>
-            {this.state.currentAnswers.map(function(answer) {
+            {this.state.currentQuestion.answers.map(function(answer) {
               return <Answer 
                 key={answer.id} 
-                answer={answer.answer_translations[parentThis.props.locale]} 
+                answer={answer.answer} 
                 submit={() => parentThis.onSubmitAnswer(answer.id)}
                 color={answer.color}
               />
@@ -134,14 +130,13 @@ export class QSContainer extends React.Component {
 }
 
 QSContainer.propTypes = {
-  initialQuestionID: PropTypes.string,
+  initialQuestionId: PropTypes.number,
   questions: PropTypes.object,
   transitions: PropTypes.object,
   tweetId: PropTypes.string,
   projectsPath: PropTypes.string,
   resultsPath: PropTypes.string,
   translations: PropTypes.object,
-  locale: PropTypes.string,
   userId: PropTypes.number,
   projectId: PropTypes.number
 };

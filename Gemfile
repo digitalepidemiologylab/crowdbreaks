@@ -63,7 +63,7 @@ gem 'mturk', '~> 1.8', '>= 1.8.1'
 # JS build
 gem 'webpacker', '~> 3.0'
 # JSON serializer
-gem 'active_model_serializers', '~> 0.9.3'
+gem 'active_model_serializers', '~> 0.10.0'
 
 group :development, :test do
   gem 'rspec-rails'
