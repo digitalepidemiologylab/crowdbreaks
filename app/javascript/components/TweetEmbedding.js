@@ -11,10 +11,12 @@ export const TweetEmbedding = (props) => {
     <Tweet 
       tweetId={props.tweetId} 
       options={options}
+      onLoad={props.onTweetLoad}
     />
   );
 };
 
 TweetEmbedding.propTypes = {
-  tweetId: PropTypes.string
+  tweetId: PropTypes.string,
+  onTweetLoad: PropTypes.func
 };

@@ -2,6 +2,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { ClipLoader } from 'react-spinners';
 
 // Other 
 var humps = require('humps');
@@ -21,7 +22,8 @@ export class QSContainer extends React.Component {
     // set initial question state
     this.state = {
       'currentQuestion': props.questions[props.initialQuestionId],
-      'questionSequenceHasEnded': false
+      'questionSequenceHasEnded': false,
+      'tweetIsLoading': true
     };
   }
 
@@ -75,7 +77,8 @@ export class QSContainer extends React.Component {
     var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
     if (nextQuestion === null) {
       this.setState({
-        'questionSequenceHasEnded': true
+        'questionSequenceHasEnded': true,
+        'tweetHasLoaded': false
       });
     } else {
       // Go to next question
@@ -90,30 +93,47 @@ export class QSContainer extends React.Component {
     window.location.reload(false);
   }
 
+  onTweetLoad() {
+    this.setState({
+      'tweetIsLoading': false
+    });
+  }
+
   render() {
     let questionSequenceBody = null
 
     if (!this.state.questionSequenceHasEnded) {
       let parentThis = this;
-
       questionSequenceBody = <div>
-        <TweetEmbedding tweetId={this.props.tweetId}/>
-        <div className="question">
-          <Question question={this.state.currentQuestion.question}/>
-        </div>
-        <div className="answers">
-          <span>
-            {this.state.currentQuestion.answers.map(function(answer) {
-              return <Answer 
-                key={answer.id} 
-                answer={answer.answer} 
-                submit={() => parentThis.onSubmitAnswer(answer.id)}
-                color={answer.color}
-              />
-            })}
-          </span>
-        </div>
+        <TweetEmbedding 
+          tweetId={this.props.tweetId}
+          onTweetLoad={() => parentThis.onTweetLoad()}
+        />
+        { this.state.tweetIsLoading &&
+          <div className="clip-loader">
+            <ClipLoader
+              color={'#444'} 
+            />
+          </div> }
+        { !this.state.tweetIsLoading && <div>
+          <div className="question">
+            <Question question={this.state.currentQuestion.question}/>
+          </div>
+          <div className="answers">
+            <span>
+              {this.state.currentQuestion.answers.map(function(answer) {
+                return <Answer 
+                  key={answer.id} 
+                  answer={answer.answer} 
+                  submit={() => parentThis.onSubmitAnswer(answer.id)}
+                  color={answer.color}
+                />
+              })}
+            </span>
+          </div>
+        </div> }
       </div>
+
     } else {
       questionSequenceBody = <Final 
         onNextQuestionSequence={() => this.onNextQuestionSequence()}

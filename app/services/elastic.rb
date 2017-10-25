@@ -23,8 +23,6 @@ class Elastic
     else
       # exclude tweets previously answered by user
       exclude_ids = Result.where(user_id: user_id).pluck(:tweet_id).uniq
-      puts "Excluding the following ids"
-      p exclude_ids
       exclude_ids.delete(nil)
       response = pick_old_tweet(exclude_ids)
     end

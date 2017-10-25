@@ -20,11 +20,10 @@ document.addEventListener('turbolinks:load', () => {
         initialQuestionId={data_attr.initialQuestionId}
         questions={data_attr.questions}
         transitions={data_attr.transitions}
-        tweetId={data_attr.tweetId}
+        tweetId={data_attr.tweetId.toString()}
         projectsPath={data_attr.projectsPath}
         resultsPath={data_attr.resultsPath}
         translations={data_attr.translations}
-        locale={data_attr.locale}
         userId={data_attr.userId}
         projectId={data_attr.projectId}
       />, div_to_render_in);
