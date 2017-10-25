@@ -16,7 +16,7 @@
           <%= project.description.html_safe if project.description %>
           </p>
           <% unless project.initial_question.nil? %>
-              <%= link_to project_path(project), class: 'btn-start-project', id: "btn-start-project-#{project.id}"  do %>
+              <%= link_to project_question_sequence_path(project), class: 'btn-start-project', id: "btn-start-project-#{project.id}"  do %>
               <%= t('projects.index.start_button') %>
             <% end %>
           <% end %>

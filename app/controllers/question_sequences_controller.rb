@@ -1,7 +1,7 @@
 class QuestionSequencesController < ApplicationController
-  before_action :set_project, :only => [:show]
-
   def show
+    @project = Project.friendly.find(params[:project_id])
+
     # collect JSON data
     options = {locale: I18n.locale.to_s}
     questions_serialized = ActiveModelSerializers::SerializableResource.new(@project.questions, options).as_json
@@ -50,10 +50,5 @@ class QuestionSequencesController < ApplicationController
 
   def results_params
     params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)
-  end
-
-  def set_project
-    return unless params[:id]
-    @project = Project.friendly.find(params[:id])
   end
 end

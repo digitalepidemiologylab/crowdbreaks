@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   ActiveAdmin.routes(self)
 
   root 'pages#index'
@@ -7,18 +6,15 @@ Rails.application.routes.draw do
   get 'test', to: 'pages#test'
   post 'test', to: 'pages#es_test'
 
-  get 'mturk_tokens', to: 'pages#mturk_tokens'
-
-  get 'react_test', to: 'pages#react_test'
-  post 'react_test', to: 'pages#react_test_post'
-
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
     devise_for :users, controllers: { registrations: 'users/registrations' }
     get 'about', to: 'pages#about'
-    resources :projects, only: [:show, :index]
-    scope "(:id)" do
-      root to: 'projects#show'
+    resources :projects, only: [:show, :index] do
       resource :question_sequence, only: [:show, :create]
+    end
+
+    namespace :mturk do
+      resource :question_sequence, only: [:show]
     end
   end
 end
