@@ -1,5 +1,4 @@
 class Mturk
-  LAYOUT_ID = '3TWWBMKU94TCKLWG04TCWEF5VEQXWM'
   BONUS_AMOUNT = 0.0
   REWARD_AMOUNT = 0.03
 
@@ -46,20 +45,14 @@ class Mturk
       warn('Use in staging or production for this to work...')
     end
 
-    # LayoutID
-    puts "Using the following LayoutID: #{LAYOUT_ID}"
-    puts "Would you like to change the layout ID? (y/n)"
-    change = STDIN.gets.chomp
-    if change == 'y'
-      puts 'Fill in your new layout ID: '
-      layout_id = STDIN.gets.chomp
-      puts "New layoutID is #{layout_id}"
-    end
+
+    # question path
+    question_file_path = File.join(Rails.root, 'app/views/mturk/external_question.xml')
 
     puts "Creating #{num_assignments} HITs..."
     num_assignments.times do |i|
       puts "Creating Hit number #{i}..."
-      token_set = MturkToken.create
+      # token_set = MturkToken.create
       props = {
         Title: title,
         Description: desc,
@@ -70,18 +63,13 @@ class Mturk
         },
         Keywords: keywords,
         LifetimeInSeconds: 60 * 60 * 24 * 1,
-        HITLayoutId: layout_id,
-        HITLayoutParameter: [
-          {Name: 'token', Value: token_set.token.to_s},
-          {Name: 'project_name', Value: project_name},
-          {Name: 'base_url', Value: base_url}
-        ]
+        Question: File.read(question_file_path) 
       }
       result = mechanical_turk_requester.createHIT(props)
       if result[:HITTypeId].present?
         hit_id = result[:HITId]
-        token_set.update_attributes!(hit_id: hit_id)
-        puts "Find HIT at: https://workersandbox.mturk.com/mturk/preview?groupId=#{result[:HITTypeId]} with token: #{token_set.token}, key: #{token_set.key}, hit_id: #{hit_id}"
+        # token_set.update_attributes!(hit_id: hit_id)
+        puts "Find HIT at: https://workersandbox.mturk.com/mturk/preview?groupId=#{result[:HITTypeId]} hit_id: #{hit_id}"
       else
         puts "No HITTypeID is present"
       end
