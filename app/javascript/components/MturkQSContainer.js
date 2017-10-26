@@ -2,10 +2,10 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
+// Components
 import { QuestionSequence } from './../components/QuestionSequence';
 
-
-export class QSContainer extends React.Component {
+export class MturkQSContainer extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -18,24 +18,23 @@ export class QSContainer extends React.Component {
     });
   }
   
-
   render() {
     return(
       <QuestionSequence 
-      initialQuestionId={this.props.initialQuestionId}
-      questions={this.props.questions}
-      transitions={this.props.transitions}
-      tweetId={this.props.tweetId}
-      projectsPath={this.props.projectsPath}
-      translations={this.props.translations}
-      userId={this.props.userId}
-      projectId={this.props.projectId}
-      postData={(args) => this.postData(args)}
-    />); 
+        initialQuestionId={this.props.initialQuestionId}
+        questions={this.props.questions}
+        transitions={this.props.transitions}
+        tweetId={this.props.tweetId}
+        projectsPath={this.props.projectsPath}
+        translations={this.props.translations}
+        userId={this.props.userId}
+        projectId={this.props.projectId}
+        postData={(args) => this.postData(args)}
+      />); 
   }
 }
 
-QSContainer.propTypes = {
+MturkQSContainer.propTypes = {
   initialQuestionId: PropTypes.number,
   questions: PropTypes.object,
   transitions: PropTypes.object,
