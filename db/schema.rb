@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171011122735) do
+ActiveRecord::Schema.define(version: 20171026134954) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,21 +47,6 @@ ActiveRecord::Schema.define(version: 20171011122735) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
-  end
-
-  create_table "mturk_tokens", id: :serial, force: :cascade do |t|
-    t.string "hit_id"
-    t.string "token"
-    t.string "key"
-    t.boolean "used", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "assignment_id"
-    t.string "worker_id"
-    t.integer "questions_answered"
-    t.boolean "bonus_sent", default: false, null: false
-    t.index ["key"], name: "index_mturk_tokens_on_key", unique: true
-    t.index ["token"], name: "index_mturk_tokens_on_token", unique: true
   end
 
   create_table "projects", id: :serial, force: :cascade do |t|
