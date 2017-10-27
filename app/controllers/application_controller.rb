@@ -35,10 +35,14 @@ class ApplicationController < ActionController::Base
   def guest_user(with_retry = true)
     # Cache the value the first time it's gotten.
     @cached_guest_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
-
   rescue ActiveRecord::RecordNotFound # if session[:guest_user_id] invalid
     session[:guest_user_id] = nil
     guest_user if with_retry
+  end
+
+  rescue_from CanCan::AccessDenied do |exception|
+    flash[:danger] = "Access denied"
+    redirect_to root_url
   end
 
   protected

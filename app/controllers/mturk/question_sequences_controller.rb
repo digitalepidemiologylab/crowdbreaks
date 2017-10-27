@@ -3,6 +3,8 @@ class Mturk::QuestionSequencesController < ApplicationController
   layout 'mturk'
 
   def show
+    authorize! :show, :mturk_question_sequence
+
     # Mturk info
     @assignment_id = params['assignmentId']
     @hit_id = params['hitId']

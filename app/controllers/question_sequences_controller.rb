@@ -1,5 +1,7 @@
 class QuestionSequencesController < ApplicationController
+
   def show
+    authorize! :show, :question_sequence
     @project = Project.friendly.find(params[:project_id])
 
     # collect JSON data
@@ -34,6 +36,7 @@ class QuestionSequencesController < ApplicationController
   end
 
   def create
+    authorize! :create, Result
     # Store result
     result = Result.new(results_params)
     project = Project.find_by(id: results_params[:project_id])

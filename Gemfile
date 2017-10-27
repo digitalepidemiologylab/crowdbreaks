@@ -27,6 +27,8 @@ gem 'figaro', '~> 1.1.1'
 # authentication
 gem 'devise', '~> 4.3'
 gem 'devise-i18n'
+# authorization
+gem 'cancancan', '~> 2.0'
 # font icons
 gem 'font-awesome-rails', '~> 4.7.0.1'
 # Pagination
