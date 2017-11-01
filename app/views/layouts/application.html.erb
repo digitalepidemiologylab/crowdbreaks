@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta content="width=device-width,initial-scale=1" name=viewport> 
-    <title>Crowdbreaks</title>
+    <title><%= content_for(:title) || 'Crowdbreaks' %></title>
     <%= render 'application/favicon' %>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>

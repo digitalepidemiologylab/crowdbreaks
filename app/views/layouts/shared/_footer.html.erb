@@ -1,32 +1,34 @@
-<div class="row footer">
-  <div class="col-md-4 border-right footer-same-height">
-    <div class="row">
-      <div class="col-xs-12">
-        <%= image_tag("logo.svg", :class => "navbar-brand logo") %>
+<footer id='footer'>
+  <div class="row">
+    <div class="col-md-4 border-right footer-same-height">
+      <div class="row">
+        <div class="col-xs-12">
+          <%= image_tag("logo.svg", :class => "navbar-brand logo") %>
+        </div>
+        <div class="col-xs-12">
+          <%= t('footer.developed_by_html', :href => link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank')) %>
+        </div>
       </div>
-      <div class="col-xs-12">
-        <%= t('footer.developed_by_html', :href => link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank')) %>
+    </div>
+    <div class="col-md-4 border-right footer-same-height">
+      <div class="row">
+        <div class="col-xs-12">
+          <hr class="footer-hr">
+          <%= image_tag("epfl_logo.svg", :class => "epfl-logo") %>
+          <hr class="footer-hr">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 footer-same-height">
+      <div class="row">
+        <div class="col-xs-12">
+          <ul class="footer-links">
+            <li><%= link_to t('navbar.buttons.home'), root_path %></li>
+            <li><%= link_to t('navbar.buttons.projects'), projects_path %></li>
+            <li><%= link_to t('navbar.buttons.about'), about_path %></li>
+          </ul> 
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-md-4 border-right footer-same-height">
-    <div class="row">
-      <div class="col-xs-12">
-        <hr class="footer-hr">
-        <%= image_tag("epfl_logo.svg", :class => "epfl-logo") %>
-        <hr class="footer-hr">
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 footer-same-height">
-    <div class="row">
-      <div class="col-xs-12">
-       <ul class="footer-links">
-         <li><%= link_to t('navbar.buttons.home'), root_path %></li>
-         <li><%= link_to t('navbar.buttons.projects'), projects_path %></li>
-         <li><%= link_to t('navbar.buttons.about'), about_path %></li>
-       </ul> 
-      </div>
-    </div>
-  </div>
-</div>
+</footer>

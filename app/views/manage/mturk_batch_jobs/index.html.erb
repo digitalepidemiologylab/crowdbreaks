@@ -1,0 +1,37 @@
+<% @title ||= MturkBatchJob.model_name.human; title @title %>
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-xs-12">
+      <h2><%= @title.pluralize %></h2>
+    </div>
+
+    <div class="col-xs-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Batch name</th>
+            <th>Mturk platform</th>
+            <th>Number of jobs</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render @mturk_batch_jobs %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-xs-12">
+      <div class="btn-toolbar">
+        <%= link_to manage_root_path, class: 'btn btn-default' do %>
+          <i class="glyphicon glyphicon-chevron-left"></i>
+          Go back
+        <% end %>
+        <%= link_to new_manage_mturk_batch_job_path, class: 'btn btn-primary' do %>
+          Create new batch job
+        <% end %>
+      </div>
+    </div>
+    
+  </div>
+</div>

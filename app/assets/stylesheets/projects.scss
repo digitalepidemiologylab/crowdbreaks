@@ -2,12 +2,6 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-
-#background-projects {
-  margin-top: 15px;
-  min-height: calc(100vh - #{$navbar-height});
-}
-
 // index page
 .row-project {
   display: flex;

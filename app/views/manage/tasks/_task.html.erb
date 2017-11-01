@@ -1,0 +1,15 @@
+<tr>
+  <td><%= task.hit_id %></td>
+  <td><%= task.tweet_id %></td>
+  <td><%= task.lifecycle_status %></td>
+  <td>
+    <span> 
+      <%= link_to fa_icon("trash"), manage_mturk_batch_job_task_path(params[:mturk_batch_job_id].to_i, task.id),
+        method: :delete,
+        data: {confirm: "Delete task?"} %>
+      <%= link_to fa_icon("pencil"), edit_manage_mturk_batch_job_task_path(params[:mturk_batch_job_id].to_i, task.id)  %>
+    </span>
+  
+  
+  </td>
+</tr>

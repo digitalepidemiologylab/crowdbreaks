@@ -10,9 +10,27 @@ body {
   }
 }
 
+// wrapper which expands so that footer sticks to bottom
+.content {
+  margin-top: 15px;
+  min-height: calc(100vh - #{$navbar-height} - #{$footer-height} - #{$banner-height} - 15px);
+  // min-height: calc(100vh - #{$navbar-height} - 263px);
+}
+.content-no-banner {
+  margin-top: 15px;
+  min-height: calc(100vh - #{$navbar-height} - #{$footer-height} - 15px);
+}
 
 // alerts
 .alert {
   border-radius: 0px;
   margin: 0px;
+}
+
+// simple form
+.error_notification {
+  color: red;
+}
+.error {
+  color: red;
 }

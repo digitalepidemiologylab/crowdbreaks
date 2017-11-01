@@ -1,0 +1,14 @@
+<% @title ||= MturkBatchJob.model_name.human; title @title %>
+<div class="content-no-banner">
+  <%= link_to manage_mturk_batch_jobs_path, class: 'btn btn-default' do %>
+    <i class="glyphicon glyphicon-chevron-left"></i>
+    Go back
+  <% end %>
+
+  <div class="row">
+    <div class="col-xs-6">
+      <h2>Create new batch job</h2>
+
+      <%= render 'create_new_batch_job_form' %>
+  </div>
+</div>

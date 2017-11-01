@@ -14,6 +14,16 @@
 
     <div class="collapse navbar-collapse" id="navbar-collapse-mobile">
       <ul class="nav navbar-nav navbar-right">
+        <% if current_or_guest_user.admin?  %>
+          <li class="<%= current_page?(manage_root_path)? "active" : "" %>">
+            <%= link_to manage_root_path do %> 
+              <%= 'Manage' %>
+              <% if current_page?(manage_root_path) %>
+                <span class="sr-only">(current)</span>
+              <% end %>
+            <% end %>
+          </li>
+        <% end %>
         <li class="<%= current_page?(root_path)? "active" : "" %>">
           <%= link_to root_path do %> 
             <%= t 'navbar.buttons.home' %>

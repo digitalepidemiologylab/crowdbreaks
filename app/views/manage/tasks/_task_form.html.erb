@@ -1,0 +1,12 @@
+<%= simple_form_for(@task, url: manage_mturk_batch_job_task_path, method: 'patch') do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :hit_id %>
+    <%= f.input :tweet_id%>
+  </div>
+
+  <div class="form-actions" style="margin-top:15px;">
+    <%= f.button :submit %>
+  </div>
+<% end %>

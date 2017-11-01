@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171026134954) do
+ActiveRecord::Schema.define(version: 20171101093927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,14 @@ ActiveRecord::Schema.define(version: 20171026134954) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+  end
+
+  create_table "mturk_batch_jobs", force: :cascade do |t|
+    t.string "name"
+    t.string "status"
+    t.boolean "sandbox"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "projects", id: :serial, force: :cascade do |t|
@@ -98,6 +106,20 @@ ActiveRecord::Schema.define(version: 20171026134954) do
     t.index ["question_id"], name: "index_results_on_question_id"
     t.index ["tweet_id"], name: "index_results_on_tweet_id"
     t.index ["user_id"], name: "index_results_on_user_id"
+  end
+
+  create_table "tasks", force: :cascade do |t|
+    t.string "hit_id"
+    t.string "tweet_id"
+    t.string "assignment_id"
+    t.string "worker_id"
+    t.string "lifecycle_status"
+    t.datetime "time_submitted"
+    t.datetime "time_completed"
+    t.bigint "mturk_batch_job_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mturk_batch_job_id"], name: "index_tasks_on_mturk_batch_job_id"
   end
 
   create_table "transitions", id: :serial, force: :cascade do |t|

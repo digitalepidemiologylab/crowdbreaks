@@ -16,5 +16,12 @@ Rails.application.routes.draw do
     namespace :mturk do
       resource :question_sequence, only: [:show]
     end
+
+    namespace :manage do
+      root to: "manage_pages#index"
+      resources :mturk_batch_jobs do
+        resources :tasks
+      end
+    end
   end
 end

@@ -1,0 +1,36 @@
+<% @title ||= Task.model_name.human; title @title %>
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>
+        <% if @mturk_batch_job %>
+          Tasks for <%= @mturk_batch_job.name %>
+        <% else %>
+          All tasks
+        <% end %>
+      </h2>
+    </div>
+
+    <div class="col-xs-12">
+      <%= paginate @tasks %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>HIT Id</th>
+            <th>Tweet Id</th>
+            <th>Lifecycle status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render @tasks %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-xs-12">
+      <%= link_to manage_mturk_batch_jobs_path, class: 'btn btn-default' do %>
+        Go back
+      <% end %>
+    </div>
+  </div>
+</div>

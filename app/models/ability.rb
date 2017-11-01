@@ -17,6 +17,7 @@ class Ability
       can :show, :question_sequence
       can :show, :mturk_question_sequence
       can :create, Result
+
     end
   end
 end

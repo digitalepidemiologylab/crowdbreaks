@@ -10,4 +10,8 @@ module ApplicationHelper
     end
     nil
   end
+
+  def title(page_title)
+    content_for :title, 'Crowdbreaks | ' + page_title.to_s
+  end
 end
