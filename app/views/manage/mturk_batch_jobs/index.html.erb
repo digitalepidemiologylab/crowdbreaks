@@ -6,12 +6,15 @@
     </div>
 
     <div class="col-xs-12">
+      <%= paginate @mturk_batch_jobs %>
       <table class="table">
         <thead>
           <tr>
             <th>Batch name</th>
             <th>Mturk platform</th>
             <th>Number of jobs</th>
+            <th>Created at</th>
+            <th></th>
             <th></th>
           </tr>
         </thead>

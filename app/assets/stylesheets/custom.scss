@@ -33,4 +33,13 @@ body {
 }
 .error {
   color: red;
+  position: relative;
+  display: block;
+}
+.file-input-form-control {
+  border: none;
+  box-shadow: none;
+}
+.input {
+  margin-top: 5px;
 }

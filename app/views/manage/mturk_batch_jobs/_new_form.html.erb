@@ -1,0 +1,25 @@
+<%= simple_form_for(@mturk_batch_job, url: manage_mturk_batch_jobs_path) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :name %>
+    <hr/>
+    <%= f.input :job_file,
+      as: :file,
+      label: "Tweet IDs",
+      hint: 'Please use a csv in which each line corresponds to a tweet ID',
+      :input_html => { :class => 'file-input-form-control' } 
+    %>
+    <hr/>
+    <%= f.input :number_of_assignments,
+      as: :integer, 
+      input_html: { value: 1 },
+      hint: "Label every tweet n times"
+    %>
+    <%= f.input :sandbox, input_html: {checked: true}, label_html: {class: 'checkbox-inline'} %>
+  </div>
+
+  <div class="form-actions" style="margin-top:15px;">
+    <%= f.button :submit %>
+  </div>
+<% end %>
