@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171102134817) do
+ActiveRecord::Schema.define(version: 20171102151149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,8 @@ ActiveRecord::Schema.define(version: 20171102134817) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "status", default: 0
+    t.bigint "project_id"
+    t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
   end
 
   create_table "projects", id: :serial, force: :cascade do |t|
@@ -113,7 +115,7 @@ ActiveRecord::Schema.define(version: 20171102134817) do
     t.string "tweet_id"
     t.string "assignment_id"
     t.string "worker_id"
-    t.integer "lifecycle_status"
+    t.integer "lifecycle_status", default: 0
     t.datetime "time_submitted"
     t.datetime "time_completed"
     t.bigint "mturk_batch_job_id"
@@ -164,6 +166,7 @@ ActiveRecord::Schema.define(version: 20171102134817) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "mturk_batch_jobs", "projects"
   add_foreign_key "question_answers", "answers"
   add_foreign_key "question_answers", "questions"
   add_foreign_key "questions", "projects"

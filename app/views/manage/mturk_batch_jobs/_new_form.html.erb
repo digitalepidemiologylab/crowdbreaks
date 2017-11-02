@@ -4,6 +4,7 @@
   <div class="form-inputs">
     <%= f.input :name %>
     <hr/>
+    <%= f.association :project %>
     <%= f.input :job_file,
       as: :file,
       label: "Tweet IDs",

@@ -5,7 +5,7 @@ class CreateTableTasks < ActiveRecord::Migration[5.1]
       t.string :tweet_id
       t.string :assignment_id
       t.string :worker_id
-      t.integer :lifecycle_status
+      t.integer :lifecycle_status, default: 0
       t.datetime :time_submitted
       t.datetime :time_completed
       t.references :mturk_batch_job

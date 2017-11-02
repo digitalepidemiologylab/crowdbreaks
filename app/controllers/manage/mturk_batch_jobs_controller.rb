@@ -45,7 +45,7 @@ module Manage
           num_assignments.times do 
             puts "create tas"
             if @mturk_batch_job.id.present?
-              Task.create(tweet_id: tweet_id, mturk_batch_job_id: @mturk_batch_job.id, lifecycle_status: 'Not submitted')
+              Task.create(tweet_id: tweet_id, mturk_batch_job_id: @mturk_batch_job.id)
             end
           end
         end
@@ -71,7 +71,7 @@ module Manage
       private
 
       def batch_params
-        params.require(:mturk_batch_job).permit(:name, :sandbox, :job_file, :number_of_assignments)
+        params.require(:mturk_batch_job).permit(:name, :sandbox, :job_file, :number_of_assignments, :project_id)
       end
 
       def file_content_valid?(path)

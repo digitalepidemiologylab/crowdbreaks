@@ -4,6 +4,7 @@ class Project < ApplicationRecord
   has_many :questions
   has_many :transitions
   has_many :results
+  has_many :mturk_batch_jobs
 
   has_attached_file :image, styles: {
     thumb: '100x100>',
