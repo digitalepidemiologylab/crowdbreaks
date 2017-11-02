@@ -3,9 +3,18 @@ class MturkBatchJob < ApplicationRecord
   attr_accessor :job_file
   attr_accessor :number_of_assignments
 
-
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
   validates :job_file, presence: true
+
+  enum status: [:unsubmitted, :submitted, :completed]
+  STATUS_LABELS = {
+    unsubmitted: 'label-default',
+    submitted: 'label-primary',
+    completed: 'label-success'
+  }
+
+
+
 
   private 
 

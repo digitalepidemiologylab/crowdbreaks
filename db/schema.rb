@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171101093927) do
+ActiveRecord::Schema.define(version: 20171102134817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,10 +51,10 @@ ActiveRecord::Schema.define(version: 20171101093927) do
 
   create_table "mturk_batch_jobs", force: :cascade do |t|
     t.string "name"
-    t.string "status"
     t.boolean "sandbox"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status", default: 0
   end
 
   create_table "projects", id: :serial, force: :cascade do |t|
@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 20171101093927) do
     t.string "tweet_id"
     t.string "assignment_id"
     t.string "worker_id"
-    t.string "lifecycle_status"
+    t.integer "lifecycle_status"
     t.datetime "time_submitted"
     t.datetime "time_completed"
     t.bigint "mturk_batch_job_id"

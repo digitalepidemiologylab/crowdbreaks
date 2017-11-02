@@ -1,7 +1,11 @@
 <tr>
-  <td><%= task.hit_id %></td>
   <td><%= task.tweet_id %></td>
-  <td><%= task.lifecycle_status %></td>
+  <td><%= task.hit_id.present? ? task.hit_id : 'unassigned' %></td>
+  <td>
+    <span class="label <%= Task::STATUS_LABELS[task.lifecycle_status.to_sym] %>"> 
+      <%= task.lifecycle_status %>
+    </span>
+  </td>
   <td>
     <span> 
       <%= link_to fa_icon("trash"), manage_mturk_batch_job_task_path(params[:mturk_batch_job_id].to_i, task.id),
