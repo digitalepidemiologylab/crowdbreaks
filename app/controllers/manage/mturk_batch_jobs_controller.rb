@@ -13,7 +13,6 @@ module Manage
     def show
     end
 
-
     def create
       @mturk_batch_job = MturkBatchJob.new(batch_params)
 
@@ -28,7 +27,7 @@ module Manage
         render :new and return
       end
 
-      if CSV.table(csv_file.path).count == 0
+      if CSV.table(csv_file.path, {headers: false}).count == 0
         @mturk_batch_job.errors.add(:job_file, 'Unsuccessful. File was empty.')
         render :new and return
       end
@@ -61,27 +60,49 @@ module Manage
       end
     end
 
-      def destroy
-        @mturk_batch_jobs = MturkBatchJob.find_by(id: params[:id])
-        @mturk_batch_jobs.destroy
-        redirect_to manage_mturk_batch_jobs_path
+    def destroy
+      @mturk_batch_jobs = MturkBatchJob.find_by(id: params[:id])
+      @mturk_batch_jobs.destroy
+      redirect_to manage_mturk_batch_jobs_path
+    end
+
+    def submit
+      batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
+      tasks = batch_job.tasks.where(lifecycle_status: :unsubmitted)
+      if tasks.size == 0
+        flash[:danger] = "There are no tasks available to submit in this batch."
+        redirect_to manage_mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
+        return
       end
 
+      # initialize requester and props
+      requester, props = batch_job.mturk_init
 
-      private
-
-      def batch_params
-        params.require(:mturk_batch_job).permit(:name, :sandbox, :job_file, :number_of_assignments, :project_id)
+      # submit jobs, create hits
+      submit_status = []
+      tasks.each do |t|
+        status = t.submit_job(requester, props)
+        submit_status.push(status)
       end
 
-      def file_content_valid?(path)
-        CSV.foreach(@mturk_batch_job.job_file.path) do |line|
-          tweet_id = line[0].to_s
-          if not tweet_id =~ /\A\d{1,}\z/
-            return false
-          end
+      flash[:notice] = "Submitted #{submit_status.count(true)}/#{tasks.size} tasks successfully."
+      redirect_to manage_mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
+    end
+
+    private
+
+    def batch_params
+      params.require(:mturk_batch_job).permit(:name, :sandbox, :job_file, :number_of_assignments, :project_id)
+    end
+
+    def file_content_valid?(path)
+      CSV.foreach(@mturk_batch_job.job_file.path) do |line|
+        tweet_id = line[0].to_s
+        if not tweet_id =~ /\A\d{1,}\z/
+          return false
         end
-        return true
       end
+      return true
     end
   end
+end

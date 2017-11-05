@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       root to: "manage_pages#index"
       resources :mturk_batch_jobs do
         resources :tasks
+        get 'submit'
       end
     end
   end

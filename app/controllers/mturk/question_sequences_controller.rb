@@ -8,7 +8,6 @@ class Mturk::QuestionSequencesController < ApplicationController
     # Mturk info
     @assignment_id = params['assignmentId']
     @hit_id = params['hitId']
-
     
     @project = Project.first
 
@@ -21,11 +20,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     @questions = {}
     # collect possible answers for each question
     questions_serialized.each do |q|
-      @questions[q[:id]] = {
-        'id': q[:id],
-        'question': q[:question],
-        'answers': q[:answers]
-      }
+      @questions[q[:id]] = {'id': q[:id], 'question': q[:question], 'answers': q[:answers]}
     end
 
     # transitions

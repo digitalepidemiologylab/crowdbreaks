@@ -2,15 +2,20 @@
 <div class="content-no-banner">
   <div class="row">
     <div class="col-xs-12">
+      <%= link_to manage_mturk_batch_jobs_path, class: 'btn btn-default' do %>
+        Go back
+      <% end %>
       <h2>
         <% if @mturk_batch_job %>
           Tasks for <%= @mturk_batch_job.name %>
-        <% else %>
-          All tasks
-        <% end %>
+      <% else %>
+        All tasks
+      <% end %>
       </h2>
     </div>
+  </div>
 
+  <div class="row">
     <div class="col-xs-12">
       <%= paginate @tasks %>
       <table class="table">
@@ -19,6 +24,8 @@
             <th>Tweet Id</th>
             <th>HIT Id</th>
             <th>Lifecycle status</th>
+            <th>Time submitted</th>
+            <th>Time completed</th>
           </tr>
         </thead>
         <tbody>
@@ -26,11 +33,10 @@
         </tbody>
       </table>
     </div>
-
+  </div>
+  <div class="row">
     <div class="col-xs-12">
-      <%= link_to manage_mturk_batch_jobs_path, class: 'btn btn-default' do %>
-        Go back
-      <% end %>
+      <%= link_to 'Submit tasks', manage_mturk_batch_job_submit_path, class: 'btn btn-warning' %>
     </div>
   </div>
 </div>
