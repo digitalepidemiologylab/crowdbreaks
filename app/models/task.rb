@@ -16,6 +16,7 @@ class Task < ApplicationRecord
       self.hit_id = result[:HITId]
       self.time_submitted = Time.now
       self.lifecycle_status = :submitted
+      self.hittype_id = result[:HITTypeId]
       puts "Find HIT at: https://workersandbox.mturk.com/mturk/preview?groupId=#{result[:HITTypeId]} hit_id: #{self.hit_id}"
       self.save!
       true

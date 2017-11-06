@@ -42,7 +42,6 @@ module Manage
           tweet_id = line[0].to_s
           num_assignments = @mturk_batch_job.number_of_assignments.to_i
           num_assignments.times do 
-            puts "create tas"
             if @mturk_batch_job.id.present?
               Task.create(tweet_id: tweet_id, mturk_batch_job_id: @mturk_batch_job.id)
             end

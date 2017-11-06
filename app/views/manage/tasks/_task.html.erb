@@ -1,6 +1,10 @@
 <tr>
   <td><%= task.tweet_id %></td>
-  <td><%= task.hit_id.present? ? task.hit_id : 'unassigned' %></td>
+  <td>
+    <% if task.hit_id.present? %>
+      <%= link_to task.hit_id.to_s, mturk_url(task.hittype_id, task.mturk_batch_job.sandbox), target: 'blank' %>
+    <% end %>
+  </td>
   <td>
     <span class="label <%= Task::STATUS_LABELS[task.lifecycle_status.to_sym] %>"> 
       <%= task.lifecycle_status %>
