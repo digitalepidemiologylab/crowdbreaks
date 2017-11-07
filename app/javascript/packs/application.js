@@ -47,6 +47,8 @@ document.addEventListener('turbolinks:load', () => {
         translations={data_attr.translations}
         userId={data_attr.userId}
         projectId={data_attr.projectId}
+        assignmentId={data_attr.assignmentId.toString()}
+        previewMode={data_attr.previewMode}
       />, div_qs_mturk);
   }
 });

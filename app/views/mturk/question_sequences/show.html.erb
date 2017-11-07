@@ -1,3 +1,10 @@
+<% if @preview_mode %>
+  <div class="row">
+    <div class="col-xs-12 text-center">
+      <h3>You are in preview mode. Please accept the HIT to submit your answers.</h3>
+    </div>
+  </div>
+<% end %>
 <%= tag.div nil, 
   class: 'row', 
   id: 'mturk-question-sequence-component', 
@@ -7,9 +14,11 @@
     transitions: @transitions,
     tweet_id: @tweet_id,
     projects_path: projects_path,
-    results_path: project_question_sequence_path(@project),
+    results_path: mturk_question_sequence_path,
     translations: @translations,
     user_id: @user_id,
-    project_id: @project.id
+    project_id: @project.id,
+    assignment_id: @assignment_id,
+    preview_mode: @preview_mode
   }
 %>

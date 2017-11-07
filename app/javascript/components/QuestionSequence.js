@@ -68,20 +68,21 @@ export class QuestionSequence extends React.Component {
     });
 
     // Make POST request in parent component
-    this.props.postData(resultData);
-    
-    // find next question
-    var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
-    if (nextQuestion === null) {
-      this.setState({
-        'questionSequenceHasEnded': true,
-        'tweetHasLoaded': false
-      });
-    } else {
-      // Go to next question
-      this.setState({
-        'currentQuestion': this.props.questions[nextQuestion]
-      });
+    var status = this.props.postData(resultData);
+    if (status) {
+      // find next question
+      var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
+      if (nextQuestion === null) {
+        this.setState({
+          'questionSequenceHasEnded': true,
+          'tweetHasLoaded': false
+        });
+      } else {
+        // Go to next question
+        this.setState({
+          'currentQuestion': this.props.questions[nextQuestion]
+        });
+      }
     }
   }
 
@@ -91,6 +92,14 @@ export class QuestionSequence extends React.Component {
   }
 
   onTweetLoad() {
+    if (document.getElementById('twitter-widget-0').shadowRoot.children.length != 3) {
+      // Note to future me: Improve this, quite hacky, possibly use innerHTML=="" instead
+      // Tweet is not available anymore, handle error in parent
+      this.props.onTweetLoadError();
+    } else {
+      console.log('everything fine');
+    }
+
     this.setState({
       'tweetIsLoading': false
     });
@@ -155,5 +164,6 @@ QuestionSequence.propTypes = {
   translations: PropTypes.object,
   userId: PropTypes.number,
   projectId: PropTypes.number,
-  postData: PropTypes.func
+  postData: PropTypes.func,
+  onTweetLoadError: PropTypes.func
 };

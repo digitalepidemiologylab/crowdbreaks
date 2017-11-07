@@ -16,8 +16,13 @@ export class QSContainer extends React.Component {
       url: this.props.resultsPath,
       data: resultData,
     });
+    return true;
   }
-  
+
+  onTweetLoadError() {
+    // Todo: handle exception
+    console.log("Tweet not available anymore");
+  }
 
   render() {
     return(
@@ -31,6 +36,7 @@ export class QSContainer extends React.Component {
       userId={this.props.userId}
       projectId={this.props.projectId}
       postData={(args) => this.postData(args)}
+      onTweetLoadError={() => this.onTweetLoadError()}
     />); 
   }
 }

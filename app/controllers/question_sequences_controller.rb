@@ -13,11 +13,7 @@ class QuestionSequencesController < ApplicationController
     @questions = {}
     # collect possible answers for each question
     questions_serialized.each do |q|
-      @questions[q[:id]] = {
-        'id': q[:id],
-        'question': q[:question],
-        'answers': q[:answers]
-      }
+      @questions[q[:id]] = {'id': q[:id], 'question': q[:question], 'answers': q[:answers]}
     end
 
     # transitions

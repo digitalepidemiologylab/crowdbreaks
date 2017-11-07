@@ -8,15 +8,37 @@ import { QuestionSequence } from './../components/QuestionSequence';
 export class MturkQSContainer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      'tweetLoadError': false
+    };
   }
 
   postData(resultData) {
+    if (this.props.previewMode) {
+      console.log('Cannot submit in preview mode');
+      return false;
+    }
+    if (this.state.tweetLoadError) {
+      console.log('Cannot submit when Tweet loading failed');
+      return false;
+    }
+    resultData['assignment_id'] = this.props.assignmentId;
     $.ajax({
       type: "POST",
       url: this.props.resultsPath,
       data: resultData,
     });
+    return true;
   }
+
+  onTweetLoadError() {
+    // Todo: handle exception
+    console.log("Tweet not available anymore");
+    this.setState({
+      'tweetLoadError': true
+    });
+  }
+
   
   render() {
     return(
@@ -30,6 +52,7 @@ export class MturkQSContainer extends React.Component {
         userId={this.props.userId}
         projectId={this.props.projectId}
         postData={(args) => this.postData(args)}
+        onTweetLoadError={() => this.onTweetLoadError()}
       />); 
   }
 }
@@ -44,4 +67,6 @@ MturkQSContainer.propTypes = {
   translations: PropTypes.object,
   userId: PropTypes.number,
   projectId: PropTypes.number,
+  assignmentId: PropTypes.string,
+  previewMode: PropTypes.bool
 }

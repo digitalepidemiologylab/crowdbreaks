@@ -11,6 +11,10 @@ class Task < ApplicationRecord
   }
 
   def submit_job(requester, props)
+    # add task id to props for tracking purposes
+    props[:RequesterAnnotation] = self.id.to_s
+
+    # Create HIT
     result = requester.createHIT(props)
     if result[:HITTypeId].present?
       self.hit_id = result[:HITId]
