@@ -99,6 +99,7 @@ export class MturkQSContainer extends React.Component {
         onSubmit={(event) => this.onSubmit(event)}
         submitUrl={this.getSubmitUrl()}
         assignmentId={this.props.assignmentId}
+        hitId={this.props.hitId}
       /> 
     }
     return(

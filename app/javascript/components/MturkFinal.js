@@ -9,6 +9,8 @@ export const MturkFinal = (props) => {
 
       <form onSubmit={props.onSubmit} id="submit-form" action={props.submitUrl}>
         <input type="hidden" name="assignmentId" value={props.assignmentId} />
+        <input type="hidden" name="hitId" value={props.hitId} />
+        <input type="hidden" name="dummy" value="dummyvalue" />
         <input type="submit" name="Submit" id="submitButton" className="btn btn-final"/>
       </form>
     </div>
@@ -18,5 +20,6 @@ export const MturkFinal = (props) => {
 MturkFinal.propTypes = {
   onSubmit: PropTypes.func,
   submitUrl: PropTypes.string,
-  assignmentId: PropTypes.string
+  assignmentId: PropTypes.string,
+  hitId: PropTypes.string
 };
