@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 
 // Components
 import { QuestionSequence } from './../components/QuestionSequence';
+import { MturkFinal } from './../components/MturkFinal';
 
 export class MturkQSContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      'tweetLoadError': false
+      'tweetLoadError': false,
+      'questionSequenceHasEnded': false
     };
   }
 
@@ -39,21 +41,38 @@ export class MturkQSContainer extends React.Component {
     });
   }
 
-  
+  onQuestionSequenceEnd() {
+    console.log("Question sequence ended!");
+    this.setState({
+      'questionSequenceHasEnded': true
+    });
+  }
+
   render() {
-    return(
-      <QuestionSequence 
+    let body = null;
+    if (!this.state.questionSequenceHasEnded) {
+      body = <QuestionSequence 
         initialQuestionId={this.props.initialQuestionId}
         questions={this.props.questions}
         transitions={this.props.transitions}
         tweetId={this.props.tweetId}
         projectsPath={this.props.projectsPath}
-        translations={this.props.translations}
         userId={this.props.userId}
         projectId={this.props.projectId}
         postData={(args) => this.postData(args)}
         onTweetLoadError={() => this.onTweetLoadError()}
-      />); 
+        onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+      /> 
+    } else {
+      body = <MturkFinal 
+        translations={this.props.translations}
+      /> 
+    }
+    return(
+      <div className="QSContainer">
+        {body}
+      </div>
+    );
   }
 }
 

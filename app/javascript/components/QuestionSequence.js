@@ -11,7 +11,6 @@ var humps = require('humps');
 import { Answer } from './../components/Answer';
 import { Question } from './../components/Question';
 import { TweetEmbedding } from './../components/TweetEmbedding';
-import { Final } from './../components/Final';
 
 // Styling for this component: app/assets/stylesheets/qs_container_component.scss
 
@@ -73,10 +72,11 @@ export class QuestionSequence extends React.Component {
       // find next question
       var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
       if (nextQuestion === null) {
+        // End of question sequence
         this.setState({
-          'questionSequenceHasEnded': true,
           'tweetHasLoaded': false
         });
+        this.props.onQuestionSequenceEnd();
       } else {
         // Go to next question
         this.setState({
@@ -86,19 +86,13 @@ export class QuestionSequence extends React.Component {
     }
   }
 
-  onNextQuestionSequence() {
-    // simply reload page to get new question sequence
-    window.location.reload(false);
-  }
-
   onTweetLoad() {
     if (document.getElementById('twitter-widget-0').shadowRoot.children.length != 3) {
       // Note to future me: Improve this, quite hacky, possibly use innerHTML=="" instead
+      // Todo: Language change does not work, wait for twitter-widget-0 to be available
       // Tweet is not available anymore, handle error in parent
       this.props.onTweetLoadError();
-    } else {
-      console.log('everything fine');
-    }
+    } 
 
     this.setState({
       'tweetIsLoading': false
@@ -106,47 +100,37 @@ export class QuestionSequence extends React.Component {
   }
 
   render() {
-    let questionSequenceBody = null
-
-    if (!this.state.questionSequenceHasEnded) {
-      let parentThis = this;
-      questionSequenceBody = <div>
-        <TweetEmbedding 
-          tweetId={this.props.tweetId}
-          onTweetLoad={() => parentThis.onTweetLoad()}
-        />
-        { this.state.tweetIsLoading &&
+    let parentThis = this;
+    let questionSequenceBody = <div>
+      <TweetEmbedding 
+        tweetId={this.props.tweetId}
+        onTweetLoad={() => parentThis.onTweetLoad()}
+      />
+      { this.state.tweetIsLoading &&
           <div className="clip-loader">
             <ClipLoader
               color={'#444'} 
             />
           </div> }
-        { !this.state.tweetIsLoading && <div>
-          <div className="question">
-            <Question question={this.state.currentQuestion.question}/>
-          </div>
-          <div className="answers">
-            <span>
-              {this.state.currentQuestion.answers.map(function(answer) {
-                return <Answer 
-                  key={answer.id} 
-                  answer={answer.answer} 
-                  submit={() => parentThis.onSubmitAnswer(answer.id)}
-                  color={answer.color}
-                />
-              })}
-            </span>
-          </div>
-        </div> }
-      </div>
+          { !this.state.tweetIsLoading && <div>
+            <div className="question">
+              <Question question={this.state.currentQuestion.question}/>
+            </div>
+            <div className="answers">
+              <span>
+                {this.state.currentQuestion.answers.map(function(answer) {
+                  return <Answer 
+                    key={answer.id} 
+                    answer={answer.answer} 
+                    submit={() => parentThis.onSubmitAnswer(answer.id)}
+                    color={answer.color}
+                  />
+                })}
+              </span>
+            </div>
+          </div> }
+        </div>
 
-    } else {
-      questionSequenceBody = <Final 
-        onNextQuestionSequence={() => this.onNextQuestionSequence()}
-        projectsPath={this.props.projectsPath}
-        translations={this.props.translations}
-      />
-    }
     return (
       <div id='question-answer-container' className='col-md-8 col-md-offset-2'>
         {questionSequenceBody}
@@ -161,9 +145,9 @@ QuestionSequence.propTypes = {
   transitions: PropTypes.object,
   tweetId: PropTypes.string,
   projectsPath: PropTypes.string,
-  translations: PropTypes.object,
   userId: PropTypes.number,
   projectId: PropTypes.number,
   postData: PropTypes.func,
-  onTweetLoadError: PropTypes.func
+  onTweetLoadError: PropTypes.func,
+  onQuestionSequenceEnd: PropTypes.func
 };

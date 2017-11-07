@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export const Final = (props) => {
   return (
-    <div className='final'>
+    <div className='final content-no-banner'>
       <h1>{props.translations.final.thank_you}</h1>
       <a href={props.projectsPath} className='btn btn-final'>
         <i className="glyphicon glyphicon-chevron-left"/>

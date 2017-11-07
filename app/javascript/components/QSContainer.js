@@ -3,11 +3,15 @@ import React from 'react'
 import PropTypes from 'prop-types';
 
 import { QuestionSequence } from './../components/QuestionSequence';
+import { Final } from './../components/Final';
 
 
 export class QSContainer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      'questionSequenceHasEnded': false
+    };
   }
 
   postData(resultData) {
@@ -24,20 +28,45 @@ export class QSContainer extends React.Component {
     console.log("Tweet not available anymore");
   }
 
+  onQuestionSequenceEnd() {
+    console.log("Question sequence ended!");
+    this.setState({
+      'questionSequenceHasEnded': true
+    });
+  }
+
+  onNextQuestionSequence() {
+    // simply reload page to get new question sequence
+    window.location.reload(false);
+  }
+
   render() {
+    let body = null;
+    if (!this.state.questionSequenceHasEnded) {
+      body = <QuestionSequence 
+        initialQuestionId={this.props.initialQuestionId}
+        questions={this.props.questions}
+        transitions={this.props.transitions}
+        tweetId={this.props.tweetId}
+        projectsPath={this.props.projectsPath}
+        userId={this.props.userId}
+        projectId={this.props.projectId}
+        postData={(args) => this.postData(args)}
+        onTweetLoadError={() => this.onTweetLoadError()}
+        onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+      /> 
+    } else {
+      body = <Final 
+        onNextQuestionSequence={() => this.onNextQuestionSequence()}
+        projectsPath={this.props.projectsPath}
+        translations={this.props.translations}
+      /> 
+    }
     return(
-      <QuestionSequence 
-      initialQuestionId={this.props.initialQuestionId}
-      questions={this.props.questions}
-      transitions={this.props.transitions}
-      tweetId={this.props.tweetId}
-      projectsPath={this.props.projectsPath}
-      translations={this.props.translations}
-      userId={this.props.userId}
-      projectId={this.props.projectId}
-      postData={(args) => this.postData(args)}
-      onTweetLoadError={() => this.onTweetLoadError()}
-    />); 
+      <div className="QSContainer">
+        {body}
+      </div>
+    );
   }
 }
 
