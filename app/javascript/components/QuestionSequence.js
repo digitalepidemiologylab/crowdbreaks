@@ -144,7 +144,6 @@ QuestionSequence.propTypes = {
   questions: PropTypes.object,
   transitions: PropTypes.object,
   tweetId: PropTypes.string,
-  projectsPath: PropTypes.string,
   userId: PropTypes.number,
   projectId: PropTypes.number,
   postData: PropTypes.func,

@@ -2,6 +2,9 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
+// Other 
+var humps = require('humps');
+
 // Components
 import { QuestionSequence } from './../components/QuestionSequence';
 import { MturkFinal } from './../components/MturkFinal';
@@ -48,6 +51,35 @@ export class MturkQSContainer extends React.Component {
     });
   }
 
+  onSubmit(event) {
+    event.preventDefault();
+
+    var taskUpdate = humps.decamelizeKeys({
+      task: {
+        'workerId': 0,
+        'assignmentId': this.props.assignmentId,
+        'tweetId': this.props.tweetId,
+        'hitId': this.props.hitId
+      }
+    });
+
+    $.ajax({
+      type: "POST",
+      url: this.props.finalSubmitPath,
+      data: taskUpdate,
+      success: function(result) {
+        alert('Form submitted successfully');
+        $('#submit-form').submit();
+        return true;
+      }
+    });
+  }
+
+  getSubmitUrl() {
+    var sandbox_prefix = this.props.sandbox ? 'workersandbox' : 'www';
+    return "https://" + sandbox_prefix + ".mturk.com/mturk/externalSubmit";
+  }
+
   render() {
     let body = null;
     if (!this.state.questionSequenceHasEnded) {
@@ -56,7 +88,6 @@ export class MturkQSContainer extends React.Component {
         questions={this.props.questions}
         transitions={this.props.transitions}
         tweetId={this.props.tweetId}
-        projectsPath={this.props.projectsPath}
         userId={this.props.userId}
         projectId={this.props.projectId}
         postData={(args) => this.postData(args)}
@@ -65,7 +96,9 @@ export class MturkQSContainer extends React.Component {
       /> 
     } else {
       body = <MturkFinal 
-        translations={this.props.translations}
+        onSubmit={(event) => this.onSubmit(event)}
+        submitUrl={this.getSubmitUrl()}
+        assignmentId={this.props.assignmentId}
       /> 
     }
     return(
@@ -87,5 +120,8 @@ MturkQSContainer.propTypes = {
   userId: PropTypes.number,
   projectId: PropTypes.number,
   assignmentId: PropTypes.string,
-  previewMode: PropTypes.bool
+  previewMode: PropTypes.bool,
+  sandbox: PropTypes.bool,
+  finalSubmitPath: PropTypes.string,
+  hitId: PropTypes.string
 }

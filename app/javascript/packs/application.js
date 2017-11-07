@@ -49,6 +49,10 @@ document.addEventListener('turbolinks:load', () => {
         projectId={data_attr.projectId}
         assignmentId={data_attr.assignmentId.toString()}
         previewMode={data_attr.previewMode}
+        sandbox={data_attr.sandbox}
+        sandbox={data_attr.sandbox}
+        finalSubmitPath={data_attr.finalSubmitPath}
+        hitId={data_attr.hitId}
       />, div_qs_mturk);
   }
 });

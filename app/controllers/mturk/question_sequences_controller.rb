@@ -12,6 +12,8 @@ class Mturk::QuestionSequencesController < ApplicationController
     # retrieve task for hit id
     task = Task.find_by(hit_id: params['hitId'])
     @project = task.mturk_batch_job.project
+    @sandbox = task.mturk_batch_job.sandbox
+    @hit_id = params['hitId']
 
     # collect JSON data
     options = {locale: I18n.locale.to_s}
@@ -40,17 +42,23 @@ class Mturk::QuestionSequencesController < ApplicationController
     @translations = I18n.backend.send(:translations)[:en][:question_sequences]
   end
 
+  def final
+    puts "Post to final made"
+    p tasks_params
+    task = Task.find_by(hit_id: tasks_params[:hit_id])
+    task.update_attributes!(
+      assignment_id: tasks_params[:assignment_id],
+      worker_id: tasks_params[:worker_id],
+      time_completed: Time.now,
+      lifecycle_status: :reviewable)
+    head :ok, content_type: "text/html"
+  end
 
   def create
     authorize! :create, Result
     # Store result
     result = Result.new(results_params)
-    p params
-    p params[:assignment_id]
-    # project = Project.find_by(id: results_params[:project_id])
     if result.save
-      # elastic = Elastic.new(project.es_index_name)
-      # elastic.add_answer(result)
       head :ok, content_type: "text/html"
     else
       head :bad_request
@@ -59,6 +67,10 @@ class Mturk::QuestionSequencesController < ApplicationController
 
 
   private
+
+  def tasks_params
+    params.require(:task).permit(:hit_id, :tweet_id, :worker_id, :assignment_id)
+  end
 
   def results_params
     params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)

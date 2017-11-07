@@ -14,7 +14,9 @@ Rails.application.routes.draw do
     end
 
     namespace :mturk do
-      resource :question_sequence, only: [:show, :create]
+      resource :question_sequence, only: [:show, :create] do
+        post 'final'
+      end
     end
 
     namespace :manage do
