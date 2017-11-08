@@ -3,8 +3,7 @@ class MturkBatchJob < ApplicationRecord
   belongs_to :project
 
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
-  validates :job_file, presence: true
-  validates :project, presence: true
+  validates_presence_of :sandbox, :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :job_file, :reward
 
   attr_accessor :job_file
   attr_accessor :number_of_assignments
