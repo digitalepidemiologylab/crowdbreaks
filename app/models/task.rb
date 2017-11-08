@@ -1,5 +1,6 @@
 class Task < ApplicationRecord
   belongs_to :mturk_batch_job
+  has_many :results
 
   enum lifecycle_status: [:unsubmitted, :submitted, :reviewable, :disposed, :accepted]
   STATUS_LABELS = {
@@ -21,7 +22,6 @@ class Task < ApplicationRecord
       self.time_submitted = Time.now
       self.lifecycle_status = :submitted
       self.hittype_id = result[:HITTypeId]
-      puts "Find HIT at: https://workersandbox.mturk.com/mturk/preview?groupId=#{result[:HITTypeId]} hit_id: #{self.hit_id}"
       self.save!
       true
     else

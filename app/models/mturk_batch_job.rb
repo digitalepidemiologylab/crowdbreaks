@@ -44,7 +44,6 @@ class MturkBatchJob < ApplicationRecord
         Question: question_file,
         AutoApprovalDelayInSeconds: auto_approval_delay_in_seconds
     }
-    p props
     return requester, props
   end
 

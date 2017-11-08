@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171107200912) do
+ActiveRecord::Schema.define(version: 20171108165534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -108,11 +108,11 @@ ActiveRecord::Schema.define(version: 20171107200912) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "tweet_id"
-    t.integer "mturk_token_id"
+    t.bigint "task_id"
     t.index ["answer_id"], name: "index_results_on_answer_id"
-    t.index ["mturk_token_id"], name: "index_results_on_mturk_token_id"
     t.index ["project_id"], name: "index_results_on_project_id"
     t.index ["question_id"], name: "index_results_on_question_id"
+    t.index ["task_id"], name: "index_results_on_task_id"
     t.index ["tweet_id"], name: "index_results_on_tweet_id"
     t.index ["user_id"], name: "index_results_on_user_id"
   end
@@ -178,4 +178,5 @@ ActiveRecord::Schema.define(version: 20171107200912) do
   add_foreign_key "question_answers", "answers"
   add_foreign_key "question_answers", "questions"
   add_foreign_key "questions", "projects"
+  add_foreign_key "results", "tasks"
 end

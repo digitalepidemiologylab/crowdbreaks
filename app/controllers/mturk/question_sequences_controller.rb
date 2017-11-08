@@ -43,8 +43,6 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
   def final
-    puts "Post to final made"
-    p tasks_params
     task = Task.find_by(hit_id: tasks_params[:hit_id])
     task.update_attributes!(
       assignment_id: tasks_params[:assignment_id],
@@ -57,6 +55,7 @@ class Mturk::QuestionSequencesController < ApplicationController
   def create
     authorize! :create, Result
     # Store result
+    p results_params
     result = Result.new(results_params)
     if result.save
       head :ok, content_type: "text/html"
@@ -73,7 +72,11 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
   def results_params
-    params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)
+    params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id).merge(task_id: task_id)
+  end
+
+  def task_id
+    Task.find_by(hit_id: params[:hit_id]).try(:id)
   end
 
   def allow_cross_origin

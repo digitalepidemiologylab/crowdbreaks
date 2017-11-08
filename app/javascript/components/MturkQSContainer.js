@@ -27,7 +27,7 @@ export class MturkQSContainer extends React.Component {
       console.log('Cannot submit when Tweet loading failed');
       return false;
     }
-    resultData['assignment_id'] = this.props.assignmentId;
+    resultData['hit_id'] = this.props.hitId;
     $.ajax({
       type: "POST",
       url: this.props.resultsPath,
