@@ -9,13 +9,6 @@ class MturkBatchJob < ApplicationRecord
   attr_accessor :job_file
   attr_accessor :number_of_assignments
 
-  enum status: [:unsubmitted, :submitted, :completed]
-  STATUS_LABELS = {
-    unsubmitted: 'label-default',
-    submitted: 'label-primary',
-    completed: 'label-success'
-  }
-
   def mturk_init
     # Set up Mturk for submitting new jobs
     host = sandbox ? :Sandbox : :Production
@@ -45,6 +38,19 @@ class MturkBatchJob < ApplicationRecord
         AutoApprovalDelayInSeconds: auto_approval_delay_in_seconds
     }
     return requester, props
+  end
+
+  def num_tasks
+    tasks.count
+  end
+
+  def num_tasks_completed
+    tasks.where.not(lifecycle_status: :unsubmitted).count
+  end
+
+  def status
+    return :unsubmitted if num_tasks_completed == 0
+    num_tasks_completed == num_tasks ? :completed : :submitted
   end
 
   private 

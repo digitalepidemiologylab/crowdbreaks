@@ -3,12 +3,8 @@
   <td><%= mturk_batch_job.project.title %></td>
   <td><%= mturk_batch_job.sandbox ? 'Sandbox' : 'Production' %></td>
   <td><%= mturk_batch_job.created_at %></td>
-  <td>
-    <span class="label <%= MturkBatchJob::STATUS_LABELS[mturk_batch_job.status.to_sym] %>"> 
-      <%= mturk_batch_job.status %>
-    </span>
-  </td>
-  <td><%= mturk_batch_job.tasks.count %></td>
+  <td><%= status(mturk_batch_job) %></td>
+  <td><%= completed_by_total(mturk_batch_job) %></td>
   <td>
     <%= link_to manage_mturk_batch_job_tasks_path(mturk_batch_job.id) do %>
       View items
