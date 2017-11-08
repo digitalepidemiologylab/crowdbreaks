@@ -91,7 +91,7 @@ module Manage
     private
 
     def batch_params
-      params.require(:mturk_batch_job).permit(:name, :sandbox, :job_file, :number_of_assignments, :project_id)
+      params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox)
     end
 
     def file_content_valid?(path)

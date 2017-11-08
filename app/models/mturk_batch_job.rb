@@ -23,25 +23,28 @@ class MturkBatchJob < ApplicationRecord
       Host: host,
       AWSAccessKeyId: ENV['AWS_ACCESS_KEY_ID'],
       AWSAccessKey: ENV['AWS_SECRET_ACCESS_KEY'])
-    title = 'Crowdbreaks'
-    desc = 'Answer a sequence of questions about a tweet'
-    keywords = 'twitter, science, sentiment, vaccinations'
-    reward = 0.03
-    question_file_path = File.join(Rails.root, 'app/views/mturk/external_question.xml')
+
+    if ENV['HOST'] == 'https://www.crowdbreaks.org' # slightly hacky, but oh well
+      question_file_path = File.join(Rails.root, 'app/views/mturk/external_question.xml')
+    else
+      question_file_path = File.join(Rails.root, 'app/views/mturk/external_question_staging.xml')
+    end
+
     question_file = File.read(question_file_path) 
     props = {
         Title: title,
-        Description: desc,
+        Description: description,
         MaxAssignments: 1,
         Reward: {
-          Amount: reward,
+          Amount: reward.to_s,
           CurrencyCode: 'USD'
         },
         Keywords: keywords,
-        LifetimeInSeconds: 60 * 60 * 24 * 1,
+        LifetimeInSeconds: lifetime_in_seconds,
         Question: question_file,
-        AutoApprovalDelayInSeconds: 3600
+        AutoApprovalDelayInSeconds: auto_approval_delay_in_seconds
     }
+    p props
     return requester, props
   end
 

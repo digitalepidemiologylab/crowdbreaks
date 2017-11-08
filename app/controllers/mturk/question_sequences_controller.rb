@@ -10,7 +10,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     @preview_mode = ((@assignment_id == "ASSIGNMENT_ID_NOT_AVAILABLE") or (not @assignment_id.present?))
 
     # retrieve task for hit id
-    task = Task.find_by(hit_id: params['hitId'])
+    task = Task.find_by!(hit_id: params['hitId'])
     @project = task.mturk_batch_job.project
     @sandbox = task.mturk_batch_job.sandbox
     @hit_id = params['hitId']
