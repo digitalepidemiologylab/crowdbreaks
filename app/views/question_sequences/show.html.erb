@@ -1,15 +1,15 @@
-<%= tag.div nil, 
-  class: 'row', 
-  id: 'question-sequence-component', 
-  data: {
+<%= react_component('QSContainer',
+  {
     questions: @questions,
-    initial_question_id: @initial_question_id,
+    initialQuestionId: @initial_question_id,
     transitions: @transitions,
-    tweet_id: @tweet_id,
-    projects_path: projects_path,
-    results_path: project_question_sequence_path,
+    tweetId: @tweet_id,
+    projectsPath: projects_path,
+    resultsPath: project_question_sequence_path,
     translations: @translations,
-    user_id: @user_id,
-    project_id: @project.id
-  }
+    userId: @user_id,
+    projectId: @project.id
+  },
+  class: 'row', 
+  id: 'question-sequence-component') 
 %>

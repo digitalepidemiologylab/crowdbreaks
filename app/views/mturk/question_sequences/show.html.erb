@@ -5,23 +5,23 @@
     </div>
   </div>
 <% end %>
-<%= tag.div nil, 
-  class: 'row', 
-  id: 'mturk-question-sequence-component', 
-  data: {
+<%= react_component('MturkQSContainer',
+  {
     questions: @questions,
-    initial_question_id: @initial_question_id,
+    initialQuestionId: @initial_question_id,
     transitions: @transitions,
-    tweet_id: @tweet_id,
-    projects_path: projects_path,
-    results_path: mturk_question_sequence_url,
+    tweetId: @tweet_id,
+    projectsPath: projects_path,
+    resultsPath: mturk_question_sequence_url,
     translations: @translations,
-    user_id: @user_id,
-    project_id: @project.id,
-    assignment_id: @assignment_id,
-    preview_mode: @preview_mode,
+    userId: @user_id,
+    projectId: @project.id,
+    assignmentId: @assignment_id,
+    previewMode: @preview_mode,
     sandbox: @sandbox,
-    final_submit_path: final_mturk_question_sequence_url,
-    hit_id: @hit_id
-  }
+    finalSubmitPath: final_mturk_question_sequence_url,
+    hitId: @hit_id
+  },
+  class: 'row', 
+  id: 'mturk-question-sequence-component')
 %>

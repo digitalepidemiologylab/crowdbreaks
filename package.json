@@ -9,7 +9,8 @@
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^15.6.1",
     "react-spinners": "^0.1.9",
-    "react-twitter-widgets": "^1.7.1"
+    "react-twitter-widgets": "^1.7.1",
+    "webpacker-react": "^0.3.2"
   },
   "devDependencies": {
     "webpack-dev-server": "^2.8.2"
