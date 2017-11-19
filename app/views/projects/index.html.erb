@@ -1,3 +1,4 @@
+<% @title ||= Project.model_name.human.pluralize; title @title %>
 <%= provide(:banner, t('.banner')) %>
 <div class="content">
   <%= render @projects %>

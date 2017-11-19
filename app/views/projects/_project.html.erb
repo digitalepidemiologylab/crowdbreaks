@@ -13,13 +13,20 @@
             <%= project.title.html_safe if project.title %>
           </h3>
           <p>
-          <%= project.description.html_safe if project.description %>
+            <%= project.description.html_safe if project.description %>
           </p>
-          <% unless project.initial_question.nil? %>
-              <%= link_to project_question_sequence_path(project), class: 'btn-start-project', id: "btn-start-project-#{project.id}"  do %>
-              <%= t('projects.index.start_button') %>
+          <span> 
+            <% if project.es_index_name == 'project_vaccine_sentiment' %>
+              <%= link_to project_path(project), class: 'btn btn-info btn-project' do %>
+                <%= t('projects.index.show') %>
+              <% end %>
             <% end %>
-          <% end %>
+            <% unless project.initial_question.nil? %>
+                <%= link_to project_question_sequence_path(project), class: 'btn btn-success btn-project' do %>
+                <%= t('projects.index.start_question_sequence') %>
+              <% end %>
+            <% end %>
+          </span>
         </div>
       </div>
     </div>

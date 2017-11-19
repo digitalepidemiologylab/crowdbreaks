@@ -4,5 +4,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @project = Project.friendly.find(params[:id])
+    raise 'This project has nothing to show' unless @project.es_index_name == 'project_vaccine_sentiment' 
   end
 end

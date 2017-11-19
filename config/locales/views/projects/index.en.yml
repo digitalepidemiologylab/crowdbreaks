@@ -2,4 +2,5 @@ en:
   projects:
     index:
       banner: "PROJECTS"
-      start_button: "Start Project"
+      start_question_sequence: "Start Project"
+      show: "Explore"
