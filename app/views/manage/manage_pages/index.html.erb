@@ -2,7 +2,6 @@
 
 <div class="row content-no-banner">
   <div class="col-xs-12">
-
     <hr />
     <h3>Batch processing</h3>
     <div class="btn-toolbar">
@@ -12,5 +11,24 @@
       <% end %>
     </div>
     <hr />
+  </div>
+  <div class="col-xs-4">
+    <h3>Status of services</h3>
+    <table class="table">
+      <thead>
+        <th>Service</th>
+        <th>Status</th>
+      </thead>
+      <tbody>
+        <tr> 
+          <td>Elasticsearch</td>
+          <td><span class="label <%= @es_ready ? 'label-success' : 'label-danger' %>"><%= @es_ready ? 'Connected' : 'Not connected'%> </span></td>
+        </tr>
+        <tr> 
+          <td>Flask API</td>
+          <td><span class="label <%= @api_ready ? 'label-success' : 'label-danger' %>"><%= @api_ready ? 'Connected' : 'Not connected'%> </span></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

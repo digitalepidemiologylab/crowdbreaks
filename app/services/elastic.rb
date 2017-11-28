@@ -1,6 +1,6 @@
 class Elastic
   attr_reader :index_name, :client, :document_type
-  @@client = Crowdbreaks::Client
+  @@client = Crowdbreaks::ESClient
 
   # Number of times a tweet should be answered (by unique users)
   MAX_ANSWERS = 5 
@@ -11,7 +11,7 @@ class Elastic
 
   def initialize(index_name)
     @index_name = index_name
-    @client = Crowdbreaks::Client
+    @client = Crowdbreaks::ESClient
     @document_type = 'tweet'
   end
 

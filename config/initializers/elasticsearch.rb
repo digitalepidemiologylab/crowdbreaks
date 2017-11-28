@@ -1,5 +1,5 @@
 if Rails.env.production?
-  Crowdbreaks::Client = Elasticsearch::Client.new(
+  Crowdbreaks::ESClient = Elasticsearch::Client.new(
     hosts: [
       {
         host: ENV["ELASTICSEARCH_HOST"],
@@ -14,5 +14,5 @@ if Rails.env.production?
   end
 else
   # in development start local elasticsearch cluster
-  Crowdbreaks::Client = Elasticsearch::Client.new host: 'localhost:9200'
+  Crowdbreaks::ESClient = Elasticsearch::Client.new host: 'localhost:9200'
 end
