@@ -1,0 +1,10 @@
+<% @title ||= Project.model_name.human.pluralize; title @title %>
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+      <%= react_component 'SentimentTextBox',
+        { 'flaskPostEndpoint': 'http://logstash-dev.crowdbreaks.org/sentiment/vaccine' }
+      %>
+    </div>
+  </div>
+</div>
