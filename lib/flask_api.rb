@@ -10,7 +10,7 @@ class FlaskApi
 
   def self.ping
     begin
-      resp = get("/")
+      resp = get("/", timeout: 5)
     rescue
       false
     else
