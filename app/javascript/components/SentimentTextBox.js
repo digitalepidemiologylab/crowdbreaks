@@ -26,6 +26,7 @@ export class SentimentTextBox extends React.Component {
     }
 
     $.ajax({
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       type: "POST",
       crossDomain: true,
       url: this.props.flaskPostEndpoint,
@@ -33,8 +34,9 @@ export class SentimentTextBox extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
-        console.log(result)
-        this.setState({label: result['label']})
+        result = JSON.parse(result);
+        console.log(result);
+        this.setState({label: result['label']});
       }
     });
   }
