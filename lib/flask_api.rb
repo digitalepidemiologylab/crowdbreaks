@@ -6,11 +6,13 @@ class FlaskApi
   base_uri 'logstash-dev.crowdbreaks.org'
 
   def initialize
+    @auth = {username: ENV['FLASK_API_USERNAME'], password: ENV['FLASK_API_PASSWORD']}
   end
 
-  def self.ping
+  def ping
+    options = {basic_auth: @auth, timeout: 5}
     begin
-      resp = get("/", timeout: 5)
+      resp = self.class.get("/", options)
     rescue
       false
     else
