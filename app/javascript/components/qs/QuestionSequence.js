@@ -8,9 +8,9 @@ import { ClipLoader } from 'react-spinners';
 var humps = require('humps');
 
 // Sub-components
-import { Answer } from './../components/Answer';
-import { Question } from './../components/Question';
-import { TweetEmbedding } from './../components/TweetEmbedding';
+import { Answer } from './Answer';
+import { Question } from './Question';
+import { TweetEmbedding } from './TweetEmbedding';
 
 // Styling for this component: app/assets/stylesheets/qs_container_component.scss
 

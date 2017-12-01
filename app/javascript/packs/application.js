@@ -7,8 +7,8 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-import { QSContainer } from './../components/QSContainer';
-import { MturkQSContainer } from './../components/MturkQSContainer';
+import { QSContainer } from './../components/qs/QSContainer';
+import { MturkQSContainer } from './../components/qs/MturkQSContainer';
 import { SentimentTextBox } from './../components/SentimentTextBox';
 import WebpackerReact from 'webpacker-react'
 

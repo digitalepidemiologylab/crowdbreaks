@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 var humps = require('humps');
 
 // Components
-import { QuestionSequence } from './../components/QuestionSequence';
-import { MturkFinal } from './../components/MturkFinal';
+import { QuestionSequence } from './QuestionSequence';
+import { MturkFinal } from './MturkFinal';
 
 export class MturkQSContainer extends React.Component {
   constructor(props) {

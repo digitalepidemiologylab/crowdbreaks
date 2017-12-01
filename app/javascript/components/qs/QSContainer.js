@@ -2,8 +2,8 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
-import { QuestionSequence } from './../components/QuestionSequence';
-import { Final } from './../components/Final';
+import { QuestionSequence } from './QuestionSequence';
+import { Final } from './Final';
 
 
 export class QSContainer extends React.Component {
