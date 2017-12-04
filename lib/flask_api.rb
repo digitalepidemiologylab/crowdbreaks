@@ -20,11 +20,20 @@ class FlaskApi
     end
   end
 
+  def get_all_data(options={})
+    resp = self.class.get('/sentiment/data/all', query: options, basic_auth: @auth)
+    JSON.parse(resp)
+  end
+
+  def get_sentiment_data(value, options={})
+    resp = self.class.get('/sentiment/data/'+value, query: options, basic_auth: @auth)
+    JSON.parse(resp)
+  end
+
   def get_vaccine_sentiment(text)
     # to test in console:
     # HTTParty.post(ENV['FLASK_API_HOSTNAME']+"/sentiment/vaccine", body: {"text": "This is a string"}.to_json, headers: { "Content-Type" => "application/json"  }, basic_auth: {username: ENV['FLASK_API_USERNAME'],password: ENV['FLASK_API_PASSWORD']})
     data = {'text': text}
-    resp = self.class.post('/sentiment/vaccine', body: data.to_json, headers: {'Content-Type': 'application/json'}, basic_auth: @auth)
-    resp
+    self.class.post('/sentiment/vaccine', body: data.to_json, headers: {'Content-Type': 'application/json'}, basic_auth: @auth)
   end
 end

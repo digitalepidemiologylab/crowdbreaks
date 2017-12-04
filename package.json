@@ -2,11 +2,13 @@
   "dependencies": {
     "@rails/webpacker": "^3.0.1",
     "babel-preset-react": "^6.24.1",
+    "chart.js": "^2.7.1",
     "humps": "^2.0.1",
     "jquery": "^3.2.1",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.6.2",
+    "react-chartjs-2": "^2.6.4",
     "react-dom": "^15.6.1",
     "react-spinners": "^0.1.9",
     "react-twitter-widgets": "^1.7.1",

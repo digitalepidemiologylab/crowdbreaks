@@ -12,8 +12,14 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2">
       <h2>Visualization</h3>
-
-
+      <%= react_component 'SentimentVisualization',
+        {
+        'all_data': @sent_viz_data,
+        'pro_data': @sent_viz_pro,
+        'anti_data': @sent_viz_anti,
+        'neutral_data': @sent_viz_neutral
+        }
+      %>
     </div>
   </div>
 </div>

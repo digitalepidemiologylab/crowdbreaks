@@ -1,7 +1,7 @@
 // React
 import React from 'react'
 import PropTypes from 'prop-types';
-import { ExampleInput } from './../components/ExampleInput';
+import { ExampleInput } from './ExampleInput';
 
 export class SentimentTextBox extends React.Component {
   constructor(props) {

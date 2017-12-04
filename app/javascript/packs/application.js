@@ -9,10 +9,11 @@
 
 import { QSContainer } from './../components/qs/QSContainer';
 import { MturkQSContainer } from './../components/qs/MturkQSContainer';
-import { SentimentTextBox } from './../components/SentimentTextBox';
+import { SentimentTextBox } from './../components/sent_textbox/SentimentTextBox';
+import { SentimentVisualization } from './../components/sent_viz/SentimentVisualization';
 import WebpackerReact from 'webpacker-react'
 
 
 // Register components using Webpacker-react 
 Turbolinks.start()
-WebpackerReact.setup({QSContainer, MturkQSContainer, SentimentTextBox})
+WebpackerReact.setup({QSContainer, MturkQSContainer, SentimentTextBox, SentimentVisualization})
