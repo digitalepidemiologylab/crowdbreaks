@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   scope :api do
     post 'vaccine_sentiment', to: 'projects#vaccine_sentiment'
+    post 'update_visualization', to: 'projects#update_visualization'
   end
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|

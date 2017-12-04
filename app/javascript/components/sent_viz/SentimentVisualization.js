@@ -2,15 +2,19 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import {Line, defaults} from 'react-chartjs-2';
+import { DropdownButton, MenuItem, Navbar, Nav, NavItem, NavDropdown } from 'react-bootstrap';
 
 export class SentimentVisualization extends React.Component {
   constructor(props) {
     super(props);
-    var all_data_labels = props.all_data.map((d) => d.key_as_string);
-    var all_data_counts = props.all_data.map((d) => d.doc_count);
-    var pro_data_counts = props.pro_data.map((d) => d.doc_count);
-    var anti_data_counts = props.anti_data.map((d) => d.doc_count);
-    var neutral_data_counts = props.neutral_data.map((d) => d.doc_count);
+
+    this.state = {
+      labels: props.all_data.map((d) => d.key_as_string),
+      all_data: props.all_data.map((d) => d.doc_count),
+      pro_data: props.pro_data.map((d) => d.doc_count),
+      anti_data: props.anti_data.map((d) => d.doc_count),
+      neutral_data: props.neutral_data.map((d) => d.doc_count)
+    };
 
     this.options = {
       scales: {
@@ -20,52 +24,84 @@ export class SentimentVisualization extends React.Component {
             labelString: "Counts"
           }
         }]
+      },
+      elements: {
+        line: {
+          tension: 0,
+          fill: false
+        }
       }
     };
 
     defaults.global.defaultFontFamily = 'Noto Sans';
+  }
 
-    this.data = {
-      labels: all_data_labels,
-      datasets: [
-        {
-          label: 'All',
-          fill: false,
-          lineTension: 0.0,
-          data: all_data_counts
-        },
-        {
-          label: 'Pro-vaccine',
-          fill: false,
-          borderColor: '#2ecc71',
-          backgroundColor: '#2ecc71',
-          lineTension: 0.0,
-          data: pro_data_counts
-        },
-        {
-          label: 'Anti-vaccine',
-          fill: false,
-          borderColor: '#e74c3c',
-          backgroundColor: '#e74c3c',
-          lineTension: 0.0,
-          data: anti_data_counts
-        },
-        {
-          label: 'Neutral',
-          fill: false,
-          borderColor: '#b5b5b5',
-          backgroundColor: '#b5b5b5',
-          lineTension: 0.0,
-          data: neutral_data_counts
-        }
-      ]
+  onSelect(ev) {
+    const postData = {
+      "interval": ev
     };
+    $.ajax({
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      type: "POST",
+      crossDomain: true,
+      url: this.props.updateVisualizationPath,
+      data: JSON.stringify(postData),
+      dataType: "json",
+      contentType: "application/json",
+      success: (result) => {
+        this.setState({
+          labels: result.all_data.map((d) => d.key_as_string),
+          all_data: result.all_data.map((d) => d.doc_count),
+          pro_data: result.pro_data.map((d) => d.doc_count),
+          anti_data: result.anti_data.map((d) => d.doc_count),
+          neutral_data: result.neutral_data.map((d) => d.doc_count)
+        });
+      }
+    });
+
   }
 
   render() {
+    const intervalOptions = ['Hour', 'Day'];
+    const data = {
+      labels: this.state.labels,
+      datasets: [
+        {
+          label: 'All',
+          data: this.state.all_data
+        },
+        {
+          label: 'Pro-vaccine',
+          borderColor: '#2ecc71',
+          backgroundColor: '#2ecc71',
+          data: this.state.pro_data
+        },
+        {
+          label: 'Anti-vaccine',
+          borderColor: '#e74c3c',
+          backgroundColor: '#e74c3c',
+          data: this.state.anti_data
+        },
+        {
+          label: 'Neutral',
+          borderColor: '#b5b5b5',
+          backgroundColor: '#b5b5b5',
+          data: this.state.neutral_data
+        }
+      ]
+    };
+
     return(
       <div>
-        <Line data={this.data} width={600} height={250} options={this.options} />
+        <div className="pull-right">
+          <DropdownButton bsSize='small' onSelect={(ev) => this.onSelect(ev)} pullRight={true} title="Interval" id="nav-dropdown">
+            {intervalOptions.map(function(interval) {
+              return <MenuItem href="#" key={interval} eventKey={interval.toLowerCase()}>{interval}</MenuItem>
+            })}
+          </DropdownButton>
+        </div>
+          
+        <Line data={data} width={600} height={250} options={this.options} />
       </div>
     )
   }

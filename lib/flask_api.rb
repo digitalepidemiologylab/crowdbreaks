@@ -20,6 +20,17 @@ class FlaskApi
     end
   end
 
+  def test(service)
+    options = {basic_auth: @auth, timeout: 5}
+    begin
+      resp = self.class.get("/test/"+service, options)
+    rescue
+      false
+    else
+      resp
+    end
+  end
+
   def get_all_data(options={})
     resp = self.class.get('/sentiment/data/all', query: options, basic_auth: @auth)
     JSON.parse(resp)

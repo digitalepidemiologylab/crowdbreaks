@@ -8,6 +8,7 @@
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.6.2",
+    "react-bootstrap": "^0.31.5",
     "react-chartjs-2": "^2.6.4",
     "react-dom": "^15.6.1",
     "react-spinners": "^0.1.9",
