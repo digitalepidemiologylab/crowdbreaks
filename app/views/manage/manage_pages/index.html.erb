@@ -17,23 +17,28 @@
     <table class="table">
       <thead>
         <th>Service</th>
+        <th>Host</th>
         <th>Status</th>
       </thead>
       <tbody>
         <tr> 
           <td>Elasticsearch (from Heroku)</td>
+          <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
           <td><span class="label <%= @es_ready ? 'label-success' : 'label-danger' %>"><%= @es_ready ? 'Connected' : 'Not connected'%> </span></td>
         </tr>
         <tr> 
           <td>Flask API</td>
+          <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
           <td><span class="label <%= @api_ready ? 'label-success' : 'label-danger' %>"><%= @api_ready ? 'Connected' : 'Not connected'%> </span></td>
         </tr>
         <tr> 
           <td>Elasticsearch (through Flask API (EC2))</td>
+          <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
           <td><span class="label <%= @api_es_ready ? 'label-success' : 'label-danger' %>"><%= @api_es_ready ? 'Connected' : 'Not connected'%> </span></td>
         </tr>
         <tr> 
           <td>Redis (through Flask API (EC2))</td>
+          <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
           <td><span class="label <%= @api_redis_ready ? 'label-success' : 'label-danger' %>"><%= @api_redis_ready ? 'Connected' : 'Not connected'%> </span></td>
         </tr>
       </tbody>
