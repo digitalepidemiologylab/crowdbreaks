@@ -44,6 +44,5 @@ module Crowdbreaks
       'Access-Control-Allow-Origin' => '*',
       'Access-Control-Request-Method' => '*'
     })
-
   end
 end

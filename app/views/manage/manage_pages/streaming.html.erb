@@ -1,0 +1,56 @@
+<% @title ||= 'Manage'; title @title %>
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Logstash process status</h3>
+      <span class="label <%= @stream_status == 'active' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span></td>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Current streaming configuration</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Keywords</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render partial: "current_stream", collection: @current_streams %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Project configuration</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Elasticsearch index</th>
+              <th>Keywords</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= render partial: "project", collection: @projects %>
+          </tbody>
+        </table>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="btn-toolbar">
+        <%= link_to dashboard_path, class: 'btn btn-default' do %>
+          <i class="glyphicon glyphicon-chevron-left"></i>
+          Go back
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

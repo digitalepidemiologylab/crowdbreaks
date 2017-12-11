@@ -14,4 +14,8 @@ module ApplicationHelper
   def title(page_title)
     content_for :title, 'Crowdbreaks | ' + page_title.to_s
   end
+
+  def current_namespace?(namespace)
+    controller_path.split('/').first == namespace
+  end
 end

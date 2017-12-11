@@ -30,13 +30,13 @@ module Manage
       else
         flash[:alert] = 'Editing task was unsuccessful'
       end
-      redirect_to manage_mturk_batch_job_tasks_path
+      redirect_to mturk_batch_job_tasks_path
     end
 
     def destroy
       @task = Task.find_by(id: params[:id])
       @task.destroy
-      redirect_to manage_mturk_batch_job_tasks_path
+      redirect_to mturk_batch_job_tasks_path
     end
 
     private

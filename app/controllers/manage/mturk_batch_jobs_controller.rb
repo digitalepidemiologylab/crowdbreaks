@@ -48,7 +48,7 @@ module Manage
           end
         end
         respond_to do |format|
-          format.html { redirect_to(manage_mturk_batch_jobs_path, notice: 'Job successfully created')}
+          format.html { redirect_to(mturk_batch_jobs_path, notice: 'Job successfully created')}
         end
       else
         respond_to do |format|
@@ -62,7 +62,7 @@ module Manage
     def destroy
       @mturk_batch_jobs = MturkBatchJob.find_by(id: params[:id])
       @mturk_batch_jobs.destroy
-      redirect_to manage_mturk_batch_jobs_path
+      redirect_to mturk_batch_jobs_path
     end
 
     def submit
@@ -70,7 +70,7 @@ module Manage
       tasks = batch_job.tasks.where(lifecycle_status: :unsubmitted)
       if tasks.size == 0
         flash[:danger] = "There are no tasks available to submit in this batch."
-        redirect_to manage_mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
+        redirect_to mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
         return
       end
 
@@ -85,7 +85,7 @@ module Manage
       end
 
       flash[:notice] = "Submitted #{submit_status.count(true)}/#{tasks.size} tasks successfully."
-      redirect_to manage_mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
+      redirect_to mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
     end
 
     private

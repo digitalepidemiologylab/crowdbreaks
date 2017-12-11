@@ -15,10 +15,10 @@
     <div class="collapse navbar-collapse" id="navbar-collapse-mobile">
       <ul class="nav navbar-nav navbar-right">
         <% if current_or_guest_user.admin?  %>
-          <li class="<%= current_page?(manage_root_path)? "active" : "" %>">
-            <%= link_to manage_root_path do %> 
+          <li class="<%= current_namespace?('manage')? "active" : "" %>">
+            <%= link_to dashboard_path do %> 
               <%= 'Manage' %>
-              <% if current_page?(manage_root_path) %>
+              <% if current_namespace?('manage') %>
                 <span class="sr-only">(current)</span>
               <% end %>
             <% end %>

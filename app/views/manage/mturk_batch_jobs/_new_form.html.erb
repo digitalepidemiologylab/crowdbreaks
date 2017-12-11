@@ -1,4 +1,4 @@
-<%= simple_form_for(@mturk_batch_job, url: manage_mturk_batch_jobs_path, html: {id: 'mturk-batch-job-new'}) do |f| %>
+<%= simple_form_for(@mturk_batch_job, url: mturk_batch_jobs_path, html: {id: 'mturk-batch-job-new'}) do |f| %>
   <%= f.error_notification %>
 
   <%= f.input :name, hint: 'Has to be unique' %>

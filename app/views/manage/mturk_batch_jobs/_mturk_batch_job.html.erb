@@ -6,7 +6,7 @@
   <td><%= status(mturk_batch_job) %></td>
   <td><%= completed_by_total(mturk_batch_job) %></td>
   <td>
-    <%= link_to manage_mturk_batch_job_tasks_path(mturk_batch_job.id) do %>
+    <%= link_to mturk_batch_job_tasks_path(mturk_batch_job.id) do %>
       View items
       <i class="glyphicon glyphicon-chevron-right"></i>
     <% end %>
@@ -15,11 +15,11 @@
   <td>
     <span> 
       <%= link_to fa_icon('trash'),
-        manage_mturk_batch_job_path(mturk_batch_job.id),
+        mturk_batch_job_path(mturk_batch_job.id),
         method: :delete,
         data: {confirm: "Delete batch and all its tasks?"} 
       %>
-      <%# <%= link_to fa_icon('pencil'), edit_manage_mturk_batch_job_path(mturk_batch_job.id)  %>
+      <%# <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id)  %>
     </span>
   </td>
 </tr>

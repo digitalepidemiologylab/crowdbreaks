@@ -1,5 +1,3 @@
-require 'flask_api'
-
 class ProjectsController < ApplicationController
   after_action :allow_cross_origin, only: [:show, :vaccine_sentiment]
 

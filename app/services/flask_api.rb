@@ -47,4 +47,20 @@ class FlaskApi
     data = {'text': text}
     self.class.post('/sentiment/vaccine', body: data.to_json, headers: {'Content-Type': 'application/json'}, basic_auth: @auth)
   end
+
+  # pipeline
+  def get_config
+    resp = self.class.get('/pipeline/config', basic_auth: @auth)
+    resp.parsed_response
+  end
+
+  def status_streaming
+    resp = self.class.get('/pipeline/status', basic_auth: @auth)
+    return resp.length > 10 ? 'error' : resp
+  end
+
+  def stop_streaming
+    resp = self.class.get('/pipeline/stop', basic_auth: @auth)
+    resp.parsed_response
+  end
 end

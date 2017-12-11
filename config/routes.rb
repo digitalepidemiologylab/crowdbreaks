@@ -24,12 +24,15 @@ Rails.application.routes.draw do
       end
     end
 
-    namespace :manage do
-      root to: "manage_pages#index"
+    scope module: 'manage', path: 'manage' do
+      get 'dashboard', to: 'manage_pages#index'
+      get 'streaming', to: 'manage_pages#streaming'
+      get 'status_streaming', to: 'manage_pages#status_streaming'
       resources :mturk_batch_jobs do
         resources :tasks
         get 'submit'
       end
+      resource :projects, only: [:new, :create], controller: 'projects'
     end
   end
 end
