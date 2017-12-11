@@ -1,0 +1,30 @@
+<%# <%= simple_form_for(@project, url: admin_project_path(@project), html: {id: 'project-form'}) do |f| %>
+<%= simple_form_for(@project, url: @project.new_record? ? admin_projects_path : admin_project_path(@project), html: {id: 'project-form'}) do |f| %>
+  <%= f.error_notification %>
+  <%= f.simple_fields_for :title_translations do |title| %>
+    <% Crowdbreaks::Locales.each do |l| %>
+      <%= title.input l.to_sym, label: 'Title '+l, input_html: {value: @project.new_record? ? 'Project Title' : @project.title_translations[l] || ''} %>
+    <% end %>
+  <% end %>
+  <%= f.simple_fields_for :description_translations do |desc| %>
+    <% Crowdbreaks::Locales.each do |l| %>
+      <%= desc.input l.to_sym, label: 'Description '+l, as: :text,
+        input_html: {value: @project.new_record? ? 'Some description' : @project.description_translations[l] || '', rows: 6} %>
+    <% end %>
+  <% end %>
+  <%= f.input :keywords, hint: 'Comma-separated list of keywords for the Twitter streaming API to filter for', 
+    input_html: {value: @project.keywords&.join(',') || "flu, fever, cold"} %>
+  <%= f.input :es_index_name, hint: 'Name of ElasticSearch index to store tweets into, make sure to name the index project_*',
+    input_html: {value: @project.es_index_name || "project_test"} %>
+  <%= f.input :image,
+    as: :file,
+    label: "Project image",
+    hint: 'Image to be shown publicly under /projects',
+    :input_html => { :class => 'file-input-form-control' } %>
+  <%= f.input :public, input_html: {checked: @project.public || false}, hint: 'List project under /projects publicly', label_html: {class: 'checkbox-inline'} %>
+  <%= f.input :activate_stream, input_html: {checked: @project.activate_stream || true}, hint: "Activate stream (if false, logstash won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
+
+  <div class="form-actions" style="margin-top:25px;">
+    <%= f.button :submit %>
+  </div>
+<% end %>

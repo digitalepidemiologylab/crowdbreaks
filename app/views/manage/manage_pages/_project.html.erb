@@ -2,4 +2,12 @@
   <td><%= project.title %></td>
   <td><%= project.es_index_name %></td>
   <td><%= project.keywords %></td>
+  <td>
+    <span> 
+      <%= link_to fa_icon("trash"), admin_project_path(project.id),
+        method: :delete,
+        data: {confirm: "Delete project?"} %>
+      <%= link_to fa_icon("pencil"), edit_admin_project_path(project.id)  %>
+    </span>
+  </td>
 </tr>

@@ -1,13 +1,10 @@
 <% @title ||= Task.model_name.human; title @title %>
 <div class="content-no-banner">
-
   <div class="row">
     <div class="col-xs-6">
       <%= link_to 'Back to Manage', dashboard_path %>
       <h2>Edit task</h2>
-
       <%= render 'task_form' %>
-
     </div>
   </div>
 </div>

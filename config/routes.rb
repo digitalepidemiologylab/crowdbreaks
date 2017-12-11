@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   post 'test', to: 'pages#es_test'
 
   namespace :admin do
-    resources :projects, only: [:new, :create]
+    resources :projects, except: [:show, :index]
   end
 
   scope :api do
