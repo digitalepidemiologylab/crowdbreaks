@@ -1,6 +1,6 @@
 module Manage
   class ManagePagesController < BaseController
-    def index
+    def dashboard
       @es_ready = Crowdbreaks::ESClient.ping
       api = FlaskApi.new
       @api_ready = api.ping

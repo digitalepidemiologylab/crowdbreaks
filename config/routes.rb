@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     end
 
     scope module: 'manage', path: 'manage' do
-      get 'dashboard', to: 'manage_pages#index'
+      get 'dashboard', to: 'manage_pages#dashboard'
       get 'streaming', to: 'manage_pages#streaming'
       get 'status_streaming', to: 'manage_pages#status_streaming'
       resources :mturk_batch_jobs do
