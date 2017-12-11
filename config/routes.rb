@@ -6,6 +6,10 @@ Rails.application.routes.draw do
   get 'test', to: 'pages#test'
   post 'test', to: 'pages#es_test'
 
+  namespace :admin do
+    resources :projects, only: [:new, :create]
+  end
+
   scope :api do
     post 'vaccine_sentiment', to: 'projects#vaccine_sentiment'
     post 'update_visualization', to: 'projects#update_visualization'
@@ -25,6 +29,7 @@ Rails.application.routes.draw do
     end
 
     scope module: 'manage', path: 'manage' do
+      get '/', to: redirect('manage/dashboard')
       get 'dashboard', to: 'manage_pages#dashboard'
       get 'streaming', to: 'manage_pages#streaming'
       get 'status_streaming', to: 'manage_pages#status_streaming'
@@ -32,7 +37,7 @@ Rails.application.routes.draw do
         resources :tasks
         get 'submit'
       end
-      resource :projects, only: [:new, :create], controller: 'projects'
     end
+
   end
 end

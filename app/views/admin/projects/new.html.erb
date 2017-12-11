@@ -1,0 +1,18 @@
+<% @title ||= 'New Project'; title @title %>
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-xs-12">
+      <%= link_to dashboard_path, class: 'btn btn-default' do %>
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Go back
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+      <h2>Create a new project</h2>
+      <%= render 'projects_new_form' %>
+    </div>
+  </div>
+</div>

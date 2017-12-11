@@ -1,60 +1,79 @@
 <% @title ||= 'Manage'; title @title %>
 
-<div class="row content-no-banner">
-  <div class="col-xs-12">
-    <hr />
-    <h3>Batch processing</h3>
-    <div class="btn-toolbar">
-      <%= link_to mturk_batch_jobs_path, class: 'btn btn-primary' do %>
-        Go to batch processing
-        <i class="glyphicon glyphicon-chevron-right"></i>
-      <% end %>
+<div class="content-no-banner">
+  
+  <div class="row">
+    <div class="col-md-4">
+      <h3>Admin</h3>
+      <div class="list-group">
+        <%= link_to admin_root_path, class: 'list-group-item' do %>
+          Active admin
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        <% end %>
+
+        <%= link_to new_project_path, class: 'list-group-item' do %>
+          New Project
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h3>Mturk</h3>
+      <div class="list-group">
+        <%= link_to mturk_batch_jobs_path, class: 'list-group-item' do %>
+          Batch processing
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h3>Pipeline</h3>
+      <div class="list-group">
+        <%= link_to streaming_path, class: 'list-group-item' do %>
+          Streaming
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        <% end %>
+      </div>
     </div>
   </div>
-  <div class="col-xs-12">
-    <hr />
-    <h3>Streaming pipeline</h3>
-    <%= link_to streaming_path, class: 'btn btn-primary' do %>
-      Streaming
-      <i class="glyphicon glyphicon-chevron-right"></i>
-    <% end %>
-    <hr />
-  </div>
-  <div class="col-xs-6">
-    <h3>Status of services</h3>
-    <table class="table">
-      <thead>
-        <th>Service</th>
-        <th>Host</th>
-        <th>Status</th>
-      </thead>
-      <tbody>
-        <tr> 
-          <td>Elasticsearch (signed requests from Heroku)</td>
-          <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
-          <td><span class="label <%= @es_ready ? 'label-success' : 'label-danger' %>"><%= @es_ready ? 'Connected' : 'Not connected'%> </span></td>
-        </tr>
-        <tr> 
-          <td>Elasticsearch (from EC2)</td>
-          <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
-          <td><span class="label <%= @api_es_ready ? 'label-success' : 'label-danger' %>"><%= @api_es_ready ? 'Connected' : 'Not connected'%> </span></td>
-        </tr>
-        <tr> 
-          <td>Flask API</td>
-          <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
-          <td><span class="label <%= @api_ready ? 'label-success' : 'label-danger' %>"><%= @api_ready ? 'Connected' : 'Not connected'%> </span></td>
-        </tr>
-        <tr> 
-          <td>Redis (through Flask API (EC2))</td>
-          <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
-          <td><span class="label <%= @api_redis_ready ? 'label-success' : 'label-danger' %>"><%= @api_redis_ready ? 'Connected' : 'Not connected'%> </span></td>
-        </tr>
-        <tr> 
-          <td>Logstash</td>
-          <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
-          <td><span class="label <%= @stream_status == 'active' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span></td>
-        </tr>
-      </tbody>
-    </table>
+  <hr/>
+  <div class="row">
+    <div class="col-lg-6">
+      <h3>Status of services</h3>
+      <table class="table">
+        <thead>
+          <th>Service</th>
+          <th>Host</th>
+          <th>Status</th>
+        </thead>
+        <tbody>
+          <tr> 
+            <td>Elasticsearch (signed requests from Heroku)</td>
+            <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
+            <td><span class="label <%= @es_ready ? 'label-success' : 'label-danger' %>"><%= @es_ready ? 'Connected' : 'Not connected'%> </span></td>
+          </tr>
+          <tr> 
+            <td>Elasticsearch (from EC2)</td>
+            <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
+            <td><span class="label <%= @api_es_ready ? 'label-success' : 'label-danger' %>"><%= @api_es_ready ? 'Connected' : 'Not connected'%> </span></td>
+          </tr>
+          <tr> 
+            <td>Flask API</td>
+            <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
+            <td><span class="label <%= @api_ready ? 'label-success' : 'label-danger' %>"><%= @api_ready ? 'Connected' : 'Not connected'%> </span></td>
+          </tr>
+          <tr> 
+            <td>Redis (through Flask API (EC2))</td>
+            <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
+            <td><span class="label <%= @api_redis_ready ? 'label-success' : 'label-danger' %>"><%= @api_redis_ready ? 'Connected' : 'Not connected'%> </span></td>
+          </tr>
+          <tr> 
+            <td>Logstash</td>
+            <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
+            <td><span class="label <%= @stream_status == 'active' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

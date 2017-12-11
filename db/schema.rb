@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(version: 20171211094727) do
     t.datetime "image_updated_at"
     t.string "keywords", array: true
     t.boolean "public", default: false, null: false
-    t.boolean "active_stream", default: true, null: false
+    t.boolean "activate_stream", default: true, null: false
     t.index ["slug"], name: "index_projects_on_slug"
   end
 
