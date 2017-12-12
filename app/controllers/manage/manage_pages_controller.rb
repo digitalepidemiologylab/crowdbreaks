@@ -1,5 +1,6 @@
 module Manage
   class ManagePagesController < BaseController
+
     def dashboard
       @es_ready = Crowdbreaks::ESClient.ping
       api = FlaskApi.new
@@ -16,9 +17,5 @@ module Manage
       @stream_status = api.status_streaming
       @projects = Project.all
     end
-
-    def stop_streaming
-    end
-
   end
 end

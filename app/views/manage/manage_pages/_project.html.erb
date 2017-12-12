@@ -2,6 +2,9 @@
   <td><%= project.title %></td>
   <td><%= project.es_index_name %></td>
   <td><%= project.keywords %></td>
+  <td><%= project.lang %></td>
+  <td><span class="label label-<%= project.public ? 'success' : 'default' %>"><%= project.public ? 'Yes' : 'No' %></span></td>
+  <td><span class="label label-<%= project.active_stream ? 'success' : 'default' %>"><%= project.active_stream ? 'Yes' : 'No' %></span></td>
   <td>
     <span> 
       <%= link_to fa_icon("trash"), admin_project_path(project.id),

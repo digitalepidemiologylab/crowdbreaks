@@ -1,19 +1,20 @@
 // React
 import React from 'react'
 import PropTypes from 'prop-types';
-import {Line, defaults} from 'react-chartjs-2';
-import { DropdownButton, MenuItem, Navbar, Nav, NavItem, NavDropdown } from 'react-bootstrap';
+import { Line, defaults } from 'react-chartjs-2';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 
 export class SentimentVisualization extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      labels: props.all_data.map((d) => d.key_as_string),
-      all_data: props.all_data.map((d) => d.doc_count),
-      pro_data: props.pro_data.map((d) => d.doc_count),
-      anti_data: props.anti_data.map((d) => d.doc_count),
-      neutral_data: props.neutral_data.map((d) => d.doc_count)
+      labels: [],
+      all_data: [],
+      pro_data: [],
+      anti_data: [],
+      neutral_data: [],
+      interval: props.interval
     };
 
     this.options = {
@@ -36,16 +37,27 @@ export class SentimentVisualization extends React.Component {
     defaults.global.defaultFontFamily = 'Noto Sans';
   }
 
+  componentWillMount() {
+    const data = {
+      "interval": this.props.interval
+    };
+    this.setData(data);
+  }
+
   onSelect(ev) {
-    const postData = {
+    const data = {
       "interval": ev
     };
+    this.setData(data);
+  }
+
+  setData(data) {
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       type: "POST",
       crossDomain: true,
       url: this.props.updateVisualizationPath,
-      data: JSON.stringify(postData),
+      data: JSON.stringify(data),
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
@@ -58,7 +70,6 @@ export class SentimentVisualization extends React.Component {
         });
       }
     });
-
   }
 
   render() {

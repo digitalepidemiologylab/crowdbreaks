@@ -40,9 +40,18 @@ module Crowdbreaks
     config.dummy_image_url = "https://dummyimage.com/300.png/09f/fff"
 
     # for allowing ajax requests from mturk
-    config.action_dispatch.default_headers.merge!({
-      'Access-Control-Allow-Origin' => '*',
-      'Access-Control-Request-Method' => '*'
-    })
+    # config.action_dispatch.default_headers.merge!({
+    #   'Access-Control-Allow-Origin' => '*',
+    #   'Access-Control-Request-Method' => '*'
+    # })
+    
+    # rack-cors configuration
+    # config.middleware.insert_before 0, Rack::Cors do
+    #   allow do
+    #     origins '*'
+    #     resource '*', :headers => :any, :methods => [:get, :post, :options]
+    #   end
+    # end
+
   end
 end

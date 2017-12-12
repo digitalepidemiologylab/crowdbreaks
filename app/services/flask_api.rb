@@ -45,7 +45,7 @@ class FlaskApi
     # to test in console:
     # HTTParty.post(ENV['FLASK_API_HOSTNAME']+"/sentiment/vaccine", body: {"text": "This is a string"}.to_json, headers: { "Content-Type" => "application/json"  }, basic_auth: {username: ENV['FLASK_API_USERNAME'],password: ENV['FLASK_API_PASSWORD']})
     data = {'text': text}
-    self.class.post('/sentiment/vaccine', body: data.to_json, headers: {'Content-Type': 'application/json'}, basic_auth: @auth)
+    self.class.post('/sentiment/vaccine', body: data.to_json, headers: {'Content-Type' => 'application/json'}, basic_auth: @auth)
   end
 
   # pipeline
@@ -56,7 +56,11 @@ class FlaskApi
 
   def status_streaming
     resp = self.class.get('/pipeline/status', basic_auth: @auth)
-    return resp.length > 10 ? 'error' : resp
+    return resp.length > 20 ? 'error' : resp
+  end
+
+  def set_config(data)
+    self.class.post('/pipeline/config', body: data.to_json, headers: {'Content-Type' => 'application/json', 'Accept': 'application/json'}, basic_auth: @auth)
   end
 
   def stop_streaming

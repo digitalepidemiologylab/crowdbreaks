@@ -21,8 +21,9 @@
     label: "Project image",
     hint: 'Image to be shown publicly under /projects',
     :input_html => { :class => 'file-input-form-control' } %>
+  <%= f.input :lang, label: "Languages", hint: 'Languages of tweets to collect through Twitter API', :input_html => { value: @project.lang&.join(',') || 'en' } %>
   <%= f.input :public, input_html: {checked: @project.public || false}, hint: 'List project under /projects publicly', label_html: {class: 'checkbox-inline'} %>
-  <%= f.input :activate_stream, input_html: {checked: @project.activate_stream || true}, hint: "Activate stream (if false, logstash won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
+  <%= f.input :active_stream, input_html: {checked: @project.active_stream || true}, hint: "Activate stream (if false, logstash won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
 
   <div class="form-actions" style="margin-top:25px;">
     <%= f.button :submit %>

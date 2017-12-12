@@ -46,18 +46,23 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :keywords, :es_index_name, :image, :public, :activate_stream)
+      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :keywords, :es_index_name, :image, :public, :active_stream, :lang)
     end
 
     def sanitized_projects_params
-      keywords_sanitized = []
       sanitized_params = project_params
-      project_params[:keywords].split(',').each do |k|
-        _k = k.strip.downcase
-        keywords_sanitized.push(_k) if _k.length > 0
-      end
-      sanitized_params[:keywords] = keywords_sanitized
+      sanitized_params[:keywords] = array_from_string(project_params[:keywords])
+      sanitized_params[:lang] = array_from_string(project_params[:lang])
       sanitized_params
+    end
+
+    def array_from_string(str)
+      arr = []
+      str.split(',').each do |k|
+        _k = k.strip.downcase
+        arr.push(_k) if _k.length > 0
+      end
+      arr
     end
   end
 end

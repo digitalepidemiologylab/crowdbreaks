@@ -11,8 +11,9 @@ Rails.application.routes.draw do
   end
 
   scope :api do
-    post 'vaccine_sentiment', to: 'projects#vaccine_sentiment'
-    post 'update_visualization', to: 'projects#update_visualization'
+    post 'vaccine_sentiment', to: 'apis#vaccine_sentiment'
+    post 'update_visualization', to: 'apis#update_visualization'
+    get 'set_config', to: 'apis#set_config'
   end
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
@@ -38,6 +39,5 @@ Rails.application.routes.draw do
         get 'submit'
       end
     end
-
   end
 end

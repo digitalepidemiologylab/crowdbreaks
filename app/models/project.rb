@@ -25,7 +25,7 @@ class Project < ApplicationRecord
 
   def initial_question
     first_transition = transitions.find_by(from_question: nil)
-    raise "Project #{self.title} does not have a valid first Question" if first_transition.nil?
+    return nil if first_transition.nil?
     first_transition.to_question
   end
 end
