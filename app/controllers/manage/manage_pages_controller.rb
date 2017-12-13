@@ -13,8 +13,9 @@ module Manage
 
     def streaming
       api = FlaskApi.new
-      @current_streams = api.get_config
       @stream_status = api.status_streaming
+      @current_streams = api.get_config
+      @is_up_to_date = Project.is_up_to_date(@current_streams)
       @projects = Project.all
     end
   end

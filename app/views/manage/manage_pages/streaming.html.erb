@@ -24,6 +24,7 @@
       <table class="table">
         <thead>
           <tr>
+            <th>Project slug</th>
             <th>ES index name</th>
             <th>Keywords</th>
             <th>Languages</th>
@@ -60,9 +61,12 @@
 
   <div class="row">
     <div class="col-xs-12">
-      <div class="btn-toolbar">
+      <h3>Streaming configuration</h3>
+      <% if not @is_up_to_date %>
         <%= link_to 'Update configuration', set_config_path, class: 'btn btn-warning' %>
-      </div>
+      <% else %>
+        <span class="label label-success">Up to date</span>
+      <% end %>
     </div>
   </div>
 </div>
