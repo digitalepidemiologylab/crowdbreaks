@@ -14,8 +14,34 @@
   <div class="row">
     <div class="col-xs-12">
       <h3>Logstash process status</h3>
-      <span class="label <%= @stream_status == 'active' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span></td>
+      <h3>
+        <span class="label <%= @stream_status == 'active' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span>
+      </h3>
     </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12" style="margin-top:40px;">
+      <% if @stream_status == 'active' %>
+      <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), change_stream_status: 'stop', class: 'btn btn-sm btn-danger', style: 'margin-right:15px;' do %>
+        <i class="fa fa-stop" style="margin-right:10px;"></i>
+        Stop stream
+      <% end %>
+      <%= link_to stream_status_path(api: {change_stream_status: 'restart'}), class: 'btn btn-sm btn-primary' do %>
+        <i class="fa fa-refresh" style="margin-right:10px;"></i>
+        Restart stream
+      <% end %>
+      <% else %>
+        <%= link_to stream_status_path(api: {change_stream_status: 'start'}), class: 'btn btn-md btn-success' do %>
+        <i class="fa fa-play" style="margin-right:10px;"></i>
+        Start stream
+      <% end %>
+      <% end %>
+    </div>
+    <div class="col-xs-12" style="margin-top:15px;">
+    </div>
+  </div>
+  <div class="row">
   </div>
 
   <div class="row">

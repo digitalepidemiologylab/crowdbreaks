@@ -56,7 +56,7 @@ class FlaskApi
 
   def status_streaming
     resp = self.class.get('/pipeline/status', basic_auth: @auth)
-    return resp.length > 20 ? 'error' : resp
+    return resp.length > 20 ? 'error' : resp.strip
   end
 
   def set_config(data)
@@ -65,6 +65,13 @@ class FlaskApi
 
   def stop_streaming
     resp = self.class.get('/pipeline/stop', basic_auth: @auth)
-    resp.parsed_response
+  end
+
+  def start_streaming
+    resp = self.class.get('/pipeline/start', basic_auth: @auth)
+  end
+
+  def restart_streaming
+    resp = self.class.get('/pipeline/restart', basic_auth: @auth)
   end
 end

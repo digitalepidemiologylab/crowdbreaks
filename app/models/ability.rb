@@ -6,6 +6,9 @@ class Ability
     user ||= User.new
     if user.admin?
       can :manage, :all
+      
+      # API controller
+      can :configure, :stream
     else
       # default rule
       can :read, :all

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     post 'vaccine_sentiment', to: 'apis#vaccine_sentiment'
     post 'update_visualization', to: 'apis#update_visualization'
     get 'set_config', to: 'apis#set_config'
+    get 'stream_status', to: 'apis#stream_status'
   end
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|

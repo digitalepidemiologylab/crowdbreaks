@@ -3,6 +3,8 @@ class ApisController < ApplicationController
 
   # update stream configuration
   def set_config
+    authorize! :configure, :stream
+
     @projects = Project.all.where(active_stream: true)
     config = ActiveModelSerializers::SerializableResource.new(@projects).as_json
     resp = @api.set_config(config)
@@ -38,14 +40,45 @@ class ApisController < ApplicationController
     render json: resp.to_json, status: 200
   end
 
+  def stream_status
+    authorize! :configure, :stream
+
+    case api_params[:change_stream_status]
+    when 'start'
+      resp = @api.start_streaming
+      respond_with_flash(resp, streaming_path)
+    when 'restart'
+      resp = @api.restart_streaming
+      respond_with_flash(resp, streaming_path)
+    when 'stop'
+      resp = @api.stop_streaming
+      respond_with_flash(resp, streaming_path)
+    end
+  end
 
   private
   
   def api_params
-    params.require(:api).permit(:interval, :text)
+    params.require(:api).permit(:interval, :text, :change_stream_status)
   end
 
   def api_init
     @api = FlaskApi.new
   end
+
+
+  def respond_with_flash(response, redirect_path)
+    if response.success?
+      respond_to do |format|
+        flash[:notice] = response.parsed_response
+        format.html { redirect_to streaming_path }
+      end
+    else
+      respond_to do |format|
+        flash[:alert] = response.parsed_response
+        format.html { redirect_to streaming_path }
+      end
+    end
+  end
+
 end
