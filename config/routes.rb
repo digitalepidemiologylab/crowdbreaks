@@ -3,9 +3,6 @@ Rails.application.routes.draw do
 
   root 'pages#index'
 
-  get 'test', to: 'pages#test'
-  post 'test', to: 'pages#es_test'
-
   namespace :admin do
     resources :projects, except: [:show, :index]
   end

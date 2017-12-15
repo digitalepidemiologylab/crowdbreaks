@@ -4,13 +4,4 @@ class PagesController < ApplicationController
 
   def about
   end
-
-  def test
-  end
-
-  def es_test
-    client = Crowdbreaks::Client
-    @resp = client.cluster.health
-    render :test
-  end
 end
