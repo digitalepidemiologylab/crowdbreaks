@@ -31,8 +31,8 @@ class FlaskApi
     end
   end
 
-  def get_all_data(options={})
-    resp = self.class.get('/sentiment/data/all', query: options, basic_auth: @auth)
+  def get_all_data(index, options={})
+    resp = self.class.get('/data/all/'+index, query: options, basic_auth: @auth)
     JSON.parse(resp)
   end
 

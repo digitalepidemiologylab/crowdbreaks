@@ -1,0 +1,20 @@
+<% @title ||= 'Monitor streams'; title @title %>
+
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-xs-12">
+      <%= link_to streaming_path, class: 'btn btn-default' do %>
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Go back
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Recent stream activity</h3>
+    </div>
+  </div>
+
+  <%= render partial: "monitor_stream", collection: @current_streams, as: 'project' %>
+</div>

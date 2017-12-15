@@ -24,6 +24,15 @@ export class SentimentVisualization extends React.Component {
             display: true,
             labelString: "Counts"
           }
+        }],
+        xAxes: [{
+          type: 'time',
+          time: {
+            unit: 'day',
+            displayFormats: {
+              'day': 'YYYY-MM-DD'
+            }
+          }
         }]
       },
       elements: {
@@ -39,14 +48,20 @@ export class SentimentVisualization extends React.Component {
 
   componentWillMount() {
     const data = {
-      "interval": this.props.interval
+      "api": {
+        "interval": this.props.interval,
+        "es_index_name": this.props.es_index_name
+      }
     };
     this.setData(data);
   }
 
   onSelect(ev) {
     const data = {
-      "interval": ev
+      "api": {
+        "interval": ev,
+        "es_index_name": this.props.es_index_name
+      }
     };
     this.setData(data);
   }
@@ -62,7 +77,7 @@ export class SentimentVisualization extends React.Component {
       contentType: "application/json",
       success: (result) => {
         this.setState({
-          labels: result.all_data.map((d) => d.key_as_string),
+          labels: result.all_data.map((d) => new Date(d.key_as_string)),
           all_data: result.all_data.map((d) => d.doc_count),
           pro_data: result.pro_data.map((d) => d.doc_count),
           anti_data: result.anti_data.map((d) => d.doc_count),

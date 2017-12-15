@@ -2,12 +2,10 @@
 <div class="content-no-banner">
   <div class="row">
     <div class="col-xs-12">
-      <div class="btn-toolbar">
-        <%= link_to dashboard_path, class: 'btn btn-default' do %>
-          <i class="glyphicon glyphicon-chevron-left"></i>
-          Go back
-        <% end %>
-      </div>
+      <%= link_to dashboard_path, class: 'btn btn-default' do %>
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Go back
+      <% end %>
     </div>
   </div>
 
@@ -21,7 +19,7 @@
   </div>
 
   <div class="row">
-    <div class="col-xs-12" style="margin-top:40px;">
+    <div class="col-xs-12" style="margin-top:25px;">
       <% if @stream_status == 'active' %>
       <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), change_stream_status: 'stop', class: 'btn btn-sm btn-danger', style: 'margin-right:15px;' do %>
         <i class="fa fa-stop" style="margin-right:10px;"></i>
@@ -42,25 +40,6 @@
     </div>
   </div>
   <div class="row">
-  </div>
-
-  <div class="row">
-    <div class="col-xs-12">
-      <h3>Current streaming configuration</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Project slug</th>
-            <th>ES index name</th>
-            <th>Keywords</th>
-            <th>Languages</th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= render partial: "current_stream", collection: @current_streams, as: 'stream' %>
-        </tbody>
-      </table>
-    </div>
   </div>
 
   <div class="row">
@@ -88,11 +67,34 @@
   <div class="row">
     <div class="col-xs-12">
       <h3>Streaming configuration</h3>
+      <h3>
+        <span class="label <%= @is_up_to_date ? 'label-success' : 'label-danger' %>">
+          <%= @is_up_to_date ? 'Up-to-date' : 'Not up-to-date'  %>
+        </span>
+      </h3>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12" style="margin-top:20px;">
       <% if not @is_up_to_date %>
-        <%= link_to 'Update configuration', set_config_path, class: 'btn btn-warning' %>
-      <% else %>
-        <span class="label label-success">Up to date</span>
+        <%= link_to 'Update configuration', set_config_path, class: 'btn btn-default', style: 'margin-right:15px;' %>
       <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4" style="margin-top:20px;">
+
+      <div class="list-group">
+        <%= link_to current_streams_path, class: 'list-group-item' do %>
+          See current configuration
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        <% end %>
+        <%= link_to monitor_streams_path, class: 'list-group-item' do %>
+          Monitor stream activity
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>

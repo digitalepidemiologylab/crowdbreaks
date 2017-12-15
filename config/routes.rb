@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     post 'update_visualization', to: 'apis#update_visualization'
     get 'set_config', to: 'apis#set_config'
     get 'stream_status', to: 'apis#stream_status'
+    get 'stream_data', to: 'apis#stream_data'
   end
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
@@ -34,7 +35,8 @@ Rails.application.routes.draw do
       get '/', to: redirect('manage/dashboard')
       get 'dashboard', to: 'manage_pages#dashboard'
       get 'streaming', to: 'manage_pages#streaming'
-      get 'status_streaming', to: 'manage_pages#status_streaming'
+      get 'current_streams', to: 'manage_pages#current_streams'
+      get 'monitor_streams', to: 'manage_pages#monitor_streams'
       resources :mturk_batch_jobs do
         resources :tasks
         get 'submit'

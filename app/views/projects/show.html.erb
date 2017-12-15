@@ -15,7 +15,8 @@
       <%= react_component 'SentimentVisualization',
         {
         'interval': @interval,
-        'updateVisualizationPath': update_visualization_path
+        'updateVisualizationPath': update_visualization_path,
+        'es_index_name': @project.es_index_name
         }
       %>
     </div>

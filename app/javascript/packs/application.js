@@ -7,13 +7,14 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
+import WebpackerReact from 'webpacker-react'
 import { QSContainer } from './../components/qs/QSContainer';
 import { MturkQSContainer } from './../components/qs/MturkQSContainer';
 import { SentimentTextBox } from './../components/sent_textbox/SentimentTextBox';
 import { SentimentVisualization } from './../components/sent_viz/SentimentVisualization';
-import WebpackerReact from 'webpacker-react'
+import { MonitorStream } from './../components/monitor_stream/MonitorStream';
 
 
 // Register components using Webpacker-react 
 Turbolinks.start()
-WebpackerReact.setup({QSContainer, MturkQSContainer, SentimentTextBox, SentimentVisualization})
+WebpackerReact.setup({QSContainer, MturkQSContainer, SentimentTextBox, SentimentVisualization, MonitorStream})

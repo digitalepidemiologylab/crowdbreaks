@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="col-xs-12" style="margin-top: 20px;">
+      <%= react_component 'MonitorStream',
+        {
+        'project_name': project.title,
+        'es_index_name': project.es_index_name,
+        'data_endpoint': stream_data_path
+        }
+      %>
+  </div>
+</div>
