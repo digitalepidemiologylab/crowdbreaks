@@ -13,14 +13,14 @@
     <div class="col-xs-12">
       <h3>Logstash process status</h3>
       <h3>
-        <span class="label <%= @stream_status == 'active' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span>
+        <span class="label <%= @stream_status == 'running' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span>
       </h3>
     </div>
   </div>
 
   <div class="row">
     <div class="col-xs-12" style="margin-top:25px;">
-      <% if @stream_status == 'active' %>
+      <% if @stream_status == 'running' %>
       <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), change_stream_status: 'stop', class: 'btn btn-sm btn-danger', style: 'margin-right:15px;' do %>
         <i class="fa fa-stop" style="margin-right:10px;"></i>
         Stop stream
@@ -88,10 +88,6 @@
       <div class="list-group">
         <%= link_to current_streams_path, class: 'list-group-item' do %>
           See current configuration
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        <% end %>
-        <%= link_to monitor_streams_path, class: 'list-group-item' do %>
-          Monitor stream activity
           <i class="glyphicon glyphicon-chevron-right"></i>
         <% end %>
       </div>

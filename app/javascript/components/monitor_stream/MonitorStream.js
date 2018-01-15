@@ -3,13 +3,18 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Bar, defaults } from 'react-chartjs-2';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
+var moment = require('moment');
+
 
 export class MonitorStream extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: []
+      data: [],
+      past_minutes: props.past_minutes,
+      min: moment().subtract(props.past_minutes, 'minutes').format('YYYY-MM-DD HH:mm'),
+      max: moment().format('YYYY-MM-DD HH:mm')
     };
 
     this.options = {
@@ -34,12 +39,14 @@ export class MonitorStream extends React.Component {
         }],
         xAxes: [{
           type: 'time',
+          barPercentage: .8,
           time: {
-            unit: 'minute',
+            unit: 'second',
             displayFormats: {
-              'day': 'YYYY-MM-DD',
-              'minute': 'HH:mm'
-            }
+              'second': 'HH:mm:ss'
+            },
+            min: this.state.min,
+            max: this.state.max
           }
         }]
       },
@@ -47,17 +54,41 @@ export class MonitorStream extends React.Component {
         rectangle: {
           borderSkipped: 'left'
         }
-      }
+      },
+      animation: false
     };
 
     defaults.global.defaultFontFamily = 'Noto Sans';
+
+    // Automatic update
+    if (props.auto_update) {
+      this.interval = setInterval(() => this.triggerGetData(), 5000);
+    }
   }
 
   componentWillMount() {
     const data = {
       'api': {
         'es_index_name': this.props.es_index_name,
-        'interval': 'hour'
+        'interval': 'minute',
+        'past_minutes': this.state.past_minutes
+      }
+    }
+    this.getData(data);
+  }
+
+  componentWillUnmount() {
+    if (this.props.auto_update) {
+      clearInterval(this.interval);
+    }
+  }
+
+  triggerGetData() {
+    const data = {
+      'api': {
+        'es_index_name': this.props.es_index_name,
+        'interval': 'minute',
+        'past_minutes': this.state.past_minutes
       }
     }
     this.getData(data);
@@ -73,10 +104,11 @@ export class MonitorStream extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
-        console.log(result);
         this.setState({
-          labels: result.map((d) => new Date(d.key_as_string)),
-          counts: result.map((d) => d.doc_count)
+          labels: result.map((d) => moment.utc(d.key_as_string, 'YYYY-MM-DD HH:mm:ss')),
+          counts: result.map((d) => d.doc_count),
+          min: moment().subtract(this.props.past_minutes, 'minutes').add(1, 'minute').format('YYYY-MM-DD HH:mm'),
+          max: moment().add(1, 'minute').format('YYYY-MM-DD HH:mm')
         });
       }
     });
@@ -93,9 +125,11 @@ export class MonitorStream extends React.Component {
         }
       ]
     };
+    this.options.scales.xAxes[0].time.min = this.state.min;
+    this.options.scales.xAxes[0].time.max = this.state.max;
 
     return(
-      <Bar data={data} height={150} options={this.options} />
+      <Bar key={Date()} data={data} height={150} options={this.options} />
     )
   }
 }

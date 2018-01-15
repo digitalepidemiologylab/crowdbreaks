@@ -30,7 +30,15 @@
       <h3>Pipeline</h3>
       <div class="list-group">
         <%= link_to streaming_path, class: 'list-group-item' do %>
-          Streaming
+          Streaming configuration
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        <% end %>
+        <%= link_to monitor_streams_path, class: 'list-group-item' do %>
+          Stream monitoring
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        <% end %>
+        <%= link_to elasticsearch_indexes_path, class: 'list-group-item' do %>
+          Elasticsearch
           <i class="glyphicon glyphicon-chevron-right"></i>
         <% end %>
       </div>
@@ -70,7 +78,7 @@
           <tr> 
             <td>Logstash</td>
             <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
-            <td><span class="label <%= @stream_status == 'active' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span></td>
+            <td><span class="label <%= @stream_status == 'running' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span></td>
           </tr>
         </tbody>
       </table>

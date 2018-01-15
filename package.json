@@ -5,6 +5,7 @@
     "chart.js": "^2.7.1",
     "humps": "^2.0.1",
     "jquery": "^3.2.1",
+    "moment": "^2.20.1",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.6.2",

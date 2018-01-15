@@ -4,13 +4,15 @@ class FlaskApi
   include HTTParty
 
   base_uri ENV['FLASK_API_HOSTNAME']
+  # debug_output $stderr
+  basic_auth ENV['FLASK_API_USERNAME'], ENV['FLASK_API_PASSWORD']
+  JSON_HEADER = {'Content-Type' => 'application/json', :Accept => 'application/json'}
 
   def initialize
-    @auth = {username: ENV['FLASK_API_USERNAME'], password: ENV['FLASK_API_PASSWORD']}
   end
 
   def ping
-    options = {basic_auth: @auth, timeout: 5}
+    options = {timeout: 5}
     begin
       resp = self.class.get("/", options)
     rescue
@@ -21,7 +23,7 @@ class FlaskApi
   end
 
   def test(service)
-    options = {basic_auth: @auth, timeout: 5}
+    options = {timeout: 5}
     begin
       resp = self.class.get("/test/"+service, options)
     rescue
@@ -32,46 +34,54 @@ class FlaskApi
   end
 
   def get_all_data(index, options={})
-    resp = self.class.get('/data/all/'+index, query: options, basic_auth: @auth)
+    resp = self.class.get('/data/all/'+index, query: options)
     JSON.parse(resp)
   end
 
   def get_sentiment_data(value, options={})
-    resp = self.class.get('/sentiment/data/'+value, query: options, basic_auth: @auth)
+    resp = self.class.get('/sentiment/data/'+value, query: options)
     JSON.parse(resp)
   end
 
   def get_vaccine_sentiment(text)
-    # to test in console:
-    # HTTParty.post(ENV['FLASK_API_HOSTNAME']+"/sentiment/vaccine", body: {"text": "This is a string"}.to_json, headers: { "Content-Type" => "application/json"  }, basic_auth: {username: ENV['FLASK_API_USERNAME'],password: ENV['FLASK_API_PASSWORD']})
     data = {'text': text}
-    self.class.post('/sentiment/vaccine', body: data.to_json, headers: {'Content-Type' => 'application/json'}, basic_auth: @auth)
+    self.class.post('/sentiment/vaccine', body: data.to_json, headers: JSON_HEADER)
   end
 
   # pipeline
   def get_config
-    resp = self.class.get('/pipeline/config', basic_auth: @auth)
+    resp = self.class.get('/pipeline/config')
     resp.parsed_response
   end
 
   def status_streaming
-    resp = self.class.get('/pipeline/status', basic_auth: @auth)
+    resp = self.class.get('/pipeline/status/logstash')
     return resp.length > 20 ? 'error' : resp.strip
   end
 
   def set_config(data)
-    self.class.post('/pipeline/config', body: data.to_json, headers: {'Content-Type' => 'application/json', 'Accept': 'application/json'}, basic_auth: @auth)
+    self.class.post('/pipeline/config', body: data.to_json, headers: JSON_HEADER)
   end
 
   def stop_streaming
-    resp = self.class.get('/pipeline/stop', basic_auth: @auth)
+    resp = self.class.get('/pipeline/stop')
   end
 
   def start_streaming
-    resp = self.class.get('/pipeline/start', basic_auth: @auth)
+    self.class.get('/pipeline/start')
   end
 
   def restart_streaming
-    resp = self.class.get('/pipeline/restart', basic_auth: @auth)
+    self.class.get('/pipeline/restart')
+  end
+
+  # elasticsearch
+  def es_stats
+    resp = self.class.get('/elasticsearch/stats')
+    resp.parsed_response['indices']
+  end
+
+  def create_index(name)
+    self.class.post('/elasticsearch/create', body: {name: name}.to_json, headers: JSON_HEADER)
   end
 end

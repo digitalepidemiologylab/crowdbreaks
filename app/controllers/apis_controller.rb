@@ -32,9 +32,8 @@ class ApisController < ApplicationController
       render json: {'errors': ['es_index_name needs to be present']}, status: 400
       return
     end
-
-    options = {interval: 'minute', start_date: '2017-06-14 10:00:00', end_date: '2017-06-14 12:00:00'}
-    # options = {interval: 'minute', start_date: 'now-8M/M', end_date: 'now'}
+    past_minutes = api_params.fetch(:past_minutes, 30)
+    options = {interval: '5s', start_date: "now-#{past_minutes}m", end_date: 'now'}
     resp =  @api.get_all_data(api_params[:es_index_name], options)
     render json: resp.to_json, status: 200
   end
@@ -62,24 +61,14 @@ class ApisController < ApplicationController
     @projects = Project.all.where(active_stream: true)
     config = ActiveModelSerializers::SerializableResource.new(@projects).as_json
     resp = @api.set_config(config)
-    if resp.success?
-      respond_to do |format|
-        flash[:notice] = resp.parsed_response
-        format.html { redirect_to streaming_path }
-      end
-    else
-      respond_to do |format|
-        flash[:alert] = resp.parsed_response
-        format.html { redirect_to streaming_path }
-      end
-    end
+    respond_with_flash(resp, streaming_path)
   end
 
 
   private
   
   def api_params
-    params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name)
+    params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes)
   end
 
   def api_init
@@ -90,12 +79,12 @@ class ApisController < ApplicationController
     if response.success?
       respond_to do |format|
         flash[:notice] = response.parsed_response
-        format.html { redirect_to streaming_path }
+        format.html { redirect_to redirect_path }
       end
     else
       respond_to do |format|
         flash[:alert] = response.parsed_response
-        format.html { redirect_to streaming_path }
+        format.html { redirect_to redirect_path }
       end
     end
   end

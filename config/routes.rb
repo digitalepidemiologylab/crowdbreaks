@@ -8,11 +8,13 @@ Rails.application.routes.draw do
   end
 
   scope :api do
-    post 'vaccine_sentiment', to: 'apis#vaccine_sentiment'
-    post 'update_visualization', to: 'apis#update_visualization'
-    get 'set_config', to: 'apis#set_config'
-    get 'stream_status', to: 'apis#stream_status'
-    get 'stream_data', to: 'apis#stream_data'
+    controller :apis do
+      post 'vaccine_sentiment', action: 'vaccine_sentiment'
+      post 'update_visualization', action: 'update_visualization'
+      get 'set_config', action: 'set_config'
+      get 'stream_status', action: 'stream_status'
+      get 'stream_data', action: 'stream_data'
+    end
   end
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
@@ -38,6 +40,7 @@ Rails.application.routes.draw do
         resources :tasks
         get 'submit'
       end
+      resources :elasticsearch_indexes
     end
   end
 end
