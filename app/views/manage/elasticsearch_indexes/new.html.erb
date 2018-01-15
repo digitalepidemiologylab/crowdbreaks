@@ -1,0 +1,22 @@
+<% @title ||= 'New ES index'; title @title %>
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-xs-12">
+      <%= link_to elasticsearch_indexes_path, class: 'btn btn-default' do %>
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Go back
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+      <h3>Create new Elasticsearch index</h3>
+      <%= simple_form_for :elasticsearch_index, url: elasticsearch_indexes_path do |f| %>
+        <%= f.input :name, as: :string, hint: "Start name with project_* in order to use standard Elasticsearch project template." %>
+        <div class="form-actions" style="margin-top:25px;">
+          <%= f.button :submit %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

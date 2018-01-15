@@ -1,0 +1,40 @@
+<% @title ||= 'Manage elasticsearch indexes'; title @title %>
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-xs-12">
+      <%= link_to dashboard_path, class: 'btn btn-default' do %>
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Go back
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Current Elasticsearch indexes</h3>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Index name</th>
+            <th>Number of documents</th>
+            <th>Size (MB)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render partial: "elasticsearch_indexes", collection: @indexes, as: 'index' %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12" style="margin-top:20px;">
+      <%= link_to 'Create new index', new_elasticsearch_index_path, class: 'btn btn-primary' %>
+    </div>
+  </div>
+</div>
