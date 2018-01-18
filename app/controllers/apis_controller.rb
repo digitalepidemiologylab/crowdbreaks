@@ -33,7 +33,7 @@ class ApisController < ApplicationController
       return
     end
     past_minutes = api_params.fetch(:past_minutes, 30)
-    options = {interval: '5s', start_date: "now-#{past_minutes}m", end_date: 'now'}
+    options = {interval: api_params[:interval], start_date: "now-#{past_minutes}m", end_date: 'now'}
     resp =  @api.get_all_data(api_params[:es_index_name], options)
     render json: resp.to_json, status: 200
   end

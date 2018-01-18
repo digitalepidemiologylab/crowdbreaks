@@ -14,7 +14,9 @@ import { SentimentTextBox } from './../components/sent_textbox/SentimentTextBox'
 import { SentimentVisualization } from './../components/sent_viz/SentimentVisualization';
 import { MonitorStream } from './../components/monitor_stream/MonitorStream';
 
-
 // Register components using Webpacker-react 
 Turbolinks.start()
 WebpackerReact.setup({QSContainer, MturkQSContainer, SentimentTextBox, SentimentVisualization, MonitorStream})
+
+// this is needed for components to properly unmount and not being cached
+$(document).on('turbolinks:before-cache', () => WebpackerReact.unmountComponents())

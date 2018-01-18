@@ -17,6 +17,9 @@ export class MonitorStream extends React.Component {
       max: moment().format('YYYY-MM-DD HH:mm')
     };
 
+    this.intervalId = null;
+    this.aggregation_interval = '10s';
+
     this.options = {
       maintainAspectRatio: false,
       title: {
@@ -57,29 +60,28 @@ export class MonitorStream extends React.Component {
       },
       animation: false
     };
-
     defaults.global.defaultFontFamily = 'Noto Sans';
-
-    // Automatic update
-    if (props.auto_update) {
-      this.interval = setInterval(() => this.triggerGetData(), 5000);
-    }
   }
 
   componentWillMount() {
     const data = {
       'api': {
         'es_index_name': this.props.es_index_name,
-        'interval': 'minute',
+        'interval': this.aggregation_interval,
         'past_minutes': this.state.past_minutes
       }
     }
     this.getData(data);
+
+    // Automatic update
+    if (this.props.auto_update) {
+      this.intervalId = setInterval(() => this.triggerGetData(), 2000);
+    }
   }
 
   componentWillUnmount() {
     if (this.props.auto_update) {
-      clearInterval(this.interval);
+      clearInterval(this.intervalId);
     }
   }
 
@@ -87,7 +89,7 @@ export class MonitorStream extends React.Component {
     const data = {
       'api': {
         'es_index_name': this.props.es_index_name,
-        'interval': 'minute',
+        'interval': this.aggregation_interval,
         'past_minutes': this.state.past_minutes
       }
     }
@@ -129,7 +131,9 @@ export class MonitorStream extends React.Component {
     this.options.scales.xAxes[0].time.max = this.state.max;
 
     return(
-      <Bar key={Date()} data={data} height={150} options={this.options} />
+      <div>
+        <Bar key={Date()} data={data} height={150} options={this.options} />
+      </div>
     )
   }
 }
