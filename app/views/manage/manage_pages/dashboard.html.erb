@@ -56,30 +56,30 @@
         </thead>
         <tbody>
           <tr> 
-            <td>Elasticsearch (signed requests from Heroku)</td>
-            <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
-            <td><span class="label <%= @es_ready ? 'label-success' : 'label-danger' %>"><%= @es_ready ? 'Connected' : 'Not connected'%> </span></td>
-          </tr>
-          <tr> 
-            <td>Elasticsearch (from EC2)</td>
-            <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
-            <td><span class="label <%= @api_es_ready ? 'label-success' : 'label-danger' %>"><%= @api_es_ready ? 'Connected' : 'Not connected'%> </span></td>
-          </tr>
-          <tr> 
             <td>Flask API</td>
             <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
             <td><span class="label <%= @api_ready ? 'label-success' : 'label-danger' %>"><%= @api_ready ? 'Connected' : 'Not connected'%> </span></td>
           </tr>
           <tr> 
-            <td>Redis (through Flask API (EC2))</td>
-            <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
-            <td><span class="label <%= @api_redis_ready ? 'label-success' : 'label-danger' %>"><%= @api_redis_ready ? 'Connected' : 'Not connected'%> </span></td>
+            <td>Elasticsearch (signed requests from Heroku, to be removed)</td>
+            <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
+            <td><span class="label <%= @es_ready ? 'label-success' : 'label-danger' %>"><%= @es_ready ? 'Connected' : 'Not connected'%> </span></td>
           </tr>
-          <tr> 
-            <td>Logstash</td>
-            <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
-            <td><span class="label <%= @stream_status == 'running' ? 'label-success' : 'label-danger' %>"><%= @stream_status %> </span></td>
-          </tr>
+        </tbody>
+      </table>
+
+      <table class="table">
+        <thead>
+          <th>Container</th>
+          <th>Status</th>
+        </thead>
+        <tbody>
+          <% @status_all.each do |s| %>
+            <tr>
+              <td><%= s['name'] %></td>
+              <td><span class="label <%= label(s['status']) %>"><%= s['status'] %></span></td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
     </div>

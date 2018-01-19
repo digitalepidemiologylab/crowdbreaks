@@ -5,9 +5,7 @@ module Manage
     def dashboard
       @es_ready = Crowdbreaks::ESClient.ping
       @api_ready = @api.ping
-      @api_es_ready = @api.test('es')
-      @api_redis_ready = @api.test('redis')
-      @stream_status = @api.status_streaming
+      @status_all = @api.status_all
     end
 
 

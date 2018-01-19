@@ -54,6 +54,11 @@ class FlaskApi
     resp.parsed_response
   end
 
+  def status_all
+    return self.class.get('/pipeline/status/all')
+    # return resp.length > 20 ? 'error' : resp.strip
+  end
+
   def status_streaming
     resp = self.class.get('/pipeline/status/logstash')
     return resp.length > 20 ? 'error' : resp.strip

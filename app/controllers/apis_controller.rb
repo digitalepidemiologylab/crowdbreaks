@@ -38,6 +38,7 @@ class ApisController < ApplicationController
     render json: resp.to_json, status: 200
   end
 
+  # Change stream status
   def stream_status
     authorize! :configure, :stream
 
