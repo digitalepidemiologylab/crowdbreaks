@@ -87,12 +87,12 @@ export class QuestionSequence extends React.Component {
   }
 
   onTweetLoad() {
-    if (document.getElementById('twitter-widget-0').shadowRoot.children.length != 3) {
+    // if (document.getElementById('twitter-widget-0').shadowRoot.children.length != 3) {
       // Note to future me: Improve this, quite hacky, possibly use innerHTML=="" instead
       // Todo: Language change does not work, wait for twitter-widget-0 to be available
       // Tweet is not available anymore, handle error in parent
-      this.props.onTweetLoadError();
-    } 
+    //   this.props.onTweetLoadError();
+    // } 
 
     this.setState({
       'tweetIsLoading': false

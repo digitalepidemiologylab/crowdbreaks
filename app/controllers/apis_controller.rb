@@ -65,11 +65,21 @@ class ApisController < ApplicationController
     respond_with_flash(resp, streaming_path)
   end
 
+  # end of question sequence
+  def question_sequence_end
+    project = Project.find_by(id: api_params_qs[:project_id]).es_index_name
+    @api.update_tweet(project, api_params_qs[:user_id], api_params_qs[:tweet_id])
+  end
+
 
   private
   
   def api_params
     params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes)
+  end
+
+  def api_params_qs
+    params.require(:api).permit(:tweet_id, :user_id, :project_id)
   end
 
   def api_init

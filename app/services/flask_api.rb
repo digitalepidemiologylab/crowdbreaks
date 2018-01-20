@@ -69,7 +69,7 @@ class FlaskApi
   end
 
   def stop_streaming
-    resp = self.class.get('/pipeline/stop')
+    self.class.get('/pipeline/stop')
   end
 
   def start_streaming
@@ -78,6 +78,17 @@ class FlaskApi
 
   def restart_streaming
     self.class.get('/pipeline/restart')
+  end
+
+  # tweets
+  def get_tweet(project, user_id: nil)
+    data = {'user_id': user_id}
+    self.class.get('/tweet/new/'+project, query: data)
+  end
+
+  def update_tweet(project, user_id, tweet_id)
+    data = {'user_id': user_id, 'tweet_id': tweet_id}
+    self.class.post('/tweet/update/'+project, body: data.to_json, headers: JSON_HEADER)
   end
 
   # elasticsearch

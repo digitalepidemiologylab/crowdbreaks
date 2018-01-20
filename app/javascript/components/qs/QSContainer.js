@@ -29,7 +29,20 @@ export class QSContainer extends React.Component {
   }
 
   onQuestionSequenceEnd() {
-    console.log("Question sequence ended!");
+    // remember user has answered tweet
+    var data = {
+      'api': {
+        'tweet_id': this.props.tweetId,
+        'user_id': this.props.userId,
+        'project_id': this.props.projectId
+      }
+    };
+    $.ajax({
+      type: "POST",
+      url: this.props.endQuestionSequencePath,
+      data: data,
+    });
+    
     this.setState({
       'questionSequenceHasEnded': true
     });
@@ -76,6 +89,7 @@ QSContainer.propTypes = {
   transitions: PropTypes.object,
   tweetId: PropTypes.string,
   projectsPath: PropTypes.string,
+  endQuestionSequencePath: PropTypes.string,
   resultsPath: PropTypes.string,
   translations: PropTypes.object,
   userId: PropTypes.number,

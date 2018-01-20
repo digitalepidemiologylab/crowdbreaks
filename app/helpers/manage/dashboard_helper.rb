@@ -6,7 +6,7 @@ module Manage::DashboardHelper
       'paused': 'label-warning'
     }
 
-  def label(status)
+  def label_based_on_status(status)
     if LABEL_BY_STATUS.include?(status.to_sym)
       label = LABEL_BY_STATUS[status.to_sym]
     else

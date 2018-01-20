@@ -22,13 +22,16 @@ class QuestionSequencesController < ApplicationController
       @transitions[t[:from_question]] << t[:transition]
     end
     
-    # find starting question
-    @initial_question_id = @project.initial_question.id
-    @tweet_id = Elastic.new(@project.es_index_name).initial_tweet(@user_id)
-    
     # other
     @user_id = current_or_guest_user.id
     @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
+
+    # find starting question
+    @initial_question_id = @project.initial_question.id
+    # @tweet_id = Elastic.new(@project.es_index_name).initial_tweet(@user_id)
+    @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
+    # @tweet_id = '564984221203431000'  # invalid tweet
+    
   end
 
   def create
@@ -37,8 +40,6 @@ class QuestionSequencesController < ApplicationController
     result = Result.new(results_params)
     project = Project.find_by(id: results_params[:project_id])
     if result.save
-      elastic = Elastic.new(project.es_index_name)
-      elastic.add_answer(result)
       head :ok, content_type: "text/html"
     else
       head :bad_request
