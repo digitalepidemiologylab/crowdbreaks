@@ -3,7 +3,7 @@
 <div class="content-no-banner">
   
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <h3>Admin</h3>
       <div class="list-group">
         <%= link_to active_admin_root_path, class: 'list-group-item' do %>
@@ -17,7 +17,7 @@
         <% end %>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <h3>Mturk</h3>
       <div class="list-group">
         <%= link_to mturk_batch_jobs_path, class: 'list-group-item' do %>
@@ -26,7 +26,7 @@
         <% end %>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <h3>Pipeline</h3>
       <div class="list-group">
         <%= link_to streaming_path, class: 'list-group-item' do %>
@@ -42,6 +42,13 @@
           <i class="glyphicon glyphicon-chevron-right"></i>
         <% end %>
       </div>
+    </div>
+    <div class="col-md-3">
+      <h3>Other</h3>
+      <%= link_to sentiment_analysis_path, class: 'list-group-item' do %>
+        Sentiment analysis
+        <i class="glyphicon glyphicon-chevron-right"></i>
+      <% end %>
     </div>
   </div>
   <hr/>

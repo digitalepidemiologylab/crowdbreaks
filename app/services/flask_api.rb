@@ -45,7 +45,7 @@ class FlaskApi
 
   def get_vaccine_sentiment(text)
     data = {'text': text}
-    self.class.post('/sentiment/vaccine', body: data.to_json, headers: JSON_HEADER)
+    self.class.post('/sentiment/vaccine/', body: data.to_json, headers: JSON_HEADER)
   end
 
   # pipeline

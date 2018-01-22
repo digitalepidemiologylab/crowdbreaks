@@ -9,8 +9,12 @@ export class SentimentTextBox extends React.Component {
 
     this.state = {
       'textValue': "",
-      'label': 'undetermined'
+      'label': 'undetermined',
+      'pro_vaccine': 0, 
+      'neutral': 0, 
+      'anti_vaccine': 0
     };
+    this.num_words = 0;
   }
 
 
@@ -20,10 +24,17 @@ export class SentimentTextBox extends React.Component {
     this.setState({
       'textValue': value,
     });
-    if (value == '' || value.trim().split(' ').length <= 2) {
+    var input_num_words = value.trim().split(' ').length
+    if (value == '' || input_num_words <= 2) {
       this.setState({'label': 'undetermined'});
       return
     }
+    
+    // only update once new word has been typed
+    if (this.num_words == input_num_words) {
+      return
+    }
+    this.num_words = input_num_words;
 
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
@@ -35,8 +46,17 @@ export class SentimentTextBox extends React.Component {
       contentType: "application/json",
       success: (result) => {
         result = JSON.parse(result);
-        console.log(result);
-        this.setState({label: result['label']});
+        var p_vals = {}
+        for (var i=0; i<result['labels'].length; i++) {
+          p_vals[result['labels'][i]] = result['probabilities'][i];
+        }
+        console.log('Received label '+result['labels'][0]);
+        this.setState({
+          'label': result['labels'][0],
+          'pro_vaccine': p_vals['pro-vaccine'],
+          'anti_vaccine': p_vals['anti-vaccine'],
+          'neutral': p_vals['neutral']
+        });
       }
     });
   }
@@ -44,6 +64,16 @@ export class SentimentTextBox extends React.Component {
   onExampleClick(exampleText) {
     $('#inputTextField').val(exampleText);
     this.onHandleChange(exampleText);
+  }
+
+  round(input, precision=3) {
+    var factor = Math.pow(10, precision)
+    var res = Math.round(input*100*factor)/factor 
+    if (res>100.0) {
+      return 100;
+    } else {
+      return res;
+    }
   }
   
 
@@ -54,8 +84,9 @@ export class SentimentTextBox extends React.Component {
       'Make sure to get vaccinated',
       'Time to get vaccinated',
       'The WHO recommends vaccination',
-      'Vaccines cause autism',
-      'All vaccines cause autism'
+      'Vaccines are the cause of cause autism',
+      'Vaccines are evil',
+      'My child was diagnosed with autism after vaccination'
     ];
     var parentThis = this;
     var color = { 'undetermined': 'grey', 'pro-vaccine': 'green', 'anti-vaccine': 'red', 'other': 'grey' }[this.state.label];
@@ -74,6 +105,7 @@ export class SentimentTextBox extends React.Component {
           className="form-control"
         />
         <h2 style={labelStyle}>{this.state.label}</h2>
+        <span>Pro-vaccine ({this.round(this.state.pro_vaccine)}%), Neutral ({this.round(this.state.neutral)}%), Anti-vaccine ({this.round(this.state.anti_vaccine)}%)</span>
         <h3>Test examples:</h3>
         {examples.map(function(ex) {
           return <ExampleInput key={ex} onExampleClick={() => parentThis.onExampleClick(ex)} exampleText={ex}/>

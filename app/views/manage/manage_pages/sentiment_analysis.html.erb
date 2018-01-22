@@ -1,0 +1,21 @@
+<% @title ||= 'Sentiment analysis'; title @title %>
+
+<div class="content-no-banner">
+  <div class="row">
+    <div class="col-xs-12">
+      <%= link_to dashboard_path, class: 'btn btn-default' do %>
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Go back
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+      <h2>Test the classifier</h3>
+      <%= react_component 'SentimentTextBox',
+        { 'flaskPostEndpoint': vaccine_sentiment_path}
+      %>
+    </div>
+  </div>
+</div>
