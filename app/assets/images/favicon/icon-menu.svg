@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="14px" viewBox="0 0 24 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Menu</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Mobile-Portrait" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-291.000000, -28.000000)">
+        <g id="Header" fill="#AAB8C2">
+            <g id="Menu" transform="translate(291.000000, 28.000000)">
+                <path d="M1,6 L23,6 C23.5522847,6 24,6.44771525 24,7 C24,7.55228475 23.5522847,8 23,8 L1,8 C0.44771525,8 6.76353751e-17,7.55228475 0,7 C-6.76353751e-17,6.44771525 0.44771525,6 1,6 Z M1,12 L23,12 C23.5522847,12 24,12.4477153 24,13 C24,13.5522847 23.5522847,14 23,14 L1,14 C0.44771525,14 6.76353751e-17,13.5522847 0,13 C-6.76353751e-17,12.4477153 0.44771525,12 1,12 Z M1,0 L23,0 C23.5522847,-1.01453063e-16 24,0.44771525 24,1 C24,1.55228475 23.5522847,2 23,2 L1,2 C0.44771525,2 6.76353751e-17,1.55228475 0,1 C-6.76353751e-17,0.44771525 0.44771525,1.01453063e-16 1,0 Z" id="Combined-Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>

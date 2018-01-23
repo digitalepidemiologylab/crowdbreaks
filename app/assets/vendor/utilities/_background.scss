@@ -1,0 +1,37 @@
+// stylelint-disable declaration-no-important
+
+@each $color, $value in $theme-colors {
+  @include bg-variant(".bg-#{$color}", $value);
+}
+
+@if $enable-gradients {
+  @each $color, $value in $theme-colors {
+    @include bg-gradient-variant(".bg-gradient-#{$color}", $value);
+  }
+}
+
+.bg-white {
+  background-color: $white !important;
+}
+
+.bg-transparent {
+  background-color: transparent !important;
+}
+
+.bg-light {
+  background-color: $gray-100 !important;
+}
+
+.bg-home {
+	background: url('bg-home.svg') no-repeat center 10rem;
+	height: 100%;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+  flex-direction: column;
+}
+.expand-full-page {
+  // min-height: 100vh;
+  height: 100%;
+}

@@ -1,12 +1,12 @@
 en:
   pages:
     index:
-      welcome: 
-        "Welcome to"
-      welcome-back:
-        "Welcome back "
-      goal_html:
-        "This platform aims to track disease outbreaks in real time.<br>For this we need your help!"
+      goal:
+        "Help us track disease outbreaks in real time."
+      num_tweets:
+        "%{num} tweets classified so far"
       contribute:
-        "Contribute!"
+        "Contribute"
+      find_out_more:
+        "Find out more"
         

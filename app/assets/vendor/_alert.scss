@@ -1,0 +1,64 @@
+//
+// Base styles
+//
+
+.alert {
+  position: relative;
+  padding: .75rem 3.75rem;
+  margin: 1px 0 1rem 0;
+  border: none;
+  border-radius: 0;
+
+  @include media-breakpoint-down(lg) {
+    padding: .75rem 3rem;
+  }
+  @include media-breakpoint-down(md) {
+    padding: .75rem 2rem;
+  }
+  @include media-breakpoint-down(sm) {
+    padding: .75rem 1rem;
+  }
+}
+
+// Headings for larger alerts
+.alert-heading {
+  // Specified to prevent conflicts of changing $headings-color
+  color: inherit;
+}
+
+
+// Dismissible alerts
+//
+// Expand the right padding and account for the close button's positioning.
+
+.alert-dismissible {
+  // Adjust close link position
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: inherit;
+    padding-right: 3.75rem;
+
+    @include media-breakpoint-down(lg) {
+      padding-right: 3rem;
+    }
+    @include media-breakpoint-down(md) {
+      padding-right: 2rem;
+    }
+    @include media-breakpoint-down(sm) {
+      padding-right: 1rem;
+    }
+  }
+}
+
+
+// Alternate styles
+//
+// Generate contextual modifier classes for colorizing the alert.
+
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    @include alert-variant(theme-color-level($color, -10), theme-color-level($color, -9), theme-color-level($color, 6));
+  }
+}

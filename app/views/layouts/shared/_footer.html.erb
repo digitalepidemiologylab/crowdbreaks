@@ -1,34 +1,21 @@
-<footer id='footer'>
-  <div class="row">
-    <div class="col-md-4 border-right footer-same-height">
-      <div class="row">
-        <div class="col-xs-12">
-          <%= image_tag("logo.svg", :class => "navbar-brand logo") %>
-        </div>
-        <div class="col-xs-12">
-          <%= t('footer.developed_by_html', :href => link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank')) %>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 border-right footer-same-height">
-      <div class="row">
-        <div class="col-xs-12">
-          <hr class="footer-hr">
-          <%= image_tag("epfl_logo.svg", :class => "epfl-logo") %>
-          <hr class="footer-hr">
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 footer-same-height">
-      <div class="row">
-        <div class="col-xs-12">
-          <ul class="footer-links">
-            <li><%= link_to t('navbar.buttons.home'), root_path %></li>
-            <li><%= link_to t('navbar.buttons.projects'), projects_path %></li>
-            <li><%= link_to t('navbar.buttons.about'), about_path %></li>
-          </ul> 
-        </div>
-      </div>
+<footer class="site-footer d-flex justify-content-between">
+  <div>
+    <ul class="footer-links">
+      <li class="logomark-crowdbreaks"><span>Crowdbreaks</span></li>
+      <!-- <li><a href="#"><i class="fa fa&#45;twitter" aria&#45;hidden="true"></i></a></li> -->
+      <!-- <li><a href="https://github.com/salathegroup/crowdbreaks"><i class="fa fa&#45;github" aria&#45;hidden="true"></i></a></li> -->
+      <li><a href="#">Terms of Use</a></li>
+      <li><a href="#">Privacy</a></li>
+    <ul>
+  </div>
+
+  <div class="credits">
+    <div class="">
+      <%= t('footer.developed_by_html',
+            href_del: link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank'),
+            href_epfl: link_to('EPFL', 'https://www.epfl.ch/index.en.html', target: '_blank'))
+          %>
+      <img src=<%= image_url('logo-epfl.svg') %> class="logo-epfl" alt="EPFL">
     </div>
   </div>
 </footer>

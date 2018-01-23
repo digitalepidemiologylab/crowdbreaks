@@ -1,4 +1,4 @@
 en:
   footer:
-    developed_by_html: "Crowdbreaks is developed by the %{href} at EPFL in Switzerland."
+    developed_by_html: "A project by the %{href_del} at %{href_epfl}"
 

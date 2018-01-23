@@ -12,36 +12,45 @@
  *
  */
 
-// boostrap
-@import "bootstrap";
-// @import "functions";
+
+// Bootstrap (use custom variables file which depends on bootstrap/functions)
+@import 'bootstrap/functions';
+@import 'variables';
+@import "bootstrap-custom";
 
 // fonts
-// @import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700');
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700|Arimo');
+@import "font-awesome";
 
-// @import '../vendor/bootstrap-4.0.0-beta.3/scss/functions';
-
-// overridden bootstrap global variables
-// @import "global_vars";
-@import "variables";
-
-// boostrap
-// @import "bootstrap-sprockets";
-// @import "font-awesome";
+@import "alert";
+@import 'badge';
+@import 'buttons';
+@import 'card';
+@import 'chart-legend';
+@import 'classification';
+@import 'cta';
+@import 'dropdown';
+@import 'site-footer';
+@import 'site-header';
+@import 'forms';
+@import 'icons';
+@import 'input-group';
+@import 'progress-dots';
+@import 'type';
+@import 'utilities';
 
 // override bootstrap/html selectors
-@import "custom";
+// @import "custom";
 
 // layouts
-@import "layout/navbar";
-@import "layout/footer";
-@import "layout/buttons";
-@import "layout/banner";
+// @import "layout/navbar";
+// @import "layout/footer";
+// @import "layout/buttons";
+// @import "layout/banner";
 
 // controller based
-@import "pages";
-@import "projects";
+// @import "pages";
+// @import "projects";
 
 // react components
-@import "qs_container_component";
+// @import "qs_container_component";

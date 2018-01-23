@@ -1,0 +1,7 @@
+.fa {
+  color: $gray-400;
+  transition: .25s;
+  &:hover {
+    color: $gray-500;
+  }
+}

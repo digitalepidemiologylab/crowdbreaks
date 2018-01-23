@@ -1,0 +1,28 @@
+// Chart legend
+
+.chart-legend {
+	padding: 0 !important;
+}
+
+.chart-legend li {
+	float: left;
+	list-style-type: none;
+	line-height: 1rem;
+	padding-left: 1rem;
+	margin-right: 1rem ;
+	&:last-of-type {
+		margin-right: 0;
+	}
+}
+
+.chart-legend li.sentiment-positive { 
+	background: url('../../assets/img/oval-positive.svg') no-repeat left 2px; 
+}
+
+.chart-legend li.sentiment-negative { 
+	background: url('../../assets/img/oval-negative.svg') no-repeat left 2px; 
+}
+
+.chart-legend li.sentiment-neutral { 
+	background: url('../../assets/img/oval-neutral.svg') no-repeat left 2px; 
+}

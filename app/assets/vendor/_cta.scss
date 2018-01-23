@@ -1,0 +1,11 @@
+.cta {
+  // display: flex;
+  background-color: $gray-100;
+  border-top: 1px solid $gray-200;
+  text-align: center;
+  padding: 4rem 0;
+
+  @include media-breakpoint-down(sm) {
+    padding: 4rem 0;
+  } 
+}

@@ -1,0 +1,174 @@
+.site-header {
+  background-color: $white;
+  padding: 2.5em 3.75rem;
+  box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.08);
+  height: 119px;
+
+  .btn-secondary, 
+  .btn-link {
+    font-weight: 400;
+  }
+
+  .btn-link {
+    color: $gray-600;
+    font-size: 1rem !important;
+    margin-right: 1rem;
+  }
+
+  .dropdown-member {
+    color: $gray-600;
+    transition: .5s;
+    margin-top: -1px;
+
+    &:hover {
+      color: $gray-500 !important;
+    }
+
+    @include media-breakpoint-down(md) {
+      display: none;
+    }
+  }
+
+  .dropdown {
+    padding-top: 1px;
+  }
+
+  @include media-breakpoint-down(xl) {
+    padding: 1.875em 2.5rem;
+    height: 99px;
+  }
+
+  @include media-breakpoint-down(lg) {
+    padding: 1.875em 1.75rem;
+  }
+
+  @include media-breakpoint-down(md) {
+    padding: 1.875em .75rem;
+  }
+
+  @include media-breakpoint-down(sm) {
+    padding: 1.25em 0;
+    height: 79px;
+  }
+}
+
+.site-brand {
+  @include hover-focus {
+    text-decoration: none;
+  }
+
+  .logo-crowdbreaks {
+    display: block;
+    background: url('logo-crowdbreaks.svg') no-repeat 0 0;
+    height: 28px;
+    width: 154px;
+    margin: 0 auto;
+
+    span {
+      display: none;
+    }
+
+    @include media-breakpoint-down(md) {
+      margin: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
+      background: url('logomark-crowdbreaks.svg') no-repeat 0 0;
+      height: 28px;
+      width: 28px;
+    }
+  }
+}
+
+.site-nav-container {
+  @include media-breakpoint-down(md) {
+    display: none;
+  } 
+}
+
+
+.site-nav {
+  display: flex;
+  flex-direction: row;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+  
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
+  .nav-item {
+    margin-right: 1.5rem;
+    position: relative;
+  }
+  .nav-link {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  a {
+    color: $gray-600;
+    transition: .5s;
+
+    &:hover {
+      color: $gray-500;
+    }
+  }
+  .dropdown-menu {
+    position: static;
+    float: none;
+  }
+  .active {
+    position: relative;
+  }
+  .active:after {
+    height: 1px;
+    background-color: $primary;
+    bottom: -40px;
+    content: " ";
+    left: 0;
+    position: absolute;
+    right: 0;
+
+    @include media-breakpoint-down(xl) {
+      bottom: -30px;
+    }
+  }
+}
+
+// Button for toggling the navbar when in its collapsed state
+.site-header-toggler {
+  padding: $navbar-toggler-padding-y $navbar-toggler-padding-x;
+  font-size: $navbar-toggler-font-size;
+  line-height: 1;
+  background-color: transparent; // remove default button style
+  border: $border-width solid transparent; // remove default button style
+  margin-right: .5rem;
+
+  @include border-radius($navbar-toggler-border-radius);
+  
+  @include hover-focus {
+    text-decoration: none;
+  }
+  
+  @include media-breakpoint-up(lg) {
+    display: none;
+  }
+
+  // Opinionated: add "hand" cursor to non-disabled .navbar-toggler elements
+  &:not([disabled]):not(.disabled) {
+    cursor: pointer;
+  }
+}
+
+// Keep as a separate element so folks can easily override it with another icon
+// or image file as needed.
+.site-header-toggler-icon {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  content: "";
+  padding-top: 2px;
+  background: no-repeat center center;
+  background-size: 100% 100%;
+}

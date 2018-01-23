@@ -1,31 +1,61 @@
-<div class="row" id="background-image">
-  <div class="col-xs-12">
-    <div class="row row-welcome">
-      <div class="col-xs-12">
-        <div class="welcome">
-          <% if current_user %>
-            <h1><%= t '.welcome-back' %><%= current_user.username %></h1>
-          <% else %>
-            <h1><%= t '.welcome' %></h1>
-          <% end %>
+<div class="row justify-content-center">
+  <div class="col-12 text-center">
+    <h1 class="mb-5"><%= t('.goal') %><br>
+      <span class="text-light"><%= t('.num_tweets', num: @num_tweets_classified) %></span>
+    </h1>
+  </div>
+</div>
 
-        </div>
-        <div class="welcome-logo">
-          <%= image_tag("logo.svg", :class => "welcome-logo-img img-responsive") %>
-        </div>
-      </div>
-    </div>
-    <div class="row row-goal">
-      <div class="col-xs-12">
-        <h3><%= t '.goal_html' %></h3>
-      </div>
-    </div>
-    <div class="row row-button">
-      <div class="col-xs-12">
-        <%= link_to t('.contribute'), projects_path, :class => "btn btn-green" %>
-      </div>
+<div class="row justify-content-center">
+  <div class="col-12 col-sm-8 col-lg-4 text-center">
+    <div class="buttons-fluid mb-6">
+      <button type="button" class="btn btn-primary btn-lg"><%= t('.contribute') %></button>
+      <button type="button" class="btn btn-secondary btn-lg"><%= t('.find_out_more') %></button>
     </div>
   </div>
 </div>
 
 
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-lg-7 text-center">
+
+      <!-- tweet + classification -->
+      <div class="classification">
+        <div class="tweet-example" style="background-color: #fff; border: 1px solid #ced7de; border-radius: 5px; padding: 1.5rem;">
+          I'm a tweet
+        </div>
+        <div class="classification-info">
+          <p class="small text-light">Classified as <span class="badge badge-sentiment"><img src=<%= image_url('oval-positive.svg') %> class=" " alt=""> pro-vaccine</span> by alexanderthegreat  ·  5 seconds ago<br>
+          In <a href="#">Vaccine sentiment tracking</a></p>
+        </div>
+      </div>
+      <!-- /tweet + classification -->
+
+      <!-- tweet + classification -->
+      <div class="classification">
+        <div class="tweet-example" style="background-color: #fff; border: 1px solid #ced7de; border-radius: 5px; padding: 1.5rem">
+          I'm another tweet
+        </div>
+        <div class="classification-info">
+          <p class="small text-light">Classified as <span class="badge badge-sentiment"><img src=<%= image_url('oval-negative.svg') %> class=" " alt=""> pro-vaccine</span> by alexanderthegreat  ·  5 seconds ago<br>
+          In <a href="#">Some other project</a></p>
+        </div>
+      </div>
+      <!-- /tweet + classification -->
+
+      <!-- tweet + classification -->
+      <div class="classification">
+        <div class="tweet-example" style="background-color: #fff; border: 1px solid #ced7de; border-radius: 5px; padding: 1.5rem">
+          I'm a tweet.
+        </div>
+        <div class="classification-info">
+          <p class="small text-light">Classified as <span class="badge badge-sentiment"><img src=<%= image_url('oval-neutral.svg') %> class=" " alt=""> pro-vaccine</span> by alexanderthegreat  ·  5 seconds ago<br>
+          In <a href="#">Vaccine sentiment tracking</a></p>
+        </div>
+      </div>
+      <!-- /tweet + classification -->
+
+    </div>
+  </div>
+</div>

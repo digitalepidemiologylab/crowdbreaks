@@ -1,0 +1,30 @@
+// Classification of tweets on homepage
+
+.classification {
+  background-color: $gray-100;
+  box-shadow: inset 0px 0px 1px 0px rgba(101,119,134,1);
+  border-radius: 5px;
+  margin-bottom: 1.75rem;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .classification-info {
+    line-height: 1.5rem;
+    padding: .875rem 2rem;
+
+    p {
+      margin: 0 !important;
+    }
+
+    a {
+      color: $gray-600;
+      transition: .5s;
+
+      &:hover {
+        color: $gray-500 !important;
+      }
+    }
+  }
+}

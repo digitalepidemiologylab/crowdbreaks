@@ -1,0 +1,92 @@
+// Sticky footer using flexbox
+
+html, 
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+
+// Site footer
+
+.site-footer {
+  background-color: $white;
+  color: $gray-500;
+  padding: 4rem 5rem;
+  font-size: .875rem;
+  border-top: 1px solid $gray-200;
+
+  a {
+    color: $gray-600;
+  }
+
+  @include media-breakpoint-down(xl) {
+    padding: 4rem 3.75rem;
+  }
+  @include media-breakpoint-down(lg) {
+    padding: 3rem 3rem;
+  }
+  @include media-breakpoint-down(md) {
+    padding: 2rem 2rem;
+  }
+  @include media-breakpoint-down(sm) {
+    padding: 1.5rem 1rem;
+  }
+
+  .footer-links {
+    margin: 0;
+    padding: 0;
+    height: 2rem;
+    line-height: 2rem;
+    list-style: none;
+   
+    li {
+      float: left;
+      margin-right: 1rem;
+    }
+
+    .fa {
+      font-size: 1.25rem;
+      margin-top: .175rem;
+    }
+
+    .logomark-crowdbreaks {
+      display: block;
+      background: url('logomark-crowdbreaks.svg') no-repeat 0 0;
+      height: 28px;
+      width: 28px;
+      margin-right: 2rem;
+
+      span {
+        display: none;
+      }
+
+      @include media-breakpoint-down(sm) {
+        display: none;
+      }
+    }
+  }
+
+  .credits {
+    line-height: 2rem;
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+
+    .logo-epfl {
+      margin-left: 1rem;
+
+      @include media-breakpoint-down(md) {
+        display: none;
+      }
+    }
+  }
+}

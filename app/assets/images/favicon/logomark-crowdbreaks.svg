@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Logomark</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Desktop" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-643.000000, -46.000000)">
+        <g id="Header" fill="#1E9CEA">
+            <g id="Logo" transform="translate(643.000000, 46.000000)">
+                <g id="Logomark">
+                    <rect id="Rectangle" x="8" y="16" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="8" y="24" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="8" y="0" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="8" y="8" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="0" y="16" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="0" y="8" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="24" y="16" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="24" y="8" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="16" y="16" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="16" y="24" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="16" y="0" width="4" height="4" rx="1"></rect>
+                    <rect id="Rectangle" x="16" y="8" width="4" height="4" rx="1"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
