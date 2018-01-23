@@ -5,17 +5,19 @@
       <div class="col-4 site-nav-container">
         <ul class="site-nav">
           <li class="nav-item">
-            <a class="nav-link" href="#">Projects</a>
+            <%= link_to t('navbar.buttons.projects'), projects_path, class: 'nav-link' %>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+            <%= link_to t('navbar.buttons.about'), about_path, class: 'nav-link' %>
           </li>
         </ul>
       </div>
 
       <div class="col-6 col-lg-4">
         <div class="site-brand">
-          <a class="logo-crowdbreaks" href="index.html"><span>CrowdBreaks</span></a>
+          <%= link_to root_path, class: 'logo-crowdbreaks' do  %>
+            <span>Crowdbreaks</span>
+          <% end %>
         </div>
       </div>
 
@@ -23,10 +25,10 @@
         <div class="d-flex justify-content-end">
           <ul class="site-nav">
             <li class="nav-item">
-              <a class="nav-link" href="#">Sign up</a>
+              <%= link_to t('navbar.account.sign_up_label'), new_user_registration_path, class: 'nav-link' %>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Log in</a>
+              <%= link_to t('navbar.account.login'), new_user_session_path, class: 'nav-link' %>
             </li>
           </ul>
 
@@ -38,16 +40,18 @@
 
           <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Eng
+              <%= I18n.locale %>
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
-              <button class="dropdown-item" type="button">English</button>
-              <button class="dropdown-item" type="button">Deutsch</button>
+              <% Crowdbreaks::Locales.reject {|l| l == I18n.locale.to_s }.each do |locale| %>
+                <li>
+                  <%= link_to Crowdbreaks::LocalesTranslations[locale.to_sym], { locale: locale }, class: 'dropdown-item' %>
+                </li>
+              <% end %>
             </div>
           </div>
         </div>
       </div>
-
     </div> 
   </div>
 </div>

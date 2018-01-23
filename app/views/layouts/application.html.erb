@@ -16,7 +16,7 @@
     <%= javascript_pack_tag 'application' %>
   </head>
 
-  <body class='bg-home'>
+  <body class="<%= content_for :body_class %>">
     <div class="container-fluid">
       <%= render 'layouts/shared/navbar' %>
       <div class="row">

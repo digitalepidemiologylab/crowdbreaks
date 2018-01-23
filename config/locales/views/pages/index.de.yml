@@ -1,12 +1,12 @@
 de:
   pages:
     index:
-      welcome: 
-        "Willkommen auf"
-      welcome-back:
-        "Willkommen zurück "
-      goal_html:
-        "Diese Plattform versucht Krankheiten in Echtzeit zu verfolgen.<br>Dafür brauchen wir deine Hilfe!"
+      goal:
+        "Hilf uns Krankheiten in Echtzeit zu verfolgen"
+      num_tweets:
+        "%{num} tweets wurden klassifiziert"
       contribute:
         "Mach mit!"
+      find_out_more:
+        "Erfahre mehr"
         
