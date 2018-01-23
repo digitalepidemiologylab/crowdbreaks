@@ -36,7 +36,8 @@ gem 'kaminari', '~> 1.0.1'
 # Forms
 gem 'simple_form', github: 'elsurudo/simple_form', branch: 'rails-5.1.0'
 # Bootstrap
-gem 'bootstrap-sass', '~> 3.3', '>= 3.3.6'
+# gem 'bootstrap-sass', '~> 3.3', '>= 3.3.6'
+gem 'bootstrap', '~> 4.0.0'
 # Use autoprefixes for CSS
 gem 'autoprefixer-rails', '6.7.6'
 # Active admin

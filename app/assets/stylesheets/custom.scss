@@ -14,7 +14,6 @@ body {
 .content {
   margin-top: 15px;
   min-height: calc(100vh - #{$navbar-height} - #{$footer-height} - #{$banner-height} - 15px);
-  // min-height: calc(100vh - #{$navbar-height} - 263px);
 }
 .content-no-banner {
   margin-top: 15px;
