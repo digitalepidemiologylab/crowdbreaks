@@ -1,12 +1,10 @@
 de:
   pages:
     about:
-      banner:
-        "ÜBER UNS"
       about_crowdbreaks_title:
-        "Um was geht es bei Crowdbreaks?"
+        "Über Crowdbreaks"
       about_crowdbreaks_html:
-        "Crowdbreaks is ein Überwachungssytem für Krankheiten und wird momentan vom Digital Epidemiology Lab an der EPFL entwickelt. 
+        "Crowdbreaks is ein Überwachungssytem für Krankheiten und wird vom %{href_group} Lab an der %{href_EPFL} entwickelt. 
         Das System versucht Ausbrüche von Krankheiten und Gesundheitsprobleme in Echtzeit in verschiedenen Ländern zu verfolgen.
         Durch das Feedback der User verbessert sich das System laufend und erlaubt bessere Aussagen über die erwähnten Trends zu machen."
       how_does_it_work_title:
@@ -18,17 +16,17 @@ de:
       why_crowdsourcing_title:
         "Wieso crowdsourcing?"
       why_crowdsourcing_html:
-        " Die frühzeitige Erkennung von Epidemien ist äusserst wichtig bei der Krankheitsbekämpfung.
+        "Die frühzeitige Erkennung von Epidemien ist äusserst wichtig bei der Krankheitsbekämpfung.
         Obwohl Gesundheitsministerien Frühwarnsysteme haben, sind deren Resourcen begrenzt.
         Ausserdem gibt es eine zeitliche Verzögerung zwischen dem Zeitpunkt der Infektionen und dem Zeitpunkt wenn öffentliche Dienste diese registrieren.
-        Gleichzeitig teilen Millionen von Menschen ihren Gemütszustand &mdash; ob gut oder schlecht &mdash; auf Social Media.
-        Diese können als Millionen von Sensoren verstanden werden, welche uns helfen können, die Gesundheitssituation aufzeichnen.
-        Crowdbreaks versucht zusätzlich die Leute dazu zu bewegen, diese Fülle an Daten zu verstehen."
+        Gleichzeitig teilen Millionen von Menschen ihren Gemütszustand &mdash; ob gut oder schlecht &mdash; auf Sozialen Medien.
+        Diese können als Millionen von Sensoren verstanden werden, welche uns helfen können, die Gesundheitssituation aufzuzeichnen.
+        Crowdbreaks versucht zusätzlich die Öffentlichkeit in der öffentlichen Gesundheit zu involvieren."
       help_title:
-        "Ich will helfen! Was kann ich tun?"
+        "Mitmachen"
       help_html:
-        "Super! Beim beantworten von ein paar Fragen unter 'Projekte' hilfst du unserem Projekt enorm! 
-        Du kannst uns auch dein Feedback zum Projekt per Email mitteilen: %{mail}."
+        "Beim beantworten von ein paar Fragen unter Projekte hilfst du unserem Projekt enorm! 
+        Du kannst uns auch dein Feedback per Email mitteilen: %{mail}."
       reliable_title:
         ""
       reliable:

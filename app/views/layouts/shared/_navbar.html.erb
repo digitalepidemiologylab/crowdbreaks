@@ -4,10 +4,10 @@
       <div class="col-4 site-nav-container">
         <ul class="site-nav">
           <li class="nav-item">
-            <%= link_to t('navbar.buttons.projects'), projects_path, class: 'nav-link' %>
+            <%= link_to t('navbar.buttons.projects'), projects_path, class: current_page?(projects_path)? 'nav-link active' : 'nav-link' %>
           </li>
           <li class="nav-item">
-            <%= link_to t('navbar.buttons.about'), about_path, class: 'nav-link' %>
+            <%= link_to t('navbar.buttons.about'), about_path, class: current_page?(about_path)? 'nav-link active' : 'nav-link' %>
           </li>
         </ul>
       </div>

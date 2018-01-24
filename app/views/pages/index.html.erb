@@ -10,8 +10,8 @@
 <div class="row justify-content-center">
   <div class="col-12 col-sm-8 col-lg-4 text-center">
     <div class="buttons-fluid mb-6">
-      <button type="button" class="btn btn-primary btn-lg"><%= t('.contribute') %></button>
-      <button type="button" class="btn btn-secondary btn-lg"><%= t('.find_out_more') %></button>
+      <%= link_to t('.contribute'), projects_path, class: 'btn btn-primary btn-lg' %>
+      <%= link_to t('.find_out_more'), about_path, class: 'btn btn-secondary btn-lg' %>
     </div>
   </div>
 </div>

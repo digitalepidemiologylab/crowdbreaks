@@ -1,18 +1,16 @@
 en:
   pages:
     about:
-      banner:
-        "ABOUT"
       about_crowdbreaks_title:
-        "What is Crowdbreaks?"
+        "About Crowdbreaks"
       about_crowdbreaks_html:
-        "Crowdbreaks is a crowdsourced disease surveillance system, currently developed by the %{href_group} at EPFL in Switzerland. 
+        "Crowdbreaks is a crowdsourced disease surveillance system, currently developed by the %{href_group} at %{href_EPFL} in Switzerland. 
         The system is designed to track trends about major health and disease-related issues in real-time across different countries.  
         By obtaining feedback from users the system will eventually improve and be able to draw more accurate conclusions about these issues."
       how_does_it_work_title:
         "How does it work?"
       how_does_it_work:
-        "Crowdbreaks collects Tweets with keywords that might be related to disease. 
+        "Crowdbreaks collects tweets with keywords that might be related to disease. 
         By using natural language processing and machine learning techniques the system tries to filter relevant from non-relevant content.
         By providing more meta information (labelling) of the tweets, these algorithms will continuously improve to detect tweets which are truly relevant for disease surveillance.
         "
@@ -27,11 +25,7 @@ en:
         Crowdbreaks, however, goes one step further: by asking people to help make sense of the reported data, we invoke the wisdom of the crowd to help us separate signal from noise. 
         We also hope to engage the public in public health."
       help_title:
-        "I want to help! What can I do?"
+        "Get involved"
       help_html:
-        "Great! Right now, what we need most is the feedback you can provide by answering the questions in the projects section. 
-        You can also provide any other feedback by writing to us %{mail}"
-      reliable_title:
-        ""
-      reliable:
-        ""
+        "Great! Right now, what we need most is the feedback you can provide by answering the questions in the %{projects_section}. 
+        You can also provide any other feedback by writing to us %{mail}."

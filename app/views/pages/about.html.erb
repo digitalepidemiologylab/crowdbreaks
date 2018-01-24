@@ -1,21 +1,19 @@
 <%= provide(:banner, t('.banner')) %>
 
-<div class="row content">
-  <div class="col-md-8 about">
-    <h3><%= t('.about_crowdbreaks_title') %></h3>
-    <p> <%= t('.about_crowdbreaks_html', 
-              href_group: link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank'))%> </p>
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8 text-center">
+    <h1 class='mb-5'><%= t('.about_crowdbreaks_title') %></h1>
+    <p class="large text-light text-left mb-5"><%= t('.about_crowdbreaks_html', 
+                                                     href_group: link_to('Digital Epidemiology Lab', 'https://www.digitalepidemiologylab.org/', target: '_blank'),
+                                                    href_EPFL: link_to('EPFL', 'https://www.epfl.ch/', target: '_blank'))%> </p>
 
-    <h3><%= t('.how_does_it_work_title') %></h3>
-    <p><%= t('.how_does_it_work') %></p>
+    <h4 class="and-divider mb-4"><span><%= t('.how_does_it_work_title') %></span></h4>
+    <p class="large text-light text-left mb-5"><%= t('.how_does_it_work') %></p>
 
-    <h3><%= t('.why_crowdsourcing_title') %></h3>
-    <p><%= t('.why_crowdsourcing_html') %></p>
+    <h4 class="and-divider mb-4"><span><%= t('.why_crowdsourcing_title') %></span></h4>
+    <p class="large text-light text-left mb-5"><%= t('.why_crowdsourcing_html') %></p>
 
-    <h3><%= t('.help_title') %></h3>
-    <p><%= t('.help_html', mail: mail_to("info@crowdbreaks.org")) %></p>
-
-    <h3><%= t('.reliable_title') %></h3>
-    <p><%= t('.reliable') %></p>
+    <h4 class="and-divider mb-4"><span><%= t('.help_title') %></span></h4>
+    <p class="large text-light text-left mb-5"><%= t('.help_html', mail: mail_to("info@crowdbreaks.org"), projects_section: link_to('projects section', projects_path)) %></p>
   </div>
 </div>
