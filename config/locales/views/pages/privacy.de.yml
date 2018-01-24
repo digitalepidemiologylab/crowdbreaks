@@ -1,4 +1,28 @@
 de:
   pages:
     privacy:
-      title: 'Privacy Policy'
+      title: Privacy Policy
+      sub_heading_html: "In order to receive information about your personal data, the purposes and the parties the data is shared with, contact the owner: %{email}"
+      types_heading: Types of data collected
+      types_html: The owner does not provide a list of personal data types collected. Other personal data collected may be described in other sections of this privacy policy or by dedicated explanation text contextually with the data collection. The personal data may be freely provided by the participant, or collected automatically when using this application. Any use of cookies - or of other tracking tools - by this application or by the owners of third party services used by this application, unless stated otherwise, serves to identify participants and remember their preferences, for the sole purpose of providing the service required by the participant. Failure to provide certain personal data may make it impossible for this application to provide its services. Participants are responsible for any personal data of third parties obtained, published or shared through this application and confirm that they have the third party's consent to provide the data to the owner.
+      mode_heading: Mode and place of processing the data
+      sub_1: Methods of processing
+      sub_1_text: The data controller processes the data of participants in a proper manner and shall take appropriate security measures to prevent unauthorized access, disclosure, modification, or unauthorized destruction of the data. The data processing is carried out using computers and/or IT enabled tools, following organizational procedures and modes strictly related to the purposes indicated. In addition to the data controller, in some cases, the data may be accessible to certain types of persons in charge, involved with the operation of the site (administration, sales, marketing, legal, system administration) or external parties (such as third party technical service providers, mail carriers, hosting providers, IT companies, communications agencies) appointed, if necessary, as data processors by the owner. The updated list of these parties may be requested from the data controller at any time.
+      sub_2: Place
+      sub_2_text: The data is processed at the data controller's operating offices and in any other places where the parties involved with the processing are located. For further information, please contact the data controller.
+      sub_3: Retention time
+      sub_3_text: The data is kept for the time necessary to provide the service requested by the participant, or stated by the purposes outlined in this document, and the participant can always request that the data controller suspend or remove the data. Additional information about data collection and processing.
+      sub_4: Legal action
+      sub_4_text: The participant's personal data may be used for legal purposes by the data controller, in court or in the stages leading to possible legal action arising from improper use of this application or the related services. The participant declares to be aware that the data controller may be required to reveal personal data upon request of public authorities.
+      sub_5: Additional information about participant's personal data 
+      sub_5_text: In addition to the information contained in this privacy policy, this application may provide the participant with additional and contextual information concerning particular services or the collection and processing of personal data upon request.
+      sub_6: System logs and maintenance
+      sub_6_text: For operation and maintenance purposes, this application and any third party services may collect files that record interaction with this application (system logs) or use for this purpose other personal data (such as IP addresses).
+      sub_7: Information not contained in this policy
+      sub_7_text: More details concerning the collection or processing of personal data may be requested from the data controller at any time. Please see the contact information at the beginning of this document.
+      sub_8: The rights of participants
+      sub_8_text: Participants have the right, at any time, to know whether their personal data has been stored and can consult the data controller to learn about their contents and origin, to verify their accuracy or to ask for them to be supplemented, cancelled, updated or corrected, or for their transformation into anonymous format or to block any data held in violation of the law, as well as to oppose their treatment for any and all legitimate reasons. Requests should be sent to the data controller at the contact information set out above.
+      sub_9: This application does not support “Do Not Track” requests
+      sub_9_text: To determine whether any of the third party services it uses honor the “Do Not Track” requests, please read their privacy policies.
+      sub_10: Changes to this privacy policy
+      sub_10_text: The data controller reserves the right to make changes to this privacy policy at any time by giving notice to its participants on this page. It is strongly recommended to check this page often, referring to the date of the last modification listed at the bottom. If a participant objects to any of the changes to the policy, the participant must cease using this application and can request that the data controller removes the personal data. Unless stated otherwise, the then-current privacy policy applies to all personal data the data controller has about participants.
