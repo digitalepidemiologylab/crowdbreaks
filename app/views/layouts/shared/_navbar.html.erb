@@ -1,7 +1,6 @@
 <div class="site-header">
   <div class="container-fluid">
     <div class="row align-items-center"> 
-
       <div class="col-4 site-nav-container">
         <ul class="site-nav">
           <li class="nav-item">
@@ -23,14 +22,27 @@
 
       <div class="col-6 col-lg-4">
         <div class="d-flex justify-content-end">
-          <ul class="site-nav">
-            <li class="nav-item">
-              <%= link_to t('navbar.account.sign_up_label'), new_user_registration_path, class: 'nav-link' %>
-            </li>
-            <li class="nav-item">
-              <%= link_to t('navbar.account.login'), new_user_session_path, class: 'nav-link' %>
-            </li>
-          </ul>
+          <% if user_signed_in? %>
+            <div class="dropdown dropdown-member">
+              <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= current_user.username %>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                 <%= link_to t('navbar.account.edit'), edit_user_registration_path, class: 'dropdown-item' %> 
+                <div class="dropdown-divider"></div>
+                <%= link_to t('navbar.account.logout_label'), destroy_user_session_path, class: 'dropdown-item', method: :delete %>
+              </div>
+            </div>
+          <% else %>
+            <ul class="site-nav">
+              <li class="nav-item <%= current_page?(new_user_registration_path)? 'active' : '' %>">
+                <%= link_to t('navbar.account.sign_up_label'), new_user_registration_path, class: 'nav-link' %>
+              </li>
+              <li class="nav-item <%= current_page?(new_user_session_path)? 'active' : '' %>">
+                <%= link_to t('navbar.account.login'), new_user_session_path, class: 'nav-link' %>
+              </li>
+            </ul>
+          <% end %>
 
           <button class="site-header-toggler" type="button" data-toggle="collapse" data-target="" aria-controls="" aria-expanded="false" aria-label="">
             <span class="site-header-toggler-icon">
@@ -55,59 +67,3 @@
     </div> 
   </div>
 </div>
-<!-- <nav class="navbar navbar&#45;default navbar&#45;fixed&#45;top"> -->
-<!--   <div class="container&#45;fluid"> -->
-<!--     <div class="navbar&#45;header"> -->
-<!--       <button type="button" class="navbar&#45;toggle collapsed" data&#45;toggle="collapse" data&#45;target="#navbar&#45;collapse&#45;mobile" aria&#45;expanded="false"> -->
-<!--         <span class="sr&#45;only">Toggle navigation</span> -->
-<!--         <span class="icon&#45;bar"></span> -->
-<!--         <span class="icon&#45;bar"></span> -->
-<!--         <span class="icon&#45;bar"></span> -->
-<!--       </button> -->
-<!--       <a href=<%= root_url %>> -->
-<!--         <%= image_tag("logo-crowdbreaks.svg", :class => "navbar&#45;brand img&#45;responsive") %> -->
-<!--       </a> -->
-<!--     </div> -->
-<!--  -->
-<!--     <div class="collapse navbar&#45;collapse" id="navbar&#45;collapse&#45;mobile"> -->
-<!--       <ul class="nav navbar&#45;nav navbar&#45;right"> -->
-<!--         <% if current_or_guest_user.admin?  %> -->
-  <!--           <li class="<%= current_namespace?('manage')? "active" : "" %>"> -->
-  <!--             <%= link_to dashboard_path do %>  -->
-    <!--               <%= 'Manage' %> -->
-    <!--               <% if current_namespace?('manage') %> -->
-      <!--                 <span class="sr&#45;only">(current)</span> -->
-      <!--               <% end %> -->
-    <!--             <% end %> -->
-  <!--           </li> -->
-  <!--         <% end %> -->
-<!--         <li class="<%= current_page?(root_path)? "active" : "" %>"> -->
-<!--           <%= link_to root_path do %>  -->
-  <!--             <%= t 'navbar.buttons.home' %> -->
-  <!--             <% if current_page?(root_path) %> -->
-    <!--               <span class="sr&#45;only">(current)</span> -->
-    <!--             <% end %> -->
-  <!--           <% end %> -->
-<!--         </li> -->
-<!--         <li class="<%= current_page?(projects_path)? "active" : "" %>"> -->
-<!--           <%= link_to projects_path do %>  -->
-  <!--             <%= t 'navbar.buttons.projects' %> -->
-  <!--             <% if current_page?(projects_path) %> -->
-    <!--               <span class="sr&#45;only">(current)</span> -->
-    <!--             <% end %> -->
-  <!--           <% end %> -->
-<!--         </li> -->
-<!--         <li class="<%= current_page?(about_path)? "active" : "" %>"> -->
-<!--           <%= link_to about_path do %>  -->
-  <!--             <%= t 'navbar.buttons.about' %> -->
-  <!--             <% if current_page?(about_path) %> -->
-    <!--               <span class="sr&#45;only">(current)</span> -->
-    <!--             <% end %> -->
-  <!--           <% end %> -->
-<!--         </li> -->
-<!--         <%= render 'layouts/shared/nav_login' %> -->
-<!--         <%= render 'layouts/shared/switch_language' %> -->
-<!--       </ul> -->
-<!--     </div> -->
-<!--   </div> -->
-<!-- </nav> -->

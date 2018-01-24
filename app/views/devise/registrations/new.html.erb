@@ -1,22 +1,32 @@
-<h2>Sign up</h2>
+<div class="row justify-content-center">
+  <div class="col-12 col-sm-10 col-lg-6 text-center">
+    <h1 class="mb-4"><%= t('.title') %></h1>
+    <p class="large text-light mb-5"><%= t('.sub_title') %></p>
+  </div>
+</div>
 
-<div class="row">
-  <div class="col-md-4">
-    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<div class="row justify-content-center">
+  <div class="col-12 col-sm-10 col-lg-5">
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: {class: 'mb-6'}) do |f| %>
       <%= f.error_notification %>
 
-      <div class="form-inputs">
+      <div class="form-group">
         <%= f.input :username, required: true, autofocus: true %>
+      </div>
+      <div class="form-group">
         <%= f.input :email, required: true, autofocus: true %>
+      </div>
+      <div class="form-group">
         <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length) %>
+      </div>
+      <div class="form-group">
         <%= f.input :password_confirmation, required: true %>
       </div>
 
-      <div class="form-actions">
-        <%= f.button :submit, "Sign up" %>
+      <div class="form-group">
+        <%= f.button :submit, t('.sign_up'), class: 'btn btn-primary btn-lg btn-block' %>
       </div>
     <% end %>
-
-    <%= render "devise/shared/links" %>
   </div>
 </div>
+<%= render "devise/shared/links" %>

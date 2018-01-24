@@ -4,9 +4,7 @@ de:
       projects: "Projekte"
       about: "Über uns"
     account:
-      # account_label: "Account"
       login: "Login"
-      # logged_in_html: "Logged in as:<br>"
-      # edit: "Edit profile"
-      # logout_label: "Logout"
+      edit: "Mein Profil"
+      logout_label: "Ausloggen"
       sign_up_label: "Anmelden"

@@ -75,12 +75,14 @@ de:
         cancel_my_account: Konto löschen
         currently_waiting_confirmation_for_email: Warte auf Bestätigung von %{email}.
         leave_blank_if_you_don_t_want_to_change_it: freilassen, wenn Sie das nicht ändern wollen
-        title: "%{resource} bearbeiten"
+        title: Kontoeinstellungen
         unhappy: Unglücklich
         update: Aktualisieren
         we_need_your_current_password_to_confirm_your_changes: wir benötigen Ihr aktuelles Passwort, um die Änderung zu bestätigen
       new:
         sign_up: Registrieren
+        title: Registriere dich
+        sub_title: Registriere dich um deine früheren Beiträge zu verfolgen und über Neues informiert zu werden.
       signed_up: Sie haben sich erfolgreich registriert.
       signed_up_but_inactive: Sie haben sich erfolgreich registriert. Wir konnten Sie jedoch nicht anmelden, weil Ihr Account noch nicht aktiviert ist.
       signed_up_but_locked: Sie haben sich erfolgreich registriert. Wir konnten Sie jedoch nicht anmelden, weil Ihr Account gesperrt ist.
@@ -91,10 +93,12 @@ de:
       already_signed_out: Erfolgreich abgemeldet.
       new:
         sign_in: Anmelden
+        sign_in_title: Logge dich ein
       signed_in: Erfolgreich angemeldet.
       signed_out: Erfolgreich abgemeldet.
     shared:
       links:
+        problems: Probleme beim anmelden?
         back: Zurück
         didn_t_receive_confirmation_instructions: Keine Anleitung zur Bestätigung erhalten?
         didn_t_receive_unlock_instructions: Keine Anleitung zum Entsperren erhalten?
