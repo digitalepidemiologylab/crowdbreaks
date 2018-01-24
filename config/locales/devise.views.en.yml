@@ -31,7 +31,9 @@ en:
     confirmations:
       confirmed: Your email address has been successfully confirmed.
       new:
-        resend_confirmation_instructions: Resend confirmation instructions
+        resend_confirmation_instructions: Didn't receive confirmation instructions?
+        resend_confirmation_instructions_subtitle: Enter your email address and we'll resend your confirmation instructions.
+        resend_button: Continue
       send_instructions: You will receive an email with instructions for how to confirm your email address in a few minutes.
       send_paranoid_instructions: If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes.
     failure:
@@ -79,6 +81,8 @@ en:
       new:
         forgot_your_password: Forgot your password?
         send_me_reset_password_instructions: Send me reset password instructions
+        subtitle: Enter your email address and we'll send you instructions on how to reset your password.
+        resend_button: Continue
       no_token: You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided.
       send_instructions: You will receive an email with instructions on how to reset your password in a few minutes.
       send_paranoid_instructions: If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes.
@@ -124,7 +128,10 @@ en:
         sign_up: Sign up
     unlocks:
       new:
+        title: Account locked?
+        subtitle: Enter your email address and we'll send you instructions on how to unlock your account.
         resend_unlock_instructions: Resend unlock instructions
+        resend_button: Continue
       send_instructions: You will receive an email with instructions for how to unlock your account in a few minutes.
       send_paranoid_instructions: If your account exists, you will receive an email with instructions for how to unlock it in a few minutes.
       unlocked: Your account has been unlocked successfully. Please sign in to continue.

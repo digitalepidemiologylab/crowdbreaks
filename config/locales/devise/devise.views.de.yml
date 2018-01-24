@@ -16,6 +16,8 @@ de:
       confirmed: Ihre E-Mail Adresse wurde erfolgreich bestätigt.
       new:
         resend_confirmation_instructions: Anleitung zur Bestätigung noch mal schicken
+        resend_confirmation_instructions_subtitle: Gib deine E-Mail-Adresse ein und wir schicken dir erneut eine Bestätigungs-E-Mail.
+        resend_button: Senden
       send_instructions: Sie erhalten in wenigen Minuten eine E-Mail, mit der Sie Ihre Registrierung bestätigen können.
       send_paranoid_instructions: Falls Ihre E-Mail-Adresse in unserer Datenbank existiert, erhalten Sie in wenigen Minuten eine E-Mail, mit der Sie Ihre Registrierung bestätigen können.
     failure:
@@ -63,6 +65,8 @@ de:
       new:
         forgot_your_password: Haben Sie Ihr Passwort vergessen?
         send_me_reset_password_instructions: Schicken Sie mir die Anleitung, mein Passwort zurückzusetzen
+        subtitle: Geben Sie hier Ihre E-Mail Adresse ein und wir schicken Ihnen die Anleitung zum Zurücksetzen Ihres Passworts.
+        resend_button: Weiter
       no_token: Sie können sich nicht auf dieser Seite anmelden, wenn Sie nicht von einer Passwort-Zurücksetzen-E-Mail kommen. Wenn Sie von solch einer E-Mail kommen, überprüfen Sie bitte, ob Sie die gesamte URL verwendeten.
       send_instructions: Sie erhalten in wenigen Minuten eine E-Mail mit der Anleitung, wie Sie Ihr Passwort zurücksetzen können.
       send_paranoid_instructions: Falls Ihre E-Mail-Adresse in unserer Datenbank existiert, erhalten Sie in wenigen Minuten eine E-Mail, mit der Anleitung, wie Sie Ihr Passwort zurücksetzen können.
@@ -108,7 +112,10 @@ de:
         sign_up: Registrieren
     unlocks:
       new:
+        title: Konto gesperrt?
+        subtitle: Schick uns deine E-Mail Adresse und wir senden dir die Anleitung zum Entsperren.
         resend_unlock_instructions: Anleitung zum Entsperren noch mal schicken
+        resend_button: Weiter
       send_instructions: Sie erhalten in wenigen Minuten eine E-Mail mit der Anleitung, wie Sie Ihren Account entsperren können.
       send_paranoid_instructions: Falls Ihre E-Mail-Adresse in unserer Datenbank existiert, erhalten Sie in wenigen Minuten eine E-Mail, mit der Anleitung, wie Sie Ihren Account entsperren können.
       unlocked: Ihr Account wurde entsperrt. Sie sind jetzt angemeldet.
