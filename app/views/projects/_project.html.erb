@@ -1,34 +1,17 @@
-<div class="row">
-  <div class="col-md-8 projects">
-    <div class="row row-project">
-      <div class="col-md-2 equal-height image-col">
-        <div class="full-height">
-          <div class="project-image", style="background-image: url(<%= project.image_file_name ? project.image.url(:medium) : Rails.application.config.dummy_image_url %>)">
-          </div>
-        </div>
-      </div>
-      <div class="col-md-10 equal-height description-col">
-        <div class="project-description">
-          <h3>
-            <%= project.title.html_safe if project.title %>
-          </h3>
-          <p>
-            <%= project.description.html_safe if project.description %>
-          </p>
-          <span> 
-            <% if project.es_index_name == 'project_vaccine_sentiment' %>
-              <%= link_to project_path(project), class: 'btn btn-info btn-project' do %>
-                <%= t('projects.index.show') %>
-              <% end %>
-            <% end %>
-            <% unless project.initial_question.nil? %>
-                <%= link_to project_question_sequence_path(project), class: 'btn btn-success btn-project' do %>
-                <%= t('projects.index.start_question_sequence') %>
-              <% end %>
-            <% end %>
-          </span>
-        </div>
-      </div>
+<div class="card text-center mb-4">
+  <div class="card-body">
+    <h3 class="mb-2">
+      <%= link_to project.title, project_question_sequence_path(project) %>
+    </h3>
+    <p class="text-light mb-4"><%= t('projects.index.num_classified_html', num: number_with_delimiter(project.results.count, delimiter: ',')) %></p>
+    <p class="large"><%= project.description %></p>
+  </div>
+  <div class="card-footer">
+    <div class="buttons">
+      <%= link_to t('projects.index.contribute'), project_question_sequence_path(project), class: 'btn btn-primary btn-lg' %>
+      <% if project.es_index_name == 'project_vaccine_sentiment' %>
+        <%= link_to t('projects.index.explore'), project_path(project), class: 'btn btn-secondary btn-lg' %>
+      <% end %>
     </div>
   </div>
 </div>

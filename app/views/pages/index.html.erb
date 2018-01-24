@@ -2,7 +2,7 @@
 <div class="row justify-content-center">
   <div class="col-12 text-center">
     <h1 class="mb-5"><%= t('.goal') %><br>
-      <span class="text-light"><%= t('.num_tweets', num: @num_tweets_classified) %></span>
+      <span class="text-light"><%= t('.num_tweets', num: number_with_delimiter(@num_tweets_classified, delimiter: ',')) %></span>
     </h1>
   </div>
 </div>

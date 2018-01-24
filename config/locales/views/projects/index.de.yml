@@ -1,6 +1,7 @@
 de:
   projects:
     index:
-      banner: "PROJEKTE"
-      start_question_sequence: "Projekt starten"
-      show: "Mehr"
+      title: Projekte
+      contribute: Beitragen
+      explore: Mehr zu diesem Projekt
+      num_classified_html: "%{num} Tweets klassifiziert"

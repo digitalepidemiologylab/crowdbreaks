@@ -1,5 +1,8 @@
 <% @title ||= Project.model_name.human.pluralize; title @title %>
-<%= provide(:banner, t('.banner')) %>
-<div class="content">
-  <%= render @projects %>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8 text-center">
+    <h1 class="mb-5"><%= t('.title') %></h1>
+    <%= render @projects %>
+  </div>
 </div>
