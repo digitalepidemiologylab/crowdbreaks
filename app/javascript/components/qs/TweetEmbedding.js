@@ -5,14 +5,17 @@ import { Tweet  } from 'react-twitter-widgets'
 export const TweetEmbedding = (props) => {
   var options = {
     cards: 'hidden',
-    conversation: 'none'
+    conversation: 'none',
+    marginBottom: '0px'
   };
   return (
-    <Tweet 
-      tweetId={props.tweetId} 
-      options={options}
-      onLoad={props.onTweetLoad}
-    />
+    <div className="row justify-content-center">
+      <Tweet 
+        tweetId={props.tweetId} 
+        options={options}
+        onLoad={props.onTweetLoad}
+      />
+    </div>
   );
 };
 

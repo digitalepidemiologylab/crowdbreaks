@@ -1,17 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 export const Question = (props) => {
-  const transitionOptions = {
-    transitionName: "fade",
-    transitionEnterTimeout: 700,
-    transitionLeaveTimeout: 0
-  };
   return (
-    <ReactCSSTransitionGroup {...transitionOptions}>
-      <div key={props.question}>{ props.question }</div>
-    </ReactCSSTransitionGroup>
+    <div>
+      <h2 className='mb-5'>
+        { props.question }
+      </h2>
+    </div>
   );
 };
 

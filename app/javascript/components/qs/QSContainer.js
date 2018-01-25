@@ -57,6 +57,7 @@ export class QSContainer extends React.Component {
     let body = null;
     if (!this.state.questionSequenceHasEnded) {
       body = <QuestionSequence 
+        projectTitle={this.props.projectTitle}
         initialQuestionId={this.props.initialQuestionId}
         questions={this.props.questions}
         transitions={this.props.transitions}
@@ -67,6 +68,7 @@ export class QSContainer extends React.Component {
         postData={(args) => this.postData(args)}
         onTweetLoadError={() => this.onTweetLoadError()}
         onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+        numTransitions={this.props.numTransitions}
       /> 
     } else {
       body = <Final 
@@ -76,7 +78,7 @@ export class QSContainer extends React.Component {
       /> 
     }
     return(
-      <div className="QSContainer">
+      <div>
         {body}
       </div>
     );
@@ -84,6 +86,7 @@ export class QSContainer extends React.Component {
 }
 
 QSContainer.propTypes = {
+  projectTitle: PropTypes.string,
   initialQuestionId: PropTypes.number,
   questions: PropTypes.object,
   transitions: PropTypes.object,
@@ -94,4 +97,5 @@ QSContainer.propTypes = {
   translations: PropTypes.object,
   userId: PropTypes.number,
   projectId: PropTypes.number,
+  numTransitions: PropTypes.number
 }

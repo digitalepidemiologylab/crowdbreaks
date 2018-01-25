@@ -1,5 +1,6 @@
 <%= react_component('QSContainer',
   {
+    projectTitle: @project.title,
     questions: @questions,
     initialQuestionId: @initial_question_id,
     transitions: @transitions,
@@ -9,8 +10,6 @@
     endQuestionSequencePath: question_sequence_end_path,
     translations: @translations,
     userId: @user_id,
-    projectId: @project.id
-  },
-  class: 'row', 
-  id: 'question-sequence-component') 
-%>
+    projectId: @project.id,
+    numTransitions: @num_transitions
+  }) %>

@@ -13,6 +13,10 @@ class Answer < ApplicationRecord
 
   # color constants
   COLORS = {
+    'btn-primary': 'btn-primary',
+    'btn-secondary': 'btn-secondary',
+    'btn-positive': 'btn-positive',
+    'btn-negative': 'btn-negative',
     'green': '#2ecc71',
     'light-green': '#40d47e',
     'dark-green': '#29b765',
@@ -22,7 +26,6 @@ class Answer < ApplicationRecord
     'blue': '#208ac3',
     'light-blue': '#e4f1fe',
     'heavy-dark-blue': '#2c3e50',
-    'white': '#ffffff',
     'gray': '#c9c9c9'
   }
 

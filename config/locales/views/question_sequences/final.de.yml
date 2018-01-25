@@ -2,11 +2,11 @@ de:
   question_sequences:
     final:
       thank_you:
-        "Vielen Dank für deine Hilfe!"
-      continue:
-        "Weiter zum nächsten Tweet..."
+        "Vielen Dank für deine Mithilfe!"
+      text:
+        "Jeder klassifizierte tweet hilft uns die Algorithmen zu verbessern. Hast du Zeit für einen Weiteren?"
       continue_button:
-        "Weiter"
+        "Ja"
       back_to_projects_button:
-        "Zurück zu den Projekten"
+        "Nicht jetzt"
 

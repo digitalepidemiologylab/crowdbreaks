@@ -21,6 +21,7 @@ class QuestionSequencesController < ApplicationController
     transitions_serialized.each do |t|
       @transitions[t[:from_question]] << t[:transition]
     end
+    @num_transitions = find_path_length(@transitions)
     
     # other
     @user_id = current_or_guest_user.id
@@ -30,8 +31,10 @@ class QuestionSequencesController < ApplicationController
     @initial_question_id = @project.initial_question.id
     # @tweet_id = Elastic.new(@project.es_index_name).initial_tweet(@user_id)
     @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
+    @tweet_id = '20'
+
     # @tweet_id = '564984221203431000'  # invalid tweet
-    
+    # @tweet_id = '955454023519391744'  # invalid tweet
   end
 
   def create
@@ -50,5 +53,20 @@ class QuestionSequencesController < ApplicationController
 
   def results_params
     params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)
+  end
+
+  def find_path_length(transitions)
+    # Note: This gives the length of an arbitrary path from the start question 
+    if not transitions.include?('start')
+      return 0
+    end
+    len = 0
+    current = transitions['start']
+    while current.length > 0 do
+      len += 1
+      next_question = current[0][:to_question]
+      current = transitions[next_question]
+    end
+    return len
   end
 end

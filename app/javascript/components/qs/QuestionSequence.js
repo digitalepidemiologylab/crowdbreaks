@@ -22,7 +22,8 @@ export class QuestionSequence extends React.Component {
     this.state = {
       'currentQuestion': props.questions[props.initialQuestionId],
       'questionSequenceHasEnded': false,
-      'tweetIsLoading': true
+      'tweetIsLoading': true,
+      'numQuestionsAnswered': 0
     };
   }
 
@@ -71,29 +72,25 @@ export class QuestionSequence extends React.Component {
     if (status) {
       // find next question
       var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
+      var newNumQuestionAnswered = this.state.numQuestionsAnswered + 1;
       if (nextQuestion === null) {
         // End of question sequence
         this.setState({
-          'tweetHasLoaded': false
+          'tweetHasLoaded': false,
+          'numQuestionsAnswered': newNumQuestionAnswered
         });
         this.props.onQuestionSequenceEnd();
       } else {
         // Go to next question
         this.setState({
-          'currentQuestion': this.props.questions[nextQuestion]
+          'currentQuestion': this.props.questions[nextQuestion],
+          'numQuestionsAnswered': newNumQuestionAnswered
         });
       }
     }
   }
 
   onTweetLoad() {
-    // if (document.getElementById('twitter-widget-0').shadowRoot.children.length != 3) {
-      // Note to future me: Improve this, quite hacky, possibly use innerHTML=="" instead
-      // Todo: Language change does not work, wait for twitter-widget-0 to be available
-      // Tweet is not available anymore, handle error in parent
-    //   this.props.onTweetLoadError();
-    // } 
-
     this.setState({
       'tweetIsLoading': false
     });
@@ -101,23 +98,50 @@ export class QuestionSequence extends React.Component {
 
   render() {
     let parentThis = this;
+    let progressDots = []
+    let Q = "Q" + (this.state.numQuestionsAnswered+1).toString()
+    for (let i = 0; i < this.props.numTransitions; ++i) {
+      let liClassName = "";
+      if (i < this.state.numQuestionsAnswered) {
+        liClassName = "complete"
+      } else if (i == this.state.numQuestionsAnswered) {
+        liClassName = "current"
+      }
+      progressDots.push(
+        <li className={liClassName} key={i}><span>{i}</span></li>
+      )
+    }
     let questionSequenceBody = <div>
-      <TweetEmbedding 
-        tweetId={this.props.tweetId}
-        onTweetLoad={() => parentThis.onTweetLoad()}
-      />
+      {/* Title and tweet */}
+      <div className='row justify-content-center'> 
+        <div className="col-12 col-sm-10 col-lg-7 text-center">
+          <h4 className="mb-5">{this.props.projectTitle}</h4>
+          <TweetEmbedding 
+            tweetId={this.props.tweetId}
+            onTweetLoad={() => parentThis.onTweetLoad()}
+          />
+        </div>
+      </div>
+      {/* Loading clip */}
       { this.state.tweetIsLoading &&
-          <div className="clip-loader">
-            <ClipLoader
-              color={'#444'} 
-            />
-          </div> }
-          { !this.state.tweetIsLoading && <div>
-            <div className="question">
-              <Question question={this.state.currentQuestion.question}/>
+          <div className="row justify-content-center">
+            <div className="clip-loader">
+              <ClipLoader
+                color={'#444'} 
+              />
             </div>
-            <div className="answers">
-              <span>
+          </div>
+      } 
+      {/* Circle question number */}
+      { !this.state.tweetIsLoading && 
+          <div className="row justify-content-center">
+            <div className="col-12 col-lg-8 text-center">
+              <div className="v-line"></div>
+              <h4 className="circle-text mb-4">{Q}</h4>
+              {/* Question */}
+              <Question question={this.state.currentQuestion.question}/>
+              {/* Answers */}
+              <div className="buttons mb-4">
                 {this.state.currentQuestion.answers.map(function(answer) {
                   return <Answer 
                     key={answer.id} 
@@ -126,13 +150,18 @@ export class QuestionSequence extends React.Component {
                     color={answer.color}
                   />
                 })}
-              </span>
-            </div>
-          </div> }
-        </div>
+              </div>
+              {/* Progress dots */}
+              <ul className="progress-dots">
+                { progressDots }
+              </ul>
+            </div> 
+          </div> 
+      }
+    </div>
 
     return (
-      <div id='question-answer-container' className='col-md-8 col-md-offset-2'>
+      <div>
         {questionSequenceBody}
       </div>
     );
@@ -140,6 +169,7 @@ export class QuestionSequence extends React.Component {
 }
 
 QuestionSequence.propTypes = {
+  projectTitle: PropTypes.string,
   initialQuestionId: PropTypes.number,
   questions: PropTypes.object,
   transitions: PropTypes.object,
@@ -148,5 +178,6 @@ QuestionSequence.propTypes = {
   projectId: PropTypes.number,
   postData: PropTypes.func,
   onTweetLoadError: PropTypes.func,
-  onQuestionSequenceEnd: PropTypes.func
+  onQuestionSequenceEnd: PropTypes.func,
+  numTransitions: PropTypes.number
 };

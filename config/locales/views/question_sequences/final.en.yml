@@ -3,11 +3,11 @@ en:
     final:
       thank_you:
         "Thanks for your help!"
-      continue:
-        "Feel free to continue..."
+      text:
+        "Every tweet you classify helps improve the algorithm. Got time to classify another one?"
       continue_button:
-        "Continue"
+        "Yes"
       back_to_projects_button:
-        "Back to projects"
+        "Not now"
 
 

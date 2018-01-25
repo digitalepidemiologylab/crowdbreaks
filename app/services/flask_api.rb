@@ -83,7 +83,8 @@ class FlaskApi
   # tweets
   def get_tweet(project, user_id: nil)
     data = {'user_id': user_id}
-    self.class.get('/tweet/new/'+project, query: data)
+    resp = self.class.get('/tweet/new/'+project, query: data)
+    resp.parsed_response
   end
 
   def update_tweet(project, user_id, tweet_id)

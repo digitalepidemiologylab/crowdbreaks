@@ -168,6 +168,8 @@ samp {
 mark { background-color: #fff7df; }
 
 
+// Question sequence related stuff
+
 // Circle with text in
 
 .circle-text {
@@ -179,4 +181,17 @@ mark { background-color: #fff7df; }
   margin: 3.25rem auto 0 auto;
   background-color: #fff;
 	border: 1px solid $gray-300;
+}
+
+// Change twitter to have vertical line attach
+.twitter-tweet {
+  margin-bottom: 0px !important;
+}
+
+.v-line {
+  height: 3.25rem;
+  border-left: 1px solid #ced7de;
+  position: absolute;
+  left: 50%;
+  top: 0px;
 }
