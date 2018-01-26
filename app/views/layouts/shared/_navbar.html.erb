@@ -53,6 +53,16 @@
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
               <%= link_to t('navbar.buttons.projects'), projects_path, class: 'dropdown-item' %>
               <%= link_to t('navbar.buttons.about'), about_path, class: 'dropdown-item' %>
+              <div class="dropdown-divider"></div>
+              <% if user_signed_in? %>
+                 <%= link_to t('navbar.account.edit'), edit_user_registration_path, class: 'dropdown-item' %> 
+                <div class="dropdown-divider"></div>
+                <%= link_to t('navbar.account.logout_label'), destroy_user_session_path, class: 'dropdown-item', method: :delete %>
+              <% else %>
+                <%= link_to t('navbar.account.sign_up_label'), new_user_registration_path, class: 'nav-link' %>
+                <div class="dropdown-divider"></div>
+                <%= link_to t('navbar.account.login'), new_user_session_path, class: 'nav-link' %>
+              <% end %>
             </div>
           </div>
 
