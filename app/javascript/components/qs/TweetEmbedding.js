@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import { Tweet  } from 'react-twitter-widgets'
+import { Tweet } from 'react-twitter-widgets'
 
 export const TweetEmbedding = (props) => {
   var options = {

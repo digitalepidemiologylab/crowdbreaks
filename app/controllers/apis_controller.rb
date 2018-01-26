@@ -72,6 +72,22 @@ class ApisController < ApplicationController
   end
 
 
+  # front page leadline
+  def get_leadline
+    since = api_params_leadline.fetch(:since, 30.days.ago)
+    exclude_tweet_ids = api_params_leadline.fetch(:exclude_tweet_ids, [])
+    exclude_usernames = api_params_leadline.fetch(:exclude_usernames, [])
+    num_new_entries = api_params_leadline.fetch(:num_new_entries, 3)
+    # get ready for the monster query (...can probably be optimized)
+    resp = Result.order(created_at: :desc).where(created_at: since..Time.now).where.not(tweet_id: exclude_tweet_ids).
+      joins(:user, :answer, :project).where(projects: {public: true}).where.not(users: {username: exclude_usernames}).where(answers: {label: Answer::LABELS.values}).limit(num_new_entries).
+      pluck('results.tweet_id,users.username as username,answers.label as label,results.created_at,projects.title_translations as title')
+
+    resp.map!{|d| [d[0].to_s, *d[1..-1]]}  # convert to string before sending
+    render json: resp.to_json, status: 200
+  end
+
+
   private
   
   def api_params
@@ -79,7 +95,11 @@ class ApisController < ApplicationController
   end
 
   def api_params_qs
-    params.require(:api).permit(:tweet_id, :user_id, :project_id)
+    params.require(:qs).permit(:tweet_id, :user_id, :project_id)
+  end
+
+  def api_params_leadline
+    params.require(:leadline).permit(:since, :num_new_entries, :exclude_tweet_ids => [], :exclude_usernames => [])
   end
 
   def api_init

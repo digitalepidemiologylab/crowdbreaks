@@ -9,4 +9,8 @@ de:
         "Mach mit!"
       find_out_more:
         "Erfahre mehr"
+      leadline:
+        classified_as: "Klassifiziert als"
+        by: "von"
+        in_project: "im Projekt"
         

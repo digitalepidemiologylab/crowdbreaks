@@ -9,4 +9,8 @@ en:
         "Contribute"
       find_out_more:
         "Find out more"
+      leadline:
+        classified_as: "Classified as"
+        by: "by"
+        in_project: "in project"
         

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       get 'set_config', action: 'set_config'
       get 'stream_status', action: 'stream_status'
       get 'stream_data', action: 'stream_data'
+      post 'get_leadline', action: 'get_leadline'
       post 'question_sequence_end', action: 'question_sequence_end'
     end
   end

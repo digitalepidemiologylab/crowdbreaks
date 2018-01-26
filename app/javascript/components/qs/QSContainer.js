@@ -31,7 +31,7 @@ export class QSContainer extends React.Component {
   onQuestionSequenceEnd() {
     // remember user has answered tweet
     var data = {
-      'api': {
+      'qs': {
         'tweet_id': this.props.tweetId,
         'user_id': this.props.userId,
         'project_id': this.props.projectId

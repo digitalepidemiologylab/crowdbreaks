@@ -20,43 +20,12 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-12 col-sm-10 col-lg-7 text-center">
-
-      <!-- tweet + classification -->
-      <div class="classification">
-        <div class="tweet-example" style="background-color: #fff; border: 1px solid #ced7de; border-radius: 5px; padding: 1.5rem;">
-          I'm a tweet
-        </div>
-        <div class="classification-info">
-          <p class="small text-light">Classified as <span class="badge badge-sentiment"><img src=<%= image_url('oval-positive.svg') %> class=" " alt=""> pro-vaccine</span> by alexanderthegreat  ·  5 seconds ago<br>
-          In <a href="#">Vaccine sentiment tracking</a></p>
-        </div>
-      </div>
-      /tweet + classification
-
-      <!-- tweet + classification -->
-      <div class="classification">
-        <div class="tweet-example" style="background-color: #fff; border: 1px solid #ced7de; border-radius: 5px; padding: 1.5rem">
-          I'm another tweet
-        </div>
-        <div class="classification-info">
-          <p class="small text-light">Classified as <span class="badge badge-sentiment"><img src=<%= image_url('oval-negative.svg') %> class=" " alt=""> pro-vaccine</span> by alexanderthegreat  ·  5 seconds ago<br>
-          In <a href="#">Some other project</a></p>
-        </div>
-      </div>
-      <!-- /tweet + classification -->
-
-      <!-- tweet + classification -->
-      <div class="classification">
-        <div class="tweet-example" style="background-color: #fff; border: 1px solid #ced7de; border-radius: 5px; padding: 1.5rem">
-          I'm a tweet.
-        </div>
-        <div class="classification-info">
-          <p class="small text-light">Classified as <span class="badge badge-sentiment"><img src=<%= image_url('oval-neutral.svg') %> class=" " alt=""> pro-vaccine</span> by alexanderthegreat  ·  5 seconds ago<br>
-          In <a href="#">Vaccine sentiment tracking</a></p>
-        </div>
-      </div>
-      <!-- /tweet + classification -->
-
+      <%= react_component 'Leadline', {
+        'dataEndpoint': get_leadline_path,
+        'translations': @translations,
+        'locale': I18n.locale,
+        'projectsPath': projects_path
+      } %>
     </div>
   </div>
 </div>

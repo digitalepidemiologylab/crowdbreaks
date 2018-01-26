@@ -29,6 +29,14 @@ class Answer < ApplicationRecord
     'gray': '#c9c9c9'
   }
 
+  LABELS = {
+    'pro-vaccine': 'pro-vaccine',
+    'anti-vaccine': 'anti-vaccine',
+    'neutral': 'neutral',
+    'relevant': 'relevant',
+    'non-relevant': 'non-relevant'
+  }
+
   def display_name
     answer
   end

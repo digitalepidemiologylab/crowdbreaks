@@ -22,7 +22,11 @@ ActiveAdmin.register Question do
       end
       f.input :project
       f.input :meta_field, label: 'Meta field name in ES (optional)'
-      f.input :answers, as: :check_boxes, :collection => Answer.all.map{ |a|  [a.answer, a.id]  }
+      f.input :answers, as: :check_boxes, :collection => Answer.all.map{ |a|  
+        answer_text = a.answer
+        answer_text += "      (label: #{a.label})" if not a.label.nil?
+        [answer_text, a.id]  
+      }
       f.input :use_for_relevance_score
     end
     f.actions
