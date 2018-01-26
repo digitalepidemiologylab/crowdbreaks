@@ -44,11 +44,17 @@
             </ul>
           <% end %>
 
-          <button class="site-header-toggler" type="button" data-toggle="collapse" data-target="" aria-controls="" aria-expanded="false" aria-label="">
-            <span class="site-header-toggler-icon">
-              <img src=<%= image_url('icon-menu.svg') %> alt="menu">
-            </span>
-          </button>
+          <div class="dropdown">
+            <button class="site-header-toggler" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="site-header-toggler-icon">
+                <img src=<%= image_url('icon-menu.svg') %> alt="menu">
+              </span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+              <%= link_to t('navbar.buttons.projects'), projects_path, class: 'dropdown-item' %>
+              <%= link_to t('navbar.buttons.about'), about_path, class: 'dropdown-item' %>
+            </div>
+          </div>
 
           <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
