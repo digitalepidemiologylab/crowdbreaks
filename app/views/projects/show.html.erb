@@ -1,25 +1,44 @@
 <% @title ||= Project.model_name.human.pluralize; title @title %>
-<div class="content-no-banner">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-2">
-      <h2>Test the classifier</h3>
-      <%= react_component 'SentimentTextBox',
-        { 'flaskPostEndpoint': vaccine_sentiment_path}
-      %>
-    </div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8 text-center">
+    <p><%= link_to t('.go_back'), projects_path, class: 'mb-6' %></p>
+    <h1 class="mb-5"><%= @project.title %></h1>
+    <p class="large text-light mb-6"><%= @project.description %></p>
   </div>
-  <hr/>
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-2">
-      <h2>Visualization</h3>
-      <%= react_component 'SentimentVisualization',
-        {
-        'interval': @interval,
-        'updateVisualizationPath': update_visualization_path,
-        'es_index_name': @project.es_index_name
-        }
-      %>
+</div>
+
+
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10 text-center">
+    <h4 class="and-divider mb-5"><span><%= t('.breakdown') %></span></h4>
+    <div class="row mb-5">
+      <div class="col-6 col-md-3 text-center">
+        <h3 class="display-4 text"><%= @total_count %></h3>
+        <p class="text-light"><%= t('.total') %></p>
+      </div>
+      <div class="col-6 col-md-3 text-center">
+        <h3 class="display-4 text-success"><%= @pro_vaccine_count %></h3>
+        <p class="text-light"><%= t('.pro_vaccine') %></p>
+      </div>
+      <div class="col-6 col-md-3 text-center">
+        <h3 class="display-4 text-danger"><%= @anti_vaccine_count %></h3>
+        <p class="text-light"><%= t('.anti_vaccine') %></p>
+      </div>
+      <div class="col-6 col-md-3 text-center">
+        <h3 class="display-4 text-light"><%= @neutral_vaccine_count %></h3>
+        <p class="text-light"><%= t('.neutral_vaccine') %></p>
+      </div>
     </div>
   </div>
 </div>
 
+
+
+<div class="cta">
+  <div class="container-fluid">
+    <h4 class="mb-4"><%= t('.get_involved') %></h4>
+    <p class="large text-light mb-4"><%= t('.every_tweet') %></p>
+    <%= link_to t('.contribute'), projects_path, class: 'btn btn-primary btn-lg' %>
+  </div>
+</div>
