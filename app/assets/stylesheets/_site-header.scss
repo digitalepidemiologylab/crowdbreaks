@@ -59,7 +59,7 @@
 
   .logo-crowdbreaks {
     display: block;
-    background: url('logo-crowdbreaks.svg') no-repeat 0 0;
+    background: image-url('logo-crowdbreaks.svg') no-repeat 0 0;
     height: 28px;
     width: 154px;
     margin: 0 auto;
@@ -73,7 +73,7 @@
     }
 
     @include media-breakpoint-down(xs) {
-      background: url('logomark-crowdbreaks.svg') no-repeat 0 0;
+      background: image-url('logomark-crowdbreaks.svg') no-repeat 0 0;
       height: 28px;
       width: 28px;
     }
