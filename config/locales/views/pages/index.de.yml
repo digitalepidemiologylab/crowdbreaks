@@ -9,6 +9,17 @@ de:
         "Mach mit!"
       find_out_more:
         "Erfahre mehr"
+      hello: "Hallo %{username}."
+      classified_so_far: 
+        one: "Du hast 1 tweet klassifiziert. Danke."
+        other: "Du hast %{count} tweets klassifiziert. Danke."
+      total: "Insgesamt klassifiziert"
+      pro_vaccine: 'Tweets klassifiziert als pro-vaccine'
+      anti_vaccine: 'Tweets klassifiziert als anti-vaccine'
+      neutral_vaccine: 'Tweets klassifiziert als neutral'
+      contribute_again: 'Mehr beitragen'
+      no_contributions: 'Noch keine Beiträge.'
+      no_contributions_button: 'Zu den Projekten'
       leadline:
         classified_as: "Klassifiziert als"
         by: "von"

@@ -1,32 +1,74 @@
-<% content_for :body_class, 'bg-home' %>
-<% content_for :disable_turbolinks, 'data-turbolinks=false' %>
-<div class="row justify-content-center">
-  <div class="col-12 text-center">
-    <h1 class="mb-5"><%= t('.goal') %><br>
-      <span class="text-light"><%= t('.num_tweets', num: number_with_delimiter(@num_tweets_classified, delimiter: ',')) %></span>
-    </h1>
-  </div>
-</div>
-
-<div class="row justify-content-center">
-  <div class="col-12 col-sm-8 col-lg-4 text-center">
-    <div class="buttons-fluid mb-6">
-      <%= link_to t('.contribute'), projects_path, class: 'btn btn-primary btn-lg' %>
-      <%= link_to t('.find_out_more'), about_path, class: 'btn btn-secondary btn-lg' %>
+<% if user_signed_in? %>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 text-center">
+        <h1 class="mb-6"><%= t('.hello', username: current_user.username) %><br>
+          <% if @total_count > 0 %>
+            <span class="text-light"><%= t('.classified_so_far', count: @total_count) %></span></h1>
+          <% else %>
+            <span class="text-light"><%= t('.no_contributions') %></span></h1>
+            <%= link_to t('.no_contributions_button'), projects_path, class: 'btn btn-primary btn-lg mb-7' %>
+          <% end %>
+      </div>
     </div>
   </div>
-</div>
 
-
-<div class="container">
+  <% if @total_count > 0 and @total_count_vaccine_sentiment > 0 %>
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 text-center">
+        <h4 class="and-divider mb-5"><span><%= @vaccine_sentiment_project.title %></span></h4>
+        <div class="row mb-3">
+          <div class="col-6 col-md-3 text-center">
+            <h3 class="display-4 text"><%= @total_count_vaccine_sentiment %></h3>
+            <p class="text-light"><%= t('.total') %></p>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <h3 class="display-4 text-success"><%= @pro_vaccine_count %></h3>
+            <p class="text-light"><%= t('.pro_vaccine') %></p>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <h3 class="display-4 text-danger"><%= @anti_vaccine_count %></h3>
+            <p class="text-light"><%= t('.anti_vaccine') %></p>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <h3 class="display-4 text-light"><%= @neutral_vaccine_count %></h3>
+            <p class="text-light"><%= t('.neutral_vaccine') %></p>
+          </div>
+        </div>
+        <%= link_to t('.contribute_again'), projects_path, class: 'btn btn-primary btn-lg mb-7' %>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <% content_for :body_class, 'bg-home' %>
+  <% content_for :disable_turbolinks, 'data-turbolinks=false' %>
   <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-lg-7 text-center">
-      <%= react_component 'Leadline', {
-        'dataEndpoint': get_leadline_path,
-        'translations': @translations,
-        'locale': I18n.locale,
-        'projectsPath': projects_path
-      } %>
+    <div class="col-12 text-center">
+      <h1 class="mb-5"><%= t('.goal') %><br>
+        <span class="text-light"><%= t('.num_tweets', num: number_with_delimiter(@num_tweets_classified, delimiter: ',')) %></span>
+      </h1>
     </div>
   </div>
-</div>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-lg-4 text-center">
+      <div class="buttons-fluid mb-6">
+        <%= link_to t('.contribute'), projects_path, class: 'btn btn-primary btn-lg' %>
+        <%= link_to t('.find_out_more'), about_path, class: 'btn btn-secondary btn-lg' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-lg-7 text-center">
+        <%= react_component 'Leadline', {
+          'dataEndpoint': get_leadline_path,
+          'translations': @translations,
+          'locale': I18n.locale,
+          'projectsPath': projects_path
+        } %>
+    </div>
+    </div>
+  </div>
+<% end %>
