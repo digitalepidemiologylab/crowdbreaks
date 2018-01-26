@@ -16,7 +16,7 @@
     <%= javascript_pack_tag 'application' %>
   </head>
 
-  <body class="<%= content_for :body_class %>">
+  <body class="<%= content_for :body_class %>" <%= content_for :disable_turbolinks %>>
     <%= render 'layouts/shared/navbar' %>
     <%= flash_messages %>
     <div class="content">
