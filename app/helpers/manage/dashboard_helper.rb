@@ -1,16 +1,9 @@
 module Manage::DashboardHelper
-  LABEL_BY_STATUS = {
-      'running': 'label-success',
-      'dead': 'label-danger',
-      'exited': 'label-danger',
-      'paused': 'label-warning'
-    }
-
   def label_based_on_status(status)
-    if LABEL_BY_STATUS.include?(status.to_sym)
-      label = LABEL_BY_STATUS[status.to_sym]
+    if status == 'running' or status == 'paused'
+      image_tag(status+'.svg') + ' ' + status
     else
-      label = 'label-danger'
+      image_tag('not-running.svg') + ' ' + status
     end
   end
 end

@@ -1,94 +1,67 @@
 <% @title ||= 'Manage'; title @title %>
 
-<div class="content-no-banner">
-  
-  <div class="row">
-    <div class="col-md-3">
-      <h3>Admin</h3>
-      <div class="list-group">
-        <%= link_to active_admin_root_path, class: 'list-group-item' do %>
-          Active admin
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        <% end %>
-
-        <%= link_to new_admin_project_path, class: 'list-group-item' do %>
-          New Project
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        <% end %>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <h3>Mturk</h3>
-      <div class="list-group">
-        <%= link_to mturk_batch_jobs_path, class: 'list-group-item' do %>
-          Batch processing
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        <% end %>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <h3>Pipeline</h3>
-      <div class="list-group">
-        <%= link_to streaming_path, class: 'list-group-item' do %>
-          Streaming configuration
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        <% end %>
-        <%= link_to monitor_streams_path, class: 'list-group-item' do %>
-          Stream monitoring
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        <% end %>
-        <%= link_to elasticsearch_indexes_path, class: 'list-group-item' do %>
-          Elasticsearch
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        <% end %>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <h3>Other</h3>
-      <%= link_to sentiment_analysis_path, class: 'list-group-item' do %>
-        Sentiment analysis
-        <i class="glyphicon glyphicon-chevron-right"></i>
-      <% end %>
-    </div>
+<div class="row mb-5">
+  <div class="col-6">
+    <h4 class="and-divider mb-4"><span>Pipeline</span></h4>
+    <%= link_to 'Streaming configuration', streaming_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <%= link_to 'Stream monitoring', monitor_streams_path, class: 'btn btn-primary btn-lg btn-block' %>
+    <%= link_to 'Elasticsearch', elasticsearch_indexes_path, class: 'btn btn-primary btn-lg btn-block' %>
   </div>
-  <hr/>
-  <div class="row">
-    <div class="col-lg-6">
-      <h3>Status of services</h3>
-      <table class="table">
-        <thead>
-          <th>Service</th>
-          <th>Host</th>
-          <th>Status</th>
-        </thead>
-        <tbody>
-          <tr> 
-            <td>Flask API</td>
-            <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
-            <td><span class="label <%= @api_ready ? 'label-success' : 'label-danger' %>"><%= @api_ready ? 'Connected' : 'Not connected'%> </span></td>
-          </tr>
-          <tr> 
-            <td>Elasticsearch (signed requests from Heroku, to be removed)</td>
-            <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
-            <td><span class="label <%= @es_ready ? 'label-success' : 'label-danger' %>"><%= @es_ready ? 'Connected' : 'Not connected'%> </span></td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="col-6">
+    <h4 class="and-divider mb-4"><span>Admin</span></h4>
+    <%= link_to 'Active admin', active_admin_root_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <%= link_to 'New Project', new_admin_project_path, class: 'btn btn-primary btn-lg btn-block' %>
+  </div>
+</div>
 
-      <table class="table">
-        <thead>
-          <th>Container</th>
-          <th>Status</th>
-        </thead>
-        <tbody>
-          <% @status_all.each do |s| %>
-            <tr>
-              <td><%= s['name'] %></td>
-              <td><span class="label <%= label_based_on_status(s['status']) %>"><%= s['status'] %></span></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+<div class="row mb-6">
+  <div class="col-6">
+    <h4 class="and-divider mb-4"><span>Mturk</span></h4>
+    <%= link_to 'Batch processing', mturk_batch_jobs_path, class: 'btn btn-primary btn-lg btn-block'%>
+  </div>
+  <div class="col-6">
+    <h4 class="and-divider mb-4"><span>Other</span></h4>
+    <%= link_to 'Sentiment analysis', sentiment_analysis_path, class: 'btn btn-primary btn-lg btn-block'%>
+  </div>
+</div>
+
+
+<div class="row justify-content-center mb-6">
+  <div class="col-12 col-md-10 col-lg-8 text-center">
+    <h4 class="and-divider mb-4"><span>Status of services</span></h4>
+    <table class="table mb-6">
+      <thead>
+        <th>Service</th>
+        <th>Host</th>
+        <th>Status</th>
+      </thead>
+      <tbody>
+        <tr> 
+          <td>Flask API</td>
+          <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
+          <td><span class="badge badge-sentiment"><%= image_tag(@api_ready ? 'running.svg' : 'not-running.svg') %>&nbsp;<%= @api_ready ? 'Connected' : 'Not connected'%>&nbsp;</span></td>
+        </tr>
+        <tr> 
+          <td>Elasticsearch (signed requests from Heroku, to be removed)</td>
+          <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
+          <td><span class="badge badge-sentiment"><%= image_tag(@es_ready ? 'running.svg' : 'not-running.svg') %>&nbsp;<%= @es_ready ? 'Connected' : 'Not connected'%>&nbsp;</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 class="and-divider mb-4"><span>Status of docker containers</span></h4>
+    <table class="table">
+      <thead>
+        <th>Container</th>
+        <th>Status</th>
+      </thead>
+      <tbody>
+        <% @status_all.each do |s| %>
+          <tr>
+            <td><%= s['name'] %></td>
+            <td><span class="badge badge-sentiment"><%= label_based_on_status(s['status']) %></span></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
