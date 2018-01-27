@@ -8,15 +8,13 @@ import OvalNeutral from './oval-neutral.svg'
 export const LeadlineItem = (props) => {
   const options = {
     cards: 'hidden',
-    conversation: 'none',
+    conversation: 'none'
   };
   const imageDict = {
     'pro-vaccine': OvalPositive,
     'anti-vaccine': OvalNegative,
     'neutral': OvalNeutral
   };
-  console.log(props.tweetId.toString())
-  console.log("956831942351183873")
   return (
     <div className="classification">
       <div className="tweet-example">

@@ -1,3 +1,5 @@
+<% @title ||= @project.title; title @title %>
+<% content_for :disable_turbolinks, 'data-turbolinks=false' %>
 <%= react_component('QSContainer',
   {
     projectTitle: @project.title,
