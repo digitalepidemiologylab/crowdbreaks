@@ -2,19 +2,22 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import { Line, defaults } from 'react-chartjs-2';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 
 export class SentimentVisualization extends React.Component {
   constructor(props) {
     super(props);
 
+    this.toggle = this.toggle.bind(this);
     this.state = {
       labels: [],
       all_data: [],
       pro_data: [],
       anti_data: [],
       neutral_data: [],
-      interval: props.interval
+      start_date: props.start_date,
+      end_date: props.end_date,
+      dropdownOpen: false
     };
 
     this.options = {
@@ -43,24 +46,16 @@ export class SentimentVisualization extends React.Component {
       }
     };
 
-    defaults.global.defaultFontFamily = 'Noto Sans';
+    defaults.global.defaultFontFamily = 'Roboto';
   }
 
   componentWillMount() {
     const data = {
       "api": {
         "interval": this.props.interval,
-        "es_index_name": this.props.es_index_name
-      }
-    };
-    this.setData(data);
-  }
-
-  onSelect(ev) {
-    const data = {
-      "api": {
-        "interval": ev,
-        "es_index_name": this.props.es_index_name
+        "es_index_name": this.props.es_index_name,
+        "start_date": this.props.start_date,
+        "end_date": this.props.end_date
       }
     };
     this.setData(data);
@@ -76,6 +71,7 @@ export class SentimentVisualization extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
+        console.log(result)
         this.setState({
           labels: result.all_data.map((d) => new Date(d.key_as_string)),
           all_data: result.all_data.map((d) => d.doc_count),
@@ -87,8 +83,26 @@ export class SentimentVisualization extends React.Component {
     });
   }
 
+  toggle() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  }
+
+  onSelect(interval) {
+    const data = {
+      "api": {
+        "interval": interval,
+        "es_index_name": this.props.es_index_name,
+        "start_date": this.state.start_date,
+        "end_date": this.state.end_date
+      }
+    };
+    this.setData(data);
+  }
+
   render() {
-    const intervalOptions = ['Hour', 'Day'];
+    const intervalOptions = ['hour', 'day'];
     const data = {
       labels: this.state.labels,
       datasets: [
@@ -116,16 +130,20 @@ export class SentimentVisualization extends React.Component {
         }
       ]
     };
+    var prevThis = this;
 
     return(
       <div>
-        <div className="pull-right">
-          <DropdownButton bsSize='small' onSelect={(ev) => this.onSelect(ev)} pullRight={true} title="Interval" id="nav-dropdown">
+        <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle} onSelect={(ev) => this.onSelect(ev)}>
+          <DropdownToggle caret>
+            Interval
+          </DropdownToggle>
+          <DropdownMenu>
             {intervalOptions.map(function(interval) {
-              return <MenuItem href="#" key={interval} eventKey={interval.toLowerCase()}>{interval}</MenuItem>
+              return <DropdownItem key={interval} onClick={() => prevThis.onSelect(interval)}>{interval}</DropdownItem>
             })}
-          </DropdownButton>
-        </div>
+          </DropdownMenu>
+        </ButtonDropdown>
           
         <Line data={data} width={600} height={250} options={this.options} />
       </div>

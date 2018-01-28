@@ -11,7 +11,7 @@
           </li>
           <% if current_or_guest_user.admin?  %>
             <li class="nav-item">
-              <%= link_to 'Manage', dashboard_path, class: current_page?(dashboard_path)? 'nav-link active' : 'nav-link' %>
+              <%= link_to 'Manage', dashboard_path, class: current_namespace?('manage')? 'nav-link active' : 'nav-link' %>
             </li>
           <% end %>
         </ul>

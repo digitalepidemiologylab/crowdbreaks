@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export const ExampleInput = (props) => {
   return (
-    <button onClick={props.onExampleClick} className='btn-md btn-block btn-default'>
+    <button onClick={props.onExampleClick} className='btn btn-block btn-secondary'>
       { props.exampleText }
     </button>
   );

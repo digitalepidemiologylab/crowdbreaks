@@ -60,7 +60,7 @@ export class MonitorStream extends React.Component {
       },
       animation: false
     };
-    defaults.global.defaultFontFamily = 'Noto Sans';
+    defaults.global.defaultFontFamily = 'Roboto';
   }
 
   componentWillMount() {

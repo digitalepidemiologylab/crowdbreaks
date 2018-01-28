@@ -1,20 +1,17 @@
 <% @title ||= 'Monitor streams'; title @title %>
-
-<div class="content-no-banner">
-  <div class="row">
-    <div class="col-xs-12">
-      <%= link_to dashboard_path, class: 'btn btn-default' do %>
-        <i class="glyphicon glyphicon-chevron-left"></i>
-        Go back
-      <% end %>
-    </div>
+<div class="row mb-6">
+  <div class="col-12">
+    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Go back
+    <% end %>
   </div>
-
-  <div class="row">
-    <div class="col-xs-12">
-      <h3>Recent stream activity</h3>
-    </div>
-  </div>
-
-  <%= render partial: "monitor_stream", collection: @current_streams, as: 'project' %>
 </div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>Recent stream activity</h2>
+  </div>
+</div>
+
+<%= render partial: "monitor_stream", collection: @current_streams, as: 'project' %>

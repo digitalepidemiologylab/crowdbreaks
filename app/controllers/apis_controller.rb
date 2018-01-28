@@ -9,7 +9,8 @@ class ApisController < ApplicationController
 
   # Sentiment visualization
   def update_visualization
-    options = {interval: api_params[:interval], start_date: '2017-06-01 00:00:00', end_date: '2017-06-21 00:00:00'}
+    # options = {interval: api_params[:interval], start_date: '2017-06-01 00:00:00', end_date: '2017-06-21 00:00:00'}
+    options = {interval: api_params[:interval], start_date: 'now-30d/d', end_date: 'now'}
     if not api_params[:es_index_name].present?
       render json: {'errors': ['es_index_name needs to be present']}, status: 400
       return

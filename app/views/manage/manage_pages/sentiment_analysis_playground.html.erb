@@ -1,22 +1,20 @@
-<% @title ||= 'New Project'; title @title %>
 <div class="row mb-4">
   <div class="col-12">
-    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+    <%= link_to sentiment_analysis_path, class: 'btn btn-secondary btn-lg' do %>
       Go back
     <% end %>
   </div>
 </div>
 
-
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-10 col-lg-8">
-    <h2 class='mb-4'>Create a new project</h2>
+    <h2 class='mb-4'>Playground</h2>
   </div>
 </div>
-
-
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-10 col-lg-8">
-    <%= render 'project_form' %>
+    <%= react_component 'SentimentTextBox',
+      { 'flaskPostEndpoint': vaccine_sentiment_path}
+    %>
   </div>
 </div>

@@ -1,21 +1,16 @@
 <% @title ||= 'Sentiment analysis'; title @title %>
 
-<div class="content-no-banner">
-  <div class="row">
-    <div class="col-xs-12">
-      <%= link_to dashboard_path, class: 'btn btn-default' do %>
-        <i class="glyphicon glyphicon-chevron-left"></i>
-        Go back
-      <% end %>
-    </div>
+<div class="row mb-4">
+  <div class="col-12">
+    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
   </div>
+</div>
 
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-2">
-      <h2>Test the classifier</h3>
-      <%= react_component 'SentimentTextBox',
-        { 'flaskPostEndpoint': vaccine_sentiment_path}
-      %>
-    </div>
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-8 col-lg-6">
+    <%= link_to 'Playground', sentiment_analysis_playground_path, class: 'btn btn-secondary btn-block' %>
+    <%= link_to 'Chart', sentiment_analysis_chart_path, class: 'btn btn-secondary btn-block' %>
   </div>
 </div>

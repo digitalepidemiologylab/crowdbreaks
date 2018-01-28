@@ -41,6 +41,8 @@ Rails.application.routes.draw do
       get 'current_streams', to: 'manage_pages#current_streams'
       get 'monitor_streams', to: 'manage_pages#monitor_streams'
       get 'sentiment_analysis', to: 'manage_pages#sentiment_analysis'
+      get 'sentiment_analysis_playground', to: 'manage_pages#sentiment_analysis_playground'
+      get 'sentiment_analysis_chart', to: 'manage_pages#sentiment_analysis_chart'
       resources :mturk_batch_jobs do
         resources :tasks
         get 'submit'

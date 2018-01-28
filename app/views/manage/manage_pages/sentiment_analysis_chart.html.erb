@@ -1,0 +1,26 @@
+<div class="row mb-4">
+  <div class="col-12">
+    <%= link_to sentiment_analysis_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10">
+    <h2 class='mb-4'>Sentiment over time</h2>
+  </div>
+</div>
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10">
+    <%= react_component 'SentimentVisualization',
+      {
+      'interval': @interval,
+      'updateVisualizationPath': update_visualization_path,
+      'es_index_name': @project.es_index_name,
+      'start_date': 'now-2M/d',
+      'end_date': 'now'
+    }
+  %>
+</div>
+</div>

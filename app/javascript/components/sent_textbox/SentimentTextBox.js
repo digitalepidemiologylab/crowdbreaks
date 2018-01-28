@@ -17,7 +17,6 @@ export class SentimentTextBox extends React.Component {
     this.num_words = 0;
   }
 
-
   onHandleChange(value) {
     var data = {"text": value};
     let newLabel = this.state.label;
@@ -96,16 +95,18 @@ export class SentimentTextBox extends React.Component {
 
     return(
       <div>
-        <h4>Type something (at least 3 words)</h4>
-        <textarea 
-          id="inputTextField"
-          type="text" 
-          value={this.state.textValue}
-          onChange={changeEvent => this.onHandleChange(changeEvent.target.value)}
-          className="form-control"
-        />
-        <h2 style={labelStyle}>{this.state.label}</h2>
-        <span>Pro-vaccine ({this.round(this.state.pro_vaccine)}%), Neutral ({this.round(this.state.neutral)}%), Anti-vaccine ({this.round(this.state.anti_vaccine)}%)</span>
+        <div className="mb-5">
+          <h4>Type something (at least 3 words)</h4>
+          <textarea 
+            id="inputTextField"
+            type="text" 
+            value={this.state.textValue}
+            onChange={changeEvent => this.onHandleChange(changeEvent.target.value)}
+            className="form-control"
+          />
+          <h2 style={labelStyle}>{this.state.label}</h2>
+          <span>Pro-vaccine ({this.round(this.state.pro_vaccine)}%), Neutral ({this.round(this.state.neutral)}%), Anti-vaccine ({this.round(this.state.anti_vaccine)}%)</span>
+        </div>
         <h3>Test examples:</h3>
         {examples.map(function(ex) {
           return <ExampleInput key={ex} onExampleClick={() => parentThis.onExampleClick(ex)} exampleText={ex}/>

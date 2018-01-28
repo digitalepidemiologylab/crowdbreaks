@@ -25,6 +25,10 @@ module Manage
       @current_streams = Project.select(:title_translations, :es_index_name).where(slug: config.keys)
     end
 
+    def sentiment_analysis_chart
+      @interval = 'hour'
+      @project = Project.find_by('es_index_name': 'project_vaccine_sentiment')
+    end
 
     private 
 
