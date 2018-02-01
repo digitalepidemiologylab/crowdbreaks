@@ -9,15 +9,14 @@ class ApisController < ApplicationController
 
   # Sentiment visualization
   def update_visualization
-    # options = {interval: api_params[:interval], start_date: '2017-06-01 00:00:00', end_date: '2017-06-21 00:00:00'}
-    options = {interval: api_params[:interval], start_date: 'now-30d/d', end_date: 'now'}
-    if not api_params[:es_index_name].present?
+    options = {interval: api_params_viz[:interval], start_date: api_params_viz[:start_date], end_date: api_params_viz[:end_date]}
+    if not api_params_viz[:es_index_name].present?
       render json: {'errors': ['es_index_name needs to be present']}, status: 400
       return
     end
     
     resp = {
-      "all_data": @api.get_all_data(api_params[:es_index_name], options),
+      "all_data": @api.get_all_data(api_params_viz[:es_index_name], options),
       "pro_data": @api.get_sentiment_data('pro-vaccine', options),
       "anti_data": @api.get_sentiment_data('anti-vaccine', options),
       "neutral_data": @api.get_sentiment_data('neutral', options),
@@ -102,6 +101,10 @@ class ApisController < ApplicationController
 
   def api_params_qs
     params.require(:qs).permit(:tweet_id, :user_id, :project_id)
+  end
+
+  def api_params_viz
+    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name)
   end
 
   def api_params_leadline

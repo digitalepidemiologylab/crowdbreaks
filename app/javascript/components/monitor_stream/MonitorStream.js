@@ -38,6 +38,9 @@ export class MonitorStream extends React.Component {
           scaleLabel: {
             display: true,
             labelString: "Counts"
+          },
+          ticks: {
+            min: 0
           }
         }],
         xAxes: [{

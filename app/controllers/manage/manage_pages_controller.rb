@@ -26,7 +26,7 @@ module Manage
     end
 
     def sentiment_analysis_chart
-      @interval = 'hour'
+      @interval = 'day'
       @project = Project.find_by('es_index_name': 'project_vaccine_sentiment')
     end
 
