@@ -1,12 +1,13 @@
 module MturkBatchJobsHelper
-  def status(mturk_batch_job)
-    status_labels = {
-      unsubmitted: 'label-default',
-      submitted: 'label-primary',
-      completed: 'label-success'
-    }
-    status = mturk_batch_job.status
-    content_tag(:div, status.to_s, class: 'label '+status_labels[status])
+  def status(status)
+    case status
+    when 'completed'
+      image_tag('running.svg') + ' ' + status
+    when 'submitted'
+      image_tag('paused.svg') + ' ' + status
+    else
+      image_tag('not-running.svg') + ' ' + status
+    end
   end
 
   def completed_by_total(mturk_batch_job)

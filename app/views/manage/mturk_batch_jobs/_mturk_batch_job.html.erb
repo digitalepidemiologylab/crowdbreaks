@@ -3,7 +3,7 @@
   <td><%= mturk_batch_job.project.title %></td>
   <td><%= mturk_batch_job.sandbox ? 'Sandbox' : 'Production' %></td>
   <td><%= mturk_batch_job.created_at %></td>
-  <td><%= status(mturk_batch_job) %></td>
+  <td><span class='badge badge-sentiment'><%= status(mturk_batch_job.status.to_s) %></span></td>
   <td><%= completed_by_total(mturk_batch_job) %></td>
   <td>
     <%= link_to mturk_batch_job_tasks_path(mturk_batch_job.id) do %>

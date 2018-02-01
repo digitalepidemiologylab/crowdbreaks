@@ -1,42 +1,48 @@
 <% @title ||= MturkBatchJob.model_name.human; title @title %>
-<div class="content-no-banner">
-  <div class="row">
-    <div class="col-xs-12">
-      <h2><%= @title.pluralize %></h2>
-    </div>
 
-    <div class="col-xs-12">
-      <%= paginate @mturk_batch_jobs %>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Batch name</th>
-            <th>Project</th>
-            <th>Platform</th>
-            <th>Created at</th>
-            <th>Status</th>
-            <th>Tasks completed/total</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= render @mturk_batch_jobs %>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="col-xs-12">
-      <div class="btn-toolbar">
-        <%= link_to dashboard_path, class: 'btn btn-default' do %>
-          <i class="glyphicon glyphicon-chevron-left"></i>
-          Go back
-        <% end %>
-        <%= link_to new_mturk_batch_job_path, class: 'btn btn-primary' do %>
-          Create new batch job
-        <% end %>
-      </div>
-    </div>
-    
+<div class="row mb-5">
+  <div class="col-12">
+    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
   </div>
 </div>
+
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'><%= @title.pluralize %></h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= paginate @mturk_batch_jobs %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Batch name</th>
+          <th>Project</th>
+          <th>Platform</th>
+          <th>Created at</th>
+          <th>Status</th>
+          <th>Tasks completed/total</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render @mturk_batch_jobs %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= link_to new_mturk_batch_job_path, class: 'btn btn-primary btn-lg' do %>
+      Create new batch job
+    <% end %>
+  </div>
+</div>
+

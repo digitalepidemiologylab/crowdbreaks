@@ -1,0 +1,93 @@
+<%= simple_form_for(@mturk_batch_job, url: mturk_batch_jobs_path, html: {id: 'mturk-batch-job-new'}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-group">
+    <%= f.input :name, hint: 'Has to be unique' %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.input :title, hint: 'Title of each HIT on Mturk, short and descriptive', input_html: {value: "Label tweet"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :description, hint: 'A bit more general description about the HIT', input_html: {value: "Answer a few questions about a tweet"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :keywords, hint: 'Comma-separated list of keywords (used by Mturk for searching)', input_html: {value: "twitter, science, sentiment, opinion"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.association :project, hint: 'Choose the question sequence' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :job_file,
+      as: :file,
+      label: "Tweet IDs",
+      hint: 'Please use a csv in which each line corresponds to a tweet ID',
+      :input_html => { :class => 'file-input-form-control' } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :number_of_assignments,
+      as: :integer, 
+      input_html: { value: 1 },
+      hint: "Label every tweet n times" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Reward', hint: "Reward per finished question sequence" do %>
+      <div class="input-group">
+        <span class="input-group-text">$</span>
+        <%= f.input_field :reward,
+          class: 'form-control',
+          value: 0.03 %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Lifetime', hint: "Time after which a HIT is no longer available for users." do %>
+      <div class="input-group">
+        <%= f.input_field :lifetime_in_seconds,
+          class: 'form-control',
+          value: 30
+        %>
+        <span class="input-group-text">days</span>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Auto-approval', hint: "Time after which a completed HIT gets auto-approved" do %>
+      <div class="input-group">
+        <%= f.input_field :auto_approval_delay_in_seconds,
+          class: 'form-control',
+          value: 7 
+        %>
+        <span class="input-group-text">days</span>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Assignment duration', hint: "Time which is given to a worker to complete the task" do %>
+      <div class="input-group">
+        <%= f.input_field :assignment_duration_in_seconds,
+          class: 'form-control',
+          value: 20 
+        %>
+        <span class="input-group-text">min</span>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.input :sandbox, input_html: {style: "margin-right:15px;", checked: true}, label_html: {class: 'checkbox-inline'} %>
+  </div>
+
+  <div class="form-actions" style="margin-top:25px;">
+    <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
+  </div>
+<% end %>
