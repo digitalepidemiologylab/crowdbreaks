@@ -14,4 +14,15 @@ module Manage::DashboardHelper
       image_tag('not-running.svg') + ' Not up-to-date'
     end
   end
+
+  def label_es_health(status)
+    case status
+    when 'green'
+      image_tag('running.svg') + ' ' + status
+    when 'yellow'
+      image_tag('paused.svg') + ' ' + status
+    else
+      image_tag('not-running.svg') + ' ' + status
+    end
+  end
 end

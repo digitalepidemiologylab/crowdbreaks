@@ -98,6 +98,11 @@ class FlaskApi
     resp.parsed_response['indices']
   end
 
+  def health
+    resp = self.class.get('/elasticsearch/health')
+    resp.parsed_response['status']
+  end
+
   def create_index(name)
     self.class.post('/elasticsearch/create', body: {name: name}.to_json, headers: JSON_HEADER)
   end
