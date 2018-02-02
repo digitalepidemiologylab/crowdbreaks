@@ -51,7 +51,7 @@
   </div>
 
   <div class="row justify-content-center">
-    <div class="col-12 col-sm-8 col-lg-4 text-center">
+    <div class="col-12 col-md-8 col-lg-6 text-center">
       <div class="buttons-fluid mb-6">
         <%= link_to t('.contribute'), projects_path, class: 'btn btn-primary btn-lg' %>
         <%= link_to t('.find_out_more'), about_path, class: 'btn btn-secondary btn-lg' %>
@@ -59,16 +59,14 @@
     </div>
   </div>
 
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-sm-10 col-lg-7 text-center">
-        <%= react_component 'Leadline', {
-          'dataEndpoint': get_leadline_path,
-          'translations': @translations,
-          'locale': I18n.locale,
-          'projectsPath': projects_path
-        } %>
-    </div>
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8 text-center">
+      <%= react_component 'Leadline', {
+        'dataEndpoint': get_leadline_path,
+        'translations': @translations,
+        'locale': I18n.locale,
+        'projectsPath': projects_path
+      } %>
     </div>
   </div>
 <% end %>

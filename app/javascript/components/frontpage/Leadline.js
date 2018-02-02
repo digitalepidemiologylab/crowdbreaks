@@ -66,6 +66,7 @@ export class Leadline extends React.Component {
             project={item[4][prevThis.props.locale]}
             translations={prevThis.props.translations}
             projectsPath={prevThis.props.projectsPath}
+            onTweetLoad={() => prevThis.onTweetLoad()}
           />
         })}
       </div>
