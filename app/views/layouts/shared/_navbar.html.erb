@@ -40,10 +40,10 @@
             </div>
           <% else %>
             <ul class="site-nav">
-              <li class="nav-item <%= current_page?(new_user_registration_path)? 'active' : '' %>">
+              <li class="nav-item">
                 <%= link_to t('navbar.account.sign_up_label'), new_user_registration_path, class: 'nav-link' %>
               </li>
-              <li class="nav-item <%= current_page?(new_user_session_path)? 'active' : '' %>">
+              <li class="nav-item">
                 <%= link_to t('navbar.account.login'), new_user_session_path, class: 'nav-link' %>
               </li>
             </ul>

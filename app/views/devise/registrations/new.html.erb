@@ -12,16 +12,16 @@
       <%= f.error_notification %>
 
       <div class="form-group">
-        <%= f.input :username, required: true, autofocus: true %>
+        <%= f.input :username, required: true, autofocus: true, label_html: {class: 'no-star'} %>
       </div>
       <div class="form-group">
-        <%= f.input :email, required: true, autofocus: true %>
+        <%= f.input :email, required: true, autofocus: true, label_html: {class: 'no-star'}%>
       </div>
       <div class="form-group">
-        <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length) %>
+        <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), label_html: {class: 'no-star'} %>
       </div>
       <div class="form-group">
-        <%= f.input :password_confirmation, required: true %>
+        <%= f.input :password_confirmation, required: true, label_html: {class: 'no-star'} %>
       </div>
 
       <div class="form-group">

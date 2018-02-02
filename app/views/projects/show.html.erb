@@ -35,11 +35,12 @@
 </div>
 
 
-
-<div class="cta">
-  <div class="container-fluid">
-    <h4 class="mb-4"><%= t('.get_involved') %></h4>
-    <p class="large text-light mb-4"><%= t('.every_tweet') %></p>
-    <%= link_to t('.contribute'), project_question_sequence_path(@project), class: 'btn btn-primary btn-lg' %>
+<% content_for :get_involved do %>
+  <div class="cta">
+    <div class="container-fluid">
+      <h4 class="mb-4"><%= t('.get_involved') %></h4>
+      <p class="large text-light mb-4"><%= t('.every_tweet') %></p>
+      <%= link_to t('.contribute'), project_question_sequence_path(@project), class: 'btn btn-primary btn-lg' %>
+    </div>
   </div>
-</div>
+<% end %>

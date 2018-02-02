@@ -394,3 +394,18 @@ select.form-control-lg {
     }
   }
 }
+
+.no-star {
+  abbr {
+    display: None;
+  }
+}
+
+.field_with_hint {
+  p {
+    @extend .form-text;
+    @extend .text-muted;
+    @extend small;
+
+  }
+}
