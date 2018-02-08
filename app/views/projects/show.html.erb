@@ -15,19 +15,19 @@
     <h4 class="and-divider mb-5"><span><%= t('.breakdown') %></span></h4>
     <div class="row mb-5">
       <div class="col-6 col-md-3 text-center">
-        <h3 class="display-4 text"><%= @total_count %></h3>
+        <h3 class="display-4 text"><%= number_with_delimiter(@total_count, delimiter: ',') %></h3>
         <p class="text-light"><%= t('.total') %></p>
       </div>
       <div class="col-6 col-md-3 text-center">
-        <h3 class="display-4 text-success"><%= @pro_vaccine_count %></h3>
+        <h3 class="display-4 text-success"><%= number_with_delimiter(@pro_vaccine_count, delimiter: ',') %></h3>
         <p class="text-light"><%= t('.pro_vaccine') %></p>
       </div>
       <div class="col-6 col-md-3 text-center">
-        <h3 class="display-4 text-danger"><%= @anti_vaccine_count %></h3>
+        <h3 class="display-4 text-danger"><%= number_with_delimiter(@anti_vaccine_count, delimiter: ',') %></h3>
         <p class="text-light"><%= t('.anti_vaccine') %></p>
       </div>
       <div class="col-6 col-md-3 text-center">
-        <h3 class="display-4 text-light"><%= @neutral_vaccine_count %></h3>
+        <h3 class="display-4 text-light"><%= number_with_delimiter(@neutral_vaccine_count, delimiter: ',') %></h3>
         <p class="text-light"><%= t('.neutral_vaccine') %></p>
       </div>
     </div>
