@@ -1,0 +1,17 @@
+en:
+  activerecord:
+    errors:
+      messages:
+        required: "must exist"
+        taken: "has already been taken"
+      models:
+        user:
+          attributes:
+            username:
+              taken: 'This username has already been taken.'
+            email:
+              taken: 'This Email has already been taken.'
+            password:
+              too_short: 'The password needs to be at least 6 characters.'
+            password_confirmation:
+              confirmation: "Doesn't match password."

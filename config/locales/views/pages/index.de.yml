@@ -2,7 +2,7 @@ de:
   pages:
     index:
       goal:
-        "Hilf uns Krankheiten in Echtzeit zu verfolgen"
+        "Hilf uns Gesundheitstrends in Echtzeit zu verfolgen"
       num_tweets:
         "%{num} tweets wurden klassifiziert"
       contribute:

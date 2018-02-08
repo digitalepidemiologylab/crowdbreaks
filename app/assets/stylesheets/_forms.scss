@@ -191,6 +191,12 @@ select.form-control-lg {
   label {
     font-weight: 500;
   }
+  .error {
+    color: $red;
+  }
+}
+.error_notification {
+  color: $red;
 }
 
 .form-text {
@@ -406,6 +412,5 @@ select.form-control-lg {
     @extend .form-text;
     @extend .text-muted;
     @extend small;
-
   }
 }

@@ -1,0 +1,17 @@
+de:
+  activerecord:
+    errors:
+      messages:
+        required: "wird benötigt"
+        taken: "ist schon vergeben"
+      models:
+        user:
+          attributes:
+            username:
+              taken: 'Dieser Username ist leider schon vergeben.'
+            email:
+              taken: 'Diese E-Mail ist leider schon vergeben.'
+            password:
+              too_short: 'Muss aus mindestens 6 Buchstaben bestehen.'
+            password_confirmation:
+              confirmation: 'Stimmt nicht mit Passwort überein.'
