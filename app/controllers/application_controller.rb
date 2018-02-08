@@ -66,7 +66,8 @@ class ApplicationController < ActionController::Base
   end
 
   def create_guest_user
-    u = User.create(:username => "guest", :email => "guest_#{Time.now.to_i}#{rand(100)}@example.com")
+    unique_id = "#{Time.now.to_i}#{rand(100)}"
+    u = User.create(:username => "guest", :email => "guest_#{unique_id}@example.com")
     u.save!(:validate => false)
     session[:guest_user_id] = u.id
     u

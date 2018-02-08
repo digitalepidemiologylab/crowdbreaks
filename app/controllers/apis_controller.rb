@@ -67,8 +67,10 @@ class ApisController < ApplicationController
 
   # end of question sequence
   def question_sequence_end
-    project = Project.find_by(id: api_params_qs[:project_id]).es_index_name
-    @api.update_tweet(project, api_params_qs[:user_id], api_params_qs[:tweet_id])
+    project = Project.find_by(id: api_params_qs[:project_id])
+    project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
+    project.save
+    @api.update_tweet(project.es_index_name, api_params_qs[:user_id], api_params_qs[:tweet_id])
   end
 
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180125192925) do
+ActiveRecord::Schema.define(version: 20180208092820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,6 +81,8 @@ ActiveRecord::Schema.define(version: 20180125192925) do
     t.boolean "public", default: false, null: false
     t.boolean "active_stream", default: true, null: false
     t.string "lang", default: ["en"], array: true
+    t.integer "question_sequences_count", default: 0, null: false
+    t.integer "results_count", default: 0, null: false
     t.index ["slug"], name: "index_projects_on_slug"
   end
 
@@ -113,6 +115,7 @@ ActiveRecord::Schema.define(version: 20180125192925) do
     t.datetime "updated_at", null: false
     t.bigint "tweet_id"
     t.bigint "task_id"
+    t.boolean "mturk_result", default: false, null: false
     t.index ["answer_id"], name: "index_results_on_answer_id"
     t.index ["project_id"], name: "index_results_on_project_id"
     t.index ["question_id"], name: "index_results_on_question_id"

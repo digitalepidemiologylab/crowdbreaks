@@ -6,10 +6,13 @@ class ProjectsController < ApplicationController
   def show
     @project = Project.friendly.find(params[:id])
     raise 'This project has nothing to show' unless @project.es_index_name == 'project_vaccine_sentiment' 
-    @interval = 'hour'
-    @pro_vaccine_count = @project.results.joins(:answer).where(answers: {label: 'pro-vaccine'}).count
-    @anti_vaccine_count = @project.results.joins(:answer).where(answers: {label: 'anti-vaccine'}).count
-    @neutral_vaccine_count = @project.results.joins(:answer).where(answers: {label: 'neutral'}).count
+
+    counts = @project.results.joins(:answer).group('answers.label').count
+    if not counts.empty?
+      @pro_vaccine_count = counts['pro-vaccine'] || 0
+      @anti_vaccine_count = counts['anti-vaccine'] || 0
+      @neutral_vaccine_count = counts['neutral'] || 0
+    end
     @total_count = @pro_vaccine_count + @anti_vaccine_count + @neutral_vaccine_count
   end
 
