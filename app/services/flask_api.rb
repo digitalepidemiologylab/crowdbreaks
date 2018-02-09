@@ -103,7 +103,7 @@ class FlaskApi
   def get_tweet(project, user_id: nil)
     data = {'user_id': user_id}
     handle_error do
-      resp = self.class.get('/tweet/new/'+project, query: data)
+      resp = self.class.get('/tweet/new/'+project, query: data, options: {timeout: 3})
       resp.parsed_response
     end
   end
@@ -143,7 +143,7 @@ class FlaskApi
   def handle_error(error_return_value: nil)
     begin
       yield
-    rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED 
+    rescue
       error_return_value
     end
   end
@@ -151,7 +151,7 @@ class FlaskApi
   def handle_error_notification(message: 'An error occured')
     begin
       yield
-    rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED 
+    rescue
       Hashie::Mash.new({success: false, parsed_response: message, code: 400})
     end
   end
