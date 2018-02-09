@@ -3,7 +3,7 @@ require 'httparty'
 class FlaskApi
   include HTTParty
 
-  default_timeout 2
+  default_timeout 5
   base_uri ENV['FLASK_API_HOSTNAME']
   # debug_output $stderr
   basic_auth ENV['FLASK_API_USERNAME'], ENV['FLASK_API_PASSWORD']
@@ -35,15 +35,15 @@ class FlaskApi
   end
 
   def get_all_data(index, options={})
-    handle_error do
-      resp = self.class.get('/data/all/'+index, query: options)
+    handle_error(error_return_value: []) do
+      resp = self.class.get('/data/all/'+index, query: options, timeout: 20)
       JSON.parse(resp)
     end
   end
 
   def get_sentiment_data(value, options={})
-    handle_error do
-      resp = self.class.get('/sentiment/data/'+value, query: options)
+    handle_error(error_return_value: []) do
+      resp = self.class.get('/sentiment/data/'+value, query: options, timeout: 20)
       JSON.parse(resp)
     end
   end
