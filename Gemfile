@@ -68,6 +68,8 @@ gem 'webpacker', '~> 3.0'
 gem 'webpacker-react', "~> 0.3.2"
 # JSON serializer
 gem 'active_model_serializers', '~> 0.10.0'
+# More powerful hashes
+gem 'hashie', '~> 3.4', '>= 3.4.6'
 
 group :development, :test do
   gem 'rspec-rails'

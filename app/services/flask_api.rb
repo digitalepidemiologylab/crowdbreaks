@@ -34,75 +34,125 @@ class FlaskApi
   end
 
   def get_all_data(index, options={})
-    resp = self.class.get('/data/all/'+index, query: options)
-    JSON.parse(resp)
+    handle_error do
+      resp = self.class.get('/data/all/'+index, query: options)
+      JSON.parse(resp)
+    end
   end
 
   def get_sentiment_data(value, options={})
-    resp = self.class.get('/sentiment/data/'+value, query: options)
-    JSON.parse(resp)
+    handle_error do
+      resp = self.class.get('/sentiment/data/'+value, query: options)
+      JSON.parse(resp)
+    end
   end
 
   def get_vaccine_sentiment(text)
     data = {'text': text}
-    self.class.post('/sentiment/vaccine/', body: data.to_json, headers: JSON_HEADER)
+    handle_error do
+      self.class.post('/sentiment/vaccine/', body: data.to_json, headers: JSON_HEADER)
+    end
   end
 
   # pipeline
   def get_config
-    resp = self.class.get('/pipeline/config')
-    resp.parsed_response
+    handle_error(error_return_value: []) do
+      resp = self.class.get('/pipeline/config')
+      resp.parsed_response
+    end
   end
 
   def status_all
-    return self.class.get('/pipeline/status/all')
+    handle_error(error_return_value: []) do
+      self.class.get('/pipeline/status/all')
+    end
   end
 
   def status_streaming
-    resp = self.class.get('/pipeline/status/logstash')
-    return resp.length > 20 ? 'error' : resp.strip
+    handle_error(error_return_value: 'error') do
+      resp = self.class.get('/pipeline/status/logstash')
+      return resp.length > 20 ? 'error' : resp.strip
+    end
   end
 
   def set_config(data)
-    self.class.post('/pipeline/config', body: data.to_json, headers: JSON_HEADER)
+    handle_error_notification do
+      self.class.post('/pipeline/config', body: data.to_json, headers: JSON_HEADER)
+    end
   end
 
   def stop_streaming
-    self.class.get('/pipeline/stop')
+    handle_error_notification do
+      self.class.get('/pipeline/stop')
+    end
   end
 
   def start_streaming
-    self.class.get('/pipeline/start')
+    handle_error_notification do
+      self.class.get('/pipeline/start')
+    end
   end
 
   def restart_streaming
-    self.class.get('/pipeline/restart')
+    handle_error_notification do
+      self.class.get('/pipeline/restart')
+    end
   end
 
   # tweets
   def get_tweet(project, user_id: nil)
     data = {'user_id': user_id}
-    resp = self.class.get('/tweet/new/'+project, query: data)
-    resp.parsed_response
+    handle_error do
+      resp = self.class.get('/tweet/new/'+project, query: data)
+      resp.parsed_response
+    end
   end
 
   def update_tweet(project, user_id, tweet_id)
     data = {'user_id': user_id, 'tweet_id': tweet_id}
-    self.class.post('/tweet/update/'+project, body: data.to_json, headers: JSON_HEADER)
+    handle_error do
+      self.class.post('/tweet/update/'+project, body: data.to_json, headers: JSON_HEADER)
+    end
   end
 
   # elasticsearch
   def es_stats
-    resp = self.class.get('/elasticsearch/stats')
-    resp.parsed_response['indices']
+    handle_error(error_return_value: {}) do
+      resp = self.class.get('/elasticsearch/stats')
+      resp.parsed_response['indices']
+    end
   end
 
   def health
-    resp = self.class.get('/elasticsearch/health')
-    resp.parsed_response['status']
+    handle_error(error_return_value: 'error') do
+      resp = self.class.get('/elasticsearch/health')
+      resp.parsed_response['status']
+    end
   end
 
   def create_index(name)
-    self.class.post('/elasticsearch/create', body: {name: name}.to_json, headers: JSON_HEADER)
+    handle_error_notification do
+      self.class.post('/elasticsearch/create', body: {name: name}.to_json, headers: JSON_HEADER)
+    end
+  end
+
+
+
+  private
+
+  def handle_error(error_return_value: nil)
+    begin
+      yield
+    rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED 
+      error_return_value
+    end
+  end
+
+  def handle_error_notification(message: 'An error occured')
+    begin
+      yield
+    rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED 
+      Hashie::Mash.new({success: false, parsed_response: message, code: 400})
+    end
   end
 end

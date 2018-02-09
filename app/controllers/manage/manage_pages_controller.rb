@@ -22,6 +22,10 @@ module Manage
 
     def monitor_streams
       config = @api.get_config
+      if config.empty?
+        @current_streams = []
+        return
+      end
       @current_streams = Project.select(:title_translations, :es_index_name).where(slug: config.keys)
     end
 
