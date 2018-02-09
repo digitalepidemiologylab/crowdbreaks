@@ -3,7 +3,7 @@ require 'httparty'
 class FlaskApi
   include HTTParty
 
-  default_timeout 5
+  default_timeout 2
   base_uri ENV['FLASK_API_HOSTNAME']
   # debug_output $stderr
   basic_auth ENV['FLASK_API_USERNAME'], ENV['FLASK_API_PASSWORD']
