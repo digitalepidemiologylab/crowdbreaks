@@ -7,8 +7,6 @@ import { LeadlineItem } from './LeadlineItem';
 // Other
 var moment = require('moment');
 
-import TweetEmbed from 'react-tweet-embed'
-
 
 export class Leadline extends React.Component {
   constructor(props) {
@@ -72,7 +70,6 @@ export class Leadline extends React.Component {
             onTweetLoad={() => prevThis.onTweetLoad()}
           />
         })}
-        <TweetEmbed id='692527862369357824' />
       </div>
     );
   }

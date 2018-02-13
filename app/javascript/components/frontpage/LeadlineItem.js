@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Tweet } from 'react-twitter-widgets'
+// import { Tweet } from 'react-twitter-widgets'
+import TweetEmbed from 'react-tweet-embed'
 import OvalPositive from './oval-positive.svg'
 import OvalNegative from './oval-negative.svg'
 import OvalNeutral from './oval-neutral.svg'
@@ -29,16 +30,17 @@ export class LeadlineItem extends React.Component {
     var style = document.createElement( 'style'  )
     style.innerHTML = '.EmbeddedTweet { border-color: #ced7de; max-width: 100%; }'
     this.tweet.querySelector('.twitter-tweet').shadowRoot.appendChild(style)
+    console.log('Loaded')
   }
 
 
   render() {
     return (
       <div className="classification" ref={ (tweet) => {this.tweet = tweet} } >
-        <Tweet 
-          tweetId={this.props.tweetId} 
+        <TweetEmbed
+          id={this.props.tweetId} 
           options={this.options}
-          onLoad={() => this.onTweetLoad()}
+          onTweetLoadSuccess={() => this.onTweetLoad()}
         />
         <div className="classification-info">
           <p className="small text-light">

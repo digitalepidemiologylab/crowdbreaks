@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import { Tweet } from 'react-twitter-widgets'
+import TweetEmbed from 'react-tweet-embed'
 
 export const TweetEmbedding = (props) => {
   var options = {
@@ -14,6 +15,11 @@ export const TweetEmbedding = (props) => {
         tweetId={props.tweetId} 
         options={options}
         onLoad={props.onTweetLoad}
+      />
+      <TweetEmbed
+        id={props.tweetId} 
+        options={options}
+        onTweetLoadSuccess={props.onTweetLoad}
       />
     </div>
   );
