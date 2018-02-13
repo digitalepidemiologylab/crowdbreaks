@@ -11,11 +11,6 @@ export const TweetEmbedding = (props) => {
   };
   return (
     <div className="row justify-content-center">
-      <Tweet 
-        tweetId={props.tweetId} 
-        options={options}
-        onLoad={props.onTweetLoad}
-      />
       <TweetEmbed
         id={props.tweetId} 
         options={options}
