@@ -91,7 +91,12 @@ export class QuestionSequence extends React.Component {
   }
 
   onTweetLoad() {
-    console.log('loaded')
+    var style = document.createElement( 'style'  )
+    style.innerHTML = '.EmbeddedTweet { border-color: #ced7de; max-width: 100%; }'
+    var shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
+    if (shadowRoot != null) {
+      shadowRoot.appendChild(style)
+    }
     this.setState({
       'tweetIsLoading': false
     });
@@ -112,12 +117,13 @@ export class QuestionSequence extends React.Component {
         <li className={liClassName} key={i}><span>{i}</span></li>
       )
     }
-    let questionSequenceBody = <div>
+    let questionSequenceBody = <div ref={(tweet) => this.tweet = tweet}>
       {/* Title and tweet */}
-      <div className='row'> 
-        <div className="col-12 text-center">
+      <div className='row justify-content-center'> 
+        <div className="col-12">
           <h4 className="mb-5">{this.props.projectTitle}</h4>
           <TweetEmbedding 
+            ref={(tweet) => this.tweet = tweet}
             tweetId={this.props.tweetId}
             onTweetLoad={() => parentThis.onTweetLoad()}
           />

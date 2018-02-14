@@ -31,3 +31,15 @@
     }
   }
 }
+
+// Tweets on question sequence
+.question-sequence-tweet {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  iframe {
+    display: inline-block !important;
+    vertical-align: top !important;
+  }
+}

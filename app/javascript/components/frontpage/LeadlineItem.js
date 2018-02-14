@@ -27,12 +27,13 @@ export class LeadlineItem extends React.Component {
 
   onTweetLoad() {
     // Slightly hackish way to change CSS within shadow dom
-    var style = document.createElement( 'style'  )
+    var style = document.createElement( 'style' )
     style.innerHTML = '.EmbeddedTweet { border-color: #ced7de; max-width: 100%; }'
-    this.tweet.querySelector('.twitter-tweet').shadowRoot.appendChild(style)
-    console.log('Loaded')
+    var shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
+    if (shadowRoot != null) {
+      shadowRoot.appendChild(style)
+    }
   }
-
 
   render() {
     return (

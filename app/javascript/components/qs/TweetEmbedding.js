@@ -6,11 +6,10 @@ import TweetEmbed from 'react-tweet-embed'
 export const TweetEmbedding = (props) => {
   var options = {
     cards: 'hidden',
-    conversation: 'none',
-    marginBottom: '0px'
+    conversation: 'none'
   };
   return (
-    <div className="row justify-content-center">
+    <div className="question-sequence-tweet">
       <TweetEmbed
         id={props.tweetId} 
         options={options}
