@@ -31,7 +31,9 @@ class QuestionSequencesController < ApplicationController
     @initial_question_id = @project.initial_question.id
     # @tweet_id = Elastic.new(@project.es_index_name).initial_tweet(@user_id)
     @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
-    if @tweet_id.nil?
+    p @tweet_id
+    if @tweet_id.nil? or not @tweet_id.scan(/\D/).empty?
+      puts 'API is down'
       # If API is down, fetch a random tweet
       @tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
     end

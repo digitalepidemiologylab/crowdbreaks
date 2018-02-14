@@ -91,6 +91,7 @@ export class QuestionSequence extends React.Component {
   }
 
   onTweetLoad() {
+    console.log('loaded')
     this.setState({
       'tweetIsLoading': false
     });
