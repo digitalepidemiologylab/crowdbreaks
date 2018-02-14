@@ -114,8 +114,8 @@ export class QuestionSequence extends React.Component {
     }
     let questionSequenceBody = <div>
       {/* Title and tweet */}
-      <div className='row justify-content-center'> 
-        <div className="col-12 col-sm-10 col-lg-7 text-center">
+      <div className='row'> 
+        <div className="col-12 text-center">
           <h4 className="mb-5">{this.props.projectTitle}</h4>
           <TweetEmbedding 
             tweetId={this.props.tweetId}
@@ -125,11 +125,13 @@ export class QuestionSequence extends React.Component {
       </div>
       {/* Loading clip */}
       { this.state.tweetIsLoading &&
-          <div className="row justify-content-center">
-            <div className="clip-loader">
-              <ClipLoader
-                color={'#444'} 
-              />
+          <div className="row">
+            <div className="col-12">
+              <div className="clip-loader">
+                <ClipLoader
+                  color={'#444'} 
+                />
+              </div>
             </div>
           </div>
       } 

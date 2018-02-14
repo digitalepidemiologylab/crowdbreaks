@@ -1,17 +1,21 @@
 <% @title ||= @project.title; title @title %>
 <% content_for :disable_turbolinks, 'data-turbolinks=false' %>
-<%= react_component('QSContainer',
-  {
-    projectTitle: @project.title,
-    questions: @questions,
-    initialQuestionId: @initial_question_id,
-    transitions: @transitions,
-    tweetId: @tweet_id,
-    projectsPath: projects_path,
-    resultsPath: project_question_sequence_path,
-    endQuestionSequencePath: question_sequence_end_path,
-    translations: @translations,
-    userId: @user_id,
-    projectId: @project.id,
-    numTransitions: @num_transitions
-  }) %>
+
+<div class="row justify-content-center">
+  <div class="col-12 text-center">
+    <%= react_component('QSContainer', {
+      projectTitle: @project.title,
+      questions: @questions,
+      initialQuestionId: @initial_question_id,
+      transitions: @transitions,
+      tweetId: @tweet_id,
+      projectsPath: projects_path,
+      resultsPath: project_question_sequence_path,
+      endQuestionSequencePath: question_sequence_end_path,
+      translations: @translations,
+      userId: @user_id,
+      projectId: @project.id,
+      numTransitions: @num_transitions
+    }) %>
+  </div>
+</div>
