@@ -4,31 +4,25 @@ de:
       about_crowdbreaks_title:
         "Über Crowdbreaks"
       about_crowdbreaks_html:
-        "Crowdbreaks is ein Überwachungssytem für Krankheiten und wird vom %{href_group} Lab an der %{href_EPFL} entwickelt. 
-        Das System versucht Ausbrüche von Krankheiten und Gesundheitsprobleme in Echtzeit in verschiedenen Ländern zu verfolgen.
+        "Crowdbreaks is ein Überwachungssytem für Gesundheitstrends und wird vom %{href_group} an der %{href_EPFL} entwickelt. 
+        Das System versucht Gesundheitstrends und Krankheitsrelevante Probleme in Echtzeit in verschiedenen Ländern zu verfolgen.
         Durch das Feedback der User verbessert sich das System laufend und erlaubt bessere Aussagen über die erwähnten Trends zu machen."
       how_does_it_work_title:
         "Wie funktioniert das?"
       how_does_it_work:
-        "Crowdbreaks sammelt Tweets welche möglicherweise relevant sind im Zusammenhang mit Krankheiten.
+        "Crowdbreaks sammelt Tweets welche möglicherweise relevant sind im Zusammenhang mit Gesundheitsthemen.
         Durch die Anwendung von Algorithmen und Maschinellem Lernen wird versucht, relevanter von irrelevantem Inhalt zu trennen.
         Diese Algorithmen können sich laufend verbessern, indem Tweets von Menschen mit Metadaten annotiert werden."
       why_crowdsourcing_title:
         "Wieso crowdsourcing?"
       why_crowdsourcing_html:
-        "Die frühzeitige Erkennung von Epidemien ist äusserst wichtig bei der Krankheitsbekämpfung.
-        Obwohl Gesundheitsministerien Frühwarnsysteme haben, sind deren Resourcen begrenzt.
-        Ausserdem gibt es eine zeitliche Verzögerung zwischen dem Zeitpunkt der Infektionen und dem Zeitpunkt wenn öffentliche Dienste diese registrieren.
-        Gleichzeitig teilen Millionen von Menschen ihren Gemütszustand &mdash; ob gut oder schlecht &mdash; auf Sozialen Medien.
-        Diese können als Millionen von Sensoren verstanden werden, welche uns helfen können, die Gesundheitssituation aufzuzeichnen.
-        Crowdbreaks versucht zusätzlich die Öffentlichkeit in der öffentlichen Gesundheit zu involvieren."
+        "Millionen von Menschen teilen ihren Gemütszustand &mdash; ob gut oder schlecht &mdash; auf Sozialen Medien.
+        Dies ist auf eine gewisse Weise wie Millionen von Sensoren zu haben, welche die Gesundheitssituation in Echtzeit aufzeichnen.
+        Crowdbreaks versucht zusätzlich die Öffentlichkeit in der öffentlichen Gesundheit zu involvieren, um die Wichtigkeit gewisser Themen aufzuzeigen."
       help_title:
         "Mitmachen"
       help_html:
-        "Beim beantworten von ein paar Fragen unter Projekte hilfst du unserem Projekt enorm! 
-        Du kannst uns auch dein Feedback per Email mitteilen: %{mail}."
-      reliable_title:
-        ""
-      reliable:
-        ""
-
+        "Beim beantworten von ein paar Fragen unter %{projects_section} hilfst du unserem Projekt enorm! 
+        Wenn du willst, kannst du ein Konto eröffnen um deine Beiträge nachzuverfolgen.
+        Ebenfalls kannst du uns dein Feedback per Email mitteilen: %{mail}."
+      projects_link: "Projekte"
