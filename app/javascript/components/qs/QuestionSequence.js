@@ -93,9 +93,13 @@ export class QuestionSequence extends React.Component {
   onTweetLoad() {
     var style = document.createElement( 'style'  )
     style.innerHTML = '.EmbeddedTweet { border-color: #ced7de; max-width: 100%; }'
-    var shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
-    if (shadowRoot != null) {
-      shadowRoot.appendChild(style)
+    try {
+      var shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
+      if (shadowRoot != null) {
+        shadowRoot.appendChild(style)
+      }
+    } catch(err) {
+      console.log('An error occured while trying to access shadow DOM.')
     }
     this.setState({
       'tweetIsLoading': false
@@ -123,7 +127,6 @@ export class QuestionSequence extends React.Component {
         <div className="col-12">
           <h4 className="mb-5">{this.props.projectTitle}</h4>
           <TweetEmbedding 
-            ref={(tweet) => this.tweet = tweet}
             tweetId={this.props.tweetId}
             onTweetLoad={() => parentThis.onTweetLoad()}
           />
