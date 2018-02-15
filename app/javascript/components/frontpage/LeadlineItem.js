@@ -1,6 +1,5 @@
 import React from 'react';
 
-// import { Tweet } from 'react-twitter-widgets'
 import TweetEmbed from 'react-tweet-embed'
 import OvalPositive from './oval-positive.svg'
 import OvalNegative from './oval-negative.svg'
@@ -29,9 +28,14 @@ export class LeadlineItem extends React.Component {
     // Slightly hackish way to change CSS within shadow dom
     var style = document.createElement( 'style' )
     style.innerHTML = '.EmbeddedTweet { border-color: #ced7de; max-width: 100%; }'
-    var shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
-    if (shadowRoot != null) {
-      shadowRoot.appendChild(style)
+    try {
+      var shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
+      if (shadowRoot != null) {
+        shadowRoot.appendChild(style)
+      } 
+    } catch(err) {
+      console.log('An error occured while trying to access shadow DOM.')
+      console.log(err)
     }
   }
 

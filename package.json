@@ -14,7 +14,6 @@
     "react-dom": "^15.6.1",
     "react-spinners": "^0.1.9",
     "react-tweet-embed": "^1.1.0",
-    "react-twitter-widgets": "^1.7.1",
     "reactstrap": "^5.0.0-alpha.4",
     "webpacker-react": "^0.3.2"
   },

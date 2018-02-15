@@ -100,6 +100,7 @@ export class QuestionSequence extends React.Component {
       }
     } catch(err) {
       console.log('An error occured while trying to access shadow DOM.')
+      console.log(err)
     }
     this.setState({
       'tweetIsLoading': false
