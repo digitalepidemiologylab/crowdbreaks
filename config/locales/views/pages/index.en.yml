@@ -13,10 +13,10 @@ en:
       classified_so_far: 
         one: "You've labelled 1 tweet. Thank you."
         other: "You've labelled %{count} tweets. Thank you."
-      total: "Total tweets labelled"
-      pro_vaccine: 'Tweets labelled as pro-vaccine'
-      anti_vaccine: 'Tweets labelled as anti-vaccine'
-      neutral_vaccine: 'Tweets labelled as neutral'
+      total: "Total labels"
+      pro_vaccine: 'Labelled as pro-vaccine'
+      anti_vaccine: 'Labelled as anti-vaccine'
+      neutral_vaccine: 'Labelled as neutral'
       contribute_again: 'Contribute again'
       no_contributions: "You've not contributed yet."
       no_contributions_button: 'View projects'

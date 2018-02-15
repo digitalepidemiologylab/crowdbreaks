@@ -4,9 +4,9 @@ de:
       go_back: "Zurück zu den Projekten"
       breakdown: "Überblick"
       total: "Insgesamt klassifiziert"
-      pro_vaccine: 'Tweets klassifiziert als pro-vaccine'
-      anti_vaccine: 'Tweets klassifiziert als anti-vaccine'
-      neutral_vaccine: 'Tweets klassifiziert als neutral'
+      pro_vaccine: 'Klassifiziert als pro-vaccine'
+      anti_vaccine: 'Klassifiziert als anti-vaccine'
+      neutral_vaccine: 'Klassifiziert als neutral'
       get_involved: 'Beteilige dich'
       every_tweet: 'Jeder klassifizierte Tweet hilf uns den Algorithmus zu verbessern'
       anti_vaccine: 'Tweets klassifiziert als anti-vaccine'

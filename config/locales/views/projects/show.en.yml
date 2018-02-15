@@ -3,10 +3,10 @@ en:
     show:
       go_back: "Back to projects"
       breakdown: "Breakdown"
-      total: "Total labelled tweets"
-      pro_vaccine: 'Tweets labelled as pro-vaccine'
-      anti_vaccine: 'Tweets labelled as anti-vaccine'
-      neutral_vaccine: 'Tweets labelled as neutral'
+      total: "Total labels"
+      pro_vaccine: 'Labelled as pro-vaccine'
+      anti_vaccine: 'Labelled as anti-vaccine'
+      neutral_vaccine: 'Labelled as neutral'
       get_involved: 'Get involved'
       every_tweet: 'Every tweet you classify helps improve the algorithm'
       contribute: 'Contribute'
