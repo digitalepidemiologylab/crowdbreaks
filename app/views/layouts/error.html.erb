@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta content="width=device-width,initial-scale=1" name=viewport> 
+    <meta charset="utf-8">
+    <title><%= content_for(:title) || 'Crowdbreaks' %></title>
+    <%= render 'application/favicon' %>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag 'application' %>
+  </head>
+  <%= yield %>
+</html>

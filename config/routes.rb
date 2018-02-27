@@ -50,4 +50,10 @@ Rails.application.routes.draw do
       resources :elasticsearch_indexes
     end
   end
+
+
+  # errors
+  %w( 404 422 500 ).each do |status_code|
+    get status_code, :to => "errors#show", :status_code => status_code
+  end
 end

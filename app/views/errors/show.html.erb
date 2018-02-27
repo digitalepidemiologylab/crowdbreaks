@@ -1,0 +1,20 @@
+<body class="bg-blue">
+  <div class="http-error d-flex justify-content-center">
+    <div class="d-flex align-items-center">
+      <div class="flex-column">
+        <div>
+          <span class="font-size-xl">
+            <%= params[:status_code] %>
+          </span>
+        </div>
+        <div>
+          <p class="mb-4">
+          The page you are looking for doesn’t seem to exist…
+          </p>
+        </div>
+        <div>
+          <%= link_to 'Take me home', root_path, class: 'btn btn-secondary btn-lg' %>
+        </div>
+      </div>
+    </div>
+</body>
