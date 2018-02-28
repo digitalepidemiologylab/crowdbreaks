@@ -9,6 +9,8 @@ class Ability
       
       # API controller
       can :configure, :stream
+      can :access, :user_activity_data
+      can :access, :sentiment_visualization
     else
       # default rule
       can :read, :all

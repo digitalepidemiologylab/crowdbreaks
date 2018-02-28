@@ -3,12 +3,14 @@ class ApisController < ApplicationController
 
   # Sentiment text box
   def vaccine_sentiment
+    authorize! :access, :sentiment_visualization
     resp = @api.get_vaccine_sentiment(api_params[:text])
     render json: resp.parsed_response.to_json, status: 200
   end
 
   # Sentiment visualization
   def update_visualization
+    authorize! :access, :sentiment_visualization
     options = {interval: api_params_viz[:interval], start_date: api_params_viz[:start_date], end_date: api_params_viz[:end_date]}
     if not api_params_viz[:es_index_name].present?
       render json: {'errors': ['es_index_name needs to be present']}, status: 400
@@ -23,7 +25,6 @@ class ApisController < ApplicationController
     }
     render json: resp.to_json, status: 200
   end
-
 
   # Monitor streams
   def stream_data
@@ -73,7 +74,6 @@ class ApisController < ApplicationController
     @api.update_tweet(project.es_index_name, api_params_qs[:user_id], api_params_qs[:tweet_id])
   end
 
-
   # front page leadline
   def get_leadline
     since = api_params_leadline.fetch(:since, 30.days.ago)
@@ -94,8 +94,21 @@ class ApisController < ApplicationController
     render json: result.to_json, status: 200
   end
 
+  def get_user_activity_data
+    authorize! :access, :user_activity_data
+    start_date = Time.parse(api_params_user_activity.fetch(:start_date, 30.days.ago.to_s))
+    end_date = Time.parse(api_params_user_activity.fetch(:end_date, Time.now.to_s))
+    counts = Result.where("created_at > ?", start_date).where("created_at < ?", end_date).group('created_at::date').count
+    leaderboard = Result.where("results.created_at > ?", start_date).where("results.created_at < ?", end_date).joins(:user).group('users.username').count
+    leaderboard = leaderboard.sort_by { |k, v| v }.reverse!.first(30)
+    render json: {'counts': counts, 'leaderboard': leaderboard}.to_json, status: 200
+  end
 
   private
+
+  def api_params_user_activity
+    params.require(:user_activity).permit(:start_date, :end_date)
+  end
   
   def api_params
     params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes)

@@ -126,7 +126,7 @@ export class MonitorStream extends React.Component {
         {
           label: this.props.project_name,
           data: this.state.counts,
-          backgroundColor: '#2574a9'
+          backgroundColor: '#1e9CeA'
         }
       ]
     };

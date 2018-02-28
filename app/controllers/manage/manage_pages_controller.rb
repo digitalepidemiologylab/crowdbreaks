@@ -8,7 +8,6 @@ module Manage
       @status_all = @api.status_all
     end
 
-
     def streaming
       @stream_status = @api.status_streaming
       @current_streams = @api.get_config
@@ -32,6 +31,10 @@ module Manage
     def sentiment_analysis_chart
       @interval = 'day'
       @project = Project.find_by('es_index_name': 'project_vaccine_sentiment')
+    end
+
+    def user_activity
+      @interval = 'day'
     end
 
     private 

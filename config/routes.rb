@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get 'stream_data', action: 'stream_data'
       post 'get_leadline', action: 'get_leadline'
       post 'question_sequence_end', action: 'question_sequence_end'
+      get 'get_user_activity_data', action: 'get_user_activity_data'
     end
   end
 
@@ -43,6 +44,7 @@ Rails.application.routes.draw do
       get 'sentiment_analysis', to: 'manage_pages#sentiment_analysis'
       get 'sentiment_analysis_playground', to: 'manage_pages#sentiment_analysis_playground'
       get 'sentiment_analysis_chart', to: 'manage_pages#sentiment_analysis_chart'
+      get 'user_activity', to: 'manage_pages#user_activity'
       resources :mturk_batch_jobs do
         resources :tasks
         get 'submit'
@@ -54,6 +56,6 @@ Rails.application.routes.draw do
 
   # errors
   %w( 404 422 500 ).each do |status_code|
-    get status_code, :to => "errors#show", :status_code => status_code
+    match status_code, :to => "errors#show", :via => :all, :status_code => status_code
   end
 end

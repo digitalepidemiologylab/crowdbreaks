@@ -1,0 +1,27 @@
+<% @title ||= 'User activity'; title @title %>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>User activity</h2>
+  </div>
+</div>
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= react_component 'UserActivity',
+      {
+      'interval': @interval,
+      'getUserActivityDataPath': get_user_activity_data_path,
+      'start_date': 30.days.ago.strftime('%Y-%m-%d'),
+      'end_date': Time.now.strftime('%Y-%m-%d')
+    }
+  %>
+  </div>
+</div>
