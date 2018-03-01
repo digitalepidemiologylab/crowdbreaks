@@ -6,6 +6,7 @@ import { ClipLoader } from 'react-spinners';
 
 // Other 
 var humps = require('humps');
+var Recaptcha = require('react-recaptcha');
 
 // Sub-components
 import { Answer } from './Answer';
@@ -67,6 +68,7 @@ export class QuestionSequence extends React.Component {
       }
     });
 
+
     // Make POST request in parent component
     var status = this.props.postData(resultData);
     if (status) {
@@ -107,6 +109,19 @@ export class QuestionSequence extends React.Component {
     });
   }
 
+  // manually trigger reCAPTCHA execution
+  executeCaptcha() {
+    console.log('execute')
+    this.recaptchaInstance.execute();
+  };
+
+  // executed once the captcha has been verified
+  // can be used to post forms, redirect, etc.
+  verifyCallback(response) {
+    console.log(response);
+    console.log('verified');
+  };
+
   render() {
     let parentThis = this;
     let progressDots = []
@@ -126,6 +141,12 @@ export class QuestionSequence extends React.Component {
       {/* Title and tweet */}
       <div className='row justify-content-center'> 
         <div className="col-12">
+          <Recaptcha
+            ref={e => this.recaptchaInstance = e}
+            sitekey={this.props.captchaSiteKey}
+            size="invisible"
+            verifyCallback={() => this.verifyCallback(response)}
+          />
           <h4 className="mb-5">{this.props.projectTitle}</h4>
           <TweetEmbedding 
             tweetId={this.props.tweetId}
@@ -159,11 +180,12 @@ export class QuestionSequence extends React.Component {
                   return <Answer 
                     key={answer.id} 
                     answer={answer.answer} 
-                    submit={() => parentThis.onSubmitAnswer(answer.id)}
+                    submit={() => parentThis.executeCaptcha()}
                     color={answer.color}
                   />
                 })}
               </div>
+                    {/* submit={() => parentThis.onSubmitAnswer(answer.id)} */}
               {/* Progress dots */}
               <ul className="progress-dots">
                 { progressDots }
@@ -192,5 +214,6 @@ QuestionSequence.propTypes = {
   postData: PropTypes.func,
   onTweetLoadError: PropTypes.func,
   onQuestionSequenceEnd: PropTypes.func,
-  numTransitions: PropTypes.number
+  numTransitions: PropTypes.number,
+  captchaSiteKey: PropTypes.string
 };

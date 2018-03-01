@@ -69,6 +69,7 @@ export class QSContainer extends React.Component {
         onTweetLoadError={() => this.onTweetLoadError()}
         onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
         numTransitions={this.props.numTransitions}
+        captchaSiteKey={this.props.captchaSiteKey}
       /> 
     } else {
       body = <Final 
@@ -97,5 +98,6 @@ QSContainer.propTypes = {
   translations: PropTypes.object,
   userId: PropTypes.number,
   projectId: PropTypes.number,
-  numTransitions: PropTypes.number
+  numTransitions: PropTypes.number,
+  captchaSiteKey: PropTypes.string
 }

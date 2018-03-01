@@ -13,8 +13,8 @@ export const Answer = (props) => {
   return (
     <button 
       key={ props.answer }
-      style={ buttonStyle }
       onClick={ props.submit }
+      style={ buttonStyle }
       className={ btnClassName }>{ props.answer }
     </button>
   );
@@ -23,5 +23,6 @@ export const Answer = (props) => {
 Answer.propTypes = {
   answer: PropTypes.string,
   submit: PropTypes.func,
-  color: PropTypes.string
+  onSubmitCallback: PropTypes.func,
+  color: PropTypes.string,
 };

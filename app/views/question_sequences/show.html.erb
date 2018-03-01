@@ -15,7 +15,8 @@
       translations: @translations,
       userId: @user_id,
       projectId: @project.id,
-      numTransitions: @num_transitions
+      numTransitions: @num_transitions,
+      captchaSiteKey: ENV['RECAPTCHA_SITEKEY']
     }) %>
   </div>
 </div>
