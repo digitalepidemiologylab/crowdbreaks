@@ -129,9 +129,9 @@ class ApisController < ApplicationController
     leaderboard = Result.where("results.created_at > ?", start_date).where("results.created_at < ?", end_date).joins(:user).group('users.email').count
     leaderboard = leaderboard.sort_by { |k, v| v }.reverse!.first(30)
     # Get username
-    usernames = User.where(email: leaderboard.map(&:first)).pluck(:username)
+    usernames = User.where(email: leaderboard.map(&:first)).pluck(:email, :username).to_h
     leaderboard.each_with_index do |item, i|
-      item.push(usernames[i])
+      item.push(usernames[item[0]])
     end
     render json: {'counts': counts, 'leaderboard': leaderboard}.to_json, status: 200
   end
