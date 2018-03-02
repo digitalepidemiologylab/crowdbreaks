@@ -93,7 +93,6 @@ class ApisController < ApplicationController
       transitions[t[:from_question]] << t[:transition]
     end
     num_transitions = Transition.find_path_length(transitions)
-    p num_transitions
     render json: {
       tweet_id: new_tweet_id,
       transitions: transitions,
@@ -127,8 +126,13 @@ class ApisController < ApplicationController
     start_date = Time.parse(api_params_user_activity.fetch(:start_date, 30.days.ago.to_s))
     end_date = Time.parse(api_params_user_activity.fetch(:end_date, Time.now.to_s))
     counts = Result.where("created_at > ?", start_date).where("created_at < ?", end_date).group('created_at::date').count
-    leaderboard = Result.where("results.created_at > ?", start_date).where("results.created_at < ?", end_date).joins(:user).group('users.username').count
+    leaderboard = Result.where("results.created_at > ?", start_date).where("results.created_at < ?", end_date).joins(:user).group('users.email').count
     leaderboard = leaderboard.sort_by { |k, v| v }.reverse!.first(30)
+    # Get username
+    usernames = User.where(email: leaderboard.map(&:first)).pluck(:username)
+    leaderboard.each_with_index do |item, i|
+      item.push(usernames[i])
+    end
     render json: {'counts': counts, 'leaderboard': leaderboard}.to_json, status: 200
   end
 

@@ -143,6 +143,18 @@ export class UserActivity extends React.Component {
       }]
     };
 
+    let leaderboard_header = <thead><tr><th>#</th><th>Username</th><th>Email</th><th># Answers</th></tr></thead>;
+    let leaderboard = <tbody>
+      {this.state.leaderboard.map(function(row, i) {
+        return <tr key={i} >
+          <th scope="row">{i+1}</th>
+          <td>{row[2]}</td>
+          <td>{row[0]}</td>
+          <td>{row[1]}</td>
+        </tr> 
+      })}
+      </tbody>;
+
     return(
       <div>
         <Row className="mb-4">
@@ -177,21 +189,8 @@ export class UserActivity extends React.Component {
           <Col>
             <h3 className="mb-4">Leaderboard</h3>
             <Table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Username</th>
-                  <th>Answers</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.leaderboard.map((row, i) =>
-                  <tr key={i} >
-                    <th scope="row">{i}</th>
-                    <td>{row[0]}</td>
-                    <td>{row[1]}</td>
-                  </tr> )}
-              </tbody>
+              {leaderboard_header}
+              {leaderboard}
             </Table>
           </Col>
         </Row>
