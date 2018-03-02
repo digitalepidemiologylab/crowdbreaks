@@ -21,7 +21,7 @@ class QuestionSequencesController < ApplicationController
     transitions_serialized.each do |t|
       @transitions[t[:from_question]] << t[:transition]
     end
-    @num_transitions = find_path_length(@transitions)
+    @num_transitions = Transition.find_path_length(@transitions)
     
     # other
     @user_id = current_or_guest_user.id
@@ -30,11 +30,6 @@ class QuestionSequencesController < ApplicationController
     # find starting question
     @initial_question_id = @project.initial_question.id
     @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
-    if @tweet_id.nil? or not @tweet_id.scan(/\D/).empty?
-      puts 'API is down'
-      # If API is down, fetch a random tweet
-      @tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
-    end
 
     # @tweet_id = '564984221203431000'  # invalid tweet
     # @tweet_id = '955454023519391744'  # invalid tweet
@@ -42,13 +37,26 @@ class QuestionSequencesController < ApplicationController
 
   def create
     authorize! :create, Result
-    # Store result
     result = Result.new(results_params)
-    project = Project.find_by(id: results_params[:project_id])
-    if result.save
-      head :ok, content_type: "text/html"
+
+    # if captcha is verified save data
+    if params.has_key?(:recaptcha_response)
+      resp = RecaptchaVerification.new.verify(params[:recaptcha_response])
+      if not resp['success']
+        render json: { errors: resp['error-codes'].to_a, captcha_verified: false }, status: 400
+      else
+        if result.save
+          render json: { captcha_verified: true }, status: 200
+        else
+          render json: { errors: ['internal error'], captcha_verified: true }, status: 400
+        end
+      end
     else
-      head :bad_request
+      if result.save
+        head :ok
+      else
+        head :bad_request
+      end
     end
   end
 
@@ -56,20 +64,5 @@ class QuestionSequencesController < ApplicationController
 
   def results_params
     params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)
-  end
-
-  def find_path_length(transitions)
-    # Note: This gives the length of an arbitrary path from the start question 
-    if not transitions.include?('start')
-      return 0
-    end
-    len = 0
-    current = transitions['start']
-    while current.length > 0 do
-      len += 1
-      next_question = current[0][:to_question]
-      current = transitions[next_question]
-    end
-    return len
   end
 end

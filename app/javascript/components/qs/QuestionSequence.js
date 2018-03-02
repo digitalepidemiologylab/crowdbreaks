@@ -6,7 +6,6 @@ import { ClipLoader } from 'react-spinners';
 
 // Other 
 var humps = require('humps');
-var Recaptcha = require('react-recaptcha');
 
 // Sub-components
 import { Answer } from './Answer';
@@ -19,12 +18,18 @@ export class QuestionSequence extends React.Component {
   constructor(props) {
     super(props);
 
+    if (!props.userSignedIn && !props.captchaVerified) {
+      // Note: This could lead to problems if a user has multiple Question sequences in one window
+      window.onCaptchaVerify = this.verifyCallback.bind(this);
+    }
+
     // set initial question state
     this.state = {
       'currentQuestion': props.questions[props.initialQuestionId],
       'questionSequenceHasEnded': false,
       'tweetIsLoading': true,
-      'numQuestionsAnswered': 0
+      'numQuestionsAnswered': 0,
+      'unverifiedAnswers': []
     };
   }
 
@@ -68,9 +73,21 @@ export class QuestionSequence extends React.Component {
       }
     });
 
+    var status;
+    if (!this.props.userSignedIn && !this.props.captchaVerified) {
+      // add to waiting queue to be verified by captcha
+      this.state.unverifiedAnswers.push(resultData);
 
-    // Make POST request in parent component
-    var status = this.props.postData(resultData);
+      // trigger captcha verification
+      grecaptcha.execute();
+      
+      // proceed to next question
+      status = true;
+    } else {
+      // Make POST request
+      status = this.props.postData(resultData);
+    }
+
     if (status) {
       // find next question
       var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
@@ -91,6 +108,17 @@ export class QuestionSequence extends React.Component {
       }
     }
   }
+  
+  // executed once the captcha has been verified
+  verifyCallback(response) {
+    var resultData;
+    // Post any unverified data to server
+    while (this.state.unverifiedAnswers.length > 0) {
+      resultData = this.state.unverifiedAnswers.pop()
+      resultData['recaptcha_response'] = response;
+      this.props.postData(resultData);
+    }
+  };
 
   onTweetLoad() {
     var style = document.createElement( 'style'  )
@@ -108,19 +136,6 @@ export class QuestionSequence extends React.Component {
       'tweetIsLoading': false
     });
   }
-
-  // manually trigger reCAPTCHA execution
-  executeCaptcha() {
-    console.log('execute')
-    this.recaptchaInstance.execute();
-  };
-
-  // executed once the captcha has been verified
-  // can be used to post forms, redirect, etc.
-  verifyCallback(response) {
-    console.log(response);
-    console.log('verified');
-  };
 
   render() {
     let parentThis = this;
@@ -141,16 +156,10 @@ export class QuestionSequence extends React.Component {
       {/* Title and tweet */}
       <div className='row justify-content-center'> 
         <div className="col-12">
-          <Recaptcha
-            ref={e => this.recaptchaInstance = e}
-            sitekey={this.props.captchaSiteKey}
-            size="invisible"
-            verifyCallback={() => this.verifyCallback(response)}
-          />
           <h4 className="mb-5">{this.props.projectTitle}</h4>
           <TweetEmbedding 
             tweetId={this.props.tweetId}
-            onTweetLoad={() => parentThis.onTweetLoad()}
+            onTweetLoad={() => this.onTweetLoad()}
           />
         </div>
       </div>
@@ -180,12 +189,11 @@ export class QuestionSequence extends React.Component {
                   return <Answer 
                     key={answer.id} 
                     answer={answer.answer} 
-                    submit={() => parentThis.executeCaptcha()}
+                    submit={() => parentThis.onSubmitAnswer(answer.id)}
                     color={answer.color}
                   />
                 })}
               </div>
-                    {/* submit={() => parentThis.onSubmitAnswer(answer.id)} */}
               {/* Progress dots */}
               <ul className="progress-dots">
                 { progressDots }
@@ -193,8 +201,15 @@ export class QuestionSequence extends React.Component {
             </div> 
           </div> 
       }
+      {/* Invisible recaptcha */}
+      {!this.props.userSignedIn && !this.props.captchaVerified &&
+          <div className="g-recaptcha"
+            data-sitekey={this.props.captchaSiteKey}
+            data-callback="onCaptchaVerify"
+            data-size="invisible">
+          </div>
+      }
     </div>
-
     return (
       <div>
         {questionSequenceBody}
@@ -215,5 +230,7 @@ QuestionSequence.propTypes = {
   onTweetLoadError: PropTypes.func,
   onQuestionSequenceEnd: PropTypes.func,
   numTransitions: PropTypes.number,
-  captchaSiteKey: PropTypes.string
+  captchaSiteKey: PropTypes.string,
+  userSignedIn: PropTypes.bool,
+  captchaVerified: PropTypes.bool
 };

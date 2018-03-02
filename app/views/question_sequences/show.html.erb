@@ -16,7 +16,8 @@
       userId: @user_id,
       projectId: @project.id,
       numTransitions: @num_transitions,
-      captchaSiteKey: ENV['RECAPTCHA_SITEKEY']
+      captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
+      userSignedIn: user_signed_in?
     }) %>
   </div>
 </div>

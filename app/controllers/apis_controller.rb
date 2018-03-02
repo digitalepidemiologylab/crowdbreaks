@@ -69,9 +69,37 @@ class ApisController < ApplicationController
   # end of question sequence
   def question_sequence_end
     project = Project.find_by(id: api_params_qs[:project_id])
+    user_id = api_params_qs[:user_id]
+    
+    # update count
     project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
     project.save
+
+    # update tweet in Redis pool
     @api.update_tweet(project.es_index_name, api_params_qs[:user_id], api_params_qs[:tweet_id])
+
+    # get next question sequence data
+    new_tweet_id = @api.get_tweet(project.es_index_name, user_id: user_id)
+    options = {locale: I18n.locale.to_s}
+    questions_serialized = ActiveModelSerializers::SerializableResource.new(project.questions, options).as_json
+    transitions_serialized = ActiveModelSerializers::SerializableResource.new(project.transitions, options).as_json
+    questions = {}
+    # collect possible answers for each question
+    questions_serialized.each do |q|
+      questions[q[:id]] = {'id': q[:id], 'question': q[:question], 'answers': q[:answers]}
+    end
+    transitions = Hash.new{|h, k| h[k] = []}
+    transitions_serialized.each do |t|
+      transitions[t[:from_question]] << t[:transition]
+    end
+    num_transitions = Transition.find_path_length(transitions)
+    p num_transitions
+    render json: {
+      tweet_id: new_tweet_id,
+      transitions: transitions,
+      num_transitions: num_transitions,
+      questions: questions
+    }, status: 200
   end
 
   # front page leadline

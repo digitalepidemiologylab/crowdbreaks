@@ -22,3 +22,4 @@ WebpackerReact.setup({QSContainer, MturkQSContainer, SentimentTextBox, Sentiment
 
 // this is needed for components to properly unmount and not being cached
 $(document).on('turbolinks:before-cache', () => WebpackerReact.unmountComponents())
+

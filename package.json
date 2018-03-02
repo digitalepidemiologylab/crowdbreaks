@@ -12,7 +12,6 @@
     "react-bootstrap": "^0.31.5",
     "react-chartjs-2": "^2.6.4",
     "react-dom": "^15.6.1",
-    "react-recaptcha": "^2.3.7",
     "react-spinners": "^0.1.9",
     "react-tweet-embed": "^1.1.0",
     "reactstrap": "^5.0.0-alpha.4",

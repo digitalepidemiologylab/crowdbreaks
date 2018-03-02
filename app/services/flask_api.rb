@@ -103,10 +103,17 @@ class FlaskApi
   # tweets
   def get_tweet(project, user_id: nil)
     data = {'user_id': user_id}
+    tweet_id = nil
     handle_error do
       resp = self.class.get('/tweet/new/'+project, query: data, timeout: 2)
-      resp.parsed_response
+      tweet_id = resp.parsed_response
     end
+    # If API is down, fetch a random tweet
+    if tweet_id.nil? or not tweet_id.scan(/\D/).empty?
+      puts 'API is down'
+      tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
+    end
+    tweet_id
   end
 
   def update_tweet(project, user_id, tweet_id)
