@@ -127,6 +127,10 @@ export class QuestionSequence extends React.Component {
       var shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
       if (shadowRoot != null) {
         shadowRoot.appendChild(style)
+        if (shadowRoot.children[1].innerHTML == "") {
+          // This can occur when a tweet was set to private, thus is not accessible anymore. Handle this case separately
+          console.log("Tweet with id", this.props.tweetId, "could not be loaded." )
+        }
       }
     } catch(err) {
       console.log('An error occured while trying to access shadow DOM.')
