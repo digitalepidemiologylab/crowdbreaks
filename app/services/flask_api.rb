@@ -8,7 +8,8 @@ class FlaskApi
   # debug_output $stderr
   basic_auth ENV['FLASK_API_USERNAME'], ENV['FLASK_API_PASSWORD']
   JSON_HEADER = {'Content-Type' => 'application/json', :Accept => 'application/json'}
-  MAX_COUNT_REFETCH = 1
+  MAX_COUNT_REFETCH = 5
+  MAX_COUNT_REFETCH_DB = 10
 
   def initialize
   end
@@ -151,7 +152,6 @@ class FlaskApi
   end
 
 
-
   private
 
   def tweet_is_valid?(tweet_id)
@@ -160,13 +160,22 @@ class FlaskApi
     rescue Twitter::Error::ClientError
       # Tweet is not available anymore, remove from queue
       return false
+    else
+      return true
     end
-    true
   end
 
   def get_random_tweet
+    # API is down, get random tweet from Results table instead
     Rails.logger.error "API is down, fetching random old tweet"
-    return Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
+    trials = 0
+    tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
+    while not tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH_DB
+      Rails.logger.info "Tweet #{tweet_id} is not available anymore, trying another"
+      tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
+      trials += 1
+    end
+    return tweet_id
   end
 
   def remove_tweet(project, tweet_id)
