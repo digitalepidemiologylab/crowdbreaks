@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+
 ruby '2.3.1'
 
 git_source(:github) do |repo_name|
@@ -70,6 +70,8 @@ gem 'webpacker-react', "~> 0.3.2"
 gem 'active_model_serializers', '~> 0.10.0'
 # More powerful hashes
 gem 'hashie', '~> 3.4', '>= 3.4.6'
+# Twitter API
+gem 'twitter' 
 
 group :development, :test do
   gem 'rspec-rails'

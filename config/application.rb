@@ -12,6 +12,9 @@ require "action_cable/engine"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
+# Logging formatting
+require "./lib/logging"
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -42,5 +45,8 @@ module Crowdbreaks
 
     # Dynamic error pages
     config.exceptions_app = self.routes
+
+    # Logging
+    config.log_formatter = Logging::LogFormatter.new
   end
 end

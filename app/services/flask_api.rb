@@ -8,6 +8,7 @@ class FlaskApi
   # debug_output $stderr
   basic_auth ENV['FLASK_API_USERNAME'], ENV['FLASK_API_PASSWORD']
   JSON_HEADER = {'Content-Type' => 'application/json', :Accept => 'application/json'}
+  MAX_COUNT_REFETCH = 1
 
   def initialize
   end
@@ -102,19 +103,23 @@ class FlaskApi
 
   # tweets
   def get_tweet(project, user_id: nil)
-    # data = {'user_id': user_id}
-    # tweet_id = nil
-    # handle_error do
-    #   resp = self.class.get('/tweet/new/'+project, query: data, timeout: 2)
-    #   tweet_id = resp.parsed_response
-    # end
-    # # If API is down, fetch a random tweet
-    # if tweet_id.nil? or not tweet_id.scan(/\D/).empty?
-    #   puts 'API is down'
-    #   tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
-    # end
-    Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
-    # tweet_id
+    tweet_id = _get_tweet(project, user_id)
+    # If API is down, fetch a random tweet
+    if tweet_id.nil? or not tweet_id.scan(/\D/).empty?
+      return get_random_tweet
+    end
+    
+    # test if tweet is publicly available
+    trials = 0
+    while not tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
+      Rails.logger.info "Tweet #{tweet_id} is invalid and will be removed"
+      remove_tweet(project, tweet_id)
+      Rails.logger.info "Fetching new tweet"
+      tweet_id = _get_tweet(project, user_id)
+      trials += 1
+    end
+    return get_random_tweet if trials >= MAX_COUNT_REFETCH
+    tweet_id
   end
 
   def update_tweet(project, user_id, tweet_id)
@@ -148,6 +153,39 @@ class FlaskApi
 
 
   private
+
+  def tweet_is_valid?(tweet_id)
+    begin
+      Crowdbreaks::TwitterClient.status(tweet_id)
+    rescue Twitter::Error::ClientError
+      # Tweet is not available anymore, remove from queue
+      return false
+    end
+    true
+  end
+
+  def get_random_tweet
+    Rails.logger.error "API is down, fetching random old tweet"
+    return Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
+  end
+
+  def remove_tweet(project, tweet_id)
+    data = {'tweet_id': tweet_id}
+    handle_error do
+      self.class.post('/tweet/remove/'+project, body: data.to_json, headers: JSON_HEADER)
+    end
+  end
+
+  def _get_tweet(project, user_id)
+    data = {'user_id': user_id}
+    tweet_id = nil
+    handle_error do
+      resp = self.class.get('/tweet/new/'+project, query: data, timeout: 2)
+      tweet_id = resp.parsed_response
+    end
+    tweet_id
+  end
+
 
   def handle_error(error_return_value: nil)
     begin
