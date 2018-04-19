@@ -16,23 +16,17 @@ class FlaskApi
 
   def ping
     options = {timeout: 5}
-    begin
+    handle_error(error_return_value: false) do
       resp = self.class.get("/", options)
-    rescue
-      false
-    else
       resp.success?
     end
   end
 
   def test(service)
     options = {timeout: 5}
-    begin
+    handle_error(error_return_value: false) do
       resp = self.class.get("/test/"+service, options)
-    rescue
-      false
-    else
-      resp
+      resp.parsed_response == 'true'
     end
   end
 
@@ -199,7 +193,8 @@ class FlaskApi
   def handle_error(error_return_value: nil)
     begin
       yield
-    rescue
+    rescue Exception => e
+      RorVsWild.record_error(e)
       error_return_value
     end
   end
@@ -207,7 +202,8 @@ class FlaskApi
   def handle_error_notification(message: 'An error occured')
     begin
       yield
-    rescue
+    rescue Exception => e
+      RorVsWild.record_error(e)
       Hashie::Mash.new({success: false, parsed_response: message, code: 400})
     end
   end
