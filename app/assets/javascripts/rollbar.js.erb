@@ -2,7 +2,7 @@ var _rollbarConfig = {
   accessToken: "<%= ENV['ROLLBAR_API_KEY'] %>",
   captureUncaught: true,
   payload: {
-    environment: "production"
+    environment: "<%= ENV['ENVIRONMENT_NAME'] %>"
   }
 };
 console.log(_rollbarConfig);
