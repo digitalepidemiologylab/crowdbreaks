@@ -113,8 +113,10 @@ class ApisController < ApplicationController
       resp = Result.order(created_at: :desc).where(created_at: since..Time.now).where.not(tweet_id: exclude_tweet_ids).
         joins(:user, :answer, :project).where(projects: {public: true}).where.not(users: {username: exclude_usernames}).where(answers: {label: Answer::LABELS.values}).limit(1).
         pluck('results.tweet_id,users.username as username,answers.label as label,results.created_at,projects.title_translations as title')
-      result.push(resp[0])
-      exclude_tweet_ids.push(resp[0][0].to_s) # distinct select doesn't work with order query, hence this approach
+      unless resp.empty?
+        result.push(resp[0])
+        exclude_tweet_ids.push(resp[0][0].to_s) # distinct select doesn't work with order query, hence this approach
+      end
     end
 
     result.map!{|d| [d[0].to_s, *d[1..-1]]}  # convert to string before sending

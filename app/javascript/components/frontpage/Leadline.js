@@ -40,7 +40,6 @@ export class Leadline extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (data) => {
-        console.log(data)
         this.setState({
           queue_items: data
         });
