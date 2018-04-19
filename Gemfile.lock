@@ -378,6 +378,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    rorvswild (0.3.5)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
@@ -553,6 +554,7 @@ DEPENDENCIES
   rails_12factor
   rails_real_favicon
   rb-fsevent
+  rorvswild
   rspec-activemodel-mocks
   rspec-its
   rspec-rails
