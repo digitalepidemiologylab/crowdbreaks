@@ -73,7 +73,7 @@ gem 'hashie', '~> 3.4', '>= 3.4.6'
 # Twitter API
 gem 'twitter' 
 # Monitoring
-gem 'rorvswild'
+gem "rorvswild", "~> 1.0.0"
 
 group :development, :test do
   gem 'rspec-rails'
