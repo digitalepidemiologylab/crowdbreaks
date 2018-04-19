@@ -35,5 +35,4 @@ class User < ApplicationRecord
   has_many :results
 
   validates_uniqueness_of :email
-  validates_uniqueness_of :username
 end
