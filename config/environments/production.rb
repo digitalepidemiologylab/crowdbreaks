@@ -115,6 +115,13 @@ Rails.application.configure do
     url: ':s3_domain_url',
     path: '/:class/:attachment/:id_partition/:style/:filename',
   }
+
+  # Add basic auth to staging environment
+  if ENV['ENVIRONMENT_NAME'] == 'staging'
+    config.middleware.use Rack::Auth::Basic do |u, p|
+      [u, p] == [ENV['STAGING_USERNAME'], ENV['STAGING_PASSWORD']]
+    end
+  end
 end
 
 # Default Mailer host (this is apparently needed for devise to work)
