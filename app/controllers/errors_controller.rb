@@ -1,8 +1,9 @@
 class ErrorsController < ApplicationController
   layout 'error'
+  skip_before_action :verify_authenticity_token
 
 	def show
-    render :show, :status => status_code
+    render :show, :formats => [:html], :status => status_code
 	end
 
 	protected
