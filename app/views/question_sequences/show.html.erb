@@ -17,6 +17,7 @@
       projectId: @project.id,
       numTransitions: @num_transitions,
       captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
+      captchaVerified: true,
       userSignedIn: user_signed_in?
     }) %>
   </div>

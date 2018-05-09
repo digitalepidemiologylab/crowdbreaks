@@ -11,7 +11,7 @@ export class QSContainer extends React.Component {
     super(props);
     this.state = {
       'questionSequenceHasEnded': false,
-      'captchaVerified': false,
+      'captchaVerified': props.captchaVerified,
       'nextQuestionSequence': [],
       'tweetId': props.tweetId,
       'transitions': props.transitions,
