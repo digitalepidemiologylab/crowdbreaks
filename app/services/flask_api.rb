@@ -151,8 +151,15 @@ class FlaskApi
   def tweet_is_valid?(tweet_id)
     begin
       Crowdbreaks::TwitterClient.status(tweet_id)
+    rescue Twitter::Error::TooManyRequests => e
+      Rails.logger.error "Too many requests on Twitter API"
+      RorVsWild.record_error(e)
+      return false
     rescue Twitter::Error::ClientError
-      # Tweet is not available anymore, remove from queue
+      # Tweet is not available anymore
+      return false
+    rescue Twitter::Error => e
+      RorVsWild.record_error(e)
       return false
     else
       return true
