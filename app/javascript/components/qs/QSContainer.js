@@ -18,7 +18,7 @@ export class QSContainer extends React.Component {
       'transitions': props.transitions,
       'numTransitions': props.numTransitions,
       'questions': props.questions,
-      'openModal': true,
+      'openModal': !props.userSignedIn,
       'errors': []
     };
   }
