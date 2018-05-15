@@ -69,6 +69,11 @@ fieldset[disabled] a.btn {
     border-color: $gray-400 !important;
     color: $gray-600 !important;
   }
+  &:disabled {
+    background-color: #fff !important;
+    border-color: $gray-400 !important;
+    color: $gray-600 !important;
+  }
 }
 
 .btn-positive {

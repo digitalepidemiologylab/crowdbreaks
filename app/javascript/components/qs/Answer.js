@@ -15,6 +15,7 @@ export const Answer = (props) => {
       key={ props.answer }
       onClick={ props.submit }
       style={ buttonStyle }
+      disabled={ props.disabled }
       className={ btnClassName }>{ props.answer }
     </button>
   );

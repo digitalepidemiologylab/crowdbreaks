@@ -138,6 +138,7 @@ export class QSContainer extends React.Component {
           captchaSiteKey={this.props.captchaSiteKey}
           userSignedIn={this.props.userSignedIn}
           captchaVerified={this.state.captchaVerified}
+          enableAnswersDelay={this.props.enableAnswersDelay}
         /> 
       </div>
     } else {
@@ -175,5 +176,6 @@ QSContainer.propTypes = {
   userId: PropTypes.number,
   projectId: PropTypes.number,
   numTransitions: PropTypes.number,
-  captchaSiteKey: PropTypes.string
+  captchaSiteKey: PropTypes.string,
+  enableAnswersDelay: PropTypes.number
 }

@@ -18,7 +18,8 @@
       numTransitions: @num_transitions,
       captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
       captchaVerified: true,
-      userSignedIn: user_signed_in?
+      userSignedIn: user_signed_in?,
+      enableAnswersDelay: 2000
     }) %>
   </div>
 </div>

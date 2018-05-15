@@ -27,7 +27,8 @@ export class QuestionSequence extends React.Component {
       'questionSequenceHasEnded': false,
       'tweetIsLoading': true,
       'numQuestionsAnswered': 0,
-      'unverifiedAnswers': []
+      'unverifiedAnswers': [],
+      'answersDisabled': true
     };
   }
 
@@ -118,8 +119,17 @@ export class QuestionSequence extends React.Component {
     }
   };
 
+  enableAnswerButtons() {
+    this.setState({answersDisabled: false});
+  }
+
+  delayEnableAnswers() {
+    // Make answer buttons clickable after delay
+    setTimeout(() => this.enableAnswerButtons(), this.props.enableAnswersDelay);
+  }
+
   onTweetLoad() {
-    var style = document.createElement( 'style'  )
+    var style = document.createElement('style')
     style.innerHTML = '.EmbeddedTweet { border-color: #ced7de; max-width: 100%; }'
     try {
       var shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
@@ -127,7 +137,7 @@ export class QuestionSequence extends React.Component {
         shadowRoot.appendChild(style)
         if (shadowRoot.children[1].innerHTML == "") {
           // This can occur when a tweet was set to private, thus is not accessible anymore. Handle this case separately
-          console.log("Tweet with id", this.props.tweetId, "could not be loaded." )
+          console.log("Tweet with id", this.props.tweetId, "could not be loaded.")
         }
       }
     } catch(err) {
@@ -137,6 +147,7 @@ export class QuestionSequence extends React.Component {
     this.setState({
       'tweetIsLoading': false
     });
+    this.delayEnableAnswers();
   }
 
   render() {
@@ -191,6 +202,7 @@ export class QuestionSequence extends React.Component {
                   return <Answer 
                     key={answer.id} 
                     answer={answer.answer} 
+                    disabled={parentThis.state.answersDisabled}
                     submit={() => parentThis.onSubmitAnswer(answer.id)}
                     color={answer.color}
                   />
