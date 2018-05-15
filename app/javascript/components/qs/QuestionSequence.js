@@ -12,8 +12,6 @@ import { Answer } from './Answer';
 import { Question } from './Question';
 import { TweetEmbedding } from './TweetEmbedding';
 
-// Styling for this component: app/assets/stylesheets/qs_container_component.scss
-
 export class QuestionSequence extends React.Component {
   constructor(props) {
     super(props);
