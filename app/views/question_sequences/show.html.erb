@@ -2,7 +2,7 @@
 <% content_for :disable_turbolinks, 'data-turbolinks=false' %>
 
 <div class="row justify-content-center">
-  <div class="col-12 text-center">
+  <div id="qs-root" class="col-12 text-center">
     <%= react_component('QSContainer', {
       projectTitle: @project.title,
       questions: @questions,

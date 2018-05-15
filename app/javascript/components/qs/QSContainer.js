@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { QuestionSequence } from './QuestionSequence';
 import { Final } from './Final';
+import { InstructionModal } from './InstructionModal';
 
 
 export class QSContainer extends React.Component {
@@ -17,6 +18,7 @@ export class QSContainer extends React.Component {
       'transitions': props.transitions,
       'numTransitions': props.numTransitions,
       'questions': props.questions,
+      'openModal': true,
       'errors': []
     };
   }
@@ -106,7 +108,8 @@ export class QSContainer extends React.Component {
         numTransitions: nextQuestionSequence.num_transitions,
         questions: nextQuestionSequence.questions,
         questionSequenceHasEnded: false,
-        nextQuestionSequence: []
+        nextQuestionSequence: [],
+        openModal: false
       });
     }
   }
@@ -114,23 +117,29 @@ export class QSContainer extends React.Component {
   render() {
     let body = null;
     if (!this.state.questionSequenceHasEnded) {
-      body = <QuestionSequence 
-        projectTitle={this.props.projectTitle}
-        initialQuestionId={this.props.initialQuestionId}
-        questions={this.state.questions}
-        transitions={this.state.transitions}
-        tweetId={this.state.tweetId}
-        projectsPath={this.props.projectsPath}
-        userId={this.props.userId}
-        projectId={this.props.projectId}
-        postData={(args) => this.postData(args)}
-        onTweetLoadError={() => this.onTweetLoadError()}
-        onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
-        numTransitions={this.state.numTransitions}
-        captchaSiteKey={this.props.captchaSiteKey}
-        userSignedIn={this.props.userSignedIn}
-        captchaVerified={this.state.captchaVerified}
-      /> 
+      body = <div>
+        <InstructionModal 
+          openModal={this.state.openModal}
+          projectsPath={this.props.projectsPath}
+        />
+        <QuestionSequence 
+          projectTitle={this.props.projectTitle}
+          initialQuestionId={this.props.initialQuestionId}
+          questions={this.state.questions}
+          transitions={this.state.transitions}
+          tweetId={this.state.tweetId}
+          projectsPath={this.props.projectsPath}
+          userId={this.props.userId}
+          projectId={this.props.projectId}
+          postData={(args) => this.postData(args)}
+          onTweetLoadError={() => this.onTweetLoadError()}
+          onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+          numTransitions={this.state.numTransitions}
+          captchaSiteKey={this.props.captchaSiteKey}
+          userSignedIn={this.props.userSignedIn}
+          captchaVerified={this.state.captchaVerified}
+        /> 
+      </div>
     } else {
       body = <Final 
         onNextQuestionSequence={() => this.onNextQuestionSequence()}
