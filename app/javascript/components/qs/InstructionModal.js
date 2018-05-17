@@ -62,8 +62,10 @@ export class InstructionModal extends React.Component {
         bottom                : 'auto',
         marginRight           : '-50%',
         transform             : 'translate(-50%, -50%)',
-        maxWidth: '550px',
-        borderColor: '#ced7de'
+        maxWidth              : '500px',
+        borderColor           : '#ced7de',
+        padding               : '35px',
+        paddingTop            : '45px'
       }
     };
 
