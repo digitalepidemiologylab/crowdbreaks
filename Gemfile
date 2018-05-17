@@ -25,7 +25,7 @@ gem 'jbuilder', '~> 2.5'
 # ENV vars management
 gem 'figaro', '~> 1.1.1'
 # authentication
-gem 'devise', '~> 4.3'
+gem 'devise', '~> 4.4'
 gem 'devise-i18n'
 # authorization
 gem 'cancancan', '~> 2.0'
