@@ -162,10 +162,6 @@ class FlaskApi
     end
   end
 
-
-
-  private
-
   def tweet_is_valid?(tweet_id)
     begin
       Crowdbreaks::TwitterClient.status(tweet_id)
@@ -183,6 +179,9 @@ class FlaskApi
       return true
     end
   end
+
+  private
+
 
   def get_random_tweet
     # API is down, get random tweet from Results table instead
