@@ -22,6 +22,7 @@ class ApisController < ApplicationController
       "pro_data": @api.get_sentiment_data('pro-vaccine', options),
       "anti_data": @api.get_sentiment_data('anti-vaccine', options),
       "neutral_data": @api.get_sentiment_data('neutral', options),
+      "avg_sentiment": @api.get_avg_sentiment(options)
     }
     render json: resp.to_json, status: 200
   end

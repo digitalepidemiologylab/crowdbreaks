@@ -22,32 +22,19 @@ class FlaskApi
     end
   end
 
-  def test(service)
+  def test_redis
     options = {timeout: 5}
     handle_error(error_return_value: false) do
-      resp = self.class.get("/test/"+service, options)
+      resp = self.class.get("/test/redis", options)
       resp.parsed_response == 'true'
     end
   end
 
-  def get_all_data(index, options={})
-    handle_error(error_return_value: []) do
-      resp = self.class.get('/data/all/'+index, query: options, timeout: 20)
-      JSON.parse(resp)
-    end
-  end
-
-  def get_sentiment_data(value, options={})
-    handle_error(error_return_value: []) do
-      resp = self.class.get('/sentiment/data/'+value, query: options, timeout: 20)
-      JSON.parse(resp)
-    end
-  end
-
-  def get_vaccine_sentiment(text)
-    data = {'text': text}
-    handle_error do
-      self.class.post('/sentiment/vaccine/', body: data.to_json, headers: JSON_HEADER)
+  def test_es
+    options = {timeout: 5}
+    handle_error(error_return_value: false) do
+      resp = self.class.get("/elasticsearch/test", options)
+      resp.parsed_response == 'true'
     end
   end
 
@@ -124,7 +111,7 @@ class FlaskApi
     end
   end
 
-  # elasticsearch
+  # elasticsearch - general
   def es_stats
     handle_error(error_return_value: {}) do
       resp = self.class.get('/elasticsearch/stats')
@@ -144,6 +131,37 @@ class FlaskApi
       self.class.post('/elasticsearch/create', body: {name: name}.to_json, headers: JSON_HEADER)
     end
   end
+
+  # elasticsearch - all data
+  def get_all_data(index, options={})
+    handle_error(error_return_value: []) do
+      resp = self.class.get('/data/all/'+index, query: options, timeout: 20)
+      JSON.parse(resp)
+    end
+  end
+
+  # elasticsearch - sentiment data
+  def get_sentiment_data(value, options={})
+    handle_error(error_return_value: []) do
+      resp = self.class.get('/sentiment/data/'+value, query: options, timeout: 20)
+      JSON.parse(resp)
+    end
+  end
+
+  def get_avg_sentiment(options={})
+    handle_error(error_return_value: []) do
+      resp = self.class.get('/sentiment/average', query: options, timeout: 20)
+      JSON.parse(resp)
+    end
+  end
+
+  def get_vaccine_sentiment(text)
+    data = {'text': text}
+    handle_error do
+      self.class.post('/sentiment/vaccine/', body: data.to_json, headers: JSON_HEADER)
+    end
+  end
+
 
 
   private

@@ -9,29 +9,51 @@ export class SentimentVisualization extends React.Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.default_point_radius = 1.5;
+    this.default_border_width = 3;
     this.state = {
       labels: [],
       all_data: [],
       pro_data: [],
       anti_data: [],
       neutral_data: [],
+      avg_sentiment: [],
+      avg_sentiment_smoothed: [],
       start_date: this.props.start_date,
       end_date: this.props.end_date,
       dropdownOpen: false,
-      interval: this.props.interval
+      interval: this.props.interval,
+      point_radius: this.default_point_radius,
+      border_width: this.default_border_width
     };
 
     this.options = {
       scales: {
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: "Counts"
-          },
-          ticks: {
-            min: 0
+        yAxes: [
+          {
+            id: "counts",
+            scaleLabel: {
+              display: true,
+              labelString: "Counts"
+            },
+            ticks: {
+              min: 0
+            }
+          },{
+            id: "sentiment_index",
+            position: "right",
+            scaleLabel: {
+              display: true,
+              labelString: "Sentiment index"
+            },
+            ticks: {
+              suggestedMin: -0.2
+            },
+            gridLines: {
+              display: false
+            }
           }
-        }],
+        ],
         xAxes: [{
           type: 'time',
           time: {
@@ -45,7 +67,7 @@ export class SentimentVisualization extends React.Component {
       elements: {
         line: {
           tension: 0,
-          fill: false
+          fill: false,
         }
       }
     };
@@ -81,7 +103,9 @@ export class SentimentVisualization extends React.Component {
           all_data: result.all_data.map((d) => d.doc_count),
           pro_data: result.pro_data.map((d) => d.doc_count),
           anti_data: result.anti_data.map((d) => d.doc_count),
-          neutral_data: result.neutral_data.map((d) => d.doc_count)
+          neutral_data: result.neutral_data.map((d) => d.doc_count),
+          avg_sentiment: result.avg_sentiment.map((d) => d.avg_sentiment.value),
+          avg_sentiment_smoothed: result.avg_sentiment.map((d) => d.avg_sentiment.value_smoothed)
         });
       }
     });
@@ -108,7 +132,28 @@ export class SentimentVisualization extends React.Component {
         "end_date": this.state.end_date
       }
     };
+    this.changePlotFormatting();
     this.setData(data);
+  }
+
+  changePlotFormatting() {
+    var point_radius, border_width;
+    switch (this.state.interval) {
+      case '1h':
+      case '2h':
+        point_radius = 1
+        border_width = 1.5
+      case '3h':
+        point_radius = 1.5
+        border_width = 2.5
+      default:
+        point_radius = this.default_point_radius
+        border_width = this.default_border_width
+    }
+    this.setState({
+      point_radius: point_radius,
+      border_width: border_width
+    });
   }
 
   handleChangeStart(event) {
@@ -124,31 +169,68 @@ export class SentimentVisualization extends React.Component {
   }
 
   render() {
-    const intervalOptions = ['hour', 'day'];
+    const intervalOptions = ['1h', '2h', '3h', '6h', '12h', '24h'];
     var data = {
       labels: this.state.labels,
       datasets: [
         {
           label: 'All',
-          data: this.state.all_data
+          yAxisID: 'counts',
+          data: this.state.all_data,
+          spanGaps: true,
+          pointRadius: this.state.point_radius,
+          borderWidth: this.state.border_width
         },
         {
           label: 'Pro-vaccine',
+          yAxisID: 'counts',
           borderColor: '#5bb12a',
           backgroundColor: '#5bb12a',
-          data: this.state.pro_data
+          data: this.state.pro_data,
+          spanGaps: true,
+          pointRadius: this.state.point_radius,
+          borderWidth: this.state.border_width
         },
         {
           label: 'Anti-vaccine',
+          yAxisID: 'counts',
           borderColor: '#db4457',
           backgroundColor: '#db4457',
-          data: this.state.anti_data
+          data: this.state.anti_data,
+          spanGaps: true,
+          pointRadius: this.state.point_radius,
+          borderWidth: this.state.border_width
         },
         {
           label: 'Neutral',
+          yAxisID: 'counts',
           borderColor: '#1e9CeA',
           backgroundColor: '#1e9CeA',
-          data: this.state.neutral_data
+          data: this.state.neutral_data,
+          pointRadius: 2,
+          spanGaps: true,
+          pointRadius: this.state.point_radius,
+          borderWidth: this.state.border_width
+        },
+        {
+          label: 'Sentiment index',
+          yAxisID: 'sentiment_index',
+          borderColor: '#657786',
+          backgroundColor: '#657786',
+          data: this.state.avg_sentiment,
+          spanGaps: true,
+          pointRadius: 1,
+          showLine: false,
+        },
+        {
+          label: 'Sentiment index (loess fit)',
+          yAxisID: 'sentiment_index',
+          borderColor: '#657786',
+          backgroundColor: '#657786',
+          data: this.state.avg_sentiment_smoothed,
+          spanGaps: true,
+          borderWidth: 4,
+          pointRadius: 0
         }
       ]
     };
