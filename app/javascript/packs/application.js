@@ -12,13 +12,23 @@ import { QSContainer } from './../components/qs/QSContainer';
 import { MturkQSContainer } from './../components/qs/MturkQSContainer';
 import { SentimentTextBox } from './../components/sent_textbox/SentimentTextBox';
 import { SentimentVisualization } from './../components/sent_viz/SentimentVisualization';
+import { SentimentMap } from './../components/sent_viz/SentimentMap';
 import { MonitorStream } from './../components/monitor_stream/MonitorStream';
 import { Leadline } from './../components/frontpage/Leadline';
 import { UserActivity } from './../components/user_activity/UserActivity';
 
 // Register components using Webpacker-react 
 Turbolinks.start()
-WebpackerReact.setup({QSContainer, MturkQSContainer, SentimentTextBox, SentimentVisualization, MonitorStream, Leadline, UserActivity})
+WebpackerReact.setup({
+  QSContainer,
+  MturkQSContainer,
+  SentimentTextBox,
+  SentimentVisualization,
+  SentimentMap,
+  MonitorStream,
+  Leadline,
+  UserActivity
+})
 
 // this is needed for components to properly unmount and not being cached
 $(document).on('turbolinks:before-cache', () => WebpackerReact.unmountComponents())

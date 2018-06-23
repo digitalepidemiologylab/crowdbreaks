@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     controller :apis do
       post 'vaccine_sentiment', action: 'vaccine_sentiment'
       post 'update_visualization', action: 'update_visualization'
+      post 'update_sentiment_map', action: 'update_sentiment_map'
       get 'set_config', action: 'set_config'
       get 'stream_status', action: 'stream_status'
       get 'stream_data', action: 'stream_data'
@@ -44,6 +45,7 @@ Rails.application.routes.draw do
       get 'sentiment_analysis', to: 'manage_pages#sentiment_analysis'
       get 'sentiment_analysis_playground', to: 'manage_pages#sentiment_analysis_playground'
       get 'sentiment_analysis_chart', to: 'manage_pages#sentiment_analysis_chart'
+      get 'sentiment_analysis_map', to: 'manage_pages#sentiment_analysis_map'
       get 'user_activity', to: 'manage_pages#user_activity'
       resources :mturk_batch_jobs do
         resources :tasks

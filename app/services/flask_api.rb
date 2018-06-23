@@ -162,6 +162,13 @@ class FlaskApi
     end
   end
 
+  def get_geo_sentiment(options={})
+    handle_error(error_return_value: []) do
+      resp = self.class.get('/sentiment/geo', query: options, timeout: 20)
+      JSON.parse(resp)
+    end
+  end
+
   def tweet_is_valid?(tweet_id)
     begin
       Crowdbreaks::TwitterClient.status(tweet_id)

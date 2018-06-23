@@ -139,13 +139,15 @@ export class SentimentVisualization extends React.Component {
   changePlotFormatting() {
     var point_radius, border_width;
     switch (this.state.interval) {
-      case '1h':
+      case '1h': // Fallthrough
       case '2h':
         point_radius = 1
         border_width = 1.5
+        break;
       case '3h':
         point_radius = 1.5
-        border_width = 2.5
+        border_width = 2
+        break;
       default:
         point_radius = this.default_point_radius
         border_width = this.default_border_width

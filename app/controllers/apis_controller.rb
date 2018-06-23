@@ -27,6 +27,18 @@ class ApisController < ApplicationController
     render json: resp.to_json, status: 200
   end
 
+  def update_sentiment_map
+    authorize! :access, :sentiment_visualization
+    options = {start_date: api_params_viz[:start_date], end_date: api_params_viz[:end_date]}
+    if not api_params_viz[:es_index_name].present?
+      render json: {'errors': ['es_index_name needs to be present']}, status: 400
+      return
+    end
+    
+    resp = @api.get_geo_sentiment(options)
+    render json: resp.to_json, status: 200
+  end
+
   # Monitor streams
   def stream_data
     authorize! :configure, :stream

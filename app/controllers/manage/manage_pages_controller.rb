@@ -33,6 +33,10 @@ module Manage
       @project = Project.find_by('es_index_name': 'project_vaccine_sentiment')
     end
 
+    def sentiment_analysis_map
+      @project = Project.find_by('es_index_name': 'project_vaccine_sentiment')
+    end
+
     def user_activity
       @interval = 'day'
     end
