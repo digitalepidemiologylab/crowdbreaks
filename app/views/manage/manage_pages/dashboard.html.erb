@@ -43,11 +43,6 @@
           <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
           <td><span class="badge badge-sentiment"><%= image_tag(@api_ready ? 'running.svg' : 'not-running.svg') %>&nbsp;<%= @api_ready ? 'Connected' : 'Not connected'%>&nbsp;</span></td>
         </tr>
-        <tr> 
-          <td>Elasticsearch (signed requests from Heroku, to be removed)</td>
-          <td><%= ENV['ELASTICSEARCH_HOST']+":"+ENV['ELASTICSEARCH_PORT'] %></td>
-          <td><span class="badge badge-sentiment"><%= image_tag(@es_ready ? 'running.svg' : 'not-running.svg') %>&nbsp;<%= @es_ready ? 'Connected' : 'Not connected'%>&nbsp;</span></td>
-        </tr>
       </tbody>
     </table>
     <h4 class="and-divider mb-4"><span>Status of docker containers</span></h4>
