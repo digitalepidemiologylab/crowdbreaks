@@ -4,11 +4,15 @@ module Admin
       @project = Project.new
     end
 
+    def index
+      @projects = Project.all
+    end
+
     def create
       @project = Project.new(sanitized_projects_params)
       if @project.save
         respond_to do |format|
-          format.html { redirect_to(dashboard_path, notice: 'Project successfully created')}
+          format.html { redirect_to(admin_projects_path, notice: 'Project successfully created')}
         end
       else
         respond_to do |format|

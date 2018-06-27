@@ -1,0 +1,35 @@
+<% @title ||= 'Projects'; title @title %>
+<div class="row mb-4">
+  <div class="col-12">
+    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <h2 class='mb-4'>Projects</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-6">
+  <div class="col-12 col-md-10 col-lg-8">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Project</th><th>Elasticsearch index</th><th>Keywords</th><th>Lanugages</th><th>Public?</th><th>Active stream?</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render partial: "project", collection: @projects %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <%= link_to 'New Project', new_admin_project_path, class: 'btn btn-primary btn-lg' %>
+  </div>
+</div>

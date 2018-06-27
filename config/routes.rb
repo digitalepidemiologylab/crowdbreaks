@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   root 'pages#index'
 
   namespace :admin do
-    resources :projects, except: [:show, :index]
+    resources :projects, except: [:show]
   end
 
   scope :api do
