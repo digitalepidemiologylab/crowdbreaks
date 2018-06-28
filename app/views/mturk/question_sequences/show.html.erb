@@ -8,9 +8,9 @@
 
 <%= react_component('MturkQSContainer',
   {
-    questions: @questions,
+    questions: @question_sequence[:questions],
     initialQuestionId: @initial_question_id,
-    transitions: @transitions,
+    transitions: @question_sequence[:transitions],
     tweetId: @tweet_id,
     projectsPath: projects_path,
     resultsPath: mturk_question_sequence_url,

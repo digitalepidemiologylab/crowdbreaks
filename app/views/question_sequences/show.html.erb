@@ -5,9 +5,9 @@
   <div id="qs-root" class="col-12 text-center">
     <%= react_component('QSContainer', {
       projectTitle: @project.title,
-      questions: @questions,
+      questions: @question_sequence[:questions],
       initialQuestionId: @initial_question_id,
-      transitions: @transitions,
+      transitions: @question_sequence[:transitions],
       tweetId: @tweet_id,
       projectsPath: projects_path,
       resultsPath: project_question_sequence_path,
@@ -15,7 +15,7 @@
       translations: @translations,
       userId: @user_id,
       projectId: @project.id,
-      numTransitions: @num_transitions,
+      numTransitions: @question_sequence[:num_transitions],
       captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
       captchaVerified: true,
       userSignedIn: user_signed_in?,

@@ -15,23 +15,8 @@ class Mturk::QuestionSequencesController < ApplicationController
     @sandbox = task.mturk_batch_job.sandbox
     @hit_id = params['hitId']
 
-    # collect JSON data
-    options = {locale: I18n.locale.to_s}
-    questions_serialized = ActiveModelSerializers::SerializableResource.new(@project.questions, options).as_json
-    transitions_serialized = ActiveModelSerializers::SerializableResource.new(@project.transitions, options).as_json
-
-    # questions
-    @questions = {}
-    # collect possible answers for each question
-    questions_serialized.each do |q|
-      @questions[q[:id]] = {'id': q[:id], 'question': q[:question], 'answers': q[:answers]}
-    end
-
-    # transitions
-    @transitions = Hash.new{|h, k| h[k] = []}
-    transitions_serialized.each do |t|
-      @transitions[t[:from_question]] << t[:transition]
-    end
+    # Collect question sequence info
+    @question_sequence = QuestionSequence.new(@project).create
     
     # find starting question
     @initial_question_id = @project.initial_question.id
