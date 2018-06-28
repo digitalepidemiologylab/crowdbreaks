@@ -4,7 +4,6 @@ module Admin
     end
 
     def index
-      @projects = 
     end
 
     def create
