@@ -9,8 +9,6 @@ class Answer < ApplicationRecord
   validates_presence_of :answer
   validates :key, presence: true, uniqueness: true
 
-  translates :answer
-
   # color constants
   COLORS = {
     'btn-primary': 'btn-primary',
@@ -36,10 +34,6 @@ class Answer < ApplicationRecord
     'relevant': 'relevant',
     'non-relevant': 'non-relevant'
   }
-
-  def display_name
-    answer
-  end
 
   private
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180628193747) do
+ActiveRecord::Schema.define(version: 20180628212534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,10 +33,9 @@ ActiveRecord::Schema.define(version: 20180628193747) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "key"
-    t.jsonb "answer_translations"
     t.string "color"
     t.string "label"
-    t.string "answer_new"
+    t.string "answer"
   end
 
   create_table "friendly_id_slugs", id: :serial, force: :cascade do |t|
@@ -101,10 +100,9 @@ ActiveRecord::Schema.define(version: 20180628193747) do
     t.integer "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "question_translations"
     t.string "meta_field"
     t.boolean "use_for_relevance_score", default: false, null: false
-    t.text "question_new"
+    t.text "question"
     t.index ["project_id"], name: "index_questions_on_project_id"
   end
 

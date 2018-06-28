@@ -4,10 +4,4 @@ class Question < ApplicationRecord
   has_many :answers, -> {order 'question_answers.order'}, through: :question_answers
   has_many :transitions
   has_many :results
-
-  translates :question
-
-  def display_name
-    question_translations['en']
-  end
 end
