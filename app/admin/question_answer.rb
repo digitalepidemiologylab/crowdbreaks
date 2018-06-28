@@ -6,7 +6,7 @@ ActiveAdmin.register QuestionAnswer do
 
   index :as => :sortable do
     label :question do |f|
-      'Project: ' + f.question.project.title[0..20] + ' -- Question: ' + f.question.question_translations['en'][0..20] + ' -- Answer: ' + f.answer.answer_translations['en'][0..20] + ' -- Order: ' + f.order.to_s
+      'Project: ' + f.question.project.title[0..20] + ' -- Question: ' + f.question.question[0..20] + ' -- Answer: ' + f.answer.answer[0..20] + ' -- Order: ' + f.order.to_s
     end
     actions
   end

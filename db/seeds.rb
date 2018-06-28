@@ -13,17 +13,17 @@ if Project.all.size == 0
                            es_index_name: "project_vaccine_sentiment")
   
   # create example question sequence
-  a1 = Answer.create(order: 0, answer_translations: {"de"=>"Ja", "en"=>"Yes"})
-  a2 = Answer.create(order: 1, answer_translations: {"de"=>"Vielleicht", "en"=>"Maybe"})
-  a3 = Answer.create(order: 2, answer_translations: {"de"=>"Nein", "en"=>"No"})
-  a4 = Answer.create(order: 0, answer_translations: {"de"=>"Positiv", "en"=>"Positive"})
-  a5 = Answer.create(order: 1, answer_translations: {"de"=>"Neutral", "en"=>"Neutral"})
-  a6 = Answer.create(order: 2, answer_translations: {"de"=>"Negativ", "en"=>"Negative"})
+  a1 = Answer.create(order: 0, answer: "Yes")
+  a2 = Answer.create(order: 1, answer: "Maybe"})
+  a3 = Answer.create(order: 2, answer: "No"})
+  a4 = Answer.create(order: 0, answer: "Positive"})
+  a5 = Answer.create(order: 1, answer: "Neutral"})
+  a6 = Answer.create(order: 2, answer: "Negative"})
   q1 = Question.create(project_id: project.id, answer_ids: [a1.id, a2.id, a3.id], 
-                       question_translations: {"de"=>"Geht es bei diesem Tweet um Impfungen?", "en"=>"Is this tweet related to vaccines?"},
+                       question: "Is this tweet related to vaccines?",
                        meta_field: "relevant_to_vaccines")
   q2 = Question.create(project_id: project.id, answer_ids: [a4.id, a5.id, a6.id], 
-                       question_translations: {"de"=>"Äussert sich dieser Tweet positiv oder negativ über Impfungen?", "en"=>"Is this tweet positive or negative about the idea of vaccinations?"},
+                       question: "Is this tweet positive or negative about the idea of vaccinations?",
                        meta_field: "sentiment")
   t1 = Transition.create(from_question_id: nil, to_question_id: q1.id, project_id: project.id)
   t2 = Transition.create(from_question_id: q1.id, to_question_id: q2.id, project_id: project.id, answer_id: a1.id)
