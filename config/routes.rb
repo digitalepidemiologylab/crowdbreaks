@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :projects, except: [:show]
+    resources :question_sequences
   end
 
   scope :api do
