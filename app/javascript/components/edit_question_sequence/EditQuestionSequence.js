@@ -47,20 +47,30 @@ export class EditQuestionSequence extends React.Component {
     }
   }
 
+  getLabel(isHidden, title) {
+    let plusMinus = 'fa fa-plus'
+    if (isHidden) {
+      plusMinus = 'fa fa-minus'
+    }
+    return <div>
+      <i className={plusMinus} style={{color: '#212529'}}></i>&emsp;{title}
+    </div>
+  }
+
   render() {
     const prevThis = this;
+    let questionLabel = this.getLabel(this.state.showQuestions, 'Questions')
+    let answersLabel = this.getLabel(this.state.showAnswers, 'Answers')
+
     return(
       <div>
         {/* Questions */}
         <div className='mb-4'>
-          <h4>
-            <input 
-              type="checkbox" 
-              onClick={() => this.toggleCheckbox('questions')}
-              style={{marginRight: '10px', transform: 'scale(1.2)'}}>
-            </input>
-            Questions
-          </h4>
+          <button 
+            onClick={() => this.toggleCheckbox('questions')} 
+            className='btn btn-secondary btn-lg btn-block'>
+            {questionLabel}
+          </button>
         </div>
         {
           this.state.showQuestions && <table className="table">
@@ -86,14 +96,11 @@ export class EditQuestionSequence extends React.Component {
         }
         {/* Answers */}
         <div className='mb-4'>
-          <h4>
-            <input 
-              type="checkbox" 
-              onClick={() => this.toggleCheckbox('answers')}
-              style={{marginRight: '10px', transform: 'scale(1.2)'}}>
-            </input>
-            Answers
-          </h4>
+          <button 
+            onClick={() => this.toggleCheckbox('answers')} 
+            className='btn btn-secondary btn-lg btn-block'>
+            {answersLabel}
+          </button>
         </div>
         {
           this.state.showAnswers && <table className="table">
