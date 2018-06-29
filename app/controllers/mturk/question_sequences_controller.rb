@@ -18,8 +18,6 @@ class Mturk::QuestionSequencesController < ApplicationController
     # Collect question sequence info
     @question_sequence = QuestionSequence.new(@project).create
     
-    # find starting question
-    @initial_question_id = @project.initial_question.id
     @tweet_id = task.tweet_id
     
     # other

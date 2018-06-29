@@ -1,0 +1,33 @@
+<% @title ||= 'Edit Question Sequence'; title @title %>
+<div class="row mb-6">
+  <div class="col-12">
+    <%= link_to admin_question_sequences_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10">
+    <h2 class='mb-4'>Edit Question Sequence</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10">
+    <h4><span>Project: <%= @project.title %></span></h4>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10">
+    <%= react_component('EditQuestionSequence', {
+      questions: @question_sequence[:questions],
+      initialQuestionId: @question_sequence[:initial_question_id],
+      transitions: @question_sequence[:transitions],
+      projectId: @project.id,
+      colorOptions: Answer::COLORS,
+      labelOptions: Answer::LABELS.values.push('')
+    }) %>
+  </div>
+</div>

@@ -6,7 +6,7 @@
     <%= react_component('QSContainer', {
       projectTitle: @project.title,
       questions: @question_sequence[:questions],
-      initialQuestionId: @initial_question_id,
+      initialQuestionId: @question_sequence[:initial_question_id],
       transitions: @question_sequence[:transitions],
       tweetId: @tweet_id,
       projectsPath: projects_path,

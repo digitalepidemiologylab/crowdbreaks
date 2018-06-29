@@ -13,6 +13,36 @@
   </div>
 </div>
 
+<div class="row justify-content-center mb-6">
+  <div class="col-12 col-md-10 col-lg-8">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th># Questions</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @projects.each do |p| %>
+          <tr>
+            <td><%= p.title %></td>
+            <td><%= p.questions.count %></td>
+            <td>
+              <span> 
+                <%# <%= link_to fa_icon("trash"), admin_project_path(project.id),
+                <%#   method: :delete,
+                <%#   data: {confirm: "Delete project?"} %>
+                <%= link_to fa_icon("pencil"), edit_admin_question_sequence_path(p.id)  %>
+              </span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-10 col-lg-8">

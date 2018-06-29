@@ -7,12 +7,11 @@ class QuestionSequencesController < ApplicationController
     # Collect question sequence info
     @question_sequence = QuestionSequence.new(@project).create
     
-    # other
+    # Other
     @user_id = current_or_guest_user.id
     @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
 
-    # find starting question
-    @initial_question_id = @project.initial_question.id
+    # Fetch new tweet ID
     @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
 
     # @tweet_id = '564984221203431000'  # invalid tweet
