@@ -36,8 +36,6 @@ class Project < ApplicationRecord
     remote_config.each do |c|
       p = Project.find_by(slug: c[0])
       return false if p.nil?
-      p c[1]['keywords']
-      p p.keywords
       if p.keywords.sort != c[1]['keywords'].sort
         return false
       end
@@ -50,6 +48,4 @@ class Project < ApplicationRecord
     end
     return true
   end
-
-
 end

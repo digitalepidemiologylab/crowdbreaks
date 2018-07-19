@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
-
 import { SingleAnswer } from './SingleAnswer';
 import { EditSingleAnswer } from './EditSingleAnswer';
 
@@ -31,10 +30,9 @@ export class EditAnswers extends React.Component {
     dummyAnswers[e.answerPos].color = e.color;
     dummyAnswers[e.answerPos].label = e.label;
     this.props.onUpdateAnswers({'answers': dummyAnswers, 'questionId': this.props.questionId})
-    this.setState({
-      editMode: false
-    })
+    this.stopEditMode();
   }
+
 
   render() {
     let answers;
@@ -52,21 +50,33 @@ export class EditAnswers extends React.Component {
         }
       </div>
     } else {
-      answers = <div>
+      answers = <div className='mb-5'>
+        <div className='mb-5'>
         {
           this.props.answers.map( (answer, id) => {
             return <EditSingleAnswer
               key={id}
               answerPos={id}
+              answerId={answer.id}
               answer={answer.answer}
               color={answer.color}
               label={answer.label}
               colorOptions={this.props.colorOptions}
               labelOptions={this.props.labelOptions}
-              onUpdateInternalAnswer={(pos, e) => this.onUpdateInternalAnswer(pos, e)}
+              questionId={this.props.questionId}
+              onUpdateInternalAnswer={(e) => this.onUpdateInternalAnswer(e)}
+              onDeleteAnswer={this.props.onDeleteAnswer}
             />
           })
         }
+      </div>
+      <div>
+        <button 
+          onClick={() => this.props.addNewAnswer(this.props.questionId)} 
+          className='btn btn-primary'>
+          <i className='fa fa-plus' style={{color: '#fff'}}></i>&emsp;Add new answer
+        </button>
+      </div>
       </div>
     }
 

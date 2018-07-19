@@ -3,6 +3,7 @@
     "@rails/webpacker": "^3.0.1",
     "babel-preset-react": "^6.24.1",
     "chart.js": "^2.7.1",
+    "d3": "^5.5.0",
     "humps": "^2.0.1",
     "jquery": "^3.2.1",
     "moment": "^2.20.1",

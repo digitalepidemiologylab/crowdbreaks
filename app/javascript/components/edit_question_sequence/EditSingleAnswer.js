@@ -6,21 +6,20 @@ export class EditSingleAnswer extends React.Component {
     this.state = {
       answer: props.answer,
       color: props.color,
-      label: props.label,
-      changed: false
+      label: props.label
     };
   }
 
   onUpdateAnswer(e) {
-    this.setState({answer: e.target.value, changed: true})
+    this.setState({answer: e.target.value})
   }
 
   onUpdateLabel(e) {
-    this.setState({label: e.target.value, changed: true})
+    this.setState({label: e.target.value})
   }
 
   onUpdateColor(e) {
-    this.setState({color: e.target.value, changed: true})
+    this.setState({color: e.target.value})
   }
 
   onUpdate() {
@@ -29,15 +28,21 @@ export class EditSingleAnswer extends React.Component {
 
   render() {
     const componentsStyle = {display: 'inline-block', marginRight: '10px', marginBottom: '10px'}
-    const answerStyle = {...componentsStyle, width: '40%'}
-    const selectStyle = {...componentsStyle, width: '20%'}
+    const idStyle = {...componentsStyle, width: '5%'}
+    const answerStyle = {...componentsStyle, width: '35%'}
+    const selectStyle = {...componentsStyle, width: '15%'}
+    const buttonStyle = {margin: '10px 10px 10px 0px'}
 
-    let updateButton = this.state.changed && <button 
+    let updateButton = <button 
       className='btn btn-primary'
+      style={buttonStyle}
       onClick={() => this.onUpdate()}
-      >Update</button>
+      >OK</button>
     return (
-      <div>
+      <div className='mb-4'>
+        <div style={idStyle}>
+          {this.props.answerId}
+        </div>
         <div style={answerStyle}>
           <input 
             value={this.state.answer}
@@ -70,6 +75,11 @@ export class EditSingleAnswer extends React.Component {
           </select>
         </div>
         {updateButton}
+        <button 
+          onClick={(e) => this.props.onDeleteAnswer(this.props.answerId, this.props.questionId, e)}
+          style={buttonStyle}
+          className="btn btn-negative">Delete
+        </button>
       </div>
     );
   }

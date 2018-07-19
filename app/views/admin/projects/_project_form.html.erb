@@ -25,12 +25,12 @@
     <input id="twitter-streaming-options-checkbox" type="checkbox" <%= @project.active_stream ? 'checked' : ''%> style="margin-right:5px">Show streaming options</input> 
     <div id="twitter-streaming-options" data-active-stream=<%=  @project.active_stream? %>>
       <div class="form-group">
-        <%= f.input :keywords, hint: 'Comma-separated list of keywords for the Twitter streaming API to filter for', 
-          input_html: {value: @project.keywords&.join(',') || "flu, fever, cold"} %>
-        <%= f.input :lang, label: "Languages", hint: 'Languages of tweets to collect through Twitter API', :input_html => { value: @project.lang&.join(',') || 'en' } %>
+        <%= f.input :keywords, hint: 'Comma-separated list of keywords for the Twitter streaming API to filter for' , 
+          input_html: {value: @project.keywords&.join(',') || ""} %>
+        <%= f.input :lang, label: "Languages", hint: 'Languages of tweets to collect through Twitter API (2-letter language code, e.g. "en")', :input_html => { value: @project.lang&.join(',') || '' } %>
       </div>
       <div class="form-group">
-        <%= f.input :es_index_name, hint: 'Name of ElasticSearch index to store tweets into, make sure to name the index project_*', input_html: {value: @project.es_index_name || "project_test"} %>
+        <%= f.input :es_index_name, hint: 'Name of ElasticSearch index to store tweets into, make sure to name the index project_*', input_html: {value: @project.es_index_name || ""} %>
       </div>
       <div class="form-group">
         <%= f.input :active_stream, input_html: {style: "margin-right:5px;", value: @project.active_stream}, hint: "Activate stream (if false, logstash won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>

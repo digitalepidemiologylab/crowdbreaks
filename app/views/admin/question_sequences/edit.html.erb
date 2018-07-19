@@ -23,11 +23,11 @@
   <div class="col-12 col-md-10">
     <%= react_component('EditQuestionSequence', {
       questions: @question_sequence[:questions],
-      initialQuestionId: @question_sequence[:initial_question_id],
       transitions: @question_sequence[:transitions],
       projectId: @project.id,
       colorOptions: Answer::COLORS,
-      labelOptions: Answer::LABELS.values.push('')
+      labelOptions: Answer::LABELS.values.push(''),
+      saveQuestionSequencePath: admin_question_sequence_path
     }) %>
   </div>
 </div>

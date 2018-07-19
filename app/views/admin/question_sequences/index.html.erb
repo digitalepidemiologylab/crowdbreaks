@@ -30,9 +30,6 @@
             <td><%= p.questions.count %></td>
             <td>
               <span> 
-                <%# <%= link_to fa_icon("trash"), admin_project_path(project.id),
-                <%#   method: :delete,
-                <%#   data: {confirm: "Delete project?"} %>
                 <%= link_to fa_icon("pencil"), edit_admin_question_sequence_path(p.id)  %>
               </span>
             </td>
@@ -40,12 +37,5 @@
         <% end %>
       </tbody>
     </table>
-  </div>
-</div>
-
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10 col-lg-8">
-    <%= link_to 'New Question Sequence', new_admin_question_sequence_path, class: 'btn btn-primary btn-lg' %>
   </div>
 </div>

@@ -32,4 +32,24 @@ class QuestionSequence
       'transitions': transitions
     }
   end
+
+  def edit
+    questions_serialized = ActiveModelSerializers::SerializableResource.new(@project.questions).as_json
+    transitions_serialized = ActiveModelSerializers::SerializableResource.new(@project.transitions).as_json
+    questions = {}
+    # collect possible answers for each question
+    questions_serialized.each do |q|
+      questions[q[:id]] = {'id': q[:id], 'question': q[:question], 'answers': q[:answers]}
+    end
+    # transitions
+    transitions = {}
+    transitions_serialized.each do |t|
+      transitions[t[:id]] = {'id': t[:id], 'from_question': t[:from_question], 'transition': t[:transition]}
+    end
+    
+    return {
+      'questions': questions,
+      'transitions': transitions
+    }
+  end
 end
