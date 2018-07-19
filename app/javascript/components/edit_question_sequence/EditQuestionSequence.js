@@ -7,6 +7,9 @@ import { EditAnswers } from './EditAnswers';
 import { EditTransition } from './EditTransition';
 import { TransitionGraph } from './TransitionGraph';
 
+// Other
+import { ClipLoader } from 'react-spinners';
+
 export class EditQuestionSequence extends React.Component {
   constructor(props) {
     super(props);
@@ -28,10 +31,10 @@ export class EditQuestionSequence extends React.Component {
       showTransitions: false,
       newQuestionIdCounter: Math.max( ...Object.keys(questions).map(Number)) + 1,
       newTransitionIdCounter: Math.max( ...Object.keys(props.transitions).map(Number)) + 1,
-      newAnswerIdCounter: this.findMaxAnswerId(questions) + 1
+      newAnswerIdCounter: this.findMaxAnswerId(questions) + 1,
+      isLoading: false,
+      errors: []
     };
-
-    console.log(this.state.transitions)
   }
 
   findMaxAnswerId(questions) {
@@ -182,20 +185,27 @@ export class EditQuestionSequence extends React.Component {
 
   saveQuestionSequence() {
     var data = {
+      projectId: this.props.projectId,
       questions: this.state.questions,
       transitions: this.state.transitions
     };
-    console.log(this.state.questions)
+    this.setState({isLoading: true});
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-      type: "PATCH",
+      type: "POST",
       crossDomain: true,
       url: this.props.saveQuestionSequencePath,
       data: JSON.stringify(data),
-      dataType: "json",
       contentType: "application/json",
       success: (response) => {
-        console.log('success!')
+        this.setState({isLoading: false})
+        window.location = this.props.redirectPath
+      },
+      error: (response) => {
+        this.setState({
+          isLoading: false,
+          errors: this.state.errors.concat([response['statusText']])
+        });
       }
     });
   }
@@ -205,6 +215,12 @@ export class EditQuestionSequence extends React.Component {
     let questionLabel = this.getLabel(this.state.showQuestions, 'Questions')
     let answersLabel = this.getLabel(this.state.showAnswers, 'Answers')
     let transitionsLabel = this.getLabel(this.state.showTransitions, 'Transitions')
+    let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
+      <li>Error:</li>
+      {this.state.errors.map(function(error, i) {
+        return <li key={i}>{error}</li>
+      })}
+    </ul>
 
     return(
       <div>
@@ -294,48 +310,59 @@ export class EditQuestionSequence extends React.Component {
         </div>
         {
           this.state.showTransitions && <div className='mb-5'>
-            
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Source ID</th>
-                <th>Target ID</th>
-                <th>Answer</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(this.state.transitions).map( (transitionId, id) => {
-                console.log(this.state.transitions[transitionId])
-                return <EditTransition
-                  key={id}
-                  sourceId={this.state.transitions[transitionId].from_question}
-                  transition={this.state.transitions[transitionId].transition}
-                  transitionId={transitionId}
-                  onDeleteTransition={(e) => this.onDeleteTransition(transitionId, e)}
-                  onUpdateTransition={(e) => this.onUpdateTransition(e)}
-                  validateTransition={(e) => this.validateTransition(e)}
-                />
-              })}
-            </tbody>
-          </table>
-          <div className='mb-5'>
-            <button 
-              onClick={() => this.addNewTransition()} 
-              className='btn btn-primary btn-lg'>
-              <i className='fa fa-plus' style={{color: '#fff'}}></i>&emsp;Add new transition
-            </button>
+
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Source ID</th>
+                  <th>Target ID</th>
+                  <th>Answer</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(this.state.transitions).map( (transitionId, id) => {
+                  return <EditTransition
+                    key={id}
+                    sourceId={this.state.transitions[transitionId].from_question}
+                    transition={this.state.transitions[transitionId].transition}
+                    transitionId={transitionId}
+                    onDeleteTransition={(e) => this.onDeleteTransition(transitionId, e)}
+                    onUpdateTransition={(e) => this.onUpdateTransition(e)}
+                    validateTransition={(e) => this.validateTransition(e)}
+                  />
+                })}
+              </tbody>
+            </table>
+            <div className='mb-5'>
+              <button 
+                onClick={() => this.addNewTransition()} 
+                className='btn btn-primary btn-lg'>
+                <i className='fa fa-plus' style={{color: '#fff'}}></i>&emsp;Add new transition
+              </button>
+            </div>
+            <TransitionGraph
+              transitions={this.state.transitions}
+            />
           </div>
-          <TransitionGraph
-            transitions={this.state.transitions}
-          />
-        </div>
         }
-        <button 
+        { errors }
+        { this.state.isLoading && <div className="row">
+          <div className="col-12">
+            <div className="clip-loader">
+              <ClipLoader
+                color={'#444'} 
+              />
+            </div>
+          </div>
+        </div>
+        } 
+        { !this.state.isLoading && <button 
           onClick={() => this.saveQuestionSequence()} 
           className='btn btn-primary btn-lg'>
           Save Question Sequence
         </button>
+        }
       </div>
     )
   }
