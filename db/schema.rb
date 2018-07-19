@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180628212534) do
+ActiveRecord::Schema.define(version: 20180719155027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20180628212534) do
     t.string "keywords", array: true
     t.boolean "public", default: false, null: false
     t.boolean "active_stream", default: false, null: false
-    t.string "lang", default: ["en"], array: true
+    t.string "lang", default: [], array: true
     t.integer "question_sequences_count", default: 0, null: false
     t.integer "results_count", default: 0, null: false
     t.index ["slug"], name: "index_projects_on_slug"
