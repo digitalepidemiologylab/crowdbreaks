@@ -13,7 +13,7 @@ module Admin
       questions = question_sequence_params.fetch(:questions).to_h
 
       # make sure no survey data is lost
-      raise 'Project as existing answers to questions. Aborting.' if project.results.count > 0
+      raise 'Project has existing answers to questions. Aborting.' if project.results.count > 0
 
       # delete all pre-existing questions, answers and transitions
       delete_question_sequence(project)
@@ -30,7 +30,7 @@ module Admin
     def edit
       @project = Project.friendly.find(params[:id])
       if @project.results.count > 0
-        redirect_to(admin_question_sequences_path, alert: 'Cannot modify a question sequence with existing answers to questions. Delete answers or define a new project.')
+        redirect_to(admin_question_sequences_path, alert: 'Cannot modify a question sequence with existing answers to questions (results). Delete results or define a new project.')
       end
       @question_sequence = QuestionSequence.new(@project).edit
     end
@@ -39,6 +39,14 @@ module Admin
     end
 
     def destroy
+      project = Project.friendly.find(params[:id])
+      if project.results.count > 0
+        redirect_to(admin_question_sequences_path, alert: 'Cannot delete question sequence with existing answers to questions (results). Delete results or define a new project.')
+      else
+        delete_question_sequence(project)
+        redirect_to(admin_question_sequences_path, notice: 'Successfully deleted question sequence.')
+      end
+
     end
 
     private
@@ -46,7 +54,8 @@ module Admin
     def delete_question_sequence(project)
       # delete any existing answers or questions
       project.questions.each do |q|
-        q.answers.destroy_all
+        # deletes answers and QuestionAnswers on join table
+        Answer.where(id: q.answers.pluck(:id)).destroy_all
       end
       project.questions.destroy_all
 

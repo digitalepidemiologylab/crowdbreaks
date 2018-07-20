@@ -38,13 +38,16 @@ module Admin
 
     def destroy
       @project = Project.friendly.find(params[:id])
-      if @project.destroy
-        flash[:notice] = 'Project successfully destroyed!'
+      if @project.results.count > 0
+        redirect_to(admin_projects_path, alert: 'Cannot delete a project with existing answers to questions (results). Delete results or define a new project.')
       else
-        flash[:alert] = 'Project could not be destroyed'
+        if @project.destroy
+          flash[:notice] = 'Project successfully destroyed!'
+        else
+          flash[:alert] = 'Project could not be destroyed'
+        end
+        redirect_to admin_projects_path
       end
-      redirect_to streaming_path
-
     end
 
     private

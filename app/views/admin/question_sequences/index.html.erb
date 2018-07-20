@@ -30,6 +30,10 @@
             <td><%= p.questions.count %></td>
             <td>
               <span> 
+                <%= link_to fa_icon("trash"), admin_question_sequence_path(p.id),
+                  method: :delete,
+                  data: {confirm: "Delete project?"} 
+                %>
                 <%= link_to fa_icon("pencil"), edit_admin_question_sequence_path(p.id)  %>
               </span>
             </td>
