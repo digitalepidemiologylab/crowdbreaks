@@ -1,0 +1,64 @@
+<% @title ||= @project.title; title @title %>
+<div class="row mb-4">
+  <div class="col-12">
+    <%= link_to admin_question_sequences_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <% if @mode == 'mturk' %>
+      <h2 class='mb-4'>Question Sequence (Mturk interface)</h2>
+    <% elsif @mode == 'public' %>
+      <h2 class='mb-4'>Question Sequence (public interface)</h2>
+    <% end %>
+    <p style="color:red;">Working in test mode. No results are collected.</p>
+  </div>
+</div>
+
+
+<div class="row justify-content-center" style="border:1px solid;">
+  <div id="qs-root" class="col-12 text-center">
+    <% if  @mode == 'mturk'%>
+      <%= react_component('MturkQSContainer', {
+        projectTitle: @project.title,
+        questions: @question_sequence[:questions],
+        initialQuestionId: @question_sequence[:initial_question_id],
+        transitions: @question_sequence[:transitions],
+        tweetId: @tweet_id,
+        projectsPath: projects_path,
+        resultsPath: nil,
+        endQuestionSequencePath: question_sequence_end_path,
+        translations: @translations,
+        userId: @user_id,
+        projectId: @project.id,
+        enableAnswersDelay: 2000,
+        testMode: true,
+        previewMode: @preview_mode,
+        sandbox: @sandbox,
+      }) %>
+    <% elsif @mode == 'public' %>
+      <%= react_component('QSContainer', {
+        projectTitle: @project.title,
+        questions: @question_sequence[:questions],
+        initialQuestionId: @question_sequence[:initial_question_id],
+        transitions: @question_sequence[:transitions],
+        tweetId: @tweet_id,
+        projectsPath: projects_path,
+        resultsPath: nil,
+        endQuestionSequencePath: question_sequence_end_path,
+        translations: @translations,
+        userId: @user_id,
+        projectId: @project.id,
+        numTransitions: @question_sequence[:num_transitions],
+        captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
+        enableCaptcha: false,
+        userSignedIn: user_signed_in?,
+        enableAnswersDelay: 2000,
+        testMode: true
+      }) %>
+  <% end %>
+  </div>
+</div>

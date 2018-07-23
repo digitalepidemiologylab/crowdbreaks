@@ -20,6 +20,7 @@
         <tr>
           <th>Project</th>
           <th># Questions</th>
+          <th>View</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -28,6 +29,10 @@
           <tr>
             <td><%= p.title %></td>
             <td><%= p.questions.count %></td>
+            <td>
+              <%= link_to 'Public', admin_question_sequence_path(p.id, mode: :public) %> | 
+              <%= link_to 'Mturk', admin_question_sequence_path(p.id, mode: :mturk) %>
+            </td>
             <td>
               <span> 
                 <%= link_to fa_icon("trash"), admin_question_sequence_path(p.id),

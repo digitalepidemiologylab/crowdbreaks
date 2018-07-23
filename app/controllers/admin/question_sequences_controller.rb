@@ -7,6 +7,15 @@ module Admin
       @projects = Project.all
     end
 
+    def show
+      @project = Project.friendly.find(params[:id])
+      @question_sequence = QuestionSequence.new(@project).create
+      @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
+      @user_id = current_or_guest_user.id
+      @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
+      @mode = params[:mode]
+    end
+
     def create
       project = Project.friendly.find(question_sequence_params[:projectId])
       transitions = question_sequence_params.fetch(:transitions).to_h
