@@ -197,7 +197,9 @@ class FlaskApi
     tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
     while not tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH_DB
       Rails.logger.info "Tweet #{tweet_id} is not available anymore, trying another"
-      tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
+      Result.uncached do
+        tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
+      end
       trials += 1
     end
     return tweet_id
