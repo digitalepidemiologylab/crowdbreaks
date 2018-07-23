@@ -1,6 +1,5 @@
 // React
 import React from 'react'
-import PropTypes from 'prop-types';
 
 // Other 
 var humps = require('humps');
@@ -14,11 +13,15 @@ export class MturkQSContainer extends React.Component {
     super(props);
     this.state = {
       'tweetLoadError': false,
-      'questionSequenceHasEnded': false
+      'questionSequenceHasEnded': false,
+      'errors': []
     };
   }
 
   postData(resultData) {
+    if (this.props.testMode) {
+      return true;
+    }
     if (this.props.previewMode) {
       console.log('Cannot submit in preview mode');
       return false;
@@ -27,20 +30,26 @@ export class MturkQSContainer extends React.Component {
       console.log('Cannot submit when Tweet loading failed');
       return false;
     }
+
     resultData['hit_id'] = this.props.hitId;
     $.ajax({
       type: "POST",
       url: this.props.resultsPath,
       data: resultData,
+      error: (response) => {
+        this.setState({
+          errors: this.state.errors.concat(['Internal error'])
+        });
+      }
     });
+    // Continue even on error
     return true;
   }
 
   onTweetLoadError() {
     // Todo: handle exception
-    console.log("Tweet not available anymore");
     this.setState({
-      'tweetLoadError': true
+      errors: this.state.errors.concat(['Tweet not available anymore'])
     });
   }
 
@@ -93,6 +102,9 @@ export class MturkQSContainer extends React.Component {
         postData={(args) => this.postData(args)}
         onTweetLoadError={() => this.onTweetLoadError()}
         onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+        numTransitions={0}
+        captchaVerified={true}
+        enableAnswersDelay={this.props.enableAnswersDelay}
       /> 
     } else {
       body = <MturkFinal 
@@ -102,27 +114,17 @@ export class MturkQSContainer extends React.Component {
         hitId={this.props.hitId}
       /> 
     }
+    let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
+      <li>Error:</li>
+      {this.state.errors.map(function(error, i) {
+        return <li key={i}>{error}</li>
+      })}
+    </ul>
     return(
       <div className="QSContainer">
+        {errors}
         {body}
       </div>
     );
   }
-}
-
-MturkQSContainer.propTypes = {
-  initialQuestionId: PropTypes.number,
-  questions: PropTypes.object,
-  transitions: PropTypes.object,
-  tweetId: PropTypes.string,
-  projectsPath: PropTypes.string,
-  resultsPath: PropTypes.string,
-  translations: PropTypes.object,
-  userId: PropTypes.number,
-  projectId: PropTypes.number,
-  assignmentId: PropTypes.string,
-  previewMode: PropTypes.bool,
-  sandbox: PropTypes.bool,
-  finalSubmitPath: PropTypes.string,
-  hitId: PropTypes.string
 }

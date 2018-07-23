@@ -1,6 +1,5 @@
 // React
 import React from 'react'
-import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { ClipLoader } from 'react-spinners';
 
@@ -169,7 +168,7 @@ export class QuestionSequence extends React.Component {
       {/* Title and tweet */}
       <div className='row justify-content-center'> 
         <div className="col-12">
-          <h4 className="mb-5">{this.props.projectTitle}</h4>
+          {this.props.projectTitle && <h4 className="mb-5">{this.props.projectTitle}</h4>} 
           <TweetEmbedding 
             tweetId={this.props.tweetId}
             onTweetLoad={() => this.onTweetLoad()}
@@ -231,20 +230,3 @@ export class QuestionSequence extends React.Component {
     );
   }
 }
-
-QuestionSequence.propTypes = {
-  projectTitle: PropTypes.string,
-  initialQuestionId: PropTypes.number,
-  questions: PropTypes.object,
-  transitions: PropTypes.object,
-  tweetId: PropTypes.string,
-  userId: PropTypes.number,
-  projectId: PropTypes.number,
-  postData: PropTypes.func,
-  onTweetLoadError: PropTypes.func,
-  onQuestionSequenceEnd: PropTypes.func,
-  numTransitions: PropTypes.number,
-  captchaSiteKey: PropTypes.string,
-  userSignedIn: PropTypes.bool,
-  captchaVerified: PropTypes.bool
-};

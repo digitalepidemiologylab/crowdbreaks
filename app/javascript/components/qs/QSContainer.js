@@ -1,6 +1,5 @@
 // React
 import React from 'react'
-import PropTypes from 'prop-types';
 
 import { QuestionSequence } from './QuestionSequence';
 import { Final } from './Final';
@@ -12,7 +11,7 @@ export class QSContainer extends React.Component {
     super(props);
     this.state = {
       'questionSequenceHasEnded': false,
-      'captchaVerified': props.captchaVerified,
+      'captchaVerified': !props.enableCaptcha,  // if captcha is disabled, sets captcha permanently to verified state
       'nextQuestionSequence': [],
       'tweetId': props.tweetId,
       'transitions': props.transitions,
@@ -24,6 +23,10 @@ export class QSContainer extends React.Component {
   }
 
   postData(resultData) {
+    if (this.props.testMode) {
+      return true;
+    }
+
     if ('recaptcha_response' in resultData) {
       // Make sure to only continue on successful verification
       $.ajax({
@@ -128,7 +131,6 @@ export class QSContainer extends React.Component {
           questions={this.state.questions}
           transitions={this.state.transitions}
           tweetId={this.state.tweetId}
-          projectsPath={this.props.projectsPath}
           userId={this.props.userId}
           projectId={this.props.projectId}
           postData={(args) => this.postData(args)}
@@ -161,21 +163,4 @@ export class QSContainer extends React.Component {
       </div>
     );
   }
-}
-
-QSContainer.propTypes = {
-  projectTitle: PropTypes.string,
-  initialQuestionId: PropTypes.number,
-  questions: PropTypes.object,
-  transitions: PropTypes.object,
-  tweetId: PropTypes.string,
-  projectsPath: PropTypes.string,
-  endQuestionSequencePath: PropTypes.string,
-  resultsPath: PropTypes.string,
-  translations: PropTypes.object,
-  userId: PropTypes.number,
-  projectId: PropTypes.number,
-  numTransitions: PropTypes.number,
-  captchaSiteKey: PropTypes.string,
-  enableAnswersDelay: PropTypes.number
 }
