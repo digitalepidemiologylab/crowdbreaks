@@ -14,23 +14,36 @@ export class MturkQSContainer extends React.Component {
     this.state = {
       'tweetLoadError': false,
       'questionSequenceHasEnded': false,
-      'errors': []
+      'errors': [],
+      'results': []
     };
   }
 
   postData(resultData) {
-    if (this.props.testMode) {
-      return true;
-    }
+    // Do not post anything in preview mode
     if (this.props.previewMode) {
       console.log('Cannot submit in preview mode');
       return false;
     }
+    // Do not post anything if tweet could not be loaded properly
     if (this.state.tweetLoadError) {
       console.log('Cannot submit when Tweet loading failed');
       return false;
     }
 
+    // In reset mode, collect results but do not post yet
+    if (this.props.allowReset) {
+      this.setState({
+        results: this.state.results.concat([resultData])
+      })
+      return true;
+    }
+    // In test mode do not collect any results
+    if (this.props.testMode) {
+      return true;
+    }
+
+    // Post single result
     resultData['hit_id'] = this.props.hitId;
     $.ajax({
       type: "POST",

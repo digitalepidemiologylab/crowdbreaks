@@ -1,4 +1,4 @@
-<%= simple_form_for(@mturk_batch_job, url: mturk_batch_jobs_path, html: {id: 'mturk-batch-job-new'}) do |f| %>
+<%= simple_form_for(@mturk_batch_job, url: mturk_batch_job_path(@mturk_batch_job.id), html: {id: 'mturk-batch-job-new'}) do |f| %>
   <%= f.error_notification %>
 
   <div class="form-group">
@@ -6,15 +6,15 @@
   </div>
   
   <div class="form-group">
-    <%= f.input :title, hint: 'Title of each HIT on Mturk, short and descriptive', input_html: {value: "Label tweet"} %>
+    <%= f.input :title, hint: 'Title of each HIT on Mturk, short and descriptive' %>
   </div>
 
   <div class="form-group">
-    <%= f.input :description, hint: 'A general description about the HIT, displayed on Mturk', input_html: {value: "Answer a few questions about a tweet"} %>
+    <%= f.input :description, hint: 'A general description about the HIT, displayed on Mturk' %>
   </div>
 
   <div class="form-group">
-    <%= f.input :keywords, hint: 'Comma-separated list of keywords (used by Mturk for searching)', input_html: {value: "twitter, science, sentiment, opinion"} %>
+    <%= f.input :keywords, hint: 'Comma-separated list of keywords (used by Mturk for searching)' %>
   </div>
 
   <div class="form-group">
@@ -22,22 +22,30 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :instructions, hint: 'Instructions to the worker (visible on top of the question sequence) in Markdown', input_html: {value: "# Instructions for this task in Markdown", style: "font-family: monospace;", rows: 10} %>
+    <%= f.input :instructions, hint: 'Instructions to the worker (visible on top of the question sequence) in Markdown', input_html: {style: "font-family: monospace;", rows: 10} %>
   </div>
 
   <div class="form-group">
     <%= f.input :job_file,
+      disabled: @is_submitted,
       as: :file,
       label: "Tweet IDs",
-      hint: 'Please use a csv in which each line corresponds to a tweet ID',
+      hint: 'Please use a csv in which each line corresponds to a tweet ID.',
       :input_html => { :class => 'file-input-form-control' } %>
+    <% unless @is_submitted %>
+      <p style="color:red">Note: Existing tasks will be overwritten.</p>
+    <% end %>
   </div>
 
   <div class="form-group">
-    <%= f.input :number_of_assignments,
-      as: :integer, 
-      input_html: { value: 1 },
-      hint: "Label every tweet n times" %>
+    <%= f.input :number_of_assignments, hint: "Label every tweet n times" do %>
+      <div class="input-group">
+        <%= f.input_field :number_of_assignments,
+          value: 1,
+          disabled: @is_submitted,
+          class: 'form-control' %>
+    </div>
+    <% end %>
   </div>
 
   <div class="form-group">
@@ -45,8 +53,7 @@
       <div class="input-group">
         <span class="input-group-text">$</span>
         <%= f.input_field :reward,
-          class: 'form-control',
-          value: 0.03 %>
+          class: 'form-control' %>
       </div>
     <% end %>
   </div>
@@ -56,7 +63,7 @@
       <div class="input-group">
         <%= f.input_field :lifetime_in_seconds,
           class: 'form-control',
-          value: 30
+          value: @mturk_batch_job.lifetime_in_seconds / (24*3600)
         %>
         <span class="input-group-text">days</span>
       </div>
@@ -68,7 +75,7 @@
       <div class="input-group">
         <%= f.input_field :auto_approval_delay_in_seconds,
           class: 'form-control',
-          value: 7 
+          value: @mturk_batch_job.auto_approval_delay_in_seconds / (24*3600)
         %>
         <span class="input-group-text">days</span>
       </div>
@@ -79,8 +86,8 @@
     <%= f.input 'Assignment duration', hint: "Time which is given to a worker to complete the task" do %>
       <div class="input-group">
         <%= f.input_field :assignment_duration_in_seconds,
-          class: 'form-control',
-          value: 20 
+          value: @mturk_batch_job.assignment_duration_in_seconds / 60,
+          class: 'form-control'
         %>
         <span class="input-group-text">min</span>
       </div>

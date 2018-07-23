@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180719155027) do
+ActiveRecord::Schema.define(version: 20180723122200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20180719155027) do
     t.integer "lifetime_in_seconds"
     t.integer "auto_approval_delay_in_seconds"
     t.integer "assignment_duration_in_seconds"
+    t.text "instructions", default: ""
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
   end
 

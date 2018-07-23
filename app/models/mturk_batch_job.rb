@@ -3,7 +3,7 @@ class MturkBatchJob < ApplicationRecord
   belongs_to :project
 
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
-  validates_presence_of :sandbox, :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :job_file, :reward
+  validates_presence_of :sandbox, :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward
 
   attr_accessor :job_file
   attr_accessor :number_of_assignments
@@ -16,7 +16,7 @@ class MturkBatchJob < ApplicationRecord
       AWSAccessKeyId: ENV['AWS_ACCESS_KEY_ID'],
       AWSAccessKey: ENV['AWS_SECRET_ACCESS_KEY'])
 
-    if ENV['HOST'] == 'https://www.crowdbreaks.org' # slightly hacky, but oh well
+    if ENV['ENVIRONMENT_NAME'] == 'production'
       question_file_path = File.join(Rails.root, 'app/views/mturk/external_question.xml')
     else
       question_file_path = File.join(Rails.root, 'app/views/mturk/external_question_staging.xml')
