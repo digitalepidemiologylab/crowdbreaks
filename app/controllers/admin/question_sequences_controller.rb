@@ -14,6 +14,7 @@ module Admin
       @user_id = current_or_guest_user.id
       @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
       @mode = params[:mode]
+      @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
     end
 
     def create

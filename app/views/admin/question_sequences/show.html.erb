@@ -23,7 +23,7 @@
   <div id="qs-root" class="col-12 text-center">
     <% if  @mode == 'mturk'%>
       <%= react_component('MturkQSContainer', {
-        projectTitle: @project.title,
+        mturkTitle: @project.title,
         questions: @question_sequence[:questions],
         initialQuestionId: @question_sequence[:initial_question_id],
         transitions: @question_sequence[:transitions],
@@ -38,7 +38,8 @@
         testMode: true,
         previewMode: @preview_mode,
         sandbox: @sandbox,
-        allowReset: true
+        allowReset: true,
+        instructions: @mturk_instructions
       }) %>
     <% elsif @mode == 'public' %>
       <%= react_component('QSContainer', {

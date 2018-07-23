@@ -7,6 +7,7 @@ var humps = require('humps');
 // Components
 import { QuestionSequence } from './QuestionSequence';
 import { MturkFinal } from './MturkFinal';
+import { MturkInstructions } from './MturkInstructions';
 
 export class MturkQSContainer extends React.Component {
   constructor(props) {
@@ -15,7 +16,8 @@ export class MturkQSContainer extends React.Component {
       'tweetLoadError': false,
       'questionSequenceHasEnded': false,
       'errors': [],
-      'results': []
+      'results': [],
+      'displayInstructions': false
     };
   }
 
@@ -85,12 +87,25 @@ export class MturkQSContainer extends React.Component {
       }
     });
 
+    if (this.props.testMode) {
+      alert('No submit since running in test mode.')
+      return true;
+    }
+
     $.ajax({
       type: "POST",
       url: this.props.finalSubmitPath,
       data: taskUpdate,
       success: function(result) {
-        alert('Form submitted successfully');
+        alert('Successfully submitted');
+        $('#submit-form').submit();
+        return true;
+      },
+      error: (response) => {
+        this.setState({
+          errors: this.state.errors.concat([response.statusText])
+        });
+        // Give reward anyway (!)
         $('#submit-form').submit();
         return true;
       }
@@ -102,8 +117,20 @@ export class MturkQSContainer extends React.Component {
     return "https://" + sandbox_prefix + ".mturk.com/mturk/externalSubmit";
   }
 
+  onToggleInstructionDisplay() {
+    this.setState({
+      displayInstructions: !this.state.displayInstructions
+    })
+  }
+
   render() {
     let body = null;
+    let title = this.props.mturkTitle && <h4 className="mb-5">{this.props.mturkTitle}</h4> 
+    let mturkInstructions = <MturkInstructions 
+      display={this.state.displayInstructions}
+      instructions={this.props.instructions}
+      onToggleDisplay={() => this.onToggleInstructionDisplay()}
+    />
     if (!this.state.questionSequenceHasEnded) {
       body = <QuestionSequence 
         initialQuestionId={this.props.initialQuestionId}
@@ -134,7 +161,9 @@ export class MturkQSContainer extends React.Component {
       })}
     </ul>
     return(
-      <div className="QSContainer">
+      <div className="QSContainer" style={{paddingTop: '30px'}}>
+        {title}
+        {mturkInstructions} 
         {errors}
         {body}
       </div>

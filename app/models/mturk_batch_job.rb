@@ -52,6 +52,11 @@ class MturkBatchJob < ApplicationRecord
     num_tasks_completed == num_tasks ? :completed : :submitted
   end
 
+  def default_mturk_instructions
+    default_instructions_path = File.join(Rails.root, 'app/views/mturk/default_mturk_instructions.md')
+    File.read(default_instructions_path) 
+  end
+
   private 
 
 end
