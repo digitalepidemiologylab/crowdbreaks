@@ -28,10 +28,8 @@
         initialQuestionId: @question_sequence[:initial_question_id],
         transitions: @question_sequence[:transitions],
         tweetId: @tweet_id,
-        projectsPath: projects_path,
-        resultsPath: nil,
-        endQuestionSequencePath: question_sequence_end_path,
-        translations: @translations,
+        resultsPath: mturk_question_sequence_url,
+        finalSubmitPath: final_mturk_question_sequence_url,
         userId: @user_id,
         projectId: @project.id,
         enableAnswersDelay: 2000,
@@ -39,7 +37,11 @@
         previewMode: @preview_mode,
         sandbox: @sandbox,
         allowReset: true,
-        instructions: @mturk_instructions
+        instructions: @mturk_instructions,
+        helpEmail: ENV['MTURK_CONTACT_EMAIL'],
+        hitId: @hit_id,
+        assignmentId: @assignment_id,
+        workerId: @worker_id
       }) %>
     <% elsif @mode == 'public' %>
       <%= react_component('QSContainer', {

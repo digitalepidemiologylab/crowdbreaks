@@ -12,7 +12,7 @@ export class QSContainer extends React.Component {
     this.state = {
       'questionSequenceHasEnded': false,
       'captchaVerified': !props.enableCaptcha,  // if captcha is disabled, sets captcha permanently to verified state
-      'nextQuestionSequence': [],
+      'nextTweetId': 0,
       'tweetId': props.tweetId,
       'transitions': props.transitions,
       'numTransitions': props.numTransitions,
@@ -89,7 +89,7 @@ export class QSContainer extends React.Component {
       data: data,
       success: (response) => {
         this.setState({
-          nextQuestionSequence: [response]
+          nextTweetId: response['tweet_id']
         });
       }
     });
@@ -100,19 +100,15 @@ export class QSContainer extends React.Component {
   }
 
   onNextQuestionSequence() {
-    if (this.state.nextQuestionSequence.length == 0) {
+    if (this.state.nextTweetId == 0 || isNaN(this.state.nextTweetId)) {
       // Something went wrong, simply reload page to get new question sequence
       window.location.reload(false);
     } else {
-      var nextQuestionSequence = this.state.nextQuestionSequence.pop();
       this.setState({
-        tweetId: nextQuestionSequence.tweet_id,
-        transitions: nextQuestionSequence.transitions,
-        numTransitions: nextQuestionSequence.num_transitions,
-        questions: nextQuestionSequence.questions,
+        tweetId: this.state.nextTweetId,
         questionSequenceHasEnded: false,
-        nextQuestionSequence: [],
-        openModal: false
+        openModal: false,
+        nextTweetId: 0
       });
     }
   }
@@ -126,6 +122,7 @@ export class QSContainer extends React.Component {
           projectsPath={this.props.projectsPath}
         />
         <QuestionSequence 
+          ref={qs => {this.questionSequence = qs;}}
           projectTitle={this.props.projectTitle}
           initialQuestionId={this.props.initialQuestionId}
           questions={this.state.questions}

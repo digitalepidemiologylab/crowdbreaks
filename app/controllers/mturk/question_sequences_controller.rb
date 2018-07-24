@@ -26,13 +26,26 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
   def final
-    task = Task.find_by(hit_id: tasks_params[:hit_id])
-    task.update_attributes!(
-      assignment_id: tasks_params[:assignment_id],
-      worker_id: tasks_params[:worker_id],
-      time_completed: Time.now,
-      lifecycle_status: :reviewable)
-    head :ok, content_type: "text/html"
+    # fetch associated task
+    task = get_task(tasks_params[:hit_id])
+    results = tasks_params.fetch(:results, []) 
+
+    unless results.empty?
+      if not create_results_for_task(results, task.try(:id))
+        head :bad_request
+      end
+    end
+
+    if task.present?
+      task.update_attributes(assignment_id: tasks_params[:assignment_id],
+                             worker_id: tasks_params[:worker_id],
+                             time_completed: Time.now,
+                             lifecycle_status: :reviewable)
+    else
+      Rails.logger.error("Task for #{tasks_params[:hit_id]} could not be found")
+    end
+
+    head :ok
   end
 
   def create
@@ -50,16 +63,28 @@ class Mturk::QuestionSequencesController < ApplicationController
 
   private
 
+  def create_results_for_task(results, task_id)
+    results.each do |r|
+      results_params = r[:result].merge({task_id: task_id, mturk_result: true})
+      result = Result.new(results_params)
+      if not result.save
+        return false
+      end
+    end
+    true
+  end
+
   def tasks_params
-    params.require(:task).permit(:hit_id, :tweet_id, :worker_id, :assignment_id)
+    params.require(:task).permit(:hit_id, :tweet_id, :worker_id, :assignment_id, results: [result: [:answer_id, :question_id, :tweet_id, :user_id, :project_id]])
   end
 
   def results_params
-    params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id).merge(task_id: task_id)
+    params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id).merge(task_id: get_task(params[:hit_id]).try(:id), mturk_result: true)
   end
 
-  def task_id
-    Task.find_by(hit_id: params[:hit_id]).try(:id)
+  def get_task(hit_id)
+    return nil unless hit_id.present?
+    Task.find_by(hit_id: hit_id)
   end
 
   def allow_cross_origin

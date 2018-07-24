@@ -14,7 +14,7 @@ export const MturkInstructions = (props) => {
   </button>
 
   return(
-    <div className="row justify-content-center mb-5">
+    <div className="row justify-content-center mb-3">
       <div className="col-md-8">
         {button}
         {props.display && <div style={markdownStyle}>

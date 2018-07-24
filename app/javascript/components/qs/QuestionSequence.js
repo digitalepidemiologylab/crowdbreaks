@@ -23,12 +23,18 @@ export class QuestionSequence extends React.Component {
     // set initial question state
     this.state = {
       'currentQuestion': props.questions[props.initialQuestionId],
-      'questionSequenceHasEnded': false,
       'tweetIsLoading': true,
       'numQuestionsAnswered': 0,
       'unverifiedAnswers': [],
       'answersDisabled': true
     };
+  }
+
+  restartQuestionSequence() {
+    this.setState({
+      currentQuestion: this.props.questions[this.props.initialQuestionId],
+      numQuestionsAnswered: 0
+    })
   }
 
   nextQuestion(currentQuestionId, answerId) {
