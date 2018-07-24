@@ -81,7 +81,7 @@ module Admin
       question_mapping = {}
       success = true
       questions.each do |q_id, q|
-        question = Question.new(project: project, question: q[:question])
+        question = Question.new(project: project, question: q[:question], instructions: q[:instructions])
         q[:answers].each_with_index do |a, idx|
           answer = Answer.new(answer: a[:answer], label: a[:label], color: a[:color])
           question.question_answers.build(answer: answer, order: idx)

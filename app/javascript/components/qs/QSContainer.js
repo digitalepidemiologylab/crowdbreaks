@@ -138,6 +138,7 @@ export class QSContainer extends React.Component {
           userSignedIn={this.props.userSignedIn}
           captchaVerified={this.state.captchaVerified}
           enableAnswersDelay={this.props.enableAnswersDelay}
+          displayQuestionInstructions={false}
         /> 
       </div>
     } else {

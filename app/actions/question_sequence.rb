@@ -6,23 +6,13 @@ class QuestionSequence
   def create
     # collect JSON data
     options = {locale: I18n.locale.to_s}
-    questions_serialized = ActiveModelSerializers::SerializableResource.new(@project.questions, options).as_json
-    transitions_serialized = ActiveModelSerializers::SerializableResource.new(@project.transitions, options).as_json
 
     # questions
-    questions = {}
-    # collect possible answers for each question
-    questions_serialized.each do |q|
-      questions[q[:id]] = {'id': q[:id], 'question': q[:question], 'answers': q[:answers]}
-    end
-    # find starting question
+    questions = get_questions
     initial_question_id = @project.initial_question.id
 
     # transitions
-    transitions = Hash.new{|h, k| h[k] = []}
-    transitions_serialized.each do |t|
-      transitions[t[:from_question]] << t[:transition]
-    end
+    transitions = get_transitions(mode: 'create')
     num_transitions = Transition.find_path_length(transitions)
     
     return {
@@ -34,22 +24,46 @@ class QuestionSequence
   end
 
   def edit
-    questions_serialized = ActiveModelSerializers::SerializableResource.new(@project.questions).as_json
-    transitions_serialized = ActiveModelSerializers::SerializableResource.new(@project.transitions).as_json
+    return {
+      'questions': get_questions,
+      'transitions': get_transitions(mode: 'edit')
+    }
+  end
+
+
+  private 
+
+  def get_questions
+    options = {locale: I18n.locale.to_s}
+    questions_serialized = ActiveModelSerializers::SerializableResource.new(@project.questions, options).as_json
     questions = {}
     # collect possible answers for each question
     questions_serialized.each do |q|
-      questions[q[:id]] = {'id': q[:id], 'question': q[:question], 'answers': q[:answers]}
+      questions[q[:id]] = {
+        'id': q[:id],
+        'question': q[:question],
+        'answers': q[:answers],
+        'instructions': q[:instructions]
+      }
     end
-    # transitions
-    transitions = {}
-    transitions_serialized.each do |t|
-      transitions[t[:id]] = {'id': t[:id], 'from_question': t[:from_question], 'transition': t[:transition]}
+    return questions
+  end
+
+  def get_transitions(mode: 'edit')
+    options = {locale: I18n.locale.to_s}
+    transitions_serialized = ActiveModelSerializers::SerializableResource.new(@project.transitions, options).as_json
+    if mode == 'create'
+      transitions = Hash.new{|h, k| h[k] = []}
+      transitions_serialized.each do |t|
+        transitions[t[:from_question]] << t[:transition]
+      end
+      return transitions
+    elsif mode == 'edit'
+      transitions = {}
+      transitions_serialized.each do |t|
+        transitions[t[:id]] = {'id': t[:id], 'from_question': t[:from_question], 'transition': t[:transition]}
+      end
+      return transitions
     end
-    
-    return {
-      'questions': questions,
-      'transitions': transitions
-    }
   end
 end

@@ -9,6 +9,7 @@ var humps = require('humps');
 // Sub-components
 import { Answer } from './Answer';
 import { Question } from './Question';
+import { QuestionInstructions } from './QuestionInstructions';
 import { TweetEmbedding } from './TweetEmbedding';
 
 export class QuestionSequence extends React.Component {
@@ -26,7 +27,8 @@ export class QuestionSequence extends React.Component {
       'tweetIsLoading': true,
       'numQuestionsAnswered': 0,
       'unverifiedAnswers': [],
-      'answersDisabled': true
+      'answersDisabled': true,
+      'showQuestionInstruction': false
     };
   }
 
@@ -155,6 +157,10 @@ export class QuestionSequence extends React.Component {
     this.delayEnableAnswers();
   }
 
+  toggleQuestionInstructions() {
+    this.setState({showQuestionInstruction: !this.state.showQuestionInstruction})
+  }
+
   render() {
     let parentThis = this;
     let progressDots = []
@@ -200,7 +206,11 @@ export class QuestionSequence extends React.Component {
               <div className="v-line"></div>
               <h4 className="circle-text mb-4">{Q}</h4>
               {/* Question */}
-              <Question question={this.state.currentQuestion.question}/>
+              <Question 
+                question={this.state.currentQuestion.question}
+                hasInstructions={this.props.displayQuestionInstructions && this.state.currentQuestion.instructions != ""}
+                toggleQuestionInstructions={() => this.toggleQuestionInstructions()}
+              />
               {/* Answers */}
               <div className="buttons mb-4">
                 {this.state.currentQuestion.answers.map(function(answer) {
@@ -229,8 +239,13 @@ export class QuestionSequence extends React.Component {
           </div>
       }
     </div>
+      let questionInstructions = this.state.showQuestionInstruction && <QuestionInstructions 
+        instructions={this.state.currentQuestion.instructions} 
+        toggleQuestionInstructions={() => this.toggleQuestionInstructions()}
+      /> 
     return (
       <div>
+        {questionInstructions}
         {questionSequenceBody}
       </div>
     );

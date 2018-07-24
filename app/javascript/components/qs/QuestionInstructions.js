@@ -1,14 +1,14 @@
 import React from 'react'
-import PropTypes from 'prop-types';
 import Modal from 'react-modal';
+import Markdown from 'react-markdown';
 
 
-export class InstructionModal extends React.Component {
+export class QuestionInstructions extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      modalIsOpen: props.openModal,
+      modalIsOpen: true,
       modalWidth: '0px'
     };
   }
@@ -46,15 +46,11 @@ export class InstructionModal extends React.Component {
     this.setState({
       modalIsOpen: false
     });
+    this.props.toggleQuestionInstructions()
   }
   
-  handleRequestCloseFunc() {
-    // Navigate back to projects section
-    window.location = this.props.projectsPath;
-  }
-
   render() {
-    var modalStyle = {
+    const modalStyle = {
       content : {
         top                   : '50%',
         left                  : '50%',
@@ -68,36 +64,25 @@ export class InstructionModal extends React.Component {
         paddingTop            : '45px'
       }
     };
+    const markdownStyle = {textAlign: 'left'}
 
     return (
       <Modal 
         isOpen={this.state.modalIsOpen}
-        onRequestClose={() => this.handleRequestCloseFunc()}
+        onRequestClose={() => this.onModalClose()}
         contentLabel="Instructions" 
         style={modalStyle} >
         <div className="row mb-4">
           <div className="col-12">
-            <h3 className="text-center mb-4">Welcome!</h3>
-            <p>
-              In this project we will ask you a series of questions about a tweet in order to better understand vaccine sentiments. Please answer these questions as best as you can from the tweet text alone (without following links). Your help is much appreciated!
-            </p>
-            <p>
-              By continuing you agree to the following:
-            </p>
-              <ul>
-                <li>You are at least 18 years old.</li>
-                <li>You understand that this is a research project and the answers you provide will be used for research purposes only.</li>
-              </ul>
+            <h3 className="mb-4">Help for current question</h3>
+            <div style={markdownStyle}>
+              <Markdown source={this.props.instructions} />
+            </div>
           </div>
         </div>
         <div className="row mb-4">
           <div className="col-12 text-center">
-            <button className="btn btn-primary btn-lg" onClick={() => this.onModalClose()}>Let's go!</button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-12">
-            <button className="btn btn-link" onClick={() => this.handleRequestCloseFunc()}>Go back</button>
+            <button className="btn btn-primary btn-lg" onClick={() => this.onModalClose()}>OK</button>
           </div>
         </div>
       </Modal>

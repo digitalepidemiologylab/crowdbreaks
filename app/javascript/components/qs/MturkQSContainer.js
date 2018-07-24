@@ -259,6 +259,7 @@ export class MturkQSContainer extends React.Component {
         numTransitions={0}
         captchaVerified={true}
         enableAnswersDelay={this.props.enableAnswersDelay}
+        displayQuestionInstructions={true}
       /> 
     } else {
       body = <MturkFinal 

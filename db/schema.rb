@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180723122200) do
+ActiveRecord::Schema.define(version: 20180724182054) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 20180723122200) do
     t.string "meta_field"
     t.boolean "use_for_relevance_score", default: false, null: false
     t.text "question"
+    t.text "instructions", default: ""
     t.index ["project_id"], name: "index_questions_on_project_id"
   end
 

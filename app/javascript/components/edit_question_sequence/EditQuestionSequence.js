@@ -26,7 +26,7 @@ export class EditQuestionSequence extends React.Component {
     this.state = {
       questions: questions,
       transitions: transitions,
-      showQuestions: false,
+      showQuestions: true,
       showAnswers: false,
       showTransitions: false,
       newQuestionIdCounter: Math.max( ...Object.keys(questions).map(Number)) + 1,
@@ -50,6 +50,7 @@ export class EditQuestionSequence extends React.Component {
   onUpdateQuestion(e) {
     var dummyQuestion = this.state.questions;
     dummyQuestion[e.id].question = e.question;
+    dummyQuestion[e.id].instructions = e.instructions;
     this.setState({
       questions: dummyQuestion,
     })
@@ -245,10 +246,12 @@ export class EditQuestionSequence extends React.Component {
               <tbody>
                 {Object.keys(this.state.questions).map( (questionId, id) => {
                   var q = prevThis.state.questions[questionId]
+                  console.log(q)
                   return <EditQuestion 
                     key={q.id} 
                     questionId={questionId} 
                     question={q.question} 
+                    instructions={q.instructions}
                     onUpdateQuestion={(e) => prevThis.onUpdateQuestion(e)}
                     onDeleteQuestion={(e) => prevThis.onDeleteQuestion(questionId, e)}
                   />
