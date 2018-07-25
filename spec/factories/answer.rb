@@ -1,5 +1,8 @@
 FactoryGirl.define do
   factory :answer do
-    sequence(:answer) { |n| "AAnswer #{n}" }
+    association :questions
+    answer FFaker::Lorem.word
+    label FFaker::Lorem.word
+    color 'btn-primary'
   end
 end
