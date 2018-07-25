@@ -32,7 +32,6 @@ class Project < ApplicationRecord
   def self.is_up_to_date(remote_config)
     # test if given stream configuration is identical to projects
     return false if remote_config.length != Project.where(active_stream: true).count
-    p remote_config
     remote_config.each do |c|
       p = Project.find_by(slug: c[0])
       return false if p.nil?

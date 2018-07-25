@@ -8,16 +8,16 @@ module Admin
     end
 
     def show
-      @project = Project.friendly.find(params[:id])
+      @project = Project.friendly.find(show_params[:id])
       @question_sequence = QuestionSequence.new(@project).create
       @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
       @user_id = current_or_guest_user.id
+      @hit_id = show_params[:hitId]
       @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
-      @mode = params[:mode]
+      @mode = show_params[:mode]
       @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
-      @hit_id = params[:hitId]
-      @assignment_id = params['assignmentId']
-      @worker_id = params['workerId']
+      @assignment_id = show_params[:assignmentId]
+      @worker_id = show_params[:workerId]
     end
 
     def create
@@ -112,9 +112,12 @@ module Admin
       success
     end
 
+    def show_params
+      params.permit(:id, :hitId, :assignmentId, :workerId, :mode, :locale)
+    end
+
     def question_sequence_params
       params.require(:question_sequence).permit(:projectId, :questions => {}, :transitions => {})
     end
-
   end
 end

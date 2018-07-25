@@ -213,6 +213,7 @@ export class MturkQSContainer extends React.Component {
   }
 
   render() {
+    console.log(this.state.results)
     let body;
     let title = this.props.mturkTitle && <h4 className="mb-4">{this.props.mturkTitle}</h4> 
     let mturkInstructions = <MturkInstructions 
@@ -220,11 +221,11 @@ export class MturkQSContainer extends React.Component {
       instructions={this.props.instructions}
       onToggleDisplay={() => this.onToggleInstructionDisplay()}/>
     let optionButtons = <div className='mb-5 buttons'>
-      <button 
-        onClick={() => this.onRestart()}
-        className='btn btn-secondary'>
-        <i className='fa fa-refresh' style={{color: '#212529'}}></i>&emsp;Restart
-      </button>
+      {this.props.allowReset && <button 
+          onClick={() => this.onRestart()}
+          className='btn btn-secondary'>
+          <i className='fa fa-refresh' style={{color: '#212529'}}></i>&emsp;Restart
+        </button>}
       <button 
         onClick={() => this.onHelp()}
         className='btn btn-secondary'>
@@ -251,7 +252,7 @@ export class MturkQSContainer extends React.Component {
         questions={this.props.questions}
         transitions={this.props.transitions}
         tweetId={this.props.tweetId}
-        userId={this.props.userId}
+        userId={null}
         projectId={this.props.projectId}
         postData={(args) => this.postData(args)}
         onTweetLoadError={() => this.onTweetLoadError()}

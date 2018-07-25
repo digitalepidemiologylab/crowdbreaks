@@ -26,7 +26,7 @@ export class EditQuestionSequence extends React.Component {
     this.state = {
       questions: questions,
       transitions: transitions,
-      showQuestions: true,
+      showQuestions: false,
       showAnswers: false,
       showTransitions: false,
       newQuestionIdCounter: Math.max( ...Object.keys(questions).map(Number)) + 1,

@@ -9,7 +9,7 @@ class QuestionSequence
 
     # questions
     questions = get_questions
-    initial_question_id = @project.initial_question.id
+    initial_question_id = @project.initial_question.try(:id)
 
     # transitions
     transitions = get_transitions(mode: 'create')
