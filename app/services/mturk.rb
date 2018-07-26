@@ -1,209 +1,53 @@
 class Mturk
-  BONUS_AMOUNT = 0.0
-  REWARD_AMOUNT = 0.03
-
-  # class methods
-  def self.create_hits
-    STDOUT.puts 'Which environement do you want to use? Sandbox (s) or Production (p)?'
-    host_type = STDIN.gets.chomp
-    host = (host_type == 'p' ? :Production : :Sandbox)
-    p "HOST: #{host}"
-
-    STDOUT.puts 'How many hits do you want to create?'
-    num_assignments = STDIN.gets.chomp.to_i
-    p "Number of HITs: #{num_assignments}"
-
-    mechanical_turk_requester = Amazon::WebServices::MechanicalTurkRequester.new Host: host, AWSAccessKeyId: ENV['AWS_ACCESS_KEY_ID'], AWSAccessKey: ENV['AWS_SECRET_ACCESS_KEY']
-
-    title = 'Crowdbreaks'
-    desc = 'Answer a sequence of questions about a tweet'
-    keywords = 'twitter, science, sentiment, vaccinations'
-
-    # Reward
-    reward_amount = REWARD_AMOUNT
-    puts "Using the following reward: $#{reward_amount}. Change reward? (y/n)"
-    yes_no = STDIN.gets.chomp
-    if yes_no == 'y'
-      puts 'Fill in your new reward'
-      reward_amount = STDIN.gets.chomp.to_f
-      puts "New reward is $#{reward_amount}"
-    end
-
-    # Bonus
-    bonus_amount = BONUS_AMOUNT
-    puts "Using the following bonus: $#{bonus_amount}. Change bonus? (y/n)"
-    yes_no = STDIN.gets.chomp
-    if yes_no == 'y'
-      puts 'Fill in your new bonus'
-      bonus_amount = STDIN.gets.chomp.to_f
-      puts "New bonus is $#{bonus_amount}"
-    end
-
-    project_name = 'vaccine-sentiment-tracking'
-    base_url = ENV['HOST']
-    if base_url.include? 'localhost' 
-      warn('Use in staging or production for this to work...')
-    end
-
-
-    # question path
-    question_file_path = File.join(Rails.root, 'app/views/mturk/external_question.xml')
-
-    puts "Creating #{num_assignments} HITs..."
-    num_assignments.times do |i|
-      puts "Creating Hit number #{i}..."
-      # token_set = MturkToken.create
-      props = {
-        Title: title,
-        Description: desc,
-        MaxAssignments: 1,
-        Reward: {
-          Amount: reward_amount,
-          CurrencyCode: 'USD'
-        },
-        Keywords: keywords,
-        LifetimeInSeconds: 60 * 60 * 24 * 1,
-        Question: File.read(question_file_path) 
-      }
-      result = mechanical_turk_requester.createHIT(props)
-      if result[:HITTypeId].present?
-        hit_id = result[:HITId]
-        # token_set.update_attributes!(hit_id: hit_id)
-        puts "Find HIT at: https://workersandbox.mturk.com/mturk/preview?groupId=#{result[:HITTypeId]} hit_id: #{hit_id}"
-      else
-        puts "No HITTypeID is present"
-      end
-    end
+  def initialize(sandbox: true)
+    @client = get_client(sandbox)
   end
 
-  def self.list_hits(production=false)
-    client = production ? self.production_client : self.client
-    hits = client.list_hits.hits
-    puts "Number of hits: #{hits.length}"
-    hits.each do |hit|
-      puts "HIT ID: #{hit.hit_id}"
-      puts "Title: #{hit.title}"
-      puts "Status: #{hit.hit_status}"
-      puts "-----------------------------"
-    end; nil
+  def create_hit_type(batch_job)
+    # create a new hit type given a Mturk Batch Job object
+    props = {
+      title: batch_job.title,
+      description: batch_job.description,
+      reward: batch_job.reward.to_s,
+      keywords: batch_job.keywords,
+      auto_approval_delay_in_seconds: batch_job.auto_approval_delay_in_seconds,
+      assignment_duration_in_seconds: batch_job.assignment_duration_in_seconds
+    }
+    @client.create_hit_type(props).hit_type_id
   end
 
-  def self.delete_all_hits(production=false)
-    client = production ? self.production_client : self.client
-    puts "You are going to delete the following HITs:"
-    self.list_hits
-    puts "Are you sure (y/n)"
-    yes_no = STDIN.gets.chomp
-    return if yes_no == 'n'
-    hits = client.list_hits.hits
-    host = (production ? :Production : :Sandbox)
-    p "HOST: #{host}"
-    mechanical_turk_requester = Amazon::WebServices::MechanicalTurkRequester.new Host: host, AWSAccessKeyId: ENV['AWS_ACCESS_KEY_ID'], AWSAccessKey: ENV['AWS_SECRET_ACCESS_KEY']
-    hits.each do |hit|
-      begin
-        puts "----------------------------"
-        puts "Deleting HIT #{hit.hit_id} ..."
-        puts "Hit has status of #{hit.hit_status}"
-
-        # hits in state 'Unassignable' can't be deleted until hit is returned/completed
-        if hit.hit_status == 'Unassignable'
-          raise 'The hit is currently being processed by a worker and can therefore not be deleted...'
-        elsif hit.hit_status == 'Reviewable'
-          # approve hit if in 'Reviewable' status
-          puts "Auto-approving hit..."
-          resp = client.list_assignments_for_hit(hit_id: hit.hit_id)
-          a_id = resp.assignments[0].assignment_id
-          client.approve_assignment(assignment_id: a_id)
-        elsif hit.hit_status == 'Assignable'
-          puts "Force expiring hit..."
-          mechanical_turk_requester.forceExpireHIT(HITId: hit.hit_id)
-        end
-        # try deleting
-        resp = client.delete_hit(hit_id: hit.hit_id)
-      rescue Exception => e   # this is bad style, please forgive me
-        puts "Could not delete hit... caught following exception:"
-        p e
-      else
-        puts "Successfully deleted hit!"
-      end
-    end; nil
+  def create_hit_with_hit_type(task_id, hit_type_id, batch_job)
+    params = {
+      hit_type_id: hit_type_id,
+      max_assignments: 1,
+      lifetime_in_seconds: batch_job.lifetime_in_seconds, 
+      question: get_external_question_file,
+      requester_annotation: task_id.to_s
+    }
+    @client.create_hit_with_hit_type(params).hit
   end
 
-  def self.delete_hit(hit_id, production=false)
-    client = production ? self.production_client : self.client
-    resp = client.delete_hit(hit_id: hit_id)
+  def check_balance
+    @client.get_account_balance
   end
 
-  def self.approve_hits(production=false)
-    # Cycle through hits and approve
-    client = production ? self.production_client : self.client
-    reviewable_hits = client.list_reviewable_hits(status: "Reviewable").hits 
-    if reviewable_hits.length == 0
-      puts "No HITs to in state 'Reviewable'"
-      return     
-    end
-    puts "There are #{reviewable_hits.length} HITs in state 'Reviewable'"
-    reviewable_hits.each do |hit|
-      rec = MturkToken.find_by(hit_id: hit.hit_id)
-      if !rec.present?
-        puts "HIT id could not be found in table... continuing to next reviewable HIT"
-        next
-      end
-      num_answers = rec.questions_answered
-      bonus = self.calculate_bonus(num_answers)
-      puts "------------------------------"
-      puts "Processing HIT #{hit.hit_id}, with assignment_id: #{rec.assignment_id}"
-      puts "Number of questions answered: #{num_answers}, by worker: #{rec.worker_id}"
-      puts "The following bonus will be paid out: $#{bonus}"
-      puts "Do you want to approve the hit? (y/n)"
-      yes_no = STDIN.gets.chomp
-      if yes_no == 'y'
-        puts "Approving assignment..."
-        begin
-          client.approve_assignment(assignment_id: rec.assignment_id, requester_feedback: "Thank you for your work!")
-        rescue Exception => e
-          puts "Could not delete hit... caught following exception:"
-          p e
-        end
-
-        if bonus > 0
-          # pay bonus
-          puts "Paying bonus of $#{bonus}"
-          begin
-            self.grant_bonus(assignment_id: rec.assignment_id, worker_id: rec.worker_id, num_questions_answered: num_answers)
-          rescue Exception => e
-            puts "Could not delete hit... caught following exception:"
-            p e
-          end
-          rec.update_attributes!(bonus_sent: true)
-        end; nil
-      end; nil
-    end; nil
-    puts "End reviewing process..."
-  end
-
-  def self.calculate_bonus(num_questions)
-    (num_questions - 1) * BONUS_AMOUNT
-  end
-
-  def self.grant_bonus(assignment_id:, worker_id:, num_questions_answered:)
-    bonus_amount = (num_questions_answered - 1)* BONUS_AMOUNT
-    resp = client.send_bonus(
-      worker_id: worker_id.to_s,
-      bonus_amount: bonus_amount.to_s,
-      assignment_id: assignment_id.to_s,
-      reason: "You answered a total of #{num_questions_answered} questions. Therefore your bonus is #{num_questions_answered-1} * #{BONUS_AMOUNT}. Thank you for your help.",
-      unique_request_token: rand(36**20).to_s(36)  # creates random string of length 19 or 20
-    )
-  end
 
   private
 
-  def self.client
-    Aws::MTurk::Client.new(endpoint: 'https://mturk-requester-sandbox.us-east-1.amazonaws.com')
+  def get_client(sandbox)
+    if sandbox
+      Aws::MTurk::Client.new(endpoint: 'https://mturk-requester-sandbox.us-east-1.amazonaws.com')
+    else
+      Aws::MTurk::Client.new(endpoint: 'https://mturk-requester.us-east-1.amazonaws.com')
+    end
   end
 
-  def self.production_client
-    Aws::MTurk::Client.new
+  def get_external_question_file
+    if ENV['ENVIRONMENT_NAME'] == 'production'
+      question_file_path = File.join(Rails.root, 'app/views/mturk/external_question.xml')
+    else
+      question_file_path = File.join(Rails.root, 'app/views/mturk/external_question_staging.xml')
+    end
+    File.read(question_file_path) 
   end
 end

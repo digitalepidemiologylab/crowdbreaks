@@ -57,8 +57,8 @@ gem 'elasticsearch', '~> 5.0', '>= 5.0.4'
 gem 'friendly_id', '~> 5.1'
 # file upload to s3
 gem 'paperclip', '~> 5.0.0'
-gem 'aws-sdk', '~> 2.10', '>= 2.10.1'
-gem 'faraday_middleware-aws-signers-v4'
+gem 'aws-sdk', '~> 3'
+# gem 'faraday_middleware-aws-signers-v4'
 # email
 gem 'sendgrid-ruby'
 # mturk

@@ -11,21 +11,11 @@ class Task < ApplicationRecord
     accepted: 'label-success'
   }
 
-  def submit_job(requester, props)
-    # add task id to props for tracking purposes
-    props[:RequesterAnnotation] = self.id.to_s
-
-    # Create HIT
-    result = requester.createHIT(props)
-    if result[:HITTypeId].present?
-      self.hit_id = result[:HITId]
-      self.time_submitted = Time.now
-      self.lifecycle_status = :submitted
-      self.hittype_id = result[:HITTypeId]
-      self.save!
-      true
-    else
-      false
-    end
+  def update_after_hit_submit(hit)
+    self.update_attributes!({
+      time_submitted: hit[:creation_time],
+      lifecycle_status: :submitted,
+      hittype_id: hit[:hit_type_id]
+    })
   end
 end

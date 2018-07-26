@@ -1,23 +1,22 @@
 <tr>
   <td><%= task.tweet_id %></td>
-  <td>
-    <% if task.hit_id.present? %>
-      <%= link_to task.hit_id.to_s, mturk_url(task.hittype_id, task.mturk_batch_job.sandbox), target: 'blank' %>
-    <% end %>
-  </td>
-  <td>
-    <span class="label <%= Task::STATUS_LABELS[task.lifecycle_status.to_sym] %>"> 
-      <%= task.lifecycle_status %>
-    </span>
-  </td>
+  <td><%= task.hit_id %></td>
+  <td><%= task.assignment_id %></td>
+  <td><%= task.worker_id %></td>
+  <td><%= task.lifecycle_status %></td>
   <td><%= task.time_submitted %></td>
   <td><%= task.time_completed %></td>
   <td>
-    <span> 
+    <div>
       <%= link_to fa_icon("trash"), mturk_batch_job_task_path(params[:mturk_batch_job_id].to_i, task.id),
         method: :delete,
         data: {confirm: "Delete task?"} %>
       <%= link_to fa_icon("pencil"), edit_mturk_batch_job_task_path(params[:mturk_batch_job_id].to_i, task.id)  %>
-    </span>
+    </div>
+    <div>
+      <% if task.hittype_id.present? %>
+        <%= link_to 'View on MTurk', mturk_url(task.hittype_id, task.mturk_batch_job.sandbox), target: 'blank' %>
+      <% end %>
+    </div>
   </td>
 </tr>

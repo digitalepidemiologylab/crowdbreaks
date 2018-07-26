@@ -40,24 +40,16 @@ module Manage
 
     def create
       @mturk_batch_job = MturkBatchJob.new(batch_params)
-
       if @mturk_batch_job.job_file.present? and not file_valid?
         render :new and return
       end
-
       if @mturk_batch_job.save
         if @mturk_batch_job.job_file.present?
           generate_tasks_from_csv
         end
-        respond_to do |format|
-          format.html { redirect_to(mturk_batch_jobs_path, notice: 'Job successfully created')}
-        end
+        redirect_to(mturk_batch_jobs_path, notice: 'Job successfully created')
       else
-        respond_to do |format|
-          format.html { 
-            render :new 
-          }
-        end
+        render :new 
       end
     end
 
@@ -76,26 +68,29 @@ module Manage
         return
       end
 
-      # initialize requester and props
-      requester, props = batch_job.mturk_init
+      mturk = Mturk.new(sandbox: batch_job.sandbox)
 
-      # submit jobs, create hits
-      submit_status = []
+      # create new HIT type for this batch
+      hit_type_id = mturk.create_hit_type(batch_job)
+
+      # create hit given that HIT type
+      c = 0
       tasks.each do |t|
-        status = t.submit_job(requester, props)
-        submit_status.push(status)
+        hit = mturk.create_hit_with_hit_type(t.id, hit_type_id, batch_job)
+        t.update_after_hit_submit(hit.to_h)
+        c += 1
       end
 
-      flash[:notice] = "Submitted #{submit_status.count(true)}/#{tasks.size} tasks successfully."
+      flash[:notice] = "Submitted #{c}/#{tasks.size} tasks successfully."
       redirect_to mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
     end
 
     private
 
+
     def batch_params
       params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions)
     end
-
 
     def generate_tasks_from_csv
       if not @mturk_batch_job.id.present?
