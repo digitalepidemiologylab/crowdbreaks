@@ -25,8 +25,8 @@ module Manage
           # generate tasks
           if @mturk_batch_job.job_file.present?
             if file_valid?
-              @mturk_batch_job.tasks.destroy_all
-              generate_tasks_from_csv
+              @mturk_batch_job.mturk_tweets.destroy_all
+              create_mturk_tweets_from_csv
             else
               render :edit and return
             end
@@ -45,7 +45,7 @@ module Manage
       end
       if @mturk_batch_job.save
         if @mturk_batch_job.job_file.present?
-          generate_tasks_from_csv
+          create_mturk_tweets_from_csv
         end
         redirect_to(mturk_batch_jobs_path, notice: 'Job successfully created')
       else
@@ -55,6 +55,7 @@ module Manage
 
     def destroy
       @mturk_batch_jobs = MturkBatchJob.find_by(id: params[:id])
+      @mturk_batch_jobs.tasks.destroy_all
       @mturk_batch_jobs.destroy
       redirect_to mturk_batch_jobs_path
     end
@@ -71,13 +72,14 @@ module Manage
       mturk = Mturk.new(sandbox: batch_job.sandbox)
 
       # create new HIT type for this batch
-      hit_type_id = mturk.create_hit_type(batch_job)
+      hittype_id = mturk.create_hit_type(batch_job)
+      batch_job.update_attribute(hittype_id: hittype_id)
 
       # create hit given that HIT type
       c = 0
       tasks.each do |t|
-        hit = mturk.create_hit_with_hit_type(t.id, hit_type_id, batch_job)
-        t.update_after_hit_submit(hit.to_h)
+        hit = mturk.create_hit_with_hit_type(t.id, hittype_id, batch_job)
+        t.update_after_hit_submit(hit.creation_time)
         c += 1
       end
 
@@ -92,16 +94,10 @@ module Manage
       params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions)
     end
 
-    def generate_tasks_from_csv
-      if not @mturk_batch_job.id.present?
-        Rails.logger.error("Mturk batch job ID not available, cannot create tasks.")
-      end
+    def create_mturk_tweets_from_csv
       CSV.foreach(@mturk_batch_job.job_file.path) do |line|
         tweet_id = line[0].to_s
-        num_assignments = @mturk_batch_job.number_of_assignments.to_i
-        num_assignments.times do 
-          Task.create(tweet_id: tweet_id, mturk_batch_job_id: @mturk_batch_job.id)
-        end
+        MturkTweet.create(tweet_id: tweet_id, mturk_batch_job: @mturk_batch_job)
       end
     end
 

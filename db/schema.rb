@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180724182054) do
+ActiveRecord::Schema.define(version: 20180727125617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,7 +64,23 @@ ActiveRecord::Schema.define(version: 20180724182054) do
     t.integer "auto_approval_delay_in_seconds"
     t.integer "assignment_duration_in_seconds"
     t.text "instructions", default: ""
+    t.string "hittype_id"
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
+  end
+
+  create_table "mturk_tweets", force: :cascade do |t|
+    t.bigint "tweet_id"
+    t.bigint "mturk_batch_job_id"
+    t.index ["mturk_batch_job_id"], name: "index_mturk_tweets_on_mturk_batch_job_id"
+  end
+
+  create_table "mturk_worker_tweets", id: false, force: :cascade do |t|
+    t.bigint "mturk_worker_id", null: false
+    t.bigint "mturk_tweet_id", null: false
+  end
+
+  create_table "mturk_workers", force: :cascade do |t|
+    t.string "worker_id"
   end
 
   create_table "projects", id: :serial, force: :cascade do |t|
@@ -137,7 +153,6 @@ ActiveRecord::Schema.define(version: 20180724182054) do
     t.bigint "mturk_batch_job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "hittype_id"
     t.index ["mturk_batch_job_id"], name: "index_tasks_on_mturk_batch_job_id"
   end
 

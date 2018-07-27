@@ -1,5 +1,5 @@
 class MturkBatchJob < ApplicationRecord
-  has_many :tasks, dependent: :destroy
+  has_many :tasks
   belongs_to :project
 
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
@@ -20,7 +20,6 @@ class MturkBatchJob < ApplicationRecord
     return 'empty' if num_tasks == 0
     return 'completed' if num_tasks_where(:accepted) == num_tasks
     return num_tasks_where(:submitted) > 0 ? 'processing' : 'unsubmitted'
-    # num_tasks_completed == num_tasks ? :completed : :submitted
   end
 
   def default_mturk_instructions

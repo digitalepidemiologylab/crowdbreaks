@@ -11,11 +11,10 @@ class Task < ApplicationRecord
     accepted: 'label-success'
   }
 
-  def update_after_hit_submit(hit)
+  def update_after_hit_submit(time_submitted)
     self.update_attributes!({
-      time_submitted: hit[:creation_time],
+      time_submitted: time_submitted,
       lifecycle_status: :submitted,
-      hittype_id: hit[:hit_type_id]
     })
   end
 end

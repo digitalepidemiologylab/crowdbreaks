@@ -58,7 +58,6 @@ gem 'friendly_id', '~> 5.1'
 # file upload to s3
 gem 'paperclip', '~> 5.0.0'
 gem 'aws-sdk', '~> 3'
-# gem 'faraday_middleware-aws-signers-v4'
 # email
 gem 'sendgrid-ruby'
 # mturk

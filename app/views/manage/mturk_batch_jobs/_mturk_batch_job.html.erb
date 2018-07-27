@@ -10,7 +10,11 @@
     <%= mturk_batch_job.num_tasks_where(:reviewable) %> | 
     <%= mturk_batch_job.num_tasks_where(:accepted) %>
   </td>
-
+  <td>
+    <% if mturk_batch_job.hittype_id.present? %>
+      <%= link_to mturk_batch_job.hittype_id, mturk_url(mturk_batch_job.hittype_id, mturk_batch_job.sandbox), target: 'blank' %>
+    <% end %>
+  </td>
   <td>
     <div> 
       <%= link_to mturk_batch_job_tasks_path(mturk_batch_job.id) do %>

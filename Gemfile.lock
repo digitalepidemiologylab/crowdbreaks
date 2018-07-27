@@ -1131,6 +1131,7 @@ DEPENDENCIES
   rails_12factor
   rails_real_favicon
   rb-fsevent
+  redis
   rorvswild (~> 1.0.0)
   rspec-activemodel-mocks
   rspec-its

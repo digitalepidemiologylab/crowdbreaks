@@ -13,10 +13,5 @@
         data: {confirm: "Delete task?"} %>
       <%= link_to fa_icon("pencil"), edit_mturk_batch_job_task_path(params[:mturk_batch_job_id].to_i, task.id)  %>
     </div>
-    <div>
-      <% if task.hittype_id.present? %>
-        <%= link_to 'View on MTurk', mturk_url(task.hittype_id, task.mturk_batch_job.sandbox), target: 'blank' %>
-      <% end %>
-    </div>
   </td>
 </tr>

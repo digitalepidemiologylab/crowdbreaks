@@ -4,24 +4,34 @@ class Mturk::QuestionSequencesController < ApplicationController
 
   def show
     # retrieve task for hit id
-    @hit_id = params['hitId']
-    task = get_task(@hit_id)
-    unless task.present?
+    @hit_id = params[:hitId]
+    unless @hit_id.present?
       head :bad_request
       return
+    end
+    
+    # Mturk info
+    @assignment_id = params[:assignmentId]
+    @preview_mode = ((@assignment_id == "ASSIGNMENT_ID_NOT_AVAILABLE") or (not @assignment_id.present?))
+    @worker_id = params[:workerId]
+    @tweet_id = nil
+    @error = false
+
+    if not @preview_mode
+      if @worker_id.present?
+        @tweet_id = retrieve_task_for_worker(@worker_id, @hit_id, @assignment_id)
+      else
+        # something went wrong, worker ID should be present
+        @error = true
+      end
     end
 
     @project = task.mturk_batch_job.project
     @sandbox = task.mturk_batch_job.sandbox
 
-    # Mturk info
-    @assignment_id = params['assignmentId']
-    @preview_mode = ((@assignment_id == "ASSIGNMENT_ID_NOT_AVAILABLE") or (not @assignment_id.present?))
-
     # Collect question sequence info
     @question_sequence = QuestionSequence.new(@project).create
     
-    @tweet_id = task.tweet_id
     
     # other
     @translations = I18n.backend.send(:translations)[:en][:question_sequences]
@@ -74,6 +84,11 @@ class Mturk::QuestionSequencesController < ApplicationController
       end
     end
     true
+  end
+
+  def retrieve_task_for_worker(worker_id)
+    Task.where(mturk_batch)
+
   end
 
   def tasks_params
