@@ -1131,7 +1131,6 @@ DEPENDENCIES
   rails_12factor
   rails_real_favicon
   rb-fsevent
-  redis
   rorvswild (~> 1.0.0)
   rspec-activemodel-mocks
   rspec-its
@@ -1140,6 +1139,7 @@ DEPENDENCIES
   sass-rails (~> 5.0, >= 5.0.4)
   sendgrid-ruby
   shoulda-matchers
+  sidekiq
   simple_form!
   simplecov
   spring

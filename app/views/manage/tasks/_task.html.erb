@@ -1,17 +1,16 @@
 <tr>
-  <td><%= task.tweet_id %></td>
   <td><%= task.hit_id %></td>
+  <td><%= task.tweet_id %></td>
   <td><%= task.assignment_id %></td>
   <td><%= task.worker_id %></td>
   <td><%= task.lifecycle_status %></td>
-  <td><%= task.time_submitted %></td>
-  <td><%= task.time_completed %></td>
+  <td><%= time_ago_in_words(task.time_submitted) + ' ago' if task.time_submitted.present? %></td>
+  <td><%= time_ago_in_words(task.time_completed) + ' ago' if task.time_completed.present? %></td>
   <td>
     <div>
       <%= link_to fa_icon("trash"), mturk_batch_job_task_path(params[:mturk_batch_job_id].to_i, task.id),
         method: :delete,
         data: {confirm: "Delete task?"} %>
-      <%= link_to fa_icon("pencil"), edit_mturk_batch_job_task_path(params[:mturk_batch_job_id].to_i, task.id)  %>
     </div>
   </td>
 </tr>

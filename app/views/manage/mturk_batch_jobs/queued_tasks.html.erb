@@ -1,4 +1,4 @@
-<% @title ||= Task.model_name.human; title @title %>
+<% @title ||= 'Queued tasks'; title @title %>
 
 <div class="row mb-5">
   <div class="col-12">
@@ -11,7 +11,7 @@
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <h2 class='mb-4'>
-      Tasks for batch '<%= @mturk_batch_job.name %>'
+      In queue for '<%= @mturk_batch_job.name %>'
     </h2>
   </div>
 </div>
@@ -21,18 +21,12 @@
     <table class="table">
       <thead>
         <tr>
-          <th>HIT Id</th>
           <th>Tweet Id</th>
-          <th>Assignment Id</th>
-          <th>Worker Id</th>
-          <th>Lifecycle status</th>
-          <th>Time submitted</th>
-          <th>Time completed</th>
-          <th>Actions</th>
+          <th>Num workers</th>
         </tr>
       </thead>
       <tbody>
-        <%= render @tasks %>
+        <%= render partial: 'queued_task', collection: @queued_tasks %>
       </tbody>
     </table>
   </div>
@@ -40,12 +34,6 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <%= paginate @tasks %>
-  </div>
-</div>
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12">
-    <%= link_to 'Submit HITs', mturk_batch_job_submit_path, class: 'btn btn-warning btn-lg' %>
+    <%= paginate @queued_tasks %>
   </div>
 </div>

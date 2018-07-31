@@ -4,13 +4,8 @@ module Manage
     end
 
     def index
-      if params[:mturk_batch_job_id]
-        @mturk_batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
-        @tasks = @mturk_batch_job.tasks.page params[:page]
-      else
-        @mturk_batch_job = nil
-        @tasks = Task.all
-      end
+      @mturk_batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
+      @tasks = @mturk_batch_job.tasks.page params[:page]
     end
 
     def show

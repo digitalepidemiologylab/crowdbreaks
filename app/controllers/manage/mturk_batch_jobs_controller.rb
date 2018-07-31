@@ -10,12 +10,18 @@ module Manage
       @mturk_batch_jobs = MturkBatchJob.all.order('created_at DESC').page(params[:page]).per(10)
     end
 
+    def queued_tasks
+      @mturk_batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
+      @queued_tasks = @mturk_batch_job.mturk_tweets.page params[:page]
+    end
+
     def show
+      @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
     end
 
     def edit
       @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
-      @is_submitted = @mturk_batch_job.status != :unsubmitted
+      @is_submitted = @mturk_batch_job.is_submitted
     end
 
     def update
@@ -25,13 +31,13 @@ module Manage
           # generate tasks
           if @mturk_batch_job.job_file.present?
             if file_valid?
-              @mturk_batch_job.mturk_tweets.destroy_all
-              create_mturk_tweets_from_csv
+              tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{|row| row[0]}
+              CreateTasksJob.perform_now(@mturk_batch_job.id, tweet_ids, destroy_first: true)
             else
               render :edit and return
             end
           end
-          format.html { redirect_to(mturk_batch_jobs_path, notice: 'Mturk batch job successfully updated.')}
+          format.html { redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being updated...")}
         else
           format.html { redirect_to(mturk_batch_jobs_path, alert: 'Something went wrong when updating the Mturk Batch Job')}
         end
@@ -44,47 +50,32 @@ module Manage
         render :new and return
       end
       if @mturk_batch_job.save
-        if @mturk_batch_job.job_file.present?
-          create_mturk_tweets_from_csv
-        end
-        redirect_to(mturk_batch_jobs_path, notice: 'Job successfully created')
+        tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{|row| row[0]}
+        CreateTasksJob.perform_later(@mturk_batch_job.id, tweet_ids)
+        redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being created...")
       else
         render :new 
       end
     end
 
     def destroy
-      @mturk_batch_jobs = MturkBatchJob.find_by(id: params[:id])
-      @mturk_batch_jobs.tasks.destroy_all
-      @mturk_batch_jobs.destroy
-      redirect_to mturk_batch_jobs_path
+      @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
+      unless @mturk_batch_job.present?
+        redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' could not be found.")
+      end
+      DestroyMturkBatchJob.perform_later(@mturk_batch_job.id)
+      redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being destroyed...")
     end
 
     def submit
-      batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
-      tasks = batch_job.tasks.where(lifecycle_status: :unsubmitted)
-      if tasks.size == 0
-        flash[:danger] = "There are no tasks available to submit in this batch."
-        redirect_to mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
+      mturk_batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
+      if mturk_batch_job.status != 'unsubmitted'
+        redirect_to(mturk_batch_job_tasks_path(params[:mturk_batch_job_id]), danger: "Batch must be in 'unsubmitted' stated in order to be submitted.")
         return
       end
 
-      mturk = Mturk.new(sandbox: batch_job.sandbox)
-
-      # create new HIT type for this batch
-      hittype_id = mturk.create_hit_type(batch_job)
-      batch_job.update_attribute(hittype_id: hittype_id)
-
-      # create hit given that HIT type
-      c = 0
-      tasks.each do |t|
-        hit = mturk.create_hit_with_hit_type(t.id, hittype_id, batch_job)
-        t.update_after_hit_submit(hit.creation_time)
-        c += 1
-      end
-
-      flash[:notice] = "Submitted #{c}/#{tasks.size} tasks successfully."
-      redirect_to mturk_batch_job_tasks_path(params[:mturk_batch_job_id])
+      SubmitTasksJob.perform_later(mturk_batch_job.id)
+      redirect_to(mturk_batch_jobs_path, notice: "HITs for batch #{mturk_batch_job.name} are being submitted...")
     end
 
     private
@@ -92,13 +83,6 @@ module Manage
 
     def batch_params
       params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions)
-    end
-
-    def create_mturk_tweets_from_csv
-      CSV.foreach(@mturk_batch_job.job_file.path) do |line|
-        tweet_id = line[0].to_s
-        MturkTweet.create(tweet_id: tweet_id, mturk_batch_job: @mturk_batch_job)
-      end
     end
 
     def file_valid?

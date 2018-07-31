@@ -1,6 +1,32 @@
-<% @title ||= Manage::MturkBatchJob.model_name.human; title @title %>
+<% @title ||= MturkBatchJob.model_name.human; title @title %>
 
-<p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_mturk_batch_job_path(@manage_mturk_batch_job) %> |
-<%= link_to 'Back', mturk_batch_jobs_path %>
+<div class="row mb-5">
+  <div class="col-12">
+    <%= link_to mturk_batch_jobs_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-8">
+    <h2>Mturk Batch Job details</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-8">
+    <table class="table vertical-align">
+      <col width="200px"/>
+      <col />
+
+      <% @mturk_batch_job.attributes.each do |key, val| %>
+        <tr>
+          <td><h4><%= key %></h4></td>
+          <td><%= val %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

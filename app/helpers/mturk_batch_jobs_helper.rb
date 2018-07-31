@@ -3,7 +3,9 @@ module MturkBatchJobsHelper
     case status
     when 'completed'
       image_tag('running.svg') + ' ' + status
-    when 'processing'
+    when 'processing', 'deleting'
+      tag.i(class: 'fa fa-refresh') + ' ' + status
+    when 'submitted'
       image_tag('paused.svg') + ' ' + status
     else
       image_tag('not-running.svg') + ' ' + status

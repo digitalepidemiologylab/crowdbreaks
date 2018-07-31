@@ -50,6 +50,7 @@ Rails.application.routes.draw do
       get 'user_activity', to: 'manage_pages#user_activity'
       resources :mturk_batch_jobs do
         resources :tasks
+        get 'queued_tasks'
         get 'submit'
       end
       resources :elasticsearch_indexes

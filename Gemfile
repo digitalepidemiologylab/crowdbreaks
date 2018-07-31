@@ -73,6 +73,8 @@ gem 'hashie', '~> 3.4', '>= 3.4.6'
 gem 'twitter' 
 # Monitoring
 gem "rorvswild", "~> 1.0.0"
+# Job scheduling
+gem 'sidekiq'
 
 group :development, :test do
   gem 'rspec-rails'

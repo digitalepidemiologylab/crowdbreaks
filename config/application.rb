@@ -48,5 +48,8 @@ module Crowdbreaks
 
     # Logging
     config.log_formatter = Logging::LogFormatter.new
+
+    # Job scheduling
+    config.active_job.queue_adapter = :sidekiq
   end
 end

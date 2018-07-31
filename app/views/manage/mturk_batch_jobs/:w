@@ -4,7 +4,7 @@
   <td><%= mturk_batch_job.sandbox ? 'Sandbox' : 'Production' %></td>
   <td><%= time_ago_in_words(mturk_batch_job.created_at) %> ago</td>
   <td><span class='badge badge-sentiment'><%= status(mturk_batch_job.status) %></span></td>
-  <td><%= mturk_batch_job.percentage_completed %> %</td>
+  <td><%= mturk_batch_job.num_queued_tasks %></td>
   <td>
     <%= mturk_batch_job.num_tasks_where(:submitted) %> | 
     <%= mturk_batch_job.num_tasks_where(:reviewable) %> | 
