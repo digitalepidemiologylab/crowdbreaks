@@ -55,13 +55,10 @@ gem 'jquery-turbolinks'
 gem 'elasticsearch', '~> 5.0', '>= 5.0.4'
 # slug creation
 gem 'friendly_id', '~> 5.1'
-# file upload to s3
-gem 'paperclip', '~> 5.0.0'
-gem 'aws-sdk', '~> 3'
+# mturk client
+gem 'aws-sdk-mturk'
 # email
 gem 'sendgrid-ruby'
-# mturk
-gem 'mturk', '~> 1.8', '>= 1.8.1'
 # JS build
 gem 'webpacker', '~> 3.0'
 gem 'webpacker-react', "~> 0.3.2"

@@ -6,16 +6,9 @@ class Project < ApplicationRecord
   has_many :results
   has_many :mturk_batch_jobs
 
-  has_attached_file :image, styles: {
-    thumb: '100x100>',
-    square: '200x200#',
-    medium: '300x300>'
-  }
-
   translates :title, :description
 
   validates_presence_of :title, :description
-  validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/
 
   default_scope { order(created_at: :asc)  }
 
