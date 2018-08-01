@@ -3,7 +3,6 @@ module Manage
     before_action :api_init
 
     def dashboard
-      @es_ready = Crowdbreaks::ESClient.ping
       @api_ready = @api.ping
       @status_all = @api.status_all
     end
