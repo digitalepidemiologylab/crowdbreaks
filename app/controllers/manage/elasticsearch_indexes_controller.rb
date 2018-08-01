@@ -17,7 +17,6 @@ module Manage
     end
 
     def create
-      p elasticsearch_indexes_params
       response = @api.create_index(elasticsearch_indexes_params[:name])
       respond_with_flash(response, elasticsearch_indexes_path)
     end
