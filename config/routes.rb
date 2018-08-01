@@ -50,15 +50,13 @@ Rails.application.routes.draw do
       get 'user_activity', to: 'manage_pages#user_activity'
       
       # mturk
-      scope path: 'mturk' do
-        resources :mturk_batch_jobs do
-          resources :tasks
-          get 'queued_tasks'
-          get 'submit'
-        end
-        controller :hits do
-          get 'list_hits', action: 'list_hits'
-        end
+      resources :mturk_batch_jobs do
+        resources :tasks
+        get 'queued_tasks'
+        get 'submit'
+      end
+      controller :mturk_hits do
+        get 'list_hits', action: 'list_hits'
       end
 
       # elasticsearch

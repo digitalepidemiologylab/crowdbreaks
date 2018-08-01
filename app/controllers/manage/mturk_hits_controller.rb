@@ -1,5 +1,5 @@
 module Manage
-  class HitsController < BaseController
+  class MturkHitsController < BaseController
     def list_hits
       @page = params[:page].present? ? params[:page].to_i : 1
       @sandbox = true
