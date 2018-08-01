@@ -75,6 +75,7 @@ gem 'twitter'
 gem "rorvswild", "~> 1.0.0"
 # Job scheduling
 gem 'sidekiq'
+gem 'redis'
 
 group :development, :test do
   gem 'rspec-rails'
