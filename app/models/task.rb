@@ -17,4 +17,24 @@ class Task < ApplicationRecord
       lifecycle_status: :submitted,
     })
   end
+
+  def hit
+    if hit_id.present?
+      Mturk.new(sandbox: mturk_batch_job.sandbox).get_hit(hit_id)
+    end
+  end
+
+  def hit_review_status
+    hit.try(:hit_review_status)
+  end
+
+  def hit_status
+    hit.try(:hit_status)
+  end
+
+  def delete_hit
+    if hit_id.present?
+      Mturk.new(sandbox: mturk_batch_job.sandbox).delete_hit(hit_id)
+    end
+  end
 end

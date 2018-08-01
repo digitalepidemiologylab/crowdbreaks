@@ -9,6 +9,8 @@ module Manage
     end
 
     def show
+      @task = Task.find(params[:id])
+      @hit = @task.hit
     end
 
     def create
@@ -30,7 +32,8 @@ module Manage
 
     def destroy
       @task = Task.find_by(id: params[:id])
-      @task.destroy
+      @task.delete_hit
+      @task.update_attribute(:lifecycle_status, :disposed)
       redirect_to mturk_batch_job_tasks_path
     end
 

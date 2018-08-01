@@ -25,8 +25,8 @@ class MturkBatchJob < ApplicationRecord
     (total_done / num_tasks * 100).to_i
   end
 
-  def is_submitted
-    status == :submitted or status == :completed ? true : false
+  def is_submitted?
+    status == 'submitted' or status == 'completed' ? true : false
   end
 
   def status
@@ -36,10 +36,15 @@ class MturkBatchJob < ApplicationRecord
     return 'unsubmitted' if num_tasks_where(:unsubmitted) == num_tasks
     return 'submitted' if num_tasks_where(:submitted) > 0
     return 'completed' if num_tasks_where(:accepted) == num_tasks
+    'disposed'
   end
 
   def cleanup
-    # Destroys all associated records
+    # Delete all associated HITs
+    tasks.each do |task|
+      task.delete_hit
+    end
+    # Destroy records
     tasks.destroy_all
     mturk_tweets.each do |t|
       MturkWorker.where(id: t.mturk_workers.pluck(:id)).destroy_all

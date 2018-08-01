@@ -21,7 +21,7 @@ module Manage
 
     def edit
       @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
-      @is_submitted = @mturk_batch_job.is_submitted
+      @is_submitted = @mturk_batch_job.is_submitted?
     end
 
     def update

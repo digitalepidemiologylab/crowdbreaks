@@ -1,0 +1,61 @@
+<% @title ||= 'HITs overview'; title @title %>
+
+<div class="row mb-5">
+  <div class="col-12">
+    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>HITs overview</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <label class="label-inline checkbox">
+      <input type="checkbox" id="sandbox-checkbox"  <%= @sandbox ? ' checked="checked"' : ''%>/>
+      Sandbox
+    </label>
+    <div>
+      Page: <%= @page %>
+    <% unless @page == 1 %>
+      <%= link_to 'First page', list_hits_path(sandbox: @sandbox, page: 1), class: 'btn btn-link' %>
+    <% end %>
+    <%= link_to 'Next page', list_hits_path(next_token: @next_token, page: @page + 1, sandbox: @sandbox), class: 'btn btn-link' %>
+    </div>
+  </div>
+</div>
+
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Title</th>
+          <th>Hit ID</th>
+          <th>Hit Type ID</th>
+          <th>Status</th>
+          <th>Review status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @hits.each_with_index do |hit, index| %>
+          <tr>
+            <td><%= (@page - 1) * @num_hits + index %></td>
+            <td><%= hit[:title] %></td>
+            <td><%= hit[:hit_id] %></td>
+            <td><%= hit[:hit_type_id] %></td>
+            <td><%= hit[:status] %></td>
+            <td><%= hit[:review_status] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

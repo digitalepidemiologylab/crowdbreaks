@@ -226,7 +226,7 @@ class FlaskApi
   def handle_error(error_return_value: nil)
     begin
       yield
-    rescue Exception => e
+    rescue StandardError => e
       RorVsWild.record_error(e)
       error_return_value
     end
@@ -235,7 +235,7 @@ class FlaskApi
   def handle_error_notification(message: 'An error occured')
     begin
       yield
-    rescue Exception => e
+    rescue StandardError => e
       RorVsWild.record_error(e)
       Hashie::Mash.new({success: false, parsed_response: message, code: 400})
     end

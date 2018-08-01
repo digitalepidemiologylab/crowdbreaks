@@ -1,0 +1,33 @@
+<% @title ||= Task.model_name.human; title @title %>
+
+
+<div class="row mb-5">
+  <div class="col-12">
+    <%= link_to mturk_batch_job_tasks_path(@task.mturk_batch_job.id), class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<% if @hit.present? %>
+  <div class="row justify-content-center mb-4">
+    <div class="col-12 col-md-8">
+      <h2>HIT</h2>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mb-4">
+    <div class="col-12 col-md-8">
+      <table class="table vertical-align">
+        <col width="200px"/>
+        <col />
+        <% @hit.to_h.each do |key, val| %>
+          <tr>
+            <td><h4><%= key %></h4></td>
+            <td><%= val %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+<% end %>

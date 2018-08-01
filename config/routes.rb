@@ -48,11 +48,20 @@ Rails.application.routes.draw do
       get 'sentiment_analysis_chart', to: 'manage_pages#sentiment_analysis_chart'
       get 'sentiment_analysis_map', to: 'manage_pages#sentiment_analysis_map'
       get 'user_activity', to: 'manage_pages#user_activity'
-      resources :mturk_batch_jobs do
-        resources :tasks
-        get 'queued_tasks'
-        get 'submit'
+      
+      # mturk
+      scope path: 'mturk' do
+        resources :mturk_batch_jobs do
+          resources :tasks
+          get 'queued_tasks'
+          get 'submit'
+        end
+        controller :hits do
+          get 'list_hits', action: 'list_hits'
+        end
       end
+
+      # elasticsearch
       resources :elasticsearch_indexes
     end
   end
