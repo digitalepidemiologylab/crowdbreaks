@@ -18,6 +18,8 @@ module Admin
       @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
       @assignment_id = show_params[:assignmentId]
       @worker_id = show_params[:workerId]
+      @preview_mode = show_params[:preview_mode] == 'false' ? false : true
+      @no_work_available = show_params[:no_work_available] == 'true' ? true : false
     end
 
     def create
@@ -113,7 +115,7 @@ module Admin
     end
 
     def show_params
-      params.permit(:id, :hitId, :assignmentId, :workerId, :mode, :locale)
+      params.permit(:id, :hitId, :assignmentId, :workerId, :mode, :locale, :preview_mode, :no_work_available)
     end
 
     def question_sequence_params

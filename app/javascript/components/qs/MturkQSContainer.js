@@ -135,7 +135,7 @@ export class MturkQSContainer extends React.Component {
 
   onRestart() {
     if (confirm('Are you sure you want to restart the task? All previous answers given will be deleted.')) {
-      if (!this.state.questionSequenceHasEnded) {
+      if (!this.state.questionSequenceHasEnded && !this.props.noWorkAvailable) {
         this.questionSequence.restartQuestionSequence()
       }
       this.setState({
@@ -146,81 +146,13 @@ export class MturkQSContainer extends React.Component {
     }
   }
 
-  test1() {
-    var resultData = humps.decamelizeKeys({
-      result: {
-        answerId: 0,
-        questionId: 0,
-        userId: this.props.userId,
-        tweetId: this.props.tweetId,
-        projectId: this.props.projectId
-      }
-    });
-    $.ajax({
-      type: "POST",
-      url: this.props.resultsPath,
-      data: JSON.stringify(resultData),
-      contentType: "application/json",
-      success: (response) => {
-        console.log('success')
-        return
-      },
-      error: (response) => {
-        console.log('error')
-        this.setState({
-          errors: this.state.errors.concat(['Internal error'])
-        });
-        return
-      }
-    });
-  }
-
-  test2() {
-    var taskUpdate = humps.decamelizeKeys({
-      task: {
-        'workerId': 0,
-        'assignmentId': this.props.assignmentId,
-        'tweetId': this.props.tweetId,
-        'hitId': this.props.hitId,
-        'results': this.state.results
-      }
-    });
-
-    $.ajax({
-      type: "POST",
-      url: this.props.finalSubmitPath,
-      data: JSON.stringify(taskUpdate),
-      contentType: "application/json",
-      success: (response) => {
-        console.log('success')
-        $('#submit-form').submit();
-        return true;
-      },
-      error: (response) => {
-        this.setState({
-          errors: this.state.errors.concat([response.statusText])
-        });
-        // Give reward anyway (!)
-        $('#submit-form').submit();
-        return true;
-      }
-    });
-  }
-
   onHelp() {
     window.location.href= 'mailto:'.concat(this.props.helpEmail,  
       '?subject=Mturk worker question, hitId=', this.props.hitId)
   }
 
-  render() {
-    console.log(this.state.results)
-    let body;
-    let title = this.props.mturkTitle && <h4 className="mb-4">{this.props.mturkTitle}</h4> 
-    let mturkInstructions = <MturkInstructions 
-      display={this.state.displayInstructions}
-      instructions={this.props.instructions}
-      onToggleDisplay={() => this.onToggleInstructionDisplay()}/>
-    let optionButtons = <div className='mb-5 buttons'>
+  getOptionButtons() {
+    return <div className='mb-5 buttons'>
       {this.props.allowReset && <button 
           onClick={() => this.onRestart()}
           className='btn btn-secondary'>
@@ -231,22 +163,32 @@ export class MturkQSContainer extends React.Component {
         className='btn btn-secondary'>
         <i className='fa fa-question-circle' style={{color: '#212529'}}></i>&emsp;Ask for help
       </button>
-      {
-        this.props.testMode && <button 
-            onClick={() => this.test1()}
-            className='btn btn-secondary'>
-            Test Results path
-          </button>
-      } {
-        this.props.testMode && <button 
-            onClick={() => this.test2()}
-            className='btn btn-secondary'>
-            Test Final path
-          </button>
-      }
     </div>
+  }
+
+  getPreviewText() {
+    return <div>
+      <p>Please accept the HIT to start working on it.</p>
+    </div>
+  }
+
+  getNoWorkAvailableText() {
+    return <div>
+      <h3>You have completed all work in this HIT group.</h3>
+      <p style={{color: "red"}}>This HIT and future HITs in this group can not be completed. We kindly ask you to return the HIT.</p>
+    </div>
+
+  }
+
+  getQuestionSequence() {
+    if (this.props.previewMode) {
+      return this.getPreviewText()
+    }
+    if (this.props.noWorkAvailable) {
+      return this.getNoWorkAvailableText()
+    }
     if (!this.state.questionSequenceHasEnded) {
-      body = <QuestionSequence 
+      return <QuestionSequence 
         ref={qs => {this.questionSequence = qs;}}
         initialQuestionId={this.props.initialQuestionId}
         questions={this.props.questions}
@@ -263,27 +205,40 @@ export class MturkQSContainer extends React.Component {
         displayQuestionInstructions={true}
       /> 
     } else {
-      body = <MturkFinal 
+      return <MturkFinal 
         onSubmit={(event) => this.onSubmit(event)}
         submitUrl={this.getSubmitUrl()}
         assignmentId={this.props.assignmentId}
         hitId={this.props.hitId}
       /> 
     }
+  }
+
+  render() {
+    let title = this.props.mturkTitle && <h4 className="mb-4">
+      {this.props.mturkTitle}
+    </h4>;
+    let mturkInstructions = <MturkInstructions 
+      display={this.state.displayInstructions || this.props.previewMode}
+      instructions={this.props.instructions}
+      onToggleDisplay={() => this.onToggleInstructionDisplay()}
+    />;
+    let body = this.getQuestionSequence()
+    let optionButtons = this.getOptionButtons()
     let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
       <li>Error:</li>
       {this.state.errors.map(function(error, i) {
         return <li key={i}>{error}</li>
       })}
     </ul>
-    return(
-      <div className="QSContainer" style={{paddingTop: '30px'}}>
-        {title}
-        {mturkInstructions} 
-        {optionButtons}
-        {errors}
-        {body}
-      </div>
-    );
+      return(
+        <div className="QSContainer" style={{paddingTop: '30px'}}>
+          {title}
+          {mturkInstructions} 
+          {optionButtons}
+          {errors}
+          {body}
+        </div>
+      );
   }
 }

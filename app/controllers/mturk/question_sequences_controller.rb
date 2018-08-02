@@ -18,12 +18,8 @@ class Mturk::QuestionSequencesController < ApplicationController
     @error = false
 
     if not @preview_mode
-      if @worker_id.present?
-        @tweet_id = retrieve_task_for_worker(@worker_id, @hit_id, @assignment_id)
-      else
-        # something went wrong, worker ID should be present
-        @error = true
-      end
+      # worker has accepted the HIT
+      @tweet_id = get_tweet_id_for_worker(@worker_id, @hit_id)
     end
 
     @project = task.mturk_batch_job.project
@@ -86,9 +82,9 @@ class Mturk::QuestionSequencesController < ApplicationController
     true
   end
 
-  def retrieve_task_for_worker(worker_id)
-    Task.where(mturk_batch)
-
+  def get_tweet_id_for_worker(worker_id, hit_id)
+    task = Task.find_by(hit_id: hit_id)
+    20
   end
 
   def tasks_params
