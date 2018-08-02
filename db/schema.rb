@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180730134731) do
+ActiveRecord::Schema.define(version: 20180802163636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,11 +75,6 @@ ActiveRecord::Schema.define(version: 20180730134731) do
     t.bigint "tweet_id"
     t.bigint "mturk_batch_job_id"
     t.index ["mturk_batch_job_id"], name: "index_mturk_tweets_on_mturk_batch_job_id"
-  end
-
-  create_table "mturk_worker_tweets", id: false, force: :cascade do |t|
-    t.bigint "mturk_worker_id", null: false
-    t.bigint "mturk_tweet_id", null: false
   end
 
   create_table "mturk_workers", force: :cascade do |t|
@@ -147,16 +142,18 @@ ActiveRecord::Schema.define(version: 20180730134731) do
 
   create_table "tasks", force: :cascade do |t|
     t.string "hit_id"
-    t.string "tweet_id"
     t.string "assignment_id"
-    t.string "worker_id"
     t.integer "lifecycle_status", default: 0
     t.datetime "time_submitted"
     t.datetime "time_completed"
     t.bigint "mturk_batch_job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "mturk_tweet_id"
+    t.bigint "mturk_worker_id"
     t.index ["mturk_batch_job_id"], name: "index_tasks_on_mturk_batch_job_id"
+    t.index ["mturk_tweet_id"], name: "index_tasks_on_mturk_tweet_id"
+    t.index ["mturk_worker_id"], name: "index_tasks_on_mturk_worker_id"
   end
 
   create_table "transitions", id: :serial, force: :cascade do |t|

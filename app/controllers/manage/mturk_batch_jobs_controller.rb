@@ -10,11 +10,6 @@ module Manage
       @mturk_batch_jobs = MturkBatchJob.all.order('created_at DESC').page(params[:page]).per(10)
     end
 
-    def queued_tasks
-      @mturk_batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
-      @queued_tasks = @mturk_batch_job.mturk_tweets.page params[:page]
-    end
-
     def show
       @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
     end

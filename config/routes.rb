@@ -52,9 +52,10 @@ Rails.application.routes.draw do
       # mturk
       resources :mturk_batch_jobs do
         resources :tasks
-        get 'queued_tasks'
+        resources :mturk_tweets, only: [:index]
         get 'submit'
       end
+      resources :mturk_workers, only: [:index]
       controller :mturk_hits do
         get 'list_hits', action: 'list_hits'
       end

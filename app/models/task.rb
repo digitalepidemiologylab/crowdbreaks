@@ -1,6 +1,8 @@
 class Task < ApplicationRecord
   belongs_to :mturk_batch_job
   has_many :results
+  belongs_to :mturk_worker, optional: true
+  belongs_to :mturk_tweet, optional: true
 
   enum lifecycle_status: [:unsubmitted, :submitted, :reviewable, :disposed, :accepted]
   STATUS_LABELS = {

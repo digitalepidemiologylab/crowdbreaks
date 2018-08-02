@@ -1,4 +1,4 @@
-<% @title ||= 'Queued tasks'; title @title %>
+<% @title ||= 'Queued Tweets'; title @title %>
 
 <div class="row mb-5">
   <div class="col-12">
@@ -16,6 +16,13 @@
   </div>
 </div>
 
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= paginate @mturk_tweets %>
+  </div>
+</div>
+
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <table class="table">
@@ -26,14 +33,8 @@
         </tr>
       </thead>
       <tbody>
-        <%= render partial: 'queued_task', collection: @queued_tasks %>
+        <%= render @mturk_tweets %>
       </tbody>
     </table>
-  </div>
-</div>
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12">
-    <%= paginate @queued_tasks %>
   </div>
 </div>
