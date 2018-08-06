@@ -9,6 +9,7 @@ require 'ffaker'
 require 'devise'
 require 'simplecov'
 require 'database_cleaner'
+require 'support/factory_bot'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -33,7 +34,7 @@ ActiveRecord::Migration.maintain_test_schema!
 SimpleCov.start
 
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 

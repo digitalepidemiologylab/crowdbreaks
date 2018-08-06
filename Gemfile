@@ -102,7 +102,7 @@ end
 group :test do
   gem 'capybara'
   # nice rspec factories
-  gem 'factory_girl_rails'
+  gem "factory_bot"
   # leave your test db clean after you
   gem 'database_cleaner'
   # freeze/manage time in tests

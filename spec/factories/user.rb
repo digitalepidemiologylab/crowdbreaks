@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     username { FFaker::Name.name }
     email { FFaker::Internet.email }

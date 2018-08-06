@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180802163636) do
+ActiveRecord::Schema.define(version: 20180805212453) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,7 +142,6 @@ ActiveRecord::Schema.define(version: 20180802163636) do
 
   create_table "tasks", force: :cascade do |t|
     t.string "hit_id"
-    t.string "assignment_id"
     t.integer "lifecycle_status", default: 0
     t.datetime "time_submitted"
     t.datetime "time_completed"
@@ -151,6 +150,7 @@ ActiveRecord::Schema.define(version: 20180802163636) do
     t.datetime "updated_at", null: false
     t.bigint "mturk_tweet_id"
     t.bigint "mturk_worker_id"
+    t.datetime "time_assigned"
     t.index ["mturk_batch_job_id"], name: "index_tasks_on_mturk_batch_job_id"
     t.index ["mturk_tweet_id"], name: "index_tasks_on_mturk_tweet_id"
     t.index ["mturk_worker_id"], name: "index_tasks_on_mturk_worker_id"

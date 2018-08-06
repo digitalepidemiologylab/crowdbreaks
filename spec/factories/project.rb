@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   sequence(:title) { |n| "Title #{n}" }
   factory :project do
     title 

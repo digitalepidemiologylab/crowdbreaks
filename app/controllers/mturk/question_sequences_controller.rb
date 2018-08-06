@@ -5,7 +5,8 @@ class Mturk::QuestionSequencesController < ApplicationController
   def show
     # retrieve task for hit id
     @hit_id = params[:hitId]
-    unless @hit_id.present?
+    task = get_task(@hit_id)
+    if task.nil?
       head :bad_request
       return
     end
@@ -15,22 +16,18 @@ class Mturk::QuestionSequencesController < ApplicationController
     @preview_mode = ((@assignment_id == "ASSIGNMENT_ID_NOT_AVAILABLE") or (not @assignment_id.present?))
     @worker_id = params[:workerId]
     @tweet_id = nil
-    @error = false
+    @no_work_available = false
 
     if not @preview_mode
       # worker has accepted the HIT
-      @tweet_id = get_tweet_id_for_worker(@worker_id, @hit_id)
+      @tweet_id = get_tweet_id_for_worker(@worker_id, task)
     end
 
+    # Collect question sequence info
     @project = task.mturk_batch_job.project
     @sandbox = task.mturk_batch_job.sandbox
-
-    # Collect question sequence info
+    @mturk_instructions = task.mturk_batch_job.instructions
     @question_sequence = QuestionSequence.new(@project).create
-    
-    
-    # other
-    @translations = I18n.backend.send(:translations)[:en][:question_sequences]
   end
 
   def final
@@ -38,6 +35,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     task = get_task(tasks_params[:hit_id])
     results = tasks_params.fetch(:results, []) 
 
+    # try to store results even if task couldn't be found
     unless results.empty?
       if not create_results_for_task(results, task.try(:id))
         head :bad_request
@@ -45,10 +43,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     end
 
     if task.present?
-      task.update_attributes(assignment_id: tasks_params[:assignment_id],
-                             worker_id: tasks_params[:worker_id],
-                             time_completed: Time.now,
-                             lifecycle_status: :reviewable)
+      task.update_on_final(tasks_params)
     else
       Rails.logger.error("Task for #{tasks_params[:hit_id]} could not be found")
     end
@@ -57,9 +52,7 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
   def create
-    authorize! :create, Result
     # Store result
-    p results_params
     result = Result.new(results_params)
     if result.save
       head :ok, content_type: "text/html"
@@ -82,9 +75,11 @@ class Mturk::QuestionSequencesController < ApplicationController
     true
   end
 
-  def get_tweet_id_for_worker(worker_id, hit_id)
-    task = Task.find_by(hit_id: hit_id)
-    20
+  def get_tweet_id_for_worker(worker_id, task)
+    w = MturkWorker.find_by(worker_id: worker_id)
+    w = MturkWorker.create(worker_id: worker_id) if w.nil?
+    w.assign_task(task)
+    return task.mturk_tweet.try(:tweet_id)
   end
 
   def tasks_params

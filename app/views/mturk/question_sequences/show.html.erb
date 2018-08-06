@@ -6,23 +6,27 @@
   </div>
 <% end %>
 
-<%= react_component('MturkQSContainer',
-  {
-    questions: @question_sequence[:questions],
-    initialQuestionId: @question_sequence[:initial_question_id],
-    transitions: @question_sequence[:transitions],
-    tweetId: @tweet_id,
-    projectsPath: projects_path,
-    resultsPath: mturk_question_sequence_url,
-    translations: @translations,
-    userId: @user_id,
-    projectId: @project.id,
-    assignmentId: @assignment_id,
-    previewMode: @preview_mode,
-    sandbox: @sandbox,
-    finalSubmitPath: final_mturk_question_sequence_url,
-    hitId: @hit_id
-  },
-  class: 'row', 
-  id: 'mturk-question-sequence-component')
+<%= react_component('MturkQSContainer', {
+  mturkTitle: @project.title,
+  questions: @question_sequence[:questions],
+  initialQuestionId: @question_sequence[:initial_question_id],
+  transitions: @question_sequence[:transitions],
+  tweetId: @tweet_id,
+  resultsPath: mturk_question_sequence_url,
+  finalSubmitPath: final_mturk_question_sequence_url,
+  projectId: @project.id,
+  enableAnswersDelay: 2000,
+  testMode: true,
+  previewMode: @preview_mode,
+  sandbox: @sandbox,
+  allowReset: true,
+  instructions: @mturk_instructions,
+  helpEmail: ENV['MTURK_CONTACT_EMAIL'],
+  hitId: @hit_id,
+  assignmentId: @assignment_id,
+  workerId: @worker_id,
+  noWorkAvailable: @no_work_available
+},
+class: 'row', 
+id: 'mturk-question-sequence-component')
 %>

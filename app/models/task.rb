@@ -20,6 +20,21 @@ class Task < ApplicationRecord
     })
   end
 
+  def update_on_final(tasks_params)
+    if mturk_tweet_id.nil? or mturk_worker_id.nil?
+      # this should be set normally, update manually
+      Rails.logger.error("Task for #{tasks_params[:hit_id]} has missing worker and tweet information.")
+      self.update_attributes({
+        mturk_tweet_id: MturkTweet.find_by(tweet_id: tasks_params[:tweet_id]).id,
+        mturk_worker_id: MturkWorker.find_by(worker_id: tasks_params[:worker_id]).id
+      })
+    end
+    update_attributes({
+      time_completed: Time.now,
+      lifecycle_status: :reviewable
+    })
+  end
+
   def hit
     if hit_id.present?
       Mturk.new(sandbox: mturk_batch_job.sandbox).get_hit(hit_id)

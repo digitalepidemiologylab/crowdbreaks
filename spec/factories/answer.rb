@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :answer do
     association :questions
     answer FFaker::Lorem.word

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :transition do
     association :to_question, factory: :question
     association :from_question, factory: :question

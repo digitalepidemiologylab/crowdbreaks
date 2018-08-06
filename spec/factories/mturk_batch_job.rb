@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   sequence(:name) { |n| "Batch #{n}" }
   factory :mturk_batch_job do
     association :project

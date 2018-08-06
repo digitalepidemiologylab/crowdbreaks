@@ -1,12 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
+  sequence(:hit_id) { |n| "hit_#{n}" }
+
   factory :task do
     association :mturk_batch_job
-    tweet_id random_id
-    assignment_id nil
-    time_submitted nil
-    time_completed nil
-    worker_id nil
-    hittype_id nil
 
     trait :unsubmitted do
       lifecycle_status 0
@@ -14,54 +10,38 @@ FactoryGirl.define do
 
     trait :submitted do
       lifecycle_status 1
-      hit_id random_id
+      hit_id
       time_submitted Time.zone.now
-      hittype_id random_id
     end
 
     trait :reviewable do
       lifecycle_status 2
-      hit_id random_id
+      hit_id
+      association :mturk_worker
+      association :mturk_tweet
       time_submitted 10.days.ago
-      time_completed Time.zone.now
-      worker_id random_id
-      assignment_id random_id
-      hittype_id random_id
-    end
-
-    trait :reviewable do
-      lifecycle_status 3
-      hit_id random_id
-      time_submitted 10.days.ago
-      time_completed Time.zone.now
-      worker_id random_id
-      assignment_id random_id
-      hittype_id random_id
+      time_assigned 30.minutes.ago
+      time_completed 25.minutes.ago
     end
 
     trait :disposed do
-      lifecycle_status 4
-      hit_id random_id
+      lifecycle_status 3
+      hit_id
+      association :mturk_worker
+      association :mturk_tweet
       time_submitted 10.days.ago
-      time_completed Time.zone.now
-      worker_id random_id
-      assignment_id random_id
-      hittype_id random_id
+      time_assigned 4.days.ago
+      time_completed 3.days.ago
     end
 
     trait :accepted do
-      lifecycle_status 5
-      hit_id random_id
+      lifecycle_status 4
+      hit_id
+      association :mturk_worker
+      association :mturk_tweet
       time_submitted 10.days.ago
-      time_completed Time.zone.now
-      worker_id random_id
-      assignment_id random_id
-      hittype_id random_id
+      time_assigned 4.days.ago
+      time_completed 3.days.ago
     end
   end
-end
-
-
-def random_id
-  ('a'..'z').to_a.shuffle.join
 end
