@@ -5,6 +5,7 @@ class Project < ApplicationRecord
   has_many :transitions
   has_many :results
   has_many :mturk_batch_jobs
+  has_many :local_batch_jobs
 
   translates :title, :description
 

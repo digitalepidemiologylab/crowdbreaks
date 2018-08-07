@@ -1,12 +1,24 @@
 class MturkBatchJob < ApplicationRecord
+  include ActiveModel::Validations
+
   has_many :tasks
   has_many :mturk_tweets
   belongs_to :project
 
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
   validates_presence_of :sandbox, :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward
+  validate :number_of_assignments_range
+  validates_with CsvValidator, fields: [:job_file]
 
   attr_accessor :job_file
+
+  def number_of_assignments_range
+    if number_of_assignments.present?
+      if number_of_assignments.to_i == 0 or number_of_assignments.to_i > 100
+        errors.add(:number_of_assignments, 'Number assignments cannot be 0 or >100')
+      end
+    end
+  end
 
   def num_tasks
     tasks.count
@@ -41,7 +53,7 @@ class MturkBatchJob < ApplicationRecord
   end
 
   def cleanup
-    # Delete all associated HITs
+    # Delete all associated HITs on Mturk
     tasks.each do |task|
       task.delete_hit
     end

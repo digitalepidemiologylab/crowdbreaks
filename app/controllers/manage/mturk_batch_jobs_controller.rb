@@ -1,5 +1,3 @@
-require 'csv'
-
 module Manage
   class MturkBatchJobsController < BaseController
     def new
@@ -21,35 +19,29 @@ module Manage
 
     def update
       @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
-      respond_to do |format|
-        if @mturk_batch_job.update_attributes(batch_params)
+      if @mturk_batch_job.update_attributes(batch_params)
+        if @mturk_batch_job.job_file.present?
           # generate tasks
-          if @mturk_batch_job.job_file.present?
-            if file_valid?
-              tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{|row| row[0]}
-              CreateTasksJob.perform_now(@mturk_batch_job.id, tweet_ids, destroy_first: true)
-            else
-              render :edit and return
-            end
-          end
-          format.html { redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being updated...")}
-        else
-          format.html { redirect_to(mturk_batch_jobs_path, alert: 'Something went wrong when updating the Mturk Batch Job')}
+          tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{ |row| row[0] }
+          CreateTasksJob.perform_now(@mturk_batch_job.id, tweet_ids, destroy_first: true)
         end
+        redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being updated...")
+      else
+        render :edit and return
       end
     end
 
     def create
       @mturk_batch_job = MturkBatchJob.new(batch_params)
-      if @mturk_batch_job.job_file.present? and not file_valid?
-        render :new and return
-      end
       if @mturk_batch_job.save
-        tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{|row| row[0]}
-        CreateTasksJob.perform_later(@mturk_batch_job.id, tweet_ids)
+        # generate tasks
+        if @mturk_batch_job.job_file.present?
+          tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{|row| row[0]}
+          CreateTasksJob.perform_later(@mturk_batch_job.id, tweet_ids)
+        end
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being created...")
       else
-        render :new 
+        render :new and return
       end
     end
 
@@ -78,40 +70,6 @@ module Manage
 
     def batch_params
       params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions)
-    end
-
-    def file_valid?
-      csv_file = @mturk_batch_job.job_file
-      if csv_file.content_type != 'text/csv'
-        @mturk_batch_job.errors.add(:job_file, 'File format has to be csv')
-        return false
-      end
-
-      if @mturk_batch_job.number_of_assignments.to_i == 0 or @mturk_batch_job.number_of_assignments.to_i > 100
-        @mturk_batch_job.errors.add(:number_of_assignments, 'Number assignments cannot be 0 or >100')
-        return false
-      end
-
-      if CSV.table(csv_file.path, {headers: false}).count == 0
-        @mturk_batch_job.errors.add(:job_file, 'Unsuccessful. File was empty.')
-        return false
-      end
-
-      if not file_content_valid?
-        @mturk_batch_job.errors.add(:job_file, 'One or more tweet IDs were invalid integers.')
-        return false
-      end
-      return true
-    end
-
-    def file_content_valid?
-      CSV.foreach(@mturk_batch_job.job_file.path) do |line|
-        tweet_id = line[0].to_s
-        if not tweet_id =~ /\A\d{1,}\z/
-          return false
-        end
-      end
-      return true
     end
   end
 end

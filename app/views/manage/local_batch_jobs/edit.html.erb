@@ -1,0 +1,20 @@
+<% @title ||= MturkBatchJob.model_name.human; title @title %>
+
+<div class="row mb-5">
+  <div class="col-12">
+    <%= link_to local_batch_jobs_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-8">
+    <h2>Edit local batch "<%= @local_batch_job.name %>"</h2>
+  </div>
+</div>
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-8">
+    <%= render 'edit_local_batch_job' %>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<% @title ||= 'Local batch processing'; title @title %>
+
+<div class="row mb-5">
+  <div class="col-12">
+    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'><%= @title %></h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= paginate @local_batch_jobs %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Batch name</th>
+          <th>Project</th>
+          <th>Created</th>
+          <th>Status</th>
+          <th>Completed</th>
+          <th>View</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render @local_batch_jobs %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= link_to new_local_batch_job_path, class: 'btn btn-primary btn-lg' do %>
+      Create new batch job
+    <% end %>
+  </div>
+</div>
+

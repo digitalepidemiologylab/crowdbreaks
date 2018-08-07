@@ -1,0 +1,31 @@
+<tr>
+  <td><%= local_batch_job.name %></td>
+  <td><%= local_batch_job.project.title %></td>
+  <td><%= time_ago_in_words(local_batch_job.created_at) %> ago</td>
+  <td><span class='badge badge-sentiment'><%= local_batch_job_status(local_batch_job.status)%></span></td>
+  <td></td>
+  <td>
+    <% if local_batch_job.local_tweets.count > 0 %>
+      <div> 
+        <%= link_to local_batch_job_local_tweets_path(local_batch_job) do %>
+          Queue <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        <% end %>
+      </div>
+      <div> 
+        <%= link_to local_batch_job_path(local_batch_job) do %>
+          Start <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    <% end %>
+  </td>
+  <td>
+    <div>
+      <%= link_to fa_icon('trash'),
+        local_batch_job_path(local_batch_job),
+        method: :delete,
+        data: {confirm: "Delete batch and all queued tweets?"} 
+      %>
+    <%= link_to fa_icon('pencil'), edit_local_batch_job_path(local_batch_job) %>
+    </div>
+  </td>
+</tr>

@@ -15,6 +15,8 @@ class CreateTasksJob < ApplicationJob
 
   def perform(mturk_batch_job_id, tweet_ids, destroy_first: false)
     mturk_batch_job = MturkBatchJob.find_by(id: mturk_batch_job_id)
+    return if mturk_batch_job.nil?
+
     if destroy_first
       mturk_batch_job.cleanup
     end

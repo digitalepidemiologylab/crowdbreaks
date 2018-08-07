@@ -62,6 +62,9 @@ Rails.application.routes.draw do
 
       # elasticsearch
       resources :elasticsearch_indexes
+      resources :local_batch_jobs do
+        resources :local_tweets, only: [:index]
+      end
     end
   end
 

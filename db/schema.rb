@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180805212453) do
+ActiveRecord::Schema.define(version: 20180807144952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,34 @@ ActiveRecord::Schema.define(version: 20180805212453) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+  end
+
+  create_table "local_batch_jobs", force: :cascade do |t|
+    t.string "name"
+    t.bigint "project_id"
+    t.text "instructions", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "processing", default: false
+    t.boolean "deleting", default: false
+    t.string "slug"
+    t.index ["project_id"], name: "index_local_batch_jobs_on_project_id"
+    t.index ["slug"], name: "index_local_batch_jobs_on_slug"
+  end
+
+  create_table "local_batch_jobs_users", id: false, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "local_batch_job_id", null: false
+    t.index ["local_batch_job_id"], name: "index_local_batch_jobs_users_on_local_batch_job_id"
+    t.index ["user_id"], name: "index_local_batch_jobs_users_on_user_id"
+  end
+
+  create_table "local_tweets", force: :cascade do |t|
+    t.bigint "tweet_id"
+    t.bigint "local_batch_job_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["local_batch_job_id"], name: "index_local_tweets_on_local_batch_job_id"
   end
 
   create_table "mturk_batch_jobs", force: :cascade do |t|
