@@ -32,12 +32,20 @@
   <td>
     <div>
       <%= link_to fa_icon('trash'),
-        mturk_batch_job_path(mturk_batch_job.id),
+        mturk_batch_job_path(mturk_batch_job.id, destroy_results: false),
         method: :delete,
-        data: {confirm: "Delete batch and all its tasks?"} 
+        title: "Delete batch, without results",
+        data: {confirm: "Delete batch, tasks, but without associated results?"} 
       %>
-    <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id) %>
-    <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job.id) %>
+      <%= link_to fa_icon('times-circle'),
+        mturk_batch_job_path(mturk_batch_job.id, destroy_results: true),
+        method: :delete,
+        style: "color:red;",
+        title: "Delete batch, with results",
+        data: {confirm: "Delete batch, tasks, and all associated results?"} 
+      %>
+      <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id), title: 'Edit' %>
+      <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job.id), title: 'Expand' %>
     </div>
   </td>
 </tr>

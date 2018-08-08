@@ -8,7 +8,3 @@ function convertUnitsBeforeSubmit() {
     return true;
   });
 }
-
-$(document).on('turbolinks:load', function() {
-  convertUnitsBeforeSubmit();
-})

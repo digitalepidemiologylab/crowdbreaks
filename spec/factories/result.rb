@@ -4,5 +4,9 @@ FactoryBot.define do
     association :answer
     association :question
     association :user
+
+    trait :through_mturk do
+      association :task
+    end
   end
 end

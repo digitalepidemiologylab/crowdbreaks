@@ -9,6 +9,7 @@ class DestroyLocalBatchJob < ApplicationJob
   def perform(local_batch_job_id)
     local_batch_job = LocalBatchJob.find_by(id: local_batch_job_id)
     return if local_batch_job.nil?
+    local_batch_job.cleanup
     local_batch_job.destroy
   end
 end

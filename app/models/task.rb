@@ -1,6 +1,6 @@
 class Task < ApplicationRecord
   belongs_to :mturk_batch_job
-  has_many :results
+  has_many :results, dependent: :delete_all
   belongs_to :mturk_worker, optional: true
   belongs_to :mturk_tweet, optional: true
 

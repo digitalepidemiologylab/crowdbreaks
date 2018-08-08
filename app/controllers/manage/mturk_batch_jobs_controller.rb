@@ -50,7 +50,11 @@ module Manage
       unless @mturk_batch_job.present?
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' could not be found.")
       end
-      DestroyMturkBatchJob.perform_later(@mturk_batch_job.id)
+      destroy_results = false
+      if params[:destroy_results].present?
+        destroy_results = params[:destroy_results] == 'true' ? true : false
+      end
+      DestroyMturkBatchJob.perform_later(@mturk_batch_job.id, destroy_results: destroy_results )
       redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being destroyed...")
     end
 

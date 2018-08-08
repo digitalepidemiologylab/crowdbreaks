@@ -1,14 +1,15 @@
 class MturkBatchJob < ApplicationRecord
   include ActiveModel::Validations
 
-  has_many :tasks
-  has_many :mturk_tweets
+  has_many :tasks, dependent: :delete_all
+  has_many :mturk_tweets, dependent: :delete_all
   belongs_to :project
 
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
   validates_presence_of :sandbox, :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward
   validate :number_of_assignments_range
   validates_with CsvValidator, fields: [:job_file]
+
 
   attr_accessor :job_file
 
@@ -52,17 +53,16 @@ class MturkBatchJob < ApplicationRecord
     'disposed'
   end
 
-  def cleanup
+  def cleanup(destroy_results: false)
     # Delete all associated HITs on Mturk
     tasks.each do |task|
       task.delete_hit
+      if destroy_results
+        task.results.delete_all
+      else
+        task.results.update_all({task_id: nil})
+      end
     end
-    # Destroy records
-    tasks.destroy_all
-    mturk_tweets.each do |t|
-      MturkWorker.where(id: t.mturk_workers.pluck(:id)).destroy_all
-    end
-    mturk_tweets.destroy_all
   end
 
   def default_mturk_instructions

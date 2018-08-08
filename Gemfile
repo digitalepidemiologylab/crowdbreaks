@@ -102,7 +102,7 @@ end
 group :test do
   gem 'capybara'
   # nice rspec factories
-  gem "factory_bot"
+  gem "factory_bot_rails"
   # leave your test db clean after you
   gem 'database_cleaner'
   # freeze/manage time in tests
@@ -113,6 +113,8 @@ group :test do
   gem 'simplecov', require: false
   # additional controller testing functionality
   gem 'rails-controller-testing'
+  # sidekiq testing
+  # gem 'rspec-sidekiq'
 end
 
 group :production do

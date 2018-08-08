@@ -15,8 +15,7 @@ class LocalBatchJob < ApplicationRecord
   attr_accessor :job_file
 
   def cleanup
-    local_tweets.destroy_all
-    local_batch_jobs_users.destroy_all
+    local_tweets.delete_all
   end
 
   def status

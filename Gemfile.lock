@@ -168,6 +168,9 @@ GEM
     execjs (2.7.0)
     factory_bot (4.10.0)
       activesupport (>= 3.0.0)
+    factory_bot_rails (4.10.0)
+      factory_bot (~> 4.10.0)
+      railties (>= 3.0.0)
     ffaker (2.10.0)
     ffi (1.9.25)
     figaro (1.1.1)
@@ -503,7 +506,7 @@ DEPENDENCIES
   database_cleaner
   devise (~> 4.4)
   devise-i18n
-  factory_bot
+  factory_bot_rails
   ffaker
   figaro (~> 1.1.1)
   font-awesome-rails (~> 4.7.0.1)

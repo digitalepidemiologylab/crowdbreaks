@@ -9,7 +9,8 @@ require 'ffaker'
 require 'devise'
 require 'simplecov'
 require 'database_cleaner'
-require 'support/factory_bot'
+require 'factory_bot_rails'
+
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -31,6 +32,7 @@ require 'support/factory_bot'
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
+# ActiveRecord::Base.logger = Logger.new(STDOUT)
 SimpleCov.start
 
 RSpec.configure do |config|

@@ -1,8 +1,7 @@
 FactoryBot.define do
-  sequence(:name) { |n| "Batch #{n}" }
   factory :mturk_batch_job do
     association :project
-    name
+    name {generate(:mturk_batch_name)}
     title FFaker::Lorem.word
     description FFaker::Lorem.paragraph
     sandbox true
@@ -13,9 +12,4 @@ FactoryBot.define do
     assignment_duration_in_seconds 20*60
     instructions FFaker::Lorem.paragraph
   end
-end
-
-
-def random_id
-  ('a'..'z').to_a.shuffle.join
 end

@@ -1,7 +1,7 @@
 FactoryBot.define do
-  factory :question do
+  factory :local_batch_job do
     association :project
-    add_attribute(:question) { FFaker::Lorem.sentence }
+    name {generate(:local_batch_name)}
     instructions FFaker::Lorem.paragraph
   end
 end
