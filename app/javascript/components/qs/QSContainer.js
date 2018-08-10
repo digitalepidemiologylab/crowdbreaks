@@ -9,6 +9,7 @@ import { InstructionModal } from './InstructionModal';
 export class QSContainer extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       'questionSequenceHasEnded': false,
       'captchaVerified': !props.enableCaptcha,  // if captcha is disabled, sets captcha permanently to verified state
@@ -22,7 +23,7 @@ export class QSContainer extends React.Component {
     };
   }
 
-  postData(resultData) {
+  submitResult(resultData) {
     if (this.props.testMode) {
       return true;
     }
@@ -32,7 +33,8 @@ export class QSContainer extends React.Component {
       $.ajax({
         type: "POST",
         url: this.props.resultsPath,
-        data: resultData,
+        data: JSON.stringify(resultData),
+        contentType: "application/json",
         success: (response) => {
           if (response['captcha_verified']) {
             console.log('successfully verified captcha');
@@ -55,7 +57,8 @@ export class QSContainer extends React.Component {
       $.ajax({
         type: "POST",
         url: this.props.resultsPath,
-        data: resultData,
+        data: JSON.stringify(resultData),
+        contentType: "application/json",
         error: (response) => {
           this.setState({
             errors: this.state.errors.concat(['Internal error'])
@@ -74,7 +77,7 @@ export class QSContainer extends React.Component {
     });
   }
 
-  onQuestionSequenceEnd() {
+  onQuestionSequenceEnd(results) {
     // remember user has answered tweet
     var data = {
       'qs': {
@@ -83,13 +86,17 @@ export class QSContainer extends React.Component {
         'project_id': this.props.projectId
       }
     };
+    // Note: results contains a collection of all previous results which is not used here but may be used by other container components
+
     $.ajax({
       type: "POST",
       url: this.props.endQuestionSequencePath,
-      data: data,
+      data: JSON.stringify(data),
+      contentType: "application/json",
       success: (response) => {
+        var tweet_id = response['tweet_id'];
         this.setState({
-          nextTweetId: response['tweet_id']
+          nextTweetId: tweet_id
         });
       }
     });
@@ -115,6 +122,7 @@ export class QSContainer extends React.Component {
 
   render() {
     let body = null;
+
     if (!this.state.questionSequenceHasEnded) {
       body = <div>
         <InstructionModal 
@@ -130,9 +138,9 @@ export class QSContainer extends React.Component {
           tweetId={this.state.tweetId}
           userId={this.props.userId}
           projectId={this.props.projectId}
-          postData={(args) => this.postData(args)}
+          submitResult={(args) => this.submitResult(args)}
           onTweetLoadError={() => this.onTweetLoadError()}
-          onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+          onQuestionSequenceEnd={(args) => this.onQuestionSequenceEnd(args)}
           numTransitions={this.state.numTransitions}
           captchaSiteKey={this.props.captchaSiteKey}
           userSignedIn={this.props.userSignedIn}

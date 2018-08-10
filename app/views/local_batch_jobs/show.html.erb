@@ -1,0 +1,34 @@
+<% @title ||= @project.title; title @title %>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <%= link_to current_user.admin? ? manage_local_batch_jobs_path : root_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div id="qs-root" class="col-12 text-center">
+      <%= react_component('LocalBatchQSContainer', {
+        projectTitle: @project.title,
+        questions: @question_sequence[:questions],
+        initialQuestionId: @question_sequence[:initial_question_id],
+        transitions: @question_sequence[:transitions],
+        numTransitions: @question_sequence[:num_transitions],
+        tweetId: @tweet_id.to_s,
+        userId: @user_id,
+        userName: current_user.username,
+        resultsPath: nil,
+        endQuestionSequencePath: local_batch_job_final_url(@local_batch_job),
+        projectId: @project.id,
+        enableAnswersDelay: 0,
+        testMode: false,
+        instructions: @instructions,
+        noWorkAvailable: @no_work_available,
+        exitPath: current_user.admin? ? manage_local_batch_jobs_path : root_path,
+        userCount: @user_count,
+        totalCount: @total_count
+      }) %>
+  </div>
+</div>

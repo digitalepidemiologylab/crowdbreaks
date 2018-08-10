@@ -28,7 +28,8 @@ export class QuestionSequence extends React.Component {
       'numQuestionsAnswered': 0,
       'unverifiedAnswers': [],
       'answersDisabled': true,
-      'showQuestionInstruction': false
+      'showQuestionInstruction': false,
+      'results': []
     };
   }
 
@@ -78,7 +79,7 @@ export class QuestionSequence extends React.Component {
         projectId: this.props.projectId
       }
     });
-
+    
     var status;
     if (!this.props.userSignedIn && !this.props.captchaVerified) {
       // add to waiting queue to be verified by captcha
@@ -90,28 +91,35 @@ export class QuestionSequence extends React.Component {
       // proceed to next question
       status = true;
     } else {
-      // Make POST request
-      status = this.props.postData(resultData);
+      // Make POST request to submit result
+      status = this.props.submitResult(resultData);
     }
 
     if (status) {
-      // find next question
-      var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
-      var newNumQuestionAnswered = this.state.numQuestionsAnswered + 1;
-      if (nextQuestion === null) {
-        // End of question sequence
-        this.setState({
-          'tweetHasLoaded': false,
-          'numQuestionsAnswered': newNumQuestionAnswered
-        });
-        this.props.onQuestionSequenceEnd();
-      } else {
-        // Go to next question
-        this.setState({
-          'currentQuestion': this.props.questions[nextQuestion],
-          'numQuestionsAnswered': newNumQuestionAnswered
-        });
-      }
+      // store internally
+      this.setState({
+        results: this.state.results.concat([resultData])
+      }, () => {
+        // find next question
+        var nextQuestion = this.nextQuestion(this.state.currentQuestion.id, answerId);
+        var newNumQuestionAnswered = this.state.numQuestionsAnswered + 1;
+        if (nextQuestion === null) {
+          // End of question sequence
+          this.setState({
+            'tweetHasLoaded': false,
+            'numQuestionsAnswered': newNumQuestionAnswered
+          }, () => {
+            this.props.onQuestionSequenceEnd(this.state.results);
+          });
+        } else {
+          // Go to next question
+          this.setState({
+            'currentQuestion': this.props.questions[nextQuestion],
+            'numQuestionsAnswered': newNumQuestionAnswered
+          });
+        }
+      })
+
     }
   }
   
@@ -122,7 +130,7 @@ export class QuestionSequence extends React.Component {
     while (this.state.unverifiedAnswers.length > 0) {
       resultData = this.state.unverifiedAnswers.pop()
       resultData['recaptcha_response'] = response;
-      this.props.postData(resultData);
+      this.props.submitResult(resultData);
     }
   };
 

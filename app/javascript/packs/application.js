@@ -10,6 +10,7 @@
 import WebpackerReact from 'webpacker-react'
 import { QSContainer } from './../components/qs/QSContainer';
 import { MturkQSContainer } from './../components/qs/MturkQSContainer';
+import { LocalBatchQSContainer } from './../components/qs/LocalBatchQSContainer';
 import { SentimentTextBox } from './../components/sent_textbox/SentimentTextBox';
 import { SentimentVisualization } from './../components/sent_viz/SentimentVisualization';
 import { SentimentMap } from './../components/sent_viz/SentimentMap';
@@ -29,7 +30,8 @@ WebpackerReact.setup({
   MonitorStream,
   Leadline,
   UserActivity,
-  EditQuestionSequence
+  EditQuestionSequence,
+  LocalBatchQSContainer
 })
 
 // this is needed for components to properly unmount and not being cached

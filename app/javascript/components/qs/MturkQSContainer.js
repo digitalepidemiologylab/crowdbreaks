@@ -21,12 +21,13 @@ export class MturkQSContainer extends React.Component {
     };
   }
 
-  postData(resultData) {
+  submitResult(resultData) {
     // Do not post anything in preview mode
     if (this.props.previewMode) {
       console.log('Cannot submit in preview mode');
       return false;
     }
+
     // Do not post anything if tweet could not be loaded properly
     if (this.state.tweetLoadError) {
       console.log('Cannot submit when Tweet loading failed');
@@ -87,7 +88,7 @@ export class MturkQSContainer extends React.Component {
     event.preventDefault();
 
     if (this.props.testMode) {
-      alert('No submit since running in test mode.')
+      alert('No submit possible, since you are running in test mode.')
       return true;
     }
 
@@ -196,7 +197,7 @@ export class MturkQSContainer extends React.Component {
         tweetId={this.props.tweetId}
         userId={null}
         projectId={this.props.projectId}
-        postData={(args) => this.postData(args)}
+        submitResult={(args) => this.submitResult(args)}
         onTweetLoadError={() => this.onTweetLoadError()}
         onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
         numTransitions={0}

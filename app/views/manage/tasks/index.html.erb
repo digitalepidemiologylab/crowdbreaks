@@ -18,6 +18,12 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
+    <%= paginate @tasks %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
     <table class="table">
       <thead>
         <tr>
@@ -37,13 +43,6 @@
     </table>
   </div>
 </div>
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12">
-    <%= paginate @tasks %>
-  </div>
-</div>
-
 
 <% unless @mturk_batch_job.is_submitted? %>
   <div class="row justify-content-center mb-4">

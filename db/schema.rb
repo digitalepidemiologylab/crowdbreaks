@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180807144952) do
+ActiveRecord::Schema.define(version: 20180809084147) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,7 +160,9 @@ ActiveRecord::Schema.define(version: 20180807144952) do
     t.bigint "tweet_id"
     t.bigint "task_id"
     t.boolean "mturk_result", default: false, null: false
+    t.bigint "local_batch_job_id"
     t.index ["answer_id"], name: "index_results_on_answer_id"
+    t.index ["local_batch_job_id"], name: "index_results_on_local_batch_job_id"
     t.index ["project_id"], name: "index_results_on_project_id"
     t.index ["question_id"], name: "index_results_on_question_id"
     t.index ["task_id"], name: "index_results_on_task_id"

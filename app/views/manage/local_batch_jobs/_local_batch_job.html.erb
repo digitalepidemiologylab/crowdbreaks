@@ -7,7 +7,7 @@
   <td>
     <% if local_batch_job.local_tweets.count > 0 %>
       <div> 
-        <%= link_to local_batch_job_local_tweets_path(local_batch_job) do %>
+        <%= link_to manage_local_batch_job_local_tweets_path(local_batch_job) do %>
           Queue <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>
       </div>
@@ -21,11 +21,11 @@
   <td>
     <div>
       <%= link_to fa_icon('trash'),
-        local_batch_job_path(local_batch_job),
+        manage_local_batch_job_path(local_batch_job),
         method: :delete,
         data: {confirm: "Delete batch and all queued tweets?"} 
       %>
-    <%= link_to fa_icon('pencil'), edit_local_batch_job_path(local_batch_job) %>
+    <%= link_to fa_icon('pencil'), edit_manage_local_batch_job_path(local_batch_job) %>
     </div>
   </td>
 </tr>

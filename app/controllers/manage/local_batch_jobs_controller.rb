@@ -8,10 +8,6 @@ module Manage
       @local_batch_job = LocalBatchJob.new
     end
 
-    def show
-      @local_batch_job = LocalBatchJob.friendly.find(params[:id])
-    end
-
     def edit
       @local_batch_job = LocalBatchJob.friendly.find(params[:id])
     end
@@ -23,7 +19,7 @@ module Manage
           tweet_ids = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row[0] }
           CreateLocalTweetsJob.perform_later(@local_batch_job.id, tweet_ids, destroy_first: true)
         end
-        redirect_to(local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' is being updated...")
+        redirect_to(manage_local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' is being updated...")
       else
         render :edit and return
       end
@@ -36,7 +32,7 @@ module Manage
           tweet_ids = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row[0] }
           CreateLocalTweetsJob.perform_later(@local_batch_job.id, tweet_ids)
         end
-        redirect_to(local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' is being created...")
+        redirect_to(manage_local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' is being created...")
       else
         render :new and return
       end
@@ -45,10 +41,10 @@ module Manage
     def destroy
       @local_batch_job = LocalBatchJob.friendly.find(params[:id])
       unless @local_batch_job.present?
-        redirect_to(local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' could not be found.")
+        redirect_to(manage_local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' could not be found.")
       end
       DestroyLocalBatchJob.perform_later(@local_batch_job.id)
-      redirect_to(local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' is being destroyed...")
+      redirect_to(manage_local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' is being destroyed...")
     end
 
 

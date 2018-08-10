@@ -30,6 +30,9 @@ Rails.application.routes.draw do
     resources :projects, only: [:show, :index] do
       resource :question_sequence, only: [:show, :create]
     end
+    resources :local_batch_jobs, only: [:show] do
+      post 'final'
+    end
 
     namespace :mturk do
       resource :question_sequence, only: [:show, :create] do
@@ -62,7 +65,7 @@ Rails.application.routes.draw do
 
       # elasticsearch
       resources :elasticsearch_indexes
-      resources :local_batch_jobs do
+      resources :local_batch_jobs, except: :show, as: 'manage_local_batch_jobs' do
         resources :local_tweets, only: [:index]
       end
     end

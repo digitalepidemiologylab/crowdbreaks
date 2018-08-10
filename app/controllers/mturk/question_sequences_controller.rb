@@ -54,6 +54,11 @@ class Mturk::QuestionSequencesController < ApplicationController
   def create
     # Store result
     result = Result.new(results_params)
+
+    if result.task_id.nil?
+      Rails.logger.error("Task for #{params[:hit_id]} could not be found")
+    end
+
     if result.save
       head :ok, content_type: "text/html"
     else
