@@ -7,13 +7,11 @@ class TweetValidation
   # 1) Use Twitter API to check tweet. Note: This is under rate limits.
   # 2) Make a HEAD request to twitter.com. This runs into potential issues of url blocking.
   #
-  # Doing 2) with an AJAX call may be possible, if redirects are handled 
-  # properly: see https://stackoverflow.com/questions/199099/how-to-manage-a-redirect-request-after-a-jquery-ajax-call
+  # Doing 2) in the front end with an AJAX call may be possible, if redirects are handled properly: see https://stackoverflow.com/questions/199099/how-to-manage-a-redirect-request-after-a-jquery-ajax-call
 
   # Test IDs
   # tweet_id = '955454023519391744' # invalid
   # tweet_id = '563126182607339520' # valid
-
 
 
   def tweet_is_valid?(tweet_id)

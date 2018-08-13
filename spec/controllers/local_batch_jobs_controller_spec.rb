@@ -11,8 +11,8 @@ RSpec.describe LocalBatchJobsController, type: :controller do
   # user 1 and 3 are allowed to work on batch
   let!(:local_batch_job) { FactoryBot.create(:local_batch_job, users: [user1, user3], project: project) }
 
-  let!(:local_tweet1) { FactoryBot.create(:local_tweet, local_batch_job: local_batch_job) }
-  let!(:local_tweet2) { FactoryBot.create(:local_tweet, local_batch_job: local_batch_job) }
+  let!(:local_tweet1) { FactoryBot.create(:local_tweet, local_batch_job: local_batch_job, tweet_id: '998872933304094720') }
+  let!(:local_tweet2) { FactoryBot.create(:local_tweet, local_batch_job: local_batch_job, tweet_id: '20') }
 
   # User2 did tweet 1
   let!(:result1) { FactoryBot.create(:result, tweet_id: local_tweet1.tweet_id, project: project, user: user2) }

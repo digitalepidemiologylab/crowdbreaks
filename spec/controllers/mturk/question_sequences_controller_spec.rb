@@ -11,8 +11,8 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
 
   # Batch with max assignment 3
   let!(:mturk_batch_job) { FactoryBot.create(:mturk_batch_job, project: project, number_of_assignments: 3) }
-  let!(:mturk_tweet1) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job, tweet_id: 1) }
-  let!(:mturk_tweet2) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job, tweet_id: 2) }
+  let!(:mturk_tweet1) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job) }
+  let!(:mturk_tweet2) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job) }
 
   let!(:mturk_worker1) { FactoryBot.create(:mturk_worker) } # worker 1 hasn't done any work
   let!(:mturk_worker2) { FactoryBot.create(:mturk_worker) } # worker 2 has done tweet 1
@@ -34,6 +34,13 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_submitted3) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job2) }
   let!(:task_submitted4) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job2) }
   let!(:task_reviewable4) { FactoryBot.create(:task, :reviewable, mturk_worker: mturk_worker4, mturk_tweet: mturk_tweet3, mturk_batch_job: mturk_batch_job2) }
+  
+  # Batch with unavailable tweet
+  let!(:mturk_batch_job3) { FactoryBot.create(:mturk_batch_job, project: project, number_of_assignments: 1) }
+  let!(:mturk_tweet4) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job3) } # valid
+  let!(:mturk_tweet5) { FactoryBot.create(:mturk_tweet, :invalid_tweet, mturk_batch_job: mturk_batch_job3) } # invalid
+  let!(:task_submitted5) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job3) }
+  let!(:task_submitted6) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job3) }
 
   # SHOW ACTION
   describe "GET show" do
@@ -176,13 +183,31 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       # worker 5 is given only tweet
       expect(assigns(:tweet_id)).to eq(mturk_tweet3.tweet_id)
-      # expect(task.mturk_tweet_id).to eq(mturk_tweet2.id)
       get :show, params: {
         hitId: task_submitted4.hit_id,
         workerId: mturk_worker6.worker_id,
         assignmentId: '123'
       }
       # worker 6 wants to do task but max assignment was reached
+      expect(assigns(:tweet_id)).to eq(nil)
+    end
+
+
+    it "only shows available tweets" do
+      # worker 1 should receive tweet which is available
+      get :show, params: {
+        hitId: task_submitted5.hit_id,
+        workerId: mturk_worker1.worker_id,
+        assignmentId: '123'
+      }
+      expect(assigns(:tweet_id)).to eq(mturk_tweet4.tweet_id)
+
+      # worker 1 has done only tweet which is available
+      get :show, params: {
+        hitId: task_submitted6.hit_id,
+        workerId: mturk_worker1.worker_id,
+        assignmentId: '123'
+      }
       expect(assigns(:tweet_id)).to eq(nil)
     end
 
