@@ -28,7 +28,9 @@
         noWorkAvailable: @no_work_available,
         exitPath: current_user.admin? ? manage_local_batch_jobs_path : root_path,
         userCount: @user_count,
-        totalCount: @total_count
+        totalCount: @total_count,
+        totalCountUnavailable: @total_count_unavailable,
+        tweetIsAvailable: @tweet_is_available
       }) %>
   </div>
 </div>

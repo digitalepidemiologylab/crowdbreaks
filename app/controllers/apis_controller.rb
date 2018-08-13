@@ -114,7 +114,7 @@ class ApisController < ApplicationController
         joins(:user, :answer, :project).where(projects: {public: true}).where.not(users: {username: exclude_usernames}).where(answers: {label: Answer::LABELS.values}).limit(1).
         pluck('results.tweet_id,users.username as username,answers.label as label,results.created_at,projects.title_translations as title')
       unless resp.empty?
-        if FlaskApi.new.tweet_is_valid?(resp[0][0])
+        if TweetValidation.new.tweet_is_valid?(resp[0][0])
           result.push(resp[0])
         end
         exclude_tweet_ids.push(resp[0][0].to_s) # distinct select doesn't work with order query, hence this approach

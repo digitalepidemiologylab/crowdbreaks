@@ -7,7 +7,7 @@ var humps = require('humps');
 // Components
 import { QuestionSequence } from './QuestionSequence';
 import { MturkFinal } from './MturkFinal';
-import { MturkInstructions } from './MturkInstructions';
+import { Instructions } from './Instructions';
 
 export class MturkQSContainer extends React.Component {
   constructor(props) {
@@ -219,7 +219,7 @@ export class MturkQSContainer extends React.Component {
     let title = this.props.mturkTitle && <h4 className="mb-4">
       {this.props.mturkTitle}
     </h4>;
-    let mturkInstructions = <MturkInstructions 
+    let mturkInstructions = <Instructions 
       display={this.state.displayInstructions || this.props.previewMode}
       instructions={this.props.instructions}
       onToggleDisplay={() => this.onToggleInstructionDisplay()}

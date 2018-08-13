@@ -15,12 +15,19 @@ class LocalBatchJob < ApplicationRecord
 
   attr_accessor :job_file
 
+  def num_tweets_unavailable
+    local_tweets.count - local_tweets.is_available.count
+  end
 
-  def assigned_to_user(user_id)
-    results.where({
-      local_batch_job_id: id,
-      user_id: user_id
-    })
+  def completed_by
+    return [] unless status == 'ready'
+    completed_by = []
+    total_count = local_tweets.is_available.count
+    users.each do |u|
+      user_count = results.counts_by_user(u.id)
+      completed_by.push(u.username) if user_count == total_count
+    end
+    completed_by
   end
 
   def cleanup

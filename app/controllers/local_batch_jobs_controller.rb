@@ -7,12 +7,17 @@ class LocalBatchJobsController < ApplicationController
     end
 
     @user_id = current_user.id
-    @user_count = @local_batch_job.assigned_to_user(@user_id).distinct.count(:tweet_id)
+    @user_count = @local_batch_job.results.counts_by_user(@user_id)
 
-    @total_count = @local_batch_job.local_tweets.count
+    @total_count = @local_batch_job.local_tweets.is_available.count
+    @total_count_unavailable = @local_batch_job.local_tweets.is_unavailable.count
 
-    @tweet_id = @local_batch_job.local_tweets.not_assigned_to_user(@user_id, @local_batch_job.id).first&.tweet_id
+    @tweet_id = @local_batch_job.local_tweets.not_assigned_to_user(@user_id, @local_batch_job.id).is_available.first&.tweet_id
     @no_work_available = @tweet_id.nil? ? true : false
+    @tweet_is_available = TweetValidation.new.tweet_is_valid?(@tweet_id)
+    if not @tweet_is_available
+      LocalTweet.set_to_unavailable(@tweet_id, @local_batch_job.id)
+    end
 
     @project = @local_batch_job.project
     @instructions = @local_batch_job.instructions
@@ -21,8 +26,8 @@ class LocalBatchJobsController < ApplicationController
   end
 
   def final
-    p final_params
-    if final_params[:user_id].nil? or final_params[:tweet_id].nil?
+    user_id = final_params[:user_id]
+    if user_id.nil? or final_params[:tweet_id].nil?
       head :bad_request and return 
     end
     local_batch_job = LocalBatchJob.friendly.find(params[:local_batch_job_id])
@@ -36,12 +41,29 @@ class LocalBatchJobsController < ApplicationController
 
     tweet_id = local_batch_job.
       local_tweets.
-      not_assigned_to_user(final_params[:user_id], local_batch_job.id).
+      not_assigned_to_user(user_id, local_batch_job.id).
+      is_available&.
       first&.
-      tweet_id
+      tweet_id&.
+      to_s
+
+    no_work_available = tweet_id.nil? ? true : false
+    tweet_is_available = TweetValidation.new.tweet_is_valid?(tweet_id)
+    if not tweet_is_available
+      LocalTweet.set_to_unavailable(tweet_id.to_i, local_batch_job.id)
+    end
+
+    total_count = local_batch_job.local_tweets.is_available.count
+    user_count = local_batch_job.results.counts_by_user(user_id)
+    total_count_unavailable = local_batch_job.local_tweets.is_unavailable.count
 
     render json: {
-      tweet_id: tweet_id.to_s,
+      tweet_id: tweet_id,
+      tweet_is_available: tweet_is_available,
+      user_count: user_count,
+      total_count: total_count,
+      total_count_unavailable: total_count_unavailable,
+      no_work_available: no_work_available
     }, status: 200
   end
 

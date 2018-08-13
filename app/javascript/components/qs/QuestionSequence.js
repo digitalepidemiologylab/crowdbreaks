@@ -153,6 +153,7 @@ export class QuestionSequence extends React.Component {
         if (shadowRoot.children[1].innerHTML == "") {
           // This can occur when a tweet was set to private, thus is not accessible anymore. Handle this case separately
           console.log("Tweet with id", this.props.tweetId, "could not be loaded.")
+          this.props.onTweetLoadError();
         }
       }
     } catch(err) {

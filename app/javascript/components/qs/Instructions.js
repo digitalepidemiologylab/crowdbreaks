@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Markdown from 'react-markdown';
 
 
-export const MturkInstructions = (props) => {
+export const Instructions = (props) => {
   const markdownStyle = {textAlign: 'left', border: '1px solid #ced7de', borderRadius: '2px', padding: '20px'}
   let symbol = props.display ? 'fa fa-minus' : 'fa fa-plus'
   let buttonTitle = props.display ? 'Hide instructions' : 'Show instructions'

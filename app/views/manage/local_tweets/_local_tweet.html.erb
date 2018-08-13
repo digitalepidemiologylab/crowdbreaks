@@ -1,4 +1,5 @@
 <tr>
   <td><%= local_tweet.tweet_id %></td>
-  <td></td>
+  <td><%= local_tweet.is_available? ? 'Yes' : 'No' %></td>
+  <td><%= local_tweet.done_by&.join(' ') %></td>
 </tr>

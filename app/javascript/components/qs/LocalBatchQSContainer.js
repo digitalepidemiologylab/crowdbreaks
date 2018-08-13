@@ -4,7 +4,9 @@ import React from 'react'
 import { QuestionSequence } from './QuestionSequence';
 import { LocalBatchFinal } from './LocalBatchFinal';
 import { LocalBatchNoMoreWork } from './LocalBatchFinal';
+import { LocalBatchTweetNotAvailable } from './LocalBatchFinal';
 import { InstructionModal } from './InstructionModal';
+import { Instructions } from './Instructions';
 
 
 export class LocalBatchQSContainer extends React.Component {
@@ -20,7 +22,11 @@ export class LocalBatchQSContainer extends React.Component {
       'errors': [],
       'noWorkAvailable': props.noWorkAvailable,
       'userCount': props.userCount,
-      'totalCount': props.totalCount
+      'totalCount': props.totalCount,
+      'totalCountUnavailable': props.totalCountUnavailable,
+      'tweetIsAvailable': props.tweetIsAvailable,
+      'nextTweetIsAvailable': true,
+      'displayInstructions': false
     };
   }
 
@@ -32,8 +38,14 @@ export class LocalBatchQSContainer extends React.Component {
   onTweetLoadError() {
     // Todo: handle exception
     this.setState({
-      errors: this.state.errors.concat(['Error when trying to load tweet'])
+      errors: this.state.errors.concat(["Error when trying to load tweet. Ensure you disable browser plugins which may block this content."])
     });
+  }
+
+  onToggleInstructionDisplay() {
+    this.setState({
+      displayInstructions: !this.state.displayInstructions
+    })
   }
 
   onQuestionSequenceEnd(results) {
@@ -45,10 +57,6 @@ export class LocalBatchQSContainer extends React.Component {
         'results': results
       }
     };
-
-    this.setState({
-      'userCount': this.state.userCount + 1
-    });
 
     $.ajax({
       type: "POST",
@@ -64,10 +72,14 @@ export class LocalBatchQSContainer extends React.Component {
             'questionSequenceHasEnded': true
           });
         } else {
-          tweetId = this.validateTweetId(tweetId)
           this.setState({
-            nextTweetId: tweetId,
-            'questionSequenceHasEnded': true
+            'nextTweetId': tweetId,
+            'nextTweetIsAvailable': response['tweet_is_available'],
+            'questionSequenceHasEnded': true,
+            'userCount': response['user_count'],
+            'totalCount': response['total_count'],
+            'totalCountUnavailable': response['total_count_unavailable'],
+            'noWorkAvailable': response['no_work_available']
           });
         }
       }
@@ -75,21 +87,18 @@ export class LocalBatchQSContainer extends React.Component {
   }
 
   onNextQuestionSequence() {
-    if (this.state.nextTweetId == 0 || isNaN(this.state.nextTweetId)) {
+    if (this.state.nextTweetId == 0 || isNaN(this.state.nextTweetId || this.state.nextTweetId == this.state.tweetId)) {
       // Something went wrong, simply reload page to get new question sequence
       window.location.reload(false);
     } else {
       this.setState({
         tweetId: this.state.nextTweetId,
+        tweetIsAvailable: this.state.nextTweetIsAvailable,
         questionSequenceHasEnded: false,
         openModal: false,
         nextTweetId: 0
       });
     }
-  }
-
-  validateTweetId(tweetId) {
-    return tweetId;
   }
 
   getCounts() {
@@ -99,22 +108,27 @@ export class LocalBatchQSContainer extends React.Component {
     if (this.state.userCount == 0) {
       return <p>Welcome {this.props.userName}! Feel free to start your batch.</p>
     } else {
-      return <p>Keep going! You have finished {this.state.userCount} out of {this.props.totalCount} tweets.</p>
+      return <p className='text-light'>Keep going! You have finished {this.state.userCount} out of {this.state.totalCount} tweets ({this.state.totalCountUnavailable} unavailable).</p>
     }
   }
-
 
   getQuestionSequence() {
     if (this.state.noWorkAvailable) {
       return <LocalBatchNoMoreWork 
         exitPath={this.props.exitPath}
-        totalCount={this.props.totalCount}
+        totalCount={this.state.totalCount}
+        /> 
+    }
+    if (!this.state.tweetIsAvailable) {
+      return <LocalBatchTweetNotAvailable 
+        onNextQuestionSequence={() => this.onNextQuestionSequence()}
+        exitPath={this.props.exitPath}
+        tweetId={this.state.tweetId}
         /> 
     }
     if (!this.state.questionSequenceHasEnded) {
       return <QuestionSequence 
           ref={qs => {this.questionSequence = qs;}}
-          projectTitle={this.props.projectTitle}
           initialQuestionId={this.props.initialQuestionId}
           questions={this.state.questions}
           transitions={this.state.transitions}
@@ -142,6 +156,16 @@ export class LocalBatchQSContainer extends React.Component {
   render() {
     let body = this.getQuestionSequence()
     let counts = this.getCounts()
+    let title = this.props.projectTitle && <h4 className="mb-4">
+      {this.props.projectTitle}
+    </h4>;
+    let instructions = <div className="mb-4">
+      <Instructions
+        display={this.state.displayInstructions}
+        instructions={this.props.instructions}
+        onToggleDisplay={() => this.onToggleInstructionDisplay()}
+      />
+    </div>;
     let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
       <li>Error:</li>
       {this.state.errors.map(function(error, i) {
@@ -150,7 +174,9 @@ export class LocalBatchQSContainer extends React.Component {
     </ul>
     return(
       <div>
+        {title}
         {counts}
+        {instructions}
         {errors}
         {body}
       </div>

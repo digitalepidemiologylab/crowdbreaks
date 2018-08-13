@@ -93,7 +93,7 @@ class FlaskApi
     
     # test if tweet is publicly available
     trials = 0
-    while not tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
+    while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
       Rails.logger.info "Tweet #{tweet_id} is invalid and will be removed"
       remove_tweet(project, tweet_id)
       Rails.logger.info "Fetching new tweet"
@@ -168,25 +168,7 @@ class FlaskApi
       JSON.parse(resp)
     end
   end
-
-  def tweet_is_valid?(tweet_id)
-    begin
-      Crowdbreaks::TwitterClient.status(tweet_id)
-    rescue Twitter::Error::TooManyRequests => e
-      Rails.logger.error "Too many requests on Twitter API"
-      RorVsWild.record_error(e)
-      return false
-    rescue Twitter::Error::ClientError
-      # Tweet is not available anymore
-      return false
-    rescue Twitter::Error => e
-      RorVsWild.record_error(e)
-      return false
-    else
-      return true
-    end
-  end
-
+  
   private
 
 
@@ -195,7 +177,8 @@ class FlaskApi
     Rails.logger.error "API is down, fetching random old tweet"
     trials = 0
     tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
-    while not tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH_DB
+    tv = TweetValidation.new
+    while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH_DB
       Rails.logger.info "Tweet #{tweet_id} is not available anymore, trying another"
       Result.uncached do
         tweet_id = Result.limit(1000).order('RANDOM()').first.tweet_id.to_s
