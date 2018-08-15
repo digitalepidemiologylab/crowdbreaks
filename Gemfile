@@ -100,7 +100,9 @@ group :development do
 end
 
 group :test do
+  # feature tests for testing react code
   gem 'capybara'
+  gem 'capybara-selenium'
   # nice rspec factories
   gem "factory_bot_rails"
   # leave your test db clean after you
@@ -113,8 +115,6 @@ group :test do
   gem 'simplecov', require: false
   # additional controller testing functionality
   gem 'rails-controller-testing'
-  # sidekiq testing
-  # gem 'rspec-sidekiq'
 end
 
 group :production do

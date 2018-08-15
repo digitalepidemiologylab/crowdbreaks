@@ -3,13 +3,15 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
-require 'spec_helper'
 require 'rspec/rails'
+require 'spec_helper'
 require 'ffaker'
 require 'devise'
 require 'simplecov'
 require 'database_cleaner'
 require 'factory_bot_rails'
+require 'selenium/webdriver'
+require 'support/database_cleaner'
 
 
 # Add additional requires below this line. Rails is not loaded until this point!
@@ -43,8 +45,8 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
 
+  config.use_transactional_fixtures = false
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
   # `post` in specs under `spec/controllers`.
@@ -64,11 +66,43 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-end
+  
+  # make url helpers accessible
+  config.include Rails.application.routes.url_helpers
+  config.before(:each) do
+    default_url_options[:locale] = I18n.default_locale
+  end
 
+  # Timecop.freeze breaks Capybara features if not returned
+  config.before(:each) do
+    Timecop.return
+  end
+end
+  
+
+# shoulda matchers
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
     with.test_framework :rspec
     with.library :rails
   end
 end
+
+# Capybara
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, browser: :chrome)
+end
+Capybara.register_driver :headless_chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    chromeOptions: { args: %w(headless disable-gpu) }
+  )
+  Capybara::Selenium::Driver.new app,
+    browser: :chrome,
+    desired_capabilities: capabilities
+end
+# in order to see capybara tests in browser:
+# Capybara.javascript_driver = :chrome
+# else:
+Capybara.javascript_driver = :headless_chrome
+Capybara.server_port = '3001'
+

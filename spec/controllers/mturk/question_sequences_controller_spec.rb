@@ -107,7 +107,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       expect(assigns(:tweet_id)).to eq(nil)
     end
-
+    
     it "worker 1 requests task that which was previous assigned to worker 2" do
       # worker 1 accepts hit
       get :show, params: {
@@ -170,9 +170,9 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         assignmentId: '321'
       }
       task.reload
-      expect(task.time_assigned).to eq(Time.now)
+      expect(task.time_assigned).to eq(Time.current)
     end
-
+    
     it "respects number of maximum assignments" do
       task = Task.find(task_submitted3.id)
       expect(task.mturk_tweet_id).to eq(nil)
@@ -224,7 +224,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       task.reload
       expect(task.mturk_tweet_id).to eq(mturk_tweet3.id)
-      expect(task.time_assigned).to eq(Time.now)
+      expect(task.time_assigned).to eq(Time.current)
       # worker 5 submits his solution
       Timecop.freeze
       post :final, params: {
@@ -246,7 +246,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(response).to be_success
       task.reload
       expect(task.lifecycle_status).to eq('reviewable')
-      expect(task.time_completed).to eq(Time.now)
+      expect(task.time_completed).to eq(Time.current)
       expect(task.results.count).to eq(1)
       expect(task.results.first.mturk_result).to eq(true)
       expect(task.results.first.question_id).to eq(question.id)

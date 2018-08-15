@@ -1,6 +1,5 @@
 require 'rails_helper'
 
-# RSpec.describe LocalBatchJobsController, type: :controller do
 RSpec.describe LocalBatchJobsController, type: :controller do
   include Devise::Test::ControllerHelpers
 
