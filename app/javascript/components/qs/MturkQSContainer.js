@@ -17,70 +17,28 @@ export class MturkQSContainer extends React.Component {
       'questionSequenceHasEnded': false,
       'errors': [],
       'results': [],
-      'displayInstructions': false
+      'displayInstructions': false,
+      'logs': {}
     };
   }
 
   submitResult(resultData) {
-    // Do not post anything in preview mode
-    if (this.props.previewMode) {
-      console.log('Cannot submit in preview mode');
-      return false;
-    }
-
-    // Do not post anything if tweet could not be loaded properly
-    if (this.state.tweetLoadError) {
-      console.log('Cannot submit when Tweet loading failed');
-      return false;
-    }
-
-    // In reset mode, collect results but do not post yet
-    if (this.props.allowReset) {
-      this.setState({
-        results: this.state.results.concat([resultData])
-      })
-      return true;
-    }
-
-    // In test mode do not collect any results
-    if (this.props.testMode) {
-      return true;
-    }
-
-    // Post single result
-    resultData['hit_id'] = this.props.hitId;
-    $.ajax({
-      type: "POST",
-      url: this.props.resultsPath,
-      data: JSON.stringify(resultData),
-      contentType: "application/json",
-      success: (response) => {
-        console.log('Successfully transmitted single result.')
-        return
-      },
-      error: (response) => {
-        console.log('Error when transmitting single result.')
-        this.setState({
-          errors: this.state.errors.concat(['Internal error'])
-        });
-        return
-      }
-    });
-    // Continue even on error
+    // Single answer submit hook, do nothing
     return true;
   }
 
   onTweetLoadError() {
-    // Todo: handle exception
     this.setState({
-      errors: this.state.errors.concat(['Tweet not available anymore'])
+      errors: this.state.errors.concat(['Error when trying to load tweet. Ensure you disable browser plugins which may block this content.'])
     });
   }
 
-  onQuestionSequenceEnd() {
-    console.log("Question sequence ended!");
+  onQuestionSequenceEnd(results, logs) {
+    // Set final state which gets submitted in onSubmit()
     this.setState({
-      'questionSequenceHasEnded': true
+      'questionSequenceHasEnded': true,
+      'results': results,
+      'logs': logs
     });
   }
 
@@ -101,6 +59,8 @@ export class MturkQSContainer extends React.Component {
         'results': this.state.results
       }
     });
+    // Add uncamelized logs
+    taskUpdate['task']['logs'] = this.state.logs
 
     $.ajax({
       type: "POST",
@@ -135,6 +95,10 @@ export class MturkQSContainer extends React.Component {
   }
 
   onRestart() {
+    if (!this.props.allowReset) {
+      alert('Reset not allowed.')
+      return
+    }
     if (confirm('Are you sure you want to restart the task? All previous answers given will be deleted.')) {
       if (!this.state.questionSequenceHasEnded && !this.props.noWorkAvailable) {
         this.questionSequence.restartQuestionSequence()
@@ -142,6 +106,7 @@ export class MturkQSContainer extends React.Component {
       this.setState({
         results: [],
         errors: [],
+        logs: [],
         questionSequenceHasEnded: false
       })
     }
@@ -153,6 +118,9 @@ export class MturkQSContainer extends React.Component {
   }
 
   getOptionButtons() {
+    if (this.props.previewMode) {
+      return;
+    }
     return <div className='mb-5 buttons'>
       {this.props.allowReset && <button 
           onClick={() => this.onRestart()}
@@ -199,7 +167,7 @@ export class MturkQSContainer extends React.Component {
         projectId={this.props.projectId}
         submitResult={(args) => this.submitResult(args)}
         onTweetLoadError={() => this.onTweetLoadError()}
-        onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+        onQuestionSequenceEnd={(results, logs) => this.onQuestionSequenceEnd(results, logs)}
         numTransitions={0}
         captchaVerified={true}
         enableAnswersDelay={this.props.enableAnswersDelay}

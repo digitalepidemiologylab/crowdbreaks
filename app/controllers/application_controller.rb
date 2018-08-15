@@ -67,7 +67,7 @@ class ApplicationController < ActionController::Base
 
   def create_guest_user
     Rails.logger.debug "Creating new guest user..."
-    unique_id = "#{Time.now.to_i}#{rand(100)}"
+    unique_id = "#{Time.current.to_i}#{rand(100)}"
     u = User.create(:username => "guest", :email => "guest_#{unique_id}@example.com")
     u.skip_confirmation!
     u.save!(:validate => false)

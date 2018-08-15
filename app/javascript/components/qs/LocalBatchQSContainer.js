@@ -1,13 +1,13 @@
 // React
 import React from 'react'
 
+// Sub-components
 import { QuestionSequence } from './QuestionSequence';
 import { LocalBatchFinal } from './LocalBatchFinal';
 import { LocalBatchNoMoreWork } from './LocalBatchFinal';
 import { LocalBatchTweetNotAvailable } from './LocalBatchFinal';
 import { InstructionModal } from './InstructionModal';
 import { Instructions } from './Instructions';
-
 
 export class LocalBatchQSContainer extends React.Component {
   constructor(props) {
@@ -36,7 +36,6 @@ export class LocalBatchQSContainer extends React.Component {
   }
 
   onTweetLoadError() {
-    // Todo: handle exception
     this.setState({
       errors: this.state.errors.concat(["Error when trying to load tweet. Ensure you disable browser plugins which may block this content."])
     });
@@ -48,15 +47,17 @@ export class LocalBatchQSContainer extends React.Component {
     })
   }
 
-  onQuestionSequenceEnd(results) {
+  onQuestionSequenceEnd(results, logs) {
     var data = {
       'qs': {
         'tweet_id': this.state.tweetId,
         'user_id': this.props.userId,
         'project_id': this.props.projectId,
-        'results': results
+        'results': results,
+        'logs': logs
       }
     };
+    console.log(data)
 
     $.ajax({
       type: "POST",
@@ -137,7 +138,7 @@ export class LocalBatchQSContainer extends React.Component {
           projectId={this.props.projectId}
           submitResult={(args) => this.submitResult(args)}
           onTweetLoadError={() => this.onTweetLoadError()}
-          onQuestionSequenceEnd={(args) => this.onQuestionSequenceEnd(args)}
+          onQuestionSequenceEnd={(results, logs) => this.onQuestionSequenceEnd(results, logs)}
           numTransitions={this.props.numTransitions}
           captchaSiteKey={""}
           userSignedIn={true}

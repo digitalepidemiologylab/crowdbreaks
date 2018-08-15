@@ -30,7 +30,7 @@ class Task < ApplicationRecord
       })
     end
     update_attributes({
-      time_completed: Time.now,
+      time_completed: Time.current,
       lifecycle_status: :reviewable
     })
   end

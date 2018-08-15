@@ -42,6 +42,7 @@ class LocalBatchJob < ApplicationRecord
   end
 
   def allows_user?(user_id)
+    return false if user_id.nil?
     users.exists?(user_id) ? true : false
   end
 end

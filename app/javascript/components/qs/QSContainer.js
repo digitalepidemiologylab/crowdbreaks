@@ -77,13 +77,14 @@ export class QSContainer extends React.Component {
     });
   }
 
-  onQuestionSequenceEnd(results) {
+  onQuestionSequenceEnd(results, logs) {
     // remember user has answered tweet
     var data = {
       'qs': {
         'tweet_id': this.state.tweetId,
         'user_id': this.props.userId,
-        'project_id': this.props.projectId
+        'project_id': this.props.projectId,
+        'logs': logs
       }
     };
     // Note: results contains a collection of all previous results which is not used here but may be used by other container components
@@ -140,7 +141,7 @@ export class QSContainer extends React.Component {
           projectId={this.props.projectId}
           submitResult={(args) => this.submitResult(args)}
           onTweetLoadError={() => this.onTweetLoadError()}
-          onQuestionSequenceEnd={(args) => this.onQuestionSequenceEnd(args)}
+          onQuestionSequenceEnd={(results, logs) => this.onQuestionSequenceEnd(results, logs)}
           numTransitions={this.state.numTransitions}
           captchaSiteKey={this.props.captchaSiteKey}
           userSignedIn={this.props.userSignedIn}

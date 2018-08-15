@@ -43,7 +43,48 @@ class QuestionSequencesController < ApplicationController
     end
   end
 
+
+  def final
+    api = FlaskApi.new
+    project = Project.find_by(id: final_params[:project_id])
+    user_id = final_params[:user_id]
+    tweet_id = final_params[:tweet_id]
+    
+    # update count
+    project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
+    project.save
+
+    # update tweet in Redis pool
+    api.update_tweet(project.es_index_name, user_id, tweet_id)
+
+    # get next question sequence data
+    new_tweet_id = api.get_tweet(project.es_index_name, user_id: user_id)
+
+    # save logs
+    logs = final_params.fetch(:logs, {}) 
+    unless logs.empty?
+      qs_log = QuestionSequenceLog.create(log: logs)
+      # associated all previous results with logs
+      num_changed = project.results.where({user_id: user_id, tweet_id: tweet_id, question_sequence_log_id: nil, created_at: 1.day.ago..Time.current}).update_all(question_sequence_log_id: qs_log.id)
+      if num_changed == 0
+        Rails.logger.error("Could not find any previous results to Question Sequence Log #{qs_log.id}")
+      end
+    end
+
+    # simply return new tweet ID
+    render json: {
+      tweet_id: new_tweet_id,
+    }, status: 200
+  end
+
   private
+
+  def final_params
+    params.require(:qs).permit(:tweet_id, :user_id, :project_id,
+                               logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized,
+                                      results: [:submitTime, :timeSinceLastAnswer, :questionId],
+                                      resets: [:resetTime, :resetAtQuestionId, previousResultLog: [:submitTime, :timeSinceLastAnswer, :questionId]]])
+  end
 
   def results_params
     params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)

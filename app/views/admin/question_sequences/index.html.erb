@@ -20,6 +20,7 @@
         <tr>
           <th>Project</th>
           <th># Questions</th>
+          <th># Results</th>
           <th>View</th>
           <th>Actions</th>
         </tr>
@@ -28,7 +29,8 @@
         <% @projects.each do |p| %>
           <tr>
             <td><%= p.title %></td>
-            <td><%= p.questions.count %></td>
+            <td><%= number_with_delimiter(p.questions.count, delimiter: ' ') %></td>
+            <td><%= number_with_delimiter(p.results.count, delimiter: ' ') %></td>
             <td>
               <%= link_to 'Public', admin_question_sequence_path(p.id, mode: :public) %> | 
               <%= link_to 'Mturk', admin_question_sequence_path(p.id, mode: :mturk) %>

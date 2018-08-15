@@ -5,6 +5,7 @@ import { ClipLoader } from 'react-spinners';
 
 // Other 
 var humps = require('humps');
+import moment from 'moment';
 
 // Sub-components
 import { Answer } from './Answer';
@@ -29,14 +30,51 @@ export class QuestionSequence extends React.Component {
       'unverifiedAnswers': [],
       'answersDisabled': true,
       'showQuestionInstruction': false,
-      'results': []
+      'results': [],
+      'logs': this.getInitializedLog(),
+      'timeLastAnswer': null
     };
   }
 
+  componentDidMount() {
+    // Logging
+    let newLog = this.state.logs;
+    newLog['timeMounted'] = this.getTime();
+    this.setState({
+      'timeLastAnswer': this.getTime(),
+      'logs': newLog
+    })
+  }
+
+  getInitializedLog() {
+    return {
+      'timeInitialized': this.getTime(),
+      'userTimeInitialized': moment().format(),
+      'results': [],
+      'resets': [],
+      'answerDelay': this.props.enableAnswersDelay
+    }
+  }
+
+  getTime() {
+    return new Date().getTime();
+  }
+
   restartQuestionSequence() {
+    // logging
+    let newLog = this.state.logs;
+    newLog['resets'].push({
+      'resetTime': this.getTime(),
+      'resetAtQuestionId': this.state.currentQuestion.id,
+      'previousResultLog': newLog['results']
+    });
+    newLog['results'] = [];
+
     this.setState({
       currentQuestion: this.props.questions[this.props.initialQuestionId],
-      numQuestionsAnswered: 0
+      numQuestionsAnswered: 0,
+      results: [],
+      logs: newLog
     })
   }
 
@@ -68,9 +106,26 @@ export class QuestionSequence extends React.Component {
     return null;
   }
 
+
+  logResult() {
+    let newLog = this.state.logs;
+    const now = this.getTime()
+    newLog['results'].push({
+      'submitTime': now,
+      'timeSinceLastAnswer': now - this.state.timeLastAnswer,
+      'questionId': this.state.currentQuestion.id
+    });
+    this.setState({
+      logs: newLog
+    });
+  }
+
   onSubmitAnswer(answerId) {
+    // logging
+    this.logResult();
+    
     // collect result data
-    var resultData = humps.decamelizeKeys({
+    let resultData = humps.decamelizeKeys({
       result: {
         answerId: answerId,
         questionId: this.state.currentQuestion.id,
@@ -79,8 +134,7 @@ export class QuestionSequence extends React.Component {
         projectId: this.props.projectId
       }
     });
-    
-    var status;
+    let status;
     if (!this.props.userSignedIn && !this.props.captchaVerified) {
       // add to waiting queue to be verified by captcha
       this.state.unverifiedAnswers.push(resultData);
@@ -109,7 +163,7 @@ export class QuestionSequence extends React.Component {
             'tweetHasLoaded': false,
             'numQuestionsAnswered': newNumQuestionAnswered
           }, () => {
-            this.props.onQuestionSequenceEnd(this.state.results);
+            this.props.onQuestionSequenceEnd(this.state.results, this.state.logs);
           });
         } else {
           // Go to next question
@@ -119,7 +173,6 @@ export class QuestionSequence extends React.Component {
           });
         }
       })
-
     }
   }
   

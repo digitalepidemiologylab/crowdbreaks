@@ -34,10 +34,11 @@ class Mturk::QuestionSequencesController < ApplicationController
     # fetch associated task
     task = get_task(tasks_params[:hit_id])
     results = tasks_params.fetch(:results, []) 
+    logs = tasks_params.fetch(:logs, {}) 
 
     # try to store results even if task couldn't be found
     unless results.empty?
-      if not create_results_for_task(results, task.try(:id))
+      if not create_results_for_task(results, task.try(:id), logs)
         head :bad_request
       end
     end
@@ -69,9 +70,10 @@ class Mturk::QuestionSequencesController < ApplicationController
 
   private
 
-  def create_results_for_task(results, task_id)
+  def create_results_for_task(results, task_id, logs)
+    qs_log = QuestionSequenceLog.create(log: logs)
     results.each do |r|
-      results_params = r[:result].merge({task_id: task_id, mturk_result: true})
+      results_params = r[:result].merge({task_id: task_id, mturk_result: true, question_sequence_log_id: qs_log.id})
       result = Result.new(results_params)
       if not result.save
         return false
@@ -88,7 +90,11 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
   def tasks_params
-    params.require(:task).permit(:hit_id, :tweet_id, :worker_id, :assignment_id, results: [result: [:answer_id, :question_id, :tweet_id, :user_id, :project_id]])
+    params.require(:task).permit(:hit_id, :tweet_id, :worker_id, :assignment_id,
+                                 results: [result: [:answer_id, :question_id, :tweet_id, :user_id, :project_id]],
+                                 logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized,
+                                        results: [:submitTime, :timeSinceLastAnswer, :questionId],
+                                        resets: [:resetTime, :resetAtQuestionId, previousResultLog: [:submitTime, :timeSinceLastAnswer, :questionId]]])
   end
 
   def results_params

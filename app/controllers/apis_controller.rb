@@ -79,28 +79,6 @@ class ApisController < ApplicationController
     respond_with_flash(resp, streaming_path)
   end
 
-  # end of question sequence
-  def question_sequence_end
-    project = Project.find_by(id: api_params_qs[:project_id])
-    user_id = api_params_qs[:user_id]
-    
-    # update count
-    project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
-    project.save
-
-    # update tweet in Redis pool
-    @api.update_tweet(project.es_index_name, api_params_qs[:user_id], api_params_qs[:tweet_id])
-
-    # get next question sequence data
-    new_tweet_id = @api.get_tweet(project.es_index_name, user_id: user_id)
-
-    # simply return new tweet ID (use the same question sequence)
-    render json: {
-      tweet_id: new_tweet_id,
-    }, status: 200
-  end
-
-
   # front page leadline
   def get_leadline
     since = api_params_leadline.fetch(:since, 30.days.ago)
@@ -110,7 +88,7 @@ class ApisController < ApplicationController
 
     result = []
     num_new_entries.to_i.times do
-      resp = Result.order(created_at: :desc).where(created_at: since..Time.now).where.not(tweet_id: exclude_tweet_ids).
+      resp = Result.order(created_at: :desc).where(created_at: since..Time.current).where.not(tweet_id: exclude_tweet_ids).
         joins(:user, :answer, :project).where(projects: {public: true}).where.not(users: {username: exclude_usernames}).where(answers: {label: Answer::LABELS.values}).limit(1).
         pluck('results.tweet_id,users.username as username,answers.label as label,results.created_at,projects.title_translations as title')
       unless resp.empty?
@@ -128,7 +106,7 @@ class ApisController < ApplicationController
   def get_user_activity_data
     authorize! :access, :user_activity_data
     start_date = Time.parse(api_params_user_activity.fetch(:start_date, 30.days.ago.to_s))
-    end_date = Time.parse(api_params_user_activity.fetch(:end_date, Time.now.to_s))
+    end_date = Time.parse(api_params_user_activity.fetch(:end_date, Time.current.to_s))
     counts = Result.where("created_at > ?", start_date).where("created_at < ?", end_date).group('created_at::date').count
     leaderboard = Result.where("results.created_at > ?", start_date).where("results.created_at < ?", end_date).joins(:user).group('users.email').count
     leaderboard = leaderboard.sort_by { |k, v| v }.reverse!.first(30)
@@ -148,10 +126,6 @@ class ApisController < ApplicationController
   
   def api_params
     params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes)
-  end
-
-  def api_params_qs
-    params.require(:qs).permit(:tweet_id, :user_id, :project_id)
   end
 
   def api_params_viz
