@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe LocalBatchJobsController, type: :controller do
   include Devise::Test::ControllerHelpers
 
-  let!(:user1) { FactoryBot.create(:user, :confirmed) }
-  let!(:user2) { FactoryBot.create(:user, :confirmed) }
-  let!(:user3) { FactoryBot.create(:user, :confirmed) }
+  let!(:user1) { FactoryBot.create(:user, :contributor, :confirmed) }
+  let!(:user2) { FactoryBot.create(:user, :contributor, :confirmed) }
+  let!(:user3) { FactoryBot.create(:user, :contributor, :confirmed) }
   let!(:project) { FactoryBot.create(:project) }
   # user 1 and 3 are allowed to work on batch
   let!(:local_batch_job) { FactoryBot.create(:local_batch_job, users: [user1, user3], project: project) }

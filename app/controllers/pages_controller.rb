@@ -1,4 +1,6 @@
 class PagesController < ApplicationController
+  authorize_resource :class => false
+
   def index
     @num_tweets_classified = Project.where(public: true).pluck(:question_sequences_count).sum
     @translations = I18n.backend.send(:translations)[I18n.locale][:pages][:index][:leadline]

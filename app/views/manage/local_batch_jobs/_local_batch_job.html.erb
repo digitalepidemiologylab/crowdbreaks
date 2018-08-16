@@ -22,12 +22,15 @@
   </td>
   <td>
     <div>
-      <%= link_to fa_icon('trash'),
-        manage_local_batch_job_path(local_batch_job),
-        method: :delete,
-        data: {confirm: "Delete batch and all queued tweets?"} 
-      %>
-    <%= link_to fa_icon('pencil'), edit_manage_local_batch_job_path(local_batch_job) %>
+      <% if can? :destroy, local_batch_job %>
+        <%= link_to fa_icon('trash'),
+          manage_local_batch_job_path(local_batch_job),
+          method: :delete,
+          data: {confirm: "Delete batch and all queued tweets?"} %>
+      <% end %>
+      <% if can? :update, local_batch_job %>
+        <%= link_to fa_icon('pencil'), edit_manage_local_batch_job_path(local_batch_job) %>
+      <% end %>
     </div>
   </td>
 </tr>

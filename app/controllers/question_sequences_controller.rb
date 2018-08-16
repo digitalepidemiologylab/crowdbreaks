@@ -1,11 +1,11 @@
 class QuestionSequencesController < ApplicationController
+  authorize_resource class: false
 
   def show
-    authorize! :show, :question_sequence
     @project = Project.friendly.find(params[:project_id])
 
     # Collect question sequence info
-    @question_sequence = QuestionSequence.new(@project).create
+    @question_sequence = QuestionSequence.new(@project).load
     
     # Other
     @user_id = current_or_guest_user.id
@@ -19,7 +19,6 @@ class QuestionSequencesController < ApplicationController
   end
 
   def create
-    authorize! :create, Result
     result = Result.new(results_params)
 
     # if captcha is verified save data

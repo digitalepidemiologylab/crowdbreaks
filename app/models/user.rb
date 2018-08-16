@@ -7,6 +7,8 @@ class User < ApplicationRecord
   has_many :results
   has_and_belongs_to_many :local_batch_jobs
 
+  enum role: [:default, :contributor, :collaborator, :admin]
+
   validates_uniqueness_of :email
 
   def user_email

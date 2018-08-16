@@ -1,5 +1,7 @@
 module Admin
   class QuestionSequencesController < BaseController
+    authorize_resource class: false
+
     def new
     end
 
@@ -9,7 +11,7 @@ module Admin
 
     def show
       @project = Project.friendly.find(show_params[:id])
-      @question_sequence = QuestionSequence.new(@project).create
+      @question_sequence = QuestionSequence.new(@project).load
       @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
       @user_id = current_or_guest_user.id
       @hit_id = show_params[:hitId]

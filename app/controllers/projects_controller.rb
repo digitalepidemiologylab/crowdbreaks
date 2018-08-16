@@ -1,4 +1,6 @@
 class ProjectsController < ApplicationController
+  authorize_resource
+
   def index
     @projects = Project.all.where('public': true)
   end

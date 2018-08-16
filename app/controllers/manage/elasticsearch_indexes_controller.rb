@@ -1,6 +1,7 @@
 module Manage
   class ElasticsearchIndexesController < BaseController
     before_action :api_init
+    authorize_resource class: false
 
     def new
     end

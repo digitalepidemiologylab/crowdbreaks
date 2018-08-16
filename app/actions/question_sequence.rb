@@ -3,7 +3,7 @@ class QuestionSequence
     @project = project
   end
 
-  def create
+  def load
     # collect JSON data
     options = {locale: I18n.locale.to_s}
 

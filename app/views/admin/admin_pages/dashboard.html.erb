@@ -1,0 +1,24 @@
+<% @title ||= 'Admin'; title @title %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>Admin interface</h2>
+  </div>
+</div>
+
+<div class="row mb-5">
+  <div class="col-lg-6 text-center">
+    <% if current_or_guest_user.admin? %>
+      <%= link_to 'Active admin', active_admin_root_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <% end %>
+    <% if can? :read, Project %>
+      <%= link_to 'Projects', admin_projects_path, class: 'btn btn-primary btn-lg btn-block' %>
+    <% end %>
+    <% if can? :read, :question_sequence %>
+      <%= link_to 'Question Sequences', admin_question_sequences_path, class: 'btn btn-primary btn-lg btn-block' %>
+    <% end %>
+    <% if can? :read, User %>
+      <%= link_to 'Users', admin_users_path, class: 'btn btn-primary btn-lg btn-block' %>
+    <% end %>
+  </div>
+</div>

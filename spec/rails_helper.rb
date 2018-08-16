@@ -77,6 +77,9 @@ RSpec.configure do |config|
   config.before(:each) do
     Timecop.return
   end
+
+  # Devise controller helpers
+  config.include Devise::Test::ControllerHelpers, type: :controller
 end
   
 

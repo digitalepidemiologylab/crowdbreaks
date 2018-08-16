@@ -6,8 +6,17 @@ FactoryBot.define do
     trait :confirmed do
       confirmed_at { Time.zone.now }
     end
+
     trait :admin do
-      admin true
+      role :admin
+    end
+
+    trait :collaborator do
+      role :collaborator
+    end
+
+    trait :contributor do
+      role :collaborator
     end
   end
 end

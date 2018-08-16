@@ -1,6 +1,7 @@
 class LocalBatchJobsController < ApplicationController
+  load_and_authorize_resource :find_by => :slug
+
   def show
-    @local_batch_job = LocalBatchJob.friendly.find(params[:id])
     @user_id = current_user&.id
     # only allow certain users to do task
     if not user_signed_in? or not @local_batch_job.allows_user?(@user_id)
@@ -21,7 +22,7 @@ class LocalBatchJobsController < ApplicationController
 
     @project = @local_batch_job.project
     @instructions = @local_batch_job.instructions
-    @question_sequence = QuestionSequence.new(@project).create
+    @question_sequence = QuestionSequence.new(@project).load
     @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
   end
 

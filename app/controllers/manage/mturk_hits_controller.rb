@@ -1,6 +1,7 @@
 module Manage
   class MturkHitsController < BaseController
     def list_hits
+      authorize! :list, :hits
       @page = params[:page].present? ? params[:page].to_i : 1
       @sandbox = true
       if params[:sandbox].present?

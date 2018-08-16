@@ -1,5 +1,7 @@
 module Manage
   class MturkBatchJobsController < BaseController
+    load_and_authorize_resource
+
     def new
       @mturk_batch_job = MturkBatchJob.new
     end

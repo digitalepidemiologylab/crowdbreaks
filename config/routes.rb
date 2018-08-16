@@ -4,8 +4,11 @@ Rails.application.routes.draw do
   root 'pages#index'
 
   namespace :admin do
+    get '/', to: redirect('admin/dashboard')
+    get 'dashboard', to: 'admin_pages#dashboard'
     resources :projects, except: [:show]
     resources :question_sequences
+    resources :users
   end
 
   scope :api do

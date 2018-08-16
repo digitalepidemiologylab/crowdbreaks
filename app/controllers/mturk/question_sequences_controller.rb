@@ -27,7 +27,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     @project = task.mturk_batch_job.project
     @sandbox = task.mturk_batch_job.sandbox
     @mturk_instructions = task.mturk_batch_job.instructions
-    @question_sequence = QuestionSequence.new(@project).create
+    @question_sequence = QuestionSequence.new(@project).load
   end
 
   def final

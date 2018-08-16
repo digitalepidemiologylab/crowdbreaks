@@ -1,2 +1,0 @@
-module Mturk::QuestionSequencesHelper
-end

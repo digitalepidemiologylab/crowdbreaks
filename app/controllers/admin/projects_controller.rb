@@ -1,5 +1,7 @@
 module Admin
   class ProjectsController < BaseController
+    load_and_authorize_resource
+
     def new
       @project = Project.new
     end

@@ -38,8 +38,10 @@
   </div>
 </div>
 
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10 col-lg-8">
-    <%= link_to 'Create new index', new_elasticsearch_index_path, class: 'btn btn-primary btn-lg' %>
+<% if can? :create, :elasticsearch_index %>
+  <div class="row justify-content-center mb-4">
+    <div class="col-12 col-md-10 col-lg-8">
+      <%= link_to 'Create new index', new_elasticsearch_index_path, class: 'btn btn-primary btn-lg' %>
+    </div>
   </div>
-</div>
+<% end %>

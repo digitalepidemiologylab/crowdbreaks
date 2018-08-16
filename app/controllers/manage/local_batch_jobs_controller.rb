@@ -1,20 +1,19 @@
 module Manage
   class LocalBatchJobsController < BaseController
+    load_and_authorize_resource :find_by => :slug
+
     def index
       @local_batch_jobs = LocalBatchJob.all.order('created_at DESC').page(params[:page]).per(10)
     end
 
     def new
-      @local_batch_job = LocalBatchJob.new
     end
 
     def edit
-      @local_batch_job = LocalBatchJob.friendly.find(params[:id])
     end
 
     def update
-      @local_batch_job = LocalBatchJob.friendly.find(params[:id])
-      if @local_batch_job.update_attributes(batch_params)
+      if @local_batch_job.update_attributes(local_batch_job_params)
         if @local_batch_job.job_file.present?
           tweet_ids = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row[0] }
           CreateLocalTweetsJob.perform_later(@local_batch_job.id, tweet_ids, destroy_first: true)
@@ -26,7 +25,6 @@ module Manage
     end
 
     def create
-      @local_batch_job = LocalBatchJob.new(batch_params)
       if @local_batch_job.save
         if @local_batch_job.job_file.present?
           tweet_ids = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row[0] }
@@ -39,7 +37,6 @@ module Manage
     end
 
     def destroy
-      @local_batch_job = LocalBatchJob.friendly.find(params[:id])
       unless @local_batch_job.present?
         redirect_to(manage_local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' could not be found.")
       end
@@ -50,7 +47,7 @@ module Manage
 
     private
 
-    def batch_params
+    def local_batch_job_params
       params.require(:local_batch_job).permit(:name, :project_id, :job_file, :instructions, :user_ids => [])
     end
   end
