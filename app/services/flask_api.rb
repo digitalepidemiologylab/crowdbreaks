@@ -93,6 +93,7 @@ class FlaskApi
     
     # test if tweet is publicly available
     trials = 0
+    tv = TweetValidation.new
     while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
       Rails.logger.info "Tweet #{tweet_id} is invalid and will be removed"
       remove_tweet(project, tweet_id)
