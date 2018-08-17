@@ -275,7 +275,7 @@ export class QuestionSequence extends React.Component {
       {/* Circle question number */}
       { !this.state.tweetIsLoading && 
           <div className="row justify-content-center">
-            <div className="col-12 col-lg-8 text-center">
+            <div className="col-xs-12 col-lg-8 text-center">
               <div className="v-line"></div>
               <h4 className="circle-text mb-4">{Q}</h4>
               {/* Question */}

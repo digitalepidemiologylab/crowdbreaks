@@ -52,15 +52,15 @@ module Manage
       if params[:destroy_results].present?
         destroy_results = params[:destroy_results] == 'true' ? true : false
       end
-      DestroyMturkBatchJob.perform_later(@mturk_batch_job.id, destroy_results: destroy_results )
+      DestroyMturkBatchJob.perform_later(@mturk_batch_job.id, destroy_results: destroy_results)
       redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being destroyed...")
     end
 
     def submit
       mturk_batch_job = MturkBatchJob.find(params[:mturk_batch_job_id])
-      # if mturk_batch_job.status != 'unsubmitted'
-      #   redirect_to(mturk_batch_jobs_path, alert: "Batch must be in 'unsubmitted' stated in order to be submitted.") and return
-      # end
+      if mturk_batch_job.status != 'unsubmitted'
+        redirect_to(mturk_batch_jobs_path, alert: "Batch must be in 'unsubmitted' stated in order to be submitted.") and return
+      end
 
       SubmitTasksJob.perform_later(mturk_batch_job.id)
       # SubmitTasksJob.perform_now(mturk_batch_job.id)

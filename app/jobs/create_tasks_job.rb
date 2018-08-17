@@ -5,17 +5,19 @@ class CreateTasksJob < ApplicationJob
 
   after_enqueue do |job|
     mturk_batch_job = MturkBatchJob.find_by(id: job.arguments.first)
+    return unless mturk_batch_job.present?
     mturk_batch_job.update_attribute(:processing, true)
   end
 
   after_perform do |job|
     mturk_batch_job = MturkBatchJob.find_by(id: job.arguments.first)
+    return unless mturk_batch_job.present?
     mturk_batch_job.update_attribute(:processing, false)
   end
 
   def perform(mturk_batch_job_id, tweet_ids, destroy_first: false)
     mturk_batch_job = MturkBatchJob.find_by(id: mturk_batch_job_id)
-    return if mturk_batch_job.nil?
+    return unless mturk_batch_job.present?
 
     if destroy_first
       mturk_batch_job.cleanup

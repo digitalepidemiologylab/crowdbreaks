@@ -3,6 +3,7 @@ class DestroyMturkBatchJob < ApplicationJob
 
   after_enqueue do |job|
     mturk_batch_job = MturkBatchJob.find_by(id: job.arguments.first)
+    return unless mturk_batch_job.present?
     mturk_batch_job.update_attribute(:marked_for_deletion, true)
   end
 
