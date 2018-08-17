@@ -12,11 +12,13 @@ class MturkWorker < ApplicationRecord
     end
 
     c = 0
-    max_trials = task.mturk_batch_job.mturk_tweets.count + 1
+    max_trials = task.mturk_batch_job.mturk_tweets.count
+
+    Rails.logger.debug "Number of tweets for this batch: #{max_trials}" 
     tv = TweetValidation.new
     # Loop as long as we find a valid tweet (avoid infinite loop with max_trials in case something goes wrong)
     while not tv.tweet_is_valid?(mturk_tweet.tweet_id) and c < max_trials 
-      Rails.logger.info "Tweet with ID #{mturk.tweet_id} was found to be unavailable. Setting to unavailable and trying to find new tweet." 
+      Rails.logger.info "Tweet with ID #{mturk_tweet.tweet_id} was found to be unavailable. Setting to unavailable and trying to find new tweet." 
       mturk_tweet.set_to_unavailable
       mturk_tweet = retrieve_mturk_tweet_for_task(task)
       if mturk_tweet.nil?
@@ -24,13 +26,17 @@ class MturkWorker < ApplicationRecord
         return
       end
       c += 1
+      if c == max_trials
+        Rails.logger.info "Reached max_trials"
+      end
     end
-    return if mturk_tweet.nil?
+
+    Rails.logger.info "Found valid tweet to be #{mturk_tweet.tweet_id}"
     
     # assign the task
     task.update_attributes({
       mturk_worker_id: id,
-      mturk_tweet_id: mturk_tweet.try(:id),
+      mturk_tweet_id: mturk_tweet.id,
       time_assigned: Time.zone.now
     })
   end

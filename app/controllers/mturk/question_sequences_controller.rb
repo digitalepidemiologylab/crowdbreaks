@@ -88,7 +88,14 @@ class Mturk::QuestionSequencesController < ApplicationController
     w = MturkWorker.find_by(worker_id: worker_id)
     w = MturkWorker.create(worker_id: worker_id) if w.nil?
     w.assign_task(task)
-    return task.mturk_tweet.try(:tweet_id)
+    tweet_id = task.mturk_tweet.try(:tweet_id)
+    if tweet_id.nil?
+      Rails.logger.info "No tweet ID could be set"
+    else
+      Rails.logger.info "Tweet found successfully to be #{tweet_id}"
+    end
+ 
+    return tweet_id
   end
 
   def tasks_params

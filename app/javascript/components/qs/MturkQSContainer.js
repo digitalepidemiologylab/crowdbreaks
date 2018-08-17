@@ -212,7 +212,7 @@ export class MturkQSContainer extends React.Component {
       })}
     </ul>
       return(
-        <div className="QSContainer" style={{paddingTop: '30px'}}>
+        <div className="QSContainer col-12 text-center" style={{paddingTop: '30px'}}>
           {title}
           {mturkInstructions} 
           {optionButtons}
