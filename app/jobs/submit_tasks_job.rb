@@ -6,17 +6,17 @@ class SubmitTasksJob < ApplicationJob
   end
 
   after_enqueue do |job|
-    mturk_batch_job = MturkBatchJob.find_by(id: job.arguments.first)
+    mturk_batch_job = MturkBatchJob.find(job.arguments.first)
     mturk_batch_job.update_attribute(:processing, true)
   end
 
   after_perform do |job|
-    mturk_batch_job = MturkBatchJob.find_by(id: job.arguments.first)
+    mturk_batch_job = MturkBatchJob.find(job.arguments.first)
     mturk_batch_job.update_attribute(:processing, false)
   end
 
   def perform(mturk_batch_job_id)
-    mturk_batch_job = MturkBatchJob.find_by(id: mturk_batch_job_id)
+    mturk_batch_job = MturkBatchJob.find(mturk_batch_job_id)
 
     mturk = Mturk.new(sandbox: mturk_batch_job.sandbox)
 

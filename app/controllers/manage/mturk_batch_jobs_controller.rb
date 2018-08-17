@@ -11,17 +11,15 @@ module Manage
     end
 
     def show
-      @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
     end
 
     def edit
-      @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
       @is_submitted = @mturk_batch_job.is_submitted?
     end
 
     def update
       @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
-      if @mturk_batch_job.update_attributes(batch_params)
+      if @mturk_batch_job.update_attributes(mturk_batch_job_params)
         if @mturk_batch_job.job_file.present?
           # generate tasks
           tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{ |row| row[0] }
@@ -34,7 +32,6 @@ module Manage
     end
 
     def create
-      @mturk_batch_job = MturkBatchJob.new(batch_params)
       if @mturk_batch_job.save
         # generate tasks
         if @mturk_batch_job.job_file.present?
@@ -48,7 +45,6 @@ module Manage
     end
 
     def destroy
-      @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
       unless @mturk_batch_job.present?
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' could not be found.")
       end
@@ -61,20 +57,20 @@ module Manage
     end
 
     def submit
-      mturk_batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
-      if mturk_batch_job.status != 'unsubmitted'
-        redirect_to(mturk_batch_job_tasks_path(params[:mturk_batch_job_id]), danger: "Batch must be in 'unsubmitted' stated in order to be submitted.")
-        return
-      end
+      mturk_batch_job = MturkBatchJob.find(params[:mturk_batch_job_id])
+      # if mturk_batch_job.status != 'unsubmitted'
+      #   redirect_to(mturk_batch_jobs_path, alert: "Batch must be in 'unsubmitted' stated in order to be submitted.") and return
+      # end
 
       SubmitTasksJob.perform_later(mturk_batch_job.id)
+      # SubmitTasksJob.perform_now(mturk_batch_job.id)
       redirect_to(mturk_batch_jobs_path, notice: "HITs for batch #{mturk_batch_job.name} are being submitted...")
     end
 
     private
 
 
-    def batch_params
+    def mturk_batch_job_params
       params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions)
     end
   end

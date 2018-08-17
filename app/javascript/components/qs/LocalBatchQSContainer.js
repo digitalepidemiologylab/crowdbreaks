@@ -106,7 +106,7 @@ export class LocalBatchQSContainer extends React.Component {
     if (this.state.noWorkAvailable) {
       return null;
     }
-    if (this.state.userCount == 0) {
+    if (this.state.userCount == 0 && this.state.totalCountUnavailable == 0) {
       return <p>Welcome {this.props.userName}! Feel free to start your batch.</p>
     } else {
       return <p className='text-light'>Keep going! You have finished {this.state.userCount} out of {this.state.totalCount} tweets ({this.state.totalCountUnavailable} unavailable).</p>
