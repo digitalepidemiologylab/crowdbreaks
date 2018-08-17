@@ -120,6 +120,16 @@ export class QuestionSequence extends React.Component {
     });
   }
 
+  logFinal() {
+    let newLog = this.state.logs;
+    const now = this.getTime()
+    newLog['totalDurationQuestionSequence'] = now - newLog['timeMounted'];
+    newLog['timeQuestionSequenceEnd'] = now;
+    this.setState({
+      logs: newLog
+    });
+  }
+
   onSubmitAnswer(answerId) {
     // logging
     this.logResult();
@@ -159,6 +169,7 @@ export class QuestionSequence extends React.Component {
         var newNumQuestionAnswered = this.state.numQuestionsAnswered + 1;
         if (nextQuestion === null) {
           // End of question sequence
+          this.logFinal()
           this.setState({
             'tweetHasLoaded': false,
             'numQuestionsAnswered': newNumQuestionAnswered

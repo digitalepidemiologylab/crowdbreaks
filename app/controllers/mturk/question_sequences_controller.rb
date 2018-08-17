@@ -21,6 +21,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     if not @preview_mode
       # worker has accepted the HIT
       @tweet_id = get_tweet_id_for_worker(@worker_id, task)
+      @no_work_available = @tweet_id.nil?
     end
 
     # Collect question sequence info
@@ -83,6 +84,7 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
   def get_tweet_id_for_worker(worker_id, task)
+    Rails.logger.debug "Assigning task for worker #{worker_id}..."
     w = MturkWorker.find_by(worker_id: worker_id)
     w = MturkWorker.create(worker_id: worker_id) if w.nil?
     w.assign_task(task)

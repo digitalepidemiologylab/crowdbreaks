@@ -42,6 +42,16 @@ export class MturkQSContainer extends React.Component {
     });
   }
 
+  logSubmit() {
+    let newLog = this.state.logs;
+    const now = this.getTime();
+    newLog['totalDurationUntilMturkSubmit'] = now - newLog['timeMounted'];
+    newLog['timeMturkSubmit'] = now;
+    this.setState({
+      logs: newLog
+    });
+  }
+
   onSubmit(event) {
     event.preventDefault();
 
@@ -60,6 +70,7 @@ export class MturkQSContainer extends React.Component {
       }
     });
     // Add uncamelized logs
+    this.logSubmit()
     taskUpdate['task']['logs'] = this.state.logs
 
     $.ajax({

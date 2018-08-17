@@ -57,7 +57,6 @@ export class LocalBatchQSContainer extends React.Component {
         'logs': logs
       }
     };
-    console.log(data)
 
     $.ajax({
       type: "POST",
