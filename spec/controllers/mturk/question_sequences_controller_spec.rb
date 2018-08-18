@@ -78,7 +78,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         workerId: 'unseen-worker-id',
         assignmentId: '123'
       }
-      expect(assigns(:tweet_id)).not_to eq(nil)
+      expect(assigns(:tweet_id)).not_to eq("")
     end
 
     it "worker 1 should be receive any of the tweets" do
@@ -87,7 +87,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         workerId: mturk_worker1.worker_id,
         assignmentId: '123'
       }
-      expect(assigns(:tweet_id)).to eq(mturk_tweet1.tweet_id).or eq(mturk_tweet2.tweet_id)
+      expect(assigns(:tweet_id)).to eq(mturk_tweet1.tweet_id.to_s).or eq(mturk_tweet2.tweet_id.to_s)
     end
 
     it "worker 2 should only receive tweet which he hasn't seen yet" do
@@ -96,7 +96,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         workerId: mturk_worker2.worker_id,
         assignmentId: '123'
       }
-      expect(assigns(:tweet_id)).to eq(mturk_tweet2.tweet_id)
+      expect(assigns(:tweet_id)).to eq(mturk_tweet2.tweet_id.to_s)
     end
 
     it "worker 3 should not receive any tweets, since he has done everything" do
@@ -105,7 +105,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         workerId: mturk_worker3.worker_id,
         assignmentId: '123'
       }
-      expect(assigns(:tweet_id)).to eq(nil)
+      expect(assigns(:tweet_id)).to eq("")
     end
     
     it "worker 1 requests task that which was previous assigned to worker 2" do
@@ -150,14 +150,14 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         workerId: mturk_worker2.worker_id,
         assignmentId: '321'
       }
-      expect(assigns(:tweet_id)).to eq(mturk_tweet2.tweet_id)
+      expect(assigns(:tweet_id)).to eq(mturk_tweet2.tweet_id.to_s)
       get :show, params: {
         hitId: task_submitted2.hit_id,
         workerId: mturk_worker2.worker_id,
         assignmentId: '321'
       }
       # no more work available
-      expect(assigns(:tweet_id)).to eq(nil)
+      expect(assigns(:tweet_id)).to eq("")
     end
 
     it "correctly sets assignment time after assignment" do
@@ -182,14 +182,14 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         assignmentId: '123'
       }
       # worker 5 is given only tweet
-      expect(assigns(:tweet_id)).to eq(mturk_tweet3.tweet_id)
+      expect(assigns(:tweet_id)).to eq(mturk_tweet3.tweet_id.to_s)
       get :show, params: {
         hitId: task_submitted4.hit_id,
         workerId: mturk_worker6.worker_id,
         assignmentId: '123'
       }
       # worker 6 wants to do task but max assignment was reached
-      expect(assigns(:tweet_id)).to eq(nil)
+      expect(assigns(:tweet_id)).to eq("")
     end
 
 
@@ -200,7 +200,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         workerId: mturk_worker1.worker_id,
         assignmentId: '123'
       }
-      expect(assigns(:tweet_id)).to eq(mturk_tweet4.tweet_id)
+      expect(assigns(:tweet_id)).to eq(mturk_tweet4.tweet_id.to_s)
 
       # worker 1 has done only tweet which is available
       get :show, params: {
@@ -208,7 +208,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         workerId: mturk_worker1.worker_id,
         assignmentId: '123'
       }
-      expect(assigns(:tweet_id)).to eq(nil)
+      expect(assigns(:tweet_id)).to eq("")
     end
 
     # FINAL ACTION
