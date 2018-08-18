@@ -33,10 +33,11 @@ class ApplicationController < ActionController::Base
   # find guest_user object associated with the current session,
   # creating one as needed
   def guest_user(with_retry = true)
+    Rails.logger.debug "Checking whether guest user is present..."
     # Cache the value the first time it's gotten.
     @cached_guest_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
   rescue ActiveRecord::RecordNotFound # if session[:guest_user_id] invalid
-    session[:guest_user_id] = nil
+    Rails.logger.debug "Record not found"
     guest_user if with_retry
   end
 
@@ -70,6 +71,7 @@ class ApplicationController < ActionController::Base
     unique_id = "#{Time.current.to_i}#{rand(100)}"
     u = User.create(:username => "guest", :email => "guest_#{unique_id}@example.com")
     u.skip_confirmation!
+    u.skip_notifications!
     u.save!(:validate => false)
     session[:guest_user_id] = u.id
     u

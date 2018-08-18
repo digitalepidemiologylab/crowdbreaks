@@ -1,9 +1,10 @@
 module Admin
   class UsersController < BaseController
-    load_and_authorize_resource
+    load_and_authorize_resource param_method: :sanitized_user_params
+
+    before_action :allow_without_password, only: [:update]
 
     def new
-      @user = User.new
     end
 
     def index
@@ -11,14 +12,25 @@ module Admin
     end
 
     def create
+      # don't send email notifications from admin interface
+      @user.skip_notifications!
+      if @user.save
+        @user.confirm
+        respond_to do |format|
+          format.html { redirect_to(admin_users_path, notice: 'User successfully created')}
+        end
+      else
+        respond_to do |format|
+          format.html { render :new }
+        end
+      end
     end
 
     def edit
-      @user = User.find(params[:id])
     end
 
     def update
-      @user = User.find(params[:id])
+      @user.skip_notifications!
       if @user.update_attributes(sanitized_user_params)
         redirect_to(admin_users_path, notice: 'User successfully updated')
       else
@@ -27,6 +39,11 @@ module Admin
     end
 
     def destroy
+      if @user.destroy
+        redirect_to(admin_users_path, notice: 'User successfully destroyed.')
+      else
+        redirect_to(admin_users_path, alert: 'Something went wrong when destroying user')
+      end
     end
 
     private
@@ -38,7 +55,14 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:username, :email, :role)
+      params.require(:user).permit(:username, :email, :role, :password, :password_confirmation)
+    end
+
+    def allow_without_password
+      if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+        params[:user].delete(:password)
+        params[:user].delete(:password_confirmation)
+      end
     end
   end
 end

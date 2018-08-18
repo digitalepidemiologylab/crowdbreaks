@@ -1,0 +1,27 @@
+<%= simple_form_for(@user, url: admin_users_path(@user)) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-group">
+    <%= f.input :username %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :email %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :role, collection: User.roles, include_blank: false, selected: @user.read_attribute_before_type_cast(:role) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :password %> 
+  </div>
+
+  <div class="form-group">
+    <%= f.input :password_confirmation %> 
+  </div>
+
+  <div class="form-actions" style="margin-top:25px;">
+    <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
+  </div>
+<% end %>

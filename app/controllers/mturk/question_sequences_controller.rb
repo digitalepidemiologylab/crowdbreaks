@@ -95,7 +95,7 @@ class Mturk::QuestionSequencesController < ApplicationController
       Rails.logger.info "Tweet found successfully to be #{tweet_id}"
     end
  
-    return tweet_id
+    return tweet_id.to_s
   end
 
   def tasks_params

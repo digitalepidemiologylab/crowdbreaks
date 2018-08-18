@@ -12,9 +12,9 @@
   <div class="form-group">
     <div class="input field_with_hint">
       <div>
-        <label>Users</label>
+        <label>Give access to admin users</label>
       </div>
-      <%= f.collection_check_boxes :user_ids, User.where.not(username: 'guest'), :id, :user_email do |b| %>
+      <%= f.collection_check_boxes :user_ids, User.where.not(role: 'default'), :id, :user_email do |b| %>
         <% b.label(style: "margin-right: 10px") { b.check_box(style: "margin-right: 3px") + b.text}%>
       <% end %>
       <p class="help-block">Give access to users</p>
