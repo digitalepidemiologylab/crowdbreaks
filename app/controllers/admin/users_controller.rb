@@ -7,6 +7,9 @@ module Admin
     def new
     end
 
+    def show
+    end
+
     def index
       @users = User.where.not("email ~* ?", "@example.com").order(role: :desc).page params[:page]
     end
@@ -15,7 +18,7 @@ module Admin
       # don't send email notifications from admin interface
       @user.skip_notifications!
       if @user.save
-        @user.confirm
+        @user.confirm if @user.mark_as_confirmed == '1'
         respond_to do |format|
           format.html { redirect_to(admin_users_path, notice: 'User successfully created')}
         end
@@ -32,6 +35,7 @@ module Admin
     def update
       @user.skip_notifications!
       if @user.update_attributes(sanitized_user_params)
+        @user.confirm if @user.mark_as_confirmed == '1'
         redirect_to(admin_users_path, notice: 'User successfully updated')
       else
         render :edit and return
@@ -55,7 +59,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:username, :email, :role, :password, :password_confirmation)
+      params.require(:user).permit(:username, :email, :role, :password, :password_confirmation, :mark_as_confirmed)
     end
 
     def allow_without_password

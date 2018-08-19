@@ -11,6 +11,8 @@ class User < ApplicationRecord
 
   enum role: [:default, :contributor, :collaborator, :admin]
   @skip = false
+  attr_accessor :mark_as_confirmed
+
 
   def user_email
     "#{username} (#{email})"
