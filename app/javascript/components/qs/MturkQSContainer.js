@@ -42,6 +42,10 @@ export class MturkQSContainer extends React.Component {
     });
   }
 
+  getTime() {
+    return new Date().getTime();
+  }
+
   logSubmit() {
     let newLog = this.state.logs;
     const now = this.getTime();
