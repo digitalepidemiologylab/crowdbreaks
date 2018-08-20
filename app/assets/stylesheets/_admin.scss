@@ -1,0 +1,26 @@
+.admin-wrapper {
+  @extend .content;
+  margin-top: 80px !important;
+  @include media-breakpoint-down(lg) {
+    margin-top: 30px !important;
+  }
+}
+
+.admin-navbar {
+  @extend .navbar;
+  padding: 0;
+}
+
+.admin-navbar-wrapper {
+  @include media-breakpoint-down(lg) {
+    margin-top: 30px !important;
+    margin-bottom: 30px !important;
+  }
+}
+
+.nav-admin-link {
+  margin: 5px;
+  @include media-breakpoint-down(lg) {
+    margin-left: 0px;
+  }
+}

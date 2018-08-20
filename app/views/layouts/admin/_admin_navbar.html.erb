@@ -1,0 +1,28 @@
+<div class="col-xs-12 col-xl-2 admin-navbar-wrapper">
+  <nav class="navbar-expand flex-xl-column flex-row align-items-start admin-navbar">
+    <div class="collapse navbar-collapse">
+      <ul class="flex-xl-column flex-row navbar-nav justify-content-between">
+        <% if current_or_guest_user.admin? %>
+          <li class="nav-item">
+            <%= link_to 'Active admin', active_admin_root_path, class: admin_link_class('active_admin') %>
+          </li>
+        <% end %>
+        <% if can? :read, Project %>
+          <li class="nav-item">
+            <%= link_to 'Projects', admin_projects_path, class: admin_link_class('projects') %>
+          </li>
+        <% end %>
+        <% if can? :read, :question_sequence %>
+          <li class="nav-item">
+            <%= link_to 'Question Sequences', admin_question_sequences_path, class: admin_link_class('question_sequences') %>
+          </li>
+        <% end %>
+        <% if can? :read, User %>
+          <li class="nav-item">
+            <%= link_to 'Users', admin_users_path, class: admin_link_class('users') %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </nav>
+</div>
