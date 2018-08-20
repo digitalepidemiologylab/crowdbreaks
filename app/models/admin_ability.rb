@@ -8,7 +8,8 @@ class AdminAbility
     if user.admin?
       can :manage, :all
     elsif user.collaborator?
-      can :view, :dashboard
+      can :view, :manage_dashboard
+      can :view, :admin_dashboard
       can :manage, Project
       cannot :destroy, Project
       can :manage, :question_sequence

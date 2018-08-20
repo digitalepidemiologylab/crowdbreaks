@@ -1,5 +1,6 @@
 class Mturk
   attr_reader :client
+
   def initialize(sandbox: true)
     @client = get_client(sandbox)
   end

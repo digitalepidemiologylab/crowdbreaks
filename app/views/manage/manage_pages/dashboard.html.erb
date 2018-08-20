@@ -25,8 +25,8 @@
     <% if can? :read, MturkWorker %>
       <%= link_to 'Mturk workers', mturk_workers_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
-    <% if can? :list, :hits %>
-      <%= link_to 'List HITs', list_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <% if can? :read, :mturk_hit %>
+      <%= link_to 'List HITs', mturk_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
   </div>
 </div>

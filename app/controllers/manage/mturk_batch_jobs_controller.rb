@@ -63,7 +63,6 @@ module Manage
       end
 
       SubmitTasksJob.perform_later(mturk_batch_job.id)
-      # SubmitTasksJob.perform_now(mturk_batch_job.id)
       redirect_to(mturk_batch_jobs_path, notice: "HITs for batch #{mturk_batch_job.name} are being submitted...")
     end
 

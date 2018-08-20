@@ -63,9 +63,7 @@ Rails.application.routes.draw do
         get 'submit'
       end
       resources :mturk_workers, only: [:index]
-      controller :mturk_hits do
-        get 'list_hits', action: 'list_hits'
-      end
+      resources :mturk_hits
 
       # elasticsearch
       resources :elasticsearch_indexes

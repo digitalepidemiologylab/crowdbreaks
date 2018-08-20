@@ -23,9 +23,9 @@
     <div>
       Page: <%= @page %>
     <% unless @page == 1 %>
-      <%= link_to 'First page', list_hits_path(sandbox: @sandbox, page: 1), class: 'btn btn-link' %>
+      <%= link_to 'First page', mturk_hits_path(sandbox: @sandbox, page: 1), class: 'btn btn-link' %>
     <% end %>
-    <%= link_to 'Next page', list_hits_path(next_token: @next_token, page: @page + 1, sandbox: @sandbox), class: 'btn btn-link' %>
+    <%= link_to 'Next page', mturk_hits_path(next_token: @next_token, page: @page + 1, sandbox: @sandbox), class: 'btn btn-link' %>
     </div>
   </div>
 </div>
@@ -42,6 +42,7 @@
           <th>Hit Type ID</th>
           <th>Status</th>
           <th>Review status</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -53,6 +54,21 @@
             <td><%= hit[:hit_type_id] %></td>
             <td><%= hit[:status] %></td>
             <td><%= hit[:review_status] %></td>
+            <td>
+              <span>
+                <% if can? :read, :mturk_hit %>
+                  <%= link_to fa_icon("eye"), mturk_hit_path(hit[:hit_id], sandbox: @sandbox),
+                    title: 'Show HIT details' %>
+                <% end %>
+              
+                <% if can? :destroy, :mturk_hit %>
+                  <%= link_to fa_icon("trash"), mturk_hit_path(hit[:hit_id], sandbox: @sandbox),
+                    title: 'Delete HIT on Mturk',
+                    method: :delete,
+                    data: {confirm: "Delete HIT?"} %>
+                <% end %>
+              </span>
+            </td>
           </tr>
         <% end %>
       </tbody>
