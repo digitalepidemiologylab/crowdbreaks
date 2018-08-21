@@ -54,12 +54,18 @@
             <td><%= (@page - 1) * @num_hits + index %></td>
             <td><%= hit[:title] %></td>
             <td><%= find_task(hit[:hit_id]) %></td>
-            <td><%= find_batch_job(hit[:hit_type_id])%></td>
+            <td>
+              <% if batch_job_exists_for_hit?(hit[:hit_id]) %>
+                <%= find_batch_job(hit[:hit_id])%>
+                <% else %>
+                  <%= hit[:hit_type_id] %>
+              <% end %>
+            </td>
             <td><%= hit[:status] %></td>
             <td><%= hit[:review_status] %></td>
             <td>
               <span>
-                <% if can? :update, :mturk_hit and batch_job_exists_for_hit?(hit[:hit_type_id])%>
+                <% if can? :update, :mturk_hit and batch_job_exists_for_hit?(hit[:hit_id])%>
                   <%= link_to 'Review batch', mturk_reviewable_hit_path(hit[:hit_type_id], sandbox: @sandbox) %>
                 <% end %>
               </span>

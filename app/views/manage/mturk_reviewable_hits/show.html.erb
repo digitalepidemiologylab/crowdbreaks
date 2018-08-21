@@ -10,7 +10,10 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <h2>Review HITs for batch '<%= @mturk_batch_job.name %>'</h2>
+    <h2>Review HITs for batch <%= 'job'.pluralize(@mturk_batch_jobs.size) %></h2>
+    <% if @mturk_batch_jobs.size > 1 %>
+      <div class='alert alert-danger'>Note: The following batches could be associated with the same HIT type: <%= @mturk_batch_jobs.pluck(:name).join(', ') %></div>
+    <% end %>
   </div>
 </div>
 

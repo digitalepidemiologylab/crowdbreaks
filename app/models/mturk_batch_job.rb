@@ -34,8 +34,8 @@ class MturkBatchJob < ApplicationRecord
   end
 
   def percentage_completed
-    total_done = num_tasks - num_tasks_where(:completed)
-    return 0 if total_done == 0
+    total_done = num_tasks_where(:completed)
+    return 0 if num_tasks == 0
     (total_done / num_tasks * 100).to_i
   end
 

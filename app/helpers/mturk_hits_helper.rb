@@ -1,11 +1,7 @@
 module MturkHitsHelper
-  def find_batch_job(hit_type_id)
-    batch_job = MturkBatchJob.find_by(hittype_id: hit_type_id)
-    if batch_job.nil?
-      return hit_type_id
-    else
-      return link_to batch_job.name, mturk_batch_job_path(batch_job.id, come_from: 'mturk_hits')
-    end
+  def find_batch_job(hit_id, come_from: 'mturk_hits')
+    mturk_batch_job = Task.find_by(hit_id: hit_id)&.mturk_batch_job
+    return link_to mturk_batch_job.name, mturk_batch_job_path(mturk_batch_job.id, come_from: come_from)
   end
 
   def find_task(hit_id)
@@ -21,7 +17,8 @@ module MturkHitsHelper
     Task.exists?(hit_id: hit_id)
   end
 
-  def batch_job_exists_for_hit?(hittype_id)
-    MturkBatchJob.exists?(hittype_id: hittype_id)
+  def batch_job_exists_for_hit?(hit_id)
+    mturk_batch_job = Task.find_by(hit_id: hit_id)&.mturk_batch_job
+    mturk_batch_job.nil? ? false : true
   end
 end

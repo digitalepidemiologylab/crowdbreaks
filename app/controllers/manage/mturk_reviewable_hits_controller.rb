@@ -11,7 +11,7 @@ module Manage
 
     def show
       hit_type_id = mturk_reviewable_hit_params[:id]
-      @mturk_batch_job = MturkBatchJob.find_by(hittype_id: hit_type_id)
+      @mturk_batch_jobs = MturkBatchJob.where(hittype_id: hit_type_id)
       hits_list = @mturk.list_reviewable_hits(hit_type_id: hit_type_id, next_token: params[:next_token])
       @hits = hits_list[:hits]
       @next_token = hits_list[:next_token]
@@ -30,7 +30,7 @@ module Manage
         @mturk.approve_assignment(assignment_id)
       end
 
-      redirect_to(mturk_reviewable_hit_path(params[:mturk_reviewable_hit_id]), notice: "Successfully accepted #{accepted.length} HITs.") and return
+      redirect_to(mturk_reviewable_hit_path(params[:mturk_reviewable_hit_id]), notice: "Successfully accepted #{accepted.length} HIT(s).") and return
     end
 
     private
