@@ -1,27 +1,25 @@
 module Manage
   class TasksController < BaseController
+    load_and_authorize_resource :mturk_batch_job
+    load_and_authorize_resource :task, through: :mturk_batch_job
+
     def new
     end
 
     def index
-      @mturk_batch_job = MturkBatchJob.find_by(id: params[:mturk_batch_job_id])
       @tasks = @mturk_batch_job.tasks.page params[:page]
     end
 
     def show
-      @task = Task.find(params[:id])
-      @hit = @task.hit
     end
 
     def create
     end
 
     def edit
-      @task = Task.find_by(id: params[:id])
     end
 
     def update
-      @task = Task.find_by(id: params[:id])
       if @task.update_attributes(task_params)
         flash[:notice] = 'Task successfully updated!'
       else
@@ -31,9 +29,8 @@ module Manage
     end
 
     def destroy
-      @task = Task.find_by(id: params[:id])
       @task.delete_hit
-      @task.update_attribute(:lifecycle_status, :disposed)
+      # to be implemented...
       redirect_to mturk_batch_job_tasks_path
     end
 

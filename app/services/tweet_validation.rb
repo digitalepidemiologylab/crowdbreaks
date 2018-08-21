@@ -8,6 +8,7 @@ class TweetValidation
   # 2) Make a HEAD request to twitter.com. This runs into potential issues of url blocking.
   #
   # Doing 2) in the front end with an AJAX call may be possible, if redirects are handled properly: see https://stackoverflow.com/questions/199099/how-to-manage-a-redirect-request-after-a-jquery-ajax-call
+  # However, here we call it from our back-end (method: tweet_is_valid_front_end)
 
   # Test IDs
   # tweet_id = '955454023519391744' # invalid

@@ -10,6 +10,7 @@ module Manage
       @hits = hits_list[:hits]
       @next_token = hits_list[:next_token]
       @num_hits = hits_list[:num_results]
+      @balance = @mturk.check_balance.available_balance
     end
 
     def show
@@ -19,7 +20,7 @@ module Manage
     def destroy
       return_val = @mturk.delete_hit(mturk_hit_params[:id])
       if return_val.nil?
-        redirect_to(mturk_hits_path, alert: 'Could not delte HIT.')
+        redirect_to(mturk_hits_path, alert: 'Could not delte HIT. HITs can only be deleted in states of "Reviewing" or "Reviewable".')
       else
         redirect_to(mturk_hits_path, notice: 'Successfully deleted HIT.')
       end

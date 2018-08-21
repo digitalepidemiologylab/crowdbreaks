@@ -28,10 +28,9 @@ class SubmitTasksJob < ApplicationJob
     mturk_batch_job.tasks.each do |t|
       hit = mturk.create_hit_with_hit_type(t.id, hittype_id, mturk_batch_job)
       t.update_attributes({
-        hit_id: hit.hit_id,
-        time_submitted: hit.creation_time,
-        lifecycle_status: :submitted,
+        hit_id: hit.hit_id
       })
+      t.update_after_hit_submit(hit.creation_time)
     end
   end
 end

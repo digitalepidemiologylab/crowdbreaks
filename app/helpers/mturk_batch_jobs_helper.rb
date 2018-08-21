@@ -5,7 +5,7 @@ module MturkBatchJobsHelper
       image_tag('running.svg') + ' ' + status
     when 'processing', 'deleting'
       tag.i(class: 'fa fa-refresh') + ' ' + status
-    when 'submitted'
+    when 'in progress'
       image_tag('paused.svg') + ' ' + status
     else
       image_tag('not-running.svg') + ' ' + status

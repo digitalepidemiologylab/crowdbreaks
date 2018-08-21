@@ -1,0 +1,55 @@
+<% @title ||= 'HIT review'; title @title %>
+
+<div class="row mb-5">
+  <div class="col-12">
+    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10">
+    <h2>Reviewable Batches</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10">
+    <h4>Options</h4>
+    <label class="label-inline checkbox">
+      <input type="checkbox" id="sandbox-checkbox"  <%= @sandbox ? ' checked="checked"' : ''%>/>
+      Sandbox
+    </label>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10">
+    <%= paginate @mturk_batch_jobs %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Batch name</th>
+          <th>Project</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @mturk_batch_jobs.each do |mturk_batch_job| %>
+          <tr>
+            <td><%= mturk_batch_job.name %></td>
+            <td><%= mturk_batch_job.project.title %></td>
+            <td>
+              <% if mturk_batch_job.is_submitted? %>
+                <%= link_to 'Review batch', mturk_reviewable_hit_path(mturk_batch_job.hittype_id) %>
+              <% else %>
+                <span>Batch is not yet submitted</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

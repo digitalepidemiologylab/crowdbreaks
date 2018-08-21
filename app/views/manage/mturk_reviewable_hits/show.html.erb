@@ -1,0 +1,62 @@
+<% @title ||= 'HIT review'; title @title %>
+
+<div class="row mb-5">
+  <div class="col-12">
+    <%= link_to mturk_reviewable_hits_path, class: 'btn btn-secondary btn-lg' do %>
+      Go back
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2>Review HITs for batch '<%= @mturk_batch_job.name %>'</h2>
+  </div>
+</div>
+
+<%= form_tag mturk_reviewable_hit_multi_review_path(params[:id]) do %>
+  <div class="row justify-content-center mb-4">
+    <div class="col-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Hit ID/<br>Task</th>
+            <th>Assignment status</th>
+            <th>Assignment Id</th>
+            <th>Accept</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @hits.each_with_index do |hit, index| %>
+            <tr>
+              <td><%= (@page - 1) * @num_hits + index %></td>
+              <td><%= find_task(hit[:hit_id]) %></td>
+              <td><%= hit[:assignment_status] %></td>
+              <td><%= hit[:assignment_id] %></td>
+              <td>
+                <% if hit[:assignment_id].present? %>
+                  <%= check_box_tag 'accepted[]', hit[:assignment_id] %>
+                <% end %>
+              </td>
+              <td>
+                <span>
+                  <% if can? :read, :mturk_hit %>
+                    <%= link_to fa_icon("eye"), mturk_hit_path(hit[:hit_id], sandbox: @sandbox),
+                      title: 'Show HIT details' %>
+                  <% end %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <% unless @hits.empty? %>
+        <div class="form-actions mt-5">
+          <%= submit_tag 'Accept selected', class: 'btn btn-primary btn-lg', name: nil %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -12,6 +12,7 @@ require 'database_cleaner'
 require 'factory_bot_rails'
 require 'selenium/webdriver'
 require 'support/database_cleaner'
+require 'webmock/rspec'
 
 
 # Add additional requires below this line. Rails is not loaded until this point!
@@ -109,3 +110,18 @@ end
 Capybara.javascript_driver = :headless_chrome
 Capybara.server_port = '3001'
 
+# Webmock (reject any outside API calls)
+WebMock.disable_net_connect!(allow_localhost: true)
+
+RSpec.configure do |config|
+  config.before(:each) do
+    # mturk
+    stub_request(:any, /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/)
+    # any valid tweet id
+    stub_request(:get, /api.twitter.com\/1.1\/statuses\/show\/[1-9]\d*.json/)
+      .to_return(status: 200, body: {id: '20'}.to_json, :headers => {"Content-Type"=> "application/json"})
+    # invalid tweet id 0
+    stub_request(:get, /api.twitter.com\/1.1\/statuses\/show\/0.json/)
+      .to_return(status: 400, body: {id: '0'}.to_json, :headers => {"Content-Type"=> "application/json"})
+  end
+end

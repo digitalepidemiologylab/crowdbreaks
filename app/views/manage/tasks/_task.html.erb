@@ -6,12 +6,20 @@
   <td><%= time_ago_in_words(task.time_assigned) + ' ago' if task.time_assigned.present? %></td>
   <td><%= time_ago_in_words(task.time_completed) + ' ago' if task.time_completed.present? %></td>
   <td><%= task.lifecycle_status %></td>
+
+  <td>
+    <% if task.hit_id.present? and can? :read, :mturk_hit %>
+      <%= link_to 'HIT details', mturk_hit_path(task.hit_id, sandbox: task.mturk_batch_job.sandbox, come_from: task.mturk_batch_job.id) %>
+    <% end %>
+  </td>
   <td>
     <div>
-      <% if [:disposed, :unsubmitted].include? task.lifecycle_status %>
-        <%= link_to fa_icon("trash"), mturk_batch_job_task_path(task.mturk_batch_job.id, task.id),
-          method: :delete,
-          data: {confirm: "Dispose HIT?"} %>
+      <% if can? :destroy, task %>
+        <% if not task.unsubmitted? %>
+          <%= link_to fa_icon("trash"), mturk_batch_job_task_path(task.mturk_batch_job.id, task.id),
+            method: :delete,
+            data: {confirm: "Dispose HIT?"} %>
+        <% end %>
       <% end %>
       <%= link_to fa_icon('eye'), mturk_batch_job_task_path(task.mturk_batch_job.id, task.id) %>
     </div>

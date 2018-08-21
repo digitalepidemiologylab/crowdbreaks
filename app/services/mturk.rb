@@ -1,6 +1,8 @@
 class Mturk
   attr_reader :client
 
+  DEFAULT_ACCEPT_MESSAGE = 'Thank you for your work!'
+
   def initialize(sandbox: true)
     @client = get_client(sandbox)
   end
@@ -51,20 +53,94 @@ class Mturk
   def get_hit(hit_id)
     handle_error do
       resp = @client.get_hit(hit_id: hit_id)
-      p resp.hit
       resp.hit
     end
   end
 
   def delete_hit(hit_id)
+    hit = get_hit(hit_id)
+    unless hit.nil?
+      case hit.hit_status
+      when 'Assignable'
+        # For HITS in 'Assignable' state forcefully expire by setting expiration time in the past
+        @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
+      when 'Reviewable', 'Reviewing'
+        @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
+        Rails.logger.info "Attempt to delete hit #{hit_id}..."
+      else
+        Rails.logger.error "Cannot delete hit #{hit_id}. HIT needs to be either Assignable, Reviewable or Reviewing"
+        return
+      end
+    end
     handle_error do
-      # For HITS in 'Assignable' state forcefully expire by setting expiration time in the past
-      @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
-
       # delete HIT
       @client.delete_hit(hit_id: hit_id)
     end
   end
+
+  def approve_assignment(assignment_id, message: '')
+    assignment = get_assignment(assignment_id)
+    if assignment.nil?
+      Rails.logger.error "Could not find assignment for assignment Id #{assignment_id}"
+      return
+    end
+    if message.empty?
+      message = DEFAULT_ACCEPT_MESSAGE
+    end
+    handle_error do
+      @client.approve_assignment(assignment_id: assignment_id, requester_feedback: message)
+    end
+  end
+
+  def get_assignment(assignment_id)
+    handle_error do
+      @client.get_assignment(assignment_id: assignment_id)
+    end
+  end
+
+  def reject_assignment(assignment_id, message)
+    if message.empty?
+      Rails.logger.error 'Needs a non-empty rejection message' if message.empty?
+      return
+    end
+    handle_error do
+      @client.reject_assignment(assignment_id: assignment_id, requester_feedback: message)
+    end
+  end
+
+  def list_reviewable_hits(hit_type_id: nil, next_token: nil)
+    hits = []
+    resp = _list_reviewable_hits(hit_type_id, next_token)
+    resp.hits.each do |hit|
+      list_assignments = list_assignments_for_hit(hit.hit_id)
+      if list_assignments.assignments.empty?
+        hits.push({
+          hit_id: hit.hit_id,
+        })
+      else
+        hits.push({
+          hit_id: hit.hit_id,
+          assignment_id: list_assignments.assignments[0].assignment_id,
+          worer_id: list_assignments.assignments[0].worker_id,
+          accept_time: list_assignments.assignments[0].accept_time,
+          submit_time: list_assignments.assignments[0].submit_time,
+          approval_time: list_assignments.assignments[0].approval_time,
+          rejection_time: list_assignments.assignments[0].rejection_time,
+          assignment_status: list_assignments.assignments[0].assignment_status,
+        })
+      end
+    end
+    return {'hits': hits, 'next_token': resp.next_token, 'num_results': resp.num_results}
+  end
+
+
+  def list_assignments_for_hit(hit_id)
+    handle_error(error_return_value: {'assignments': [], num_results: 0}) do
+      # By default max_assignments is set to 1, therefore we only expect 1 result
+      @client.list_assignments_for_hit(hit_id: hit_id, max_results: 1)
+    end
+  end
+
 
   private
 
@@ -74,11 +150,18 @@ class Mturk
     end
   end
 
+  def _list_reviewable_hits(hit_type_id, next_token)
+    handle_error(error_return_value: {'hits': [], 'next_token': '', num_results: 0}) do
+      @client.list_reviewable_hits(hit_type_id: hit_type_id, next_token: next_token, max_results: 100)
+    end
+  end
+
   def handle_error(error_return_value: nil)
     begin
       yield
     rescue StandardError => e
       RorVsWild.record_error(e)
+      p e
       if error_return_value.is_a?(Hash)
         # convert to Hashie Mash to behave similar to a response object
         return Hashie::Mash.new(error_return_value)

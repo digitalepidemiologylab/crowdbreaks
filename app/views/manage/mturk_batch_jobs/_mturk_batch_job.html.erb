@@ -6,14 +6,11 @@
   <td><span class='badge badge-sentiment'><%= status(mturk_batch_job.status) %></span></td>
   <td><%= mturk_batch_job.percentage_completed %> %</td>
   <td>
-    <%= mturk_batch_job.num_tasks_where(:submitted) %> | 
-    <%= mturk_batch_job.num_tasks_where(:reviewable) %> | 
-    <%= mturk_batch_job.num_tasks_where(:accepted) %>
-  </td>
-  <td>
     <div> 
-      <%= link_to mturk_batch_job_tasks_path(mturk_batch_job.id) do %>
-        HITs <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+      <% if can? :read, mturk_batch_job => Task %>
+        <%= link_to mturk_batch_job_tasks_path(mturk_batch_job.id) do %>
+          Tasks <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        <% end %>
       <% end %>
     </div>
     <div> 
@@ -24,7 +21,7 @@
     <div>
       <% if mturk_batch_job.hittype_id.present? %>
         <%= link_to mturk_url(mturk_batch_job.hittype_id, mturk_batch_job.sandbox), target: 'blank' do %>
-          Mturk <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+          HIT Group <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>
       <% end %>
     </div>

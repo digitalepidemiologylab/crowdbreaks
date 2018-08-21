@@ -36,9 +36,9 @@ class MturkWorker < ApplicationRecord
     # assign the task
     task.update_attributes({
       mturk_worker_id: id,
-      mturk_tweet_id: mturk_tweet.id,
-      time_assigned: Time.zone.now
+      mturk_tweet_id: mturk_tweet.id
     })
+    task.update_after_hit_assignment
   end
 
 

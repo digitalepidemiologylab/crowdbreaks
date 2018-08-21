@@ -11,37 +11,26 @@ FactoryBot.define do
     trait :submitted do
       lifecycle_status 1
       hit_id
-      time_submitted Time.zone.now
+      time_submitted Time.current
     end
 
-    trait :reviewable do
+    trait :assigned do
       lifecycle_status 2
       hit_id
       association :mturk_worker
       association :mturk_tweet
       time_submitted 10.days.ago
-      time_assigned 30.minutes.ago
-      time_completed 25.minutes.ago
+      # time_assigned 5.minutes.ago
     end
 
-    trait :disposed do
+    trait :completed do
       lifecycle_status 3
       hit_id
       association :mturk_worker
       association :mturk_tweet
       time_submitted 10.days.ago
-      time_assigned 4.days.ago
-      time_completed 3.days.ago
-    end
-
-    trait :accepted do
-      lifecycle_status 4
-      hit_id
-      association :mturk_worker
-      association :mturk_tweet
-      time_submitted 10.days.ago
-      time_assigned 4.days.ago
-      time_completed 3.days.ago
+      # time_assigned 5.days.ago
+      time_completed 1.minutes.ago
     end
   end
 end

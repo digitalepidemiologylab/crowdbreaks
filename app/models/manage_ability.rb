@@ -15,9 +15,11 @@ class ManageAbility
       can :manage, :elasticsearch_index
       # dashboard - mturk
       can :manage, MturkBatchJob
+      can :manage, Task
       can :manage, MturkTweet
       can :manage, MturkWorker
       can :manage, :mturk_hit
+      can :manage, :mturk_reviewable_hit
       # dashboard - other
       can :view, :sentiment_analysis
       cannot :view, :user_activity

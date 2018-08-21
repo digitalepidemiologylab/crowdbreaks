@@ -34,13 +34,13 @@ class MturkBatchJob < ApplicationRecord
   end
 
   def percentage_completed
-    total_done = num_tasks - (num_tasks_where(:unsubmitted) + num_tasks_where(:submitted))
+    total_done = num_tasks - num_tasks_where(:completed)
     return 0 if total_done == 0
     (total_done / num_tasks * 100).to_i
   end
 
   def is_submitted?
-    status == 'submitted' or status == 'completed' ? true : false
+    status == 'unsubmitted' ? false : true
   end
 
   def status
@@ -48,9 +48,8 @@ class MturkBatchJob < ApplicationRecord
     return 'processing' if processing
     return 'empty' if num_queued_tasks == 0
     return 'unsubmitted' if num_tasks_where(:unsubmitted) == num_tasks
-    return 'submitted' if num_tasks_where(:submitted) > 0
-    return 'completed' if num_tasks_where(:accepted) == num_tasks
-    'disposed'
+    return 'completed' if num_tasks_where(:completed) == num_tasks
+    'in progress'
   end
 
   def cleanup(destroy_results: false)

@@ -1,10 +1,15 @@
-<% @title ||= MturkBatchJob.model_name.human; title @title %>
-
+<% @title ||= 'HIT details'; title @title %>
 
 <div class="row mb-5">
   <div class="col-12">
-    <%= link_to mturk_hits_path, class: 'btn btn-secondary btn-lg' do %>
-      Go back
+    <% if params[:come_from].present? %>
+      <%= link_to mturk_batch_job_tasks_path(params[:come_from]), class: 'btn btn-secondary btn-lg' do %>
+        Go back
+      <% end %>
+    <% else %>
+      <%= link_to mturk_hits_path, class: 'btn btn-secondary btn-lg' do %>
+        Go back
+      <% end %>
     <% end %>
   </div>
 </div>

@@ -114,6 +114,8 @@ group :test do
   gem 'simplecov', require: false
   # additional controller testing functionality
   gem 'rails-controller-testing'
+  # stubbing of requests
+  gem 'webmock'
 end
 
 group :production do

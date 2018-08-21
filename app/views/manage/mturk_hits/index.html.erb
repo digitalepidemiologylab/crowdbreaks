@@ -10,16 +10,18 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <h2 class='mb-4'>HITs overview</h2>
+    <h2 class='mb-4'>Mturk HITs</h2>
   </div>
 </div>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
+    <h4>Options</h4>
     <label class="label-inline checkbox">
       <input type="checkbox" id="sandbox-checkbox"  <%= @sandbox ? ' checked="checked"' : ''%>/>
       Sandbox
     </label>
+    <p>Available balance: $<%= @balance %></p>
     <div>
       Page: <%= @page %>
     <% unless @page == 1 %>
@@ -38,11 +40,12 @@
         <tr>
           <th></th>
           <th>Title</th>
-          <th>Hit ID</th>
-          <th>Hit Type ID</th>
+          <th>Hit ID/<br>Task</th>
+          <th>Hit Type ID/<br>Batch Job</th>
           <th>Status</th>
           <th>Review status</th>
-          <th>Action</th>
+          <th>Review actions</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -50,10 +53,17 @@
           <tr>
             <td><%= (@page - 1) * @num_hits + index %></td>
             <td><%= hit[:title] %></td>
-            <td><%= hit[:hit_id] %></td>
-            <td><%= hit[:hit_type_id] %></td>
+            <td><%= find_task(hit[:hit_id]) %></td>
+            <td><%= find_batch_job(hit[:hit_type_id])%></td>
             <td><%= hit[:status] %></td>
             <td><%= hit[:review_status] %></td>
+            <td>
+              <span>
+                <% if can? :update, :mturk_hit and batch_job_exists_for_hit?(hit[:hit_type_id])%>
+                  <%= link_to 'Review batch', mturk_reviewable_hit_path(hit[:hit_type_id], sandbox: @sandbox) %>
+                <% end %>
+              </span>
+            </td>
             <td>
               <span>
                 <% if can? :read, :mturk_hit %>

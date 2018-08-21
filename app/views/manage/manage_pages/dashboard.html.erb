@@ -18,21 +18,6 @@
     <% end %>
   </div>
   <div class="col-lg-6 text-center">
-    <h4 class="and-divider mb-4"><span>Mturk</span></h4>
-    <% if can? :read, MturkBatchJob %>
-      <%= link_to 'Mturk Batch processing', mturk_batch_jobs_path, class: 'btn btn-primary btn-lg btn-block'%>
-    <% end %>
-    <% if can? :read, MturkWorker %>
-      <%= link_to 'Mturk workers', mturk_workers_path, class: 'btn btn-primary btn-lg btn-block'%>
-    <% end %>
-    <% if can? :read, :mturk_hit %>
-      <%= link_to 'List HITs', mturk_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
-    <% end %>
-  </div>
-</div>
-
-<div class="row mb-5">
-  <div class="col-lg-6 text-center">
     <h4 class="and-divider mb-4"><span>Other</span></h4>
     <% if can? :view, :sentiment_analysis %>
       <%= link_to 'Sentiment analysis', sentiment_analysis_path, class: 'btn btn-primary btn-lg btn-block'%>
@@ -42,6 +27,24 @@
     <% end %>
     <% if can? :read, LocalBatchJob %>
       <%= link_to 'Local Batch processing', manage_local_batch_jobs_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <% end %>
+  </div>
+</div>
+
+<div class="row mb-5">
+  <div class="col-lg-6 text-center">
+    <h4 class="and-divider mb-4"><span>Mturk</span></h4>
+    <% if can? :read, MturkBatchJob %>
+      <%= link_to 'Mturk Batch processing', mturk_batch_jobs_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <% end %>
+    <% if can? :read, MturkWorker %>
+      <%= link_to 'Mturk workers', mturk_workers_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <% end %>
+    <% if can? :read, :mturk_hit %>
+      <%= link_to 'Mturk HITs', mturk_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <% end %>
+    <% if can? :read, :mturk_reviewable_hit %>
+      <%= link_to 'Review Mturk HITs', mturk_reviewable_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
   </div>
 </div>

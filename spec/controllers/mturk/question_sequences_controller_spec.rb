@@ -21,9 +21,9 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_unsubmitted) { FactoryBot.create(:task, :unsubmitted, mturk_batch_job: mturk_batch_job) }
   let!(:task_submitted1) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job) }
   let!(:task_submitted2) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job) }
-  let!(:task_reviewable1) { FactoryBot.create(:task, :reviewable, mturk_worker: mturk_worker2, mturk_tweet: mturk_tweet1, mturk_batch_job: mturk_batch_job) }
-  let!(:task_reviewable2) { FactoryBot.create(:task, :reviewable, mturk_worker: mturk_worker3, mturk_tweet: mturk_tweet1, mturk_batch_job: mturk_batch_job) }
-  let!(:task_reviewable3) { FactoryBot.create(:task, :reviewable, mturk_worker: mturk_worker3, mturk_tweet: mturk_tweet2, mturk_batch_job: mturk_batch_job) }
+  let!(:task_reviewable1) { FactoryBot.create(:task, :completed, mturk_worker: mturk_worker2, mturk_tweet: mturk_tweet1, mturk_batch_job: mturk_batch_job) }
+  let!(:task_reviewable2) { FactoryBot.create(:task, :completed, mturk_worker: mturk_worker3, mturk_tweet: mturk_tweet1, mturk_batch_job: mturk_batch_job) }
+  let!(:task_reviewable3) { FactoryBot.create(:task, :completed, mturk_worker: mturk_worker3, mturk_tweet: mturk_tweet2, mturk_batch_job: mturk_batch_job) }
 
   # Batch with max assignment 2
   let!(:mturk_batch_job2) { FactoryBot.create(:mturk_batch_job, project: project, number_of_assignments: 2) }
@@ -33,7 +33,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:mturk_worker6) { FactoryBot.create(:mturk_worker) } # worker 6 hasn't done anything
   let!(:task_submitted3) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job2) }
   let!(:task_submitted4) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job2) }
-  let!(:task_reviewable4) { FactoryBot.create(:task, :reviewable, mturk_worker: mturk_worker4, mturk_tweet: mturk_tweet3, mturk_batch_job: mturk_batch_job2) }
+  let!(:task_reviewable4) { FactoryBot.create(:task, :completed, mturk_worker: mturk_worker4, mturk_tweet: mturk_tweet3, mturk_batch_job: mturk_batch_job2) }
   
   # Batch with unavailable tweet
   let!(:mturk_batch_job3) { FactoryBot.create(:mturk_batch_job, project: project, number_of_assignments: 1) }
@@ -245,7 +245,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       expect(response).to be_success
       task.reload
-      expect(task.lifecycle_status).to eq('reviewable')
+      expect(task.lifecycle_status).to eq('completed')
       expect(task.time_completed).to eq(Time.current)
       expect(task.results.count).to eq(1)
       expect(task.results.first.mturk_result).to eq(true)

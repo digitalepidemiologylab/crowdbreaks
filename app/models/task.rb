@@ -4,19 +4,24 @@ class Task < ApplicationRecord
   belongs_to :mturk_worker, optional: true
   belongs_to :mturk_tweet, optional: true
 
-  enum lifecycle_status: [:unsubmitted, :submitted, :reviewable, :disposed, :accepted]
+  enum lifecycle_status: [:unsubmitted, :submitted, :assigned, :completed]
   STATUS_LABELS = {
     unsubmitted: 'label-default',
     submitted: 'label-primary',
-    reviewable: 'label-info',
-    disposed: 'label-danger',
-    accepted: 'label-success'
+    completed: 'label-info'
   }
 
-  def update_after_hit_submit(hit_id, time_submitted)
+  def update_after_hit_submit(hit_creation_time)
     self.update_attributes!({
-      time_submitted: time_submitted,
+      time_submitted: hit_creation_time,
       lifecycle_status: :submitted,
+    })
+  end
+
+  def update_after_hit_assignment
+    self.update_attributes!({
+      time_assigned: Time.current,
+      lifecycle_status: :assigned,
     })
   end
 
@@ -31,7 +36,7 @@ class Task < ApplicationRecord
     end
     update_attributes({
       time_completed: Time.current,
-      lifecycle_status: :reviewable
+      lifecycle_status: :completed
     })
   end
 

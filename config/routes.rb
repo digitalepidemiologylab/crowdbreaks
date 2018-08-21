@@ -64,6 +64,9 @@ Rails.application.routes.draw do
       end
       resources :mturk_workers, only: [:index]
       resources :mturk_hits
+      resources :mturk_reviewable_hits, only: [:index, :show] do
+        post 'multi_review'
+      end
 
       # elasticsearch
       resources :elasticsearch_indexes

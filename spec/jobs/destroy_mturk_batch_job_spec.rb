@@ -6,7 +6,7 @@ RSpec.describe DestroyMturkBatchJob, type: :job do
   let!(:mturk_worker) { FactoryBot.create(:mturk_worker) }
   let!(:task1) { FactoryBot.create(:task, :unsubmitted, mturk_batch_job: mturk_batch_job) }
   let!(:task2) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job) }
-  let!(:task3) { FactoryBot.create(:task, :reviewable, mturk_worker: mturk_worker, mturk_tweet: mturk_tweet, mturk_batch_job: mturk_batch_job) }
+  let!(:task3) { FactoryBot.create(:task, :completed, mturk_worker: mturk_worker, mturk_tweet: mturk_tweet, mturk_batch_job: mturk_batch_job) }
   let!(:result) { FactoryBot.create(:result, :through_mturk, task: task3) }
 
   describe "#perform_later" do
