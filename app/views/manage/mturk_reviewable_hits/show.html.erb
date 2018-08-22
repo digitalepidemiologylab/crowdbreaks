@@ -40,6 +40,10 @@
           <td><%= @hit_id %></td>
         </tr>
         <tr>
+          <td><h4>Assignment status</h4></td>
+          <td><%= @status %></td>
+        </tr>
+        <tr>
           <td><h4>Worker id</h4></td>
           <td><%= @task.mturk_worker&.worker_id %></td>
         </tr>
@@ -48,8 +52,8 @@
           <td><%= @task.results.count %></td>
         </tr>
         <tr>
-          <td><h4>Total time spent</h4></td>
-          <td><%= @log[:totalDurationUntilMturkSubmit].to_i/1000 if @log.has_key?('totalDurationUntilMturkSubmit') %></td>
+          <td><h4>Total time spent (s)</h4></td>
+          <td><%= @log[:totalDurationUntilMturkSubmit].to_i/1000.0 if @log.has_key?('totalDurationUntilMturkSubmit') %></td>
         </tr>
         <tr>
           <td><h4>Full log</h4></td>
@@ -59,30 +63,31 @@
     </div>
   </div>
 
-  <div class="row justify-content-center mb-5">
-    <div class="col-12 col-md-8">
-      <%= simple_form_for(:hit, url: mturk_reviewable_hit_accept_path(@assignment_id)) do |f| %>
-        <div class="form-group">
-          <%= f.input :message, label: 'Acceptance message', as: :text, hint: 'Write a acceptance message to the worker', input_html: {value: @default_accept_message, rows: 3} %>
-        </div>
-        <div class="form-actions">
-          <%= submit_tag 'Accept', class: 'btn btn-primary btn-lg' %>
-        </div>
-      <% end %>
+  <% if @status == 'Submitted' %>
+    <div class="row justify-content-center mb-5">
+      <div class="col-12 col-md-8">
+        <%= simple_form_for(:hit, url: mturk_reviewable_hit_accept_path(@assignment_id)) do |f| %>
+          <div class="form-group">
+            <%= f.input :message, label: 'Acceptance message', as: :text, hint: 'Write a acceptance message to the worker', input_html: {value: @default_accept_message, rows: 3} %>
+          </div>
+          <div class="form-actions">
+            <%= submit_tag 'Accept', class: 'btn btn-primary btn-lg' %>
+          </div>
+        <% end %>
+      </div>
     </div>
-  </div>
-
-  <div class="row justify-content-center mb-5">
-    <div class="col-12 col-md-8">
-      <%= simple_form_for(:hit, url: mturk_reviewable_hit_reject_path(@assignment_id)) do |f| %>
-        <div class="form-group">
-          <%= f.input :message, label: 'Rejection message', as: :text, hint: 'Write a rejection message to the worker', input_html: {value: @default_reject_message, rows: 3} %>
-        </div>
-        <div class="form-actions">
-          <%= submit_tag 'Reject', class: 'btn btn-primary btn-negative btn-lg' %>
-        </div>
-      <% end %>
+    <div class="row justify-content-center mb-5">
+      <div class="col-12 col-md-8">
+        <%= simple_form_for(:hit, url: mturk_reviewable_hit_reject_path(@assignment_id)) do |f| %>
+          <div class="form-group">
+            <%= f.input :message, label: 'Rejection message', as: :text, hint: 'Write a rejection message to the worker', input_html: {value: @default_reject_message, rows: 3} %>
+          </div>
+          <div class="form-actions">
+            <%= submit_tag 'Reject', class: 'btn btn-primary btn-negative btn-lg' %>
+          </div>
+        <% end %>
+      </div>
     </div>
-  </div>
+  <% end %>
 <% end %>
 

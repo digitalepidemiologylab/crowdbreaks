@@ -31,6 +31,7 @@ module Manage
         @assignment_not_found = true
         return
       end
+      @status = assignment.assignment.assignment_status
       @hit_id = assignment.hit.hit_id
       @task = Task.find_by(hit_id: @hit_id)
       if not @task.present?
@@ -58,12 +59,12 @@ module Manage
     def accept
       # note: params[:mturk_reviewable_hit_id] is the HIT assignment Id!
       @mturk.approve_assignment(params[:mturk_reviewable_hit_id], message: review_params[:message])
-      redirect_to(mturk_reviewable_hits_path, notice: "Successfully accepted HIT.") and return
+      redirect_to(mturk_reviewable_hit_path(params[:mturk_reviewable_hit_id]), notice: "Successfully accepted HIT.") and return
     end
 
     def reject
       @mturk.reject_assignment(params[:mturk_reviewable_hit_id], message: review_params[:message])
-      redirect_to(mturk_reviewable_hits_path, notice: "Successfully rejected HIT.") and return
+      redirect_to(mturk_reviewable_hit_path(params[:mturk_reviewable_hit_id]), notice: "Successfully rejected HIT.") and return
     end
 
 
