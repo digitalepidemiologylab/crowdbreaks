@@ -100,7 +100,7 @@
               <td>
                 <% if hit[:assignment_id].present? and task_exists_for_hit?(hit[:hit_id]) %>
                   <span>
-                    <%= link_to fa_icon("eye"), mturk_reviewable_hit_path(hit[:assignment_id]), title: 'Review individual HIT' %>
+                    <%= link_to fa_icon("eye"), mturk_reviewable_hit_path(hit[:assignment_id], sandbox: @sandbox), title: 'Review individual HIT' %>
                   </span>
                 <% end %>
               </td>

@@ -33,13 +33,14 @@ module Manage
       end
       @status = assignment.assignment.assignment_status
       @hit_id = assignment.hit.hit_id
+      @hit_type_id = assignment.hit.hit_type_id
       @task = Task.find_by(hit_id: @hit_id)
       if not @task.present?
         Rails.logger.error "Could not find task for HIT Id #{@hit_id}"
         @task_not_found = true
         return
       end
-
+      @sandbox = in_sandbox?
       @log = @task.results.first&.question_sequence_log&.log
       @default_accept_message = Mturk::DEFAULT_ACCEPT_MESSAGE
       @default_reject_message = Mturk::DEFAULT_REJECT_MESSAGE

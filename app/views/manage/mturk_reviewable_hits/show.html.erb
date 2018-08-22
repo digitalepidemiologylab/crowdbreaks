@@ -2,8 +2,14 @@
 
 <div class="row mb-5">
   <div class="col-12">
-    <%= link_to mturk_reviewable_hits_path, class: 'btn btn-secondary btn-lg' do %>
-      Go back
+    <% if @hit_type_id.nil? %>
+      <%= link_to mturk_reviewable_hits_path, class: 'btn btn-secondary btn-lg' do %>
+        Go back
+      <% end %>
+    <% else %>
+      <%= link_to mturk_reviewable_hits_path(hit_type_id: @hit_type_id), class: 'btn btn-secondary btn-lg' do %>
+        Go back
+      <% end %>
     <% end %>
   </div>
 </div>
@@ -52,8 +58,8 @@
           <td><%= @task.results.count %></td>
         </tr>
         <tr>
-          <td><h4>Total time spent (s)</h4></td>
-          <td><%= @log[:totalDurationUntilMturkSubmit].to_i/1000.0 if @log.has_key?('totalDurationUntilMturkSubmit') %></td>
+          <td><h4>Total time spent</h4></td>
+          <td><%= (@log['totalDurationUntilMturkSubmit'].to_i/1000.0).to_s + ' s' if @log.has_key?('totalDurationUntilMturkSubmit') %></td>
         </tr>
         <tr>
           <td><h4>Full log</h4></td>
