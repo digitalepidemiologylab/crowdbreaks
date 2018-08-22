@@ -101,7 +101,7 @@ class Mturk::QuestionSequencesController < ApplicationController
   def tasks_params
     params.require(:task).permit(:hit_id, :tweet_id, :worker_id, :assignment_id,
                                  results: [result: [:answer_id, :question_id, :tweet_id, :user_id, :project_id]],
-                                 logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized,
+                                 logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized, :totalDurationQuestionSequence, :timeQuestionSequenceEnd, :totalDurationUntilMturkSubmit, :timeMturkSubmit,
                                         results: [:submitTime, :timeSinceLastAnswer, :questionId],
                                         resets: [:resetTime, :resetAtQuestionId, previousResultLog: [:submitTime, :timeSinceLastAnswer, :questionId]]])
   end

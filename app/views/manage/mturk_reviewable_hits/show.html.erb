@@ -53,7 +53,7 @@
         </tr>
         <tr>
           <td><h4>Full log</h4></td>
-          <td style="font-family: monospace;"><%= raw JSON.pretty_generate(@log) %></td>
+          <td><pre style="font: 14px Inconsolata, monospace;"><%= JSON.pretty_generate(@log).strip %></pre></td>
         </tr>
       </table>
     </div>
