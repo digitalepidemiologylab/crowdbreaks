@@ -65,9 +65,9 @@
   </div>
 </div>
 
-<%= form_tag multi_review_mturk_reviewable_hits_path do %>
-  <div class="row justify-content-center mb-4">
-    <div class="col-12">
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= form_tag multi_review_mturk_reviewable_hits_path do %>
       <table class="table">
         <thead>
           <tr>
@@ -108,11 +108,12 @@
           <% end %>
         </tbody>
       </table>
-      <% unless @hits.empty? or %>
+
+      <% unless @hits.empty? %>
         <div class="form-actions mt-5">
-          <%= submit_tag 'Accept selected', class: 'btn btn-primary btn-lg', name: nil %>
+          <%= submit_tag 'Accept selected', class: 'btn btn-primary btn-lg' %>
         </div>
       <% end %>
+    <% end %>
     </div>
   </div>
-<% end %>

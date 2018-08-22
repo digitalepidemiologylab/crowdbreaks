@@ -14,7 +14,6 @@
   </div>
 </div>
 
-
 <% if @assignment_not_found %>
   <div class="row justify-content-center mb-5">
     <div class="col-12 col-md-8">
@@ -49,8 +48,12 @@
           <td><%= @task.results.count %></td>
         </tr>
         <tr>
-          <td><h4>Question Sequence Log</h4></td>
-          <td><%= @log %></td>
+          <td><h4>Total time spent</h4></td>
+          <td><%= @log[:totalDurationUntilMturkSubmit]/1000 %></td>
+        </tr>
+        <tr>
+          <td><h4>Full log</h4></td>
+          <td style="font-family: monospace;"><%= raw JSON.pretty_generate(@log) %></td>
         </tr>
       </table>
     </div>

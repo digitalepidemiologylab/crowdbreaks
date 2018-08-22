@@ -57,10 +57,12 @@ module Manage
 
     def accept
       @mturk.approve_assignment(review_params[:id], message: review_params[:message])
+      redirect_to(mturk_reviewable_hits_path, notice: "Successfully accepted HIT.") and return
     end
 
     def reject
       @mturk.reject_assignment(review_params[:id], message: review_params[:message])
+      redirect_to(mturk_reviewable_hits_path, notice: "Successfully rejected HIT.") and return
     end
 
 

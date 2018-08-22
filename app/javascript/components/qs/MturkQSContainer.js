@@ -51,9 +51,7 @@ export class MturkQSContainer extends React.Component {
     const now = this.getTime();
     newLog['totalDurationUntilMturkSubmit'] = now - newLog['timeMounted'];
     newLog['timeMturkSubmit'] = now;
-    this.setState({
-      logs: newLog
-    });
+    return newLog
   }
 
   onSubmit(event) {
@@ -73,9 +71,8 @@ export class MturkQSContainer extends React.Component {
         'results': this.state.results
       }
     });
-    // Add uncamelized logs
-    this.logSubmit()
-    taskUpdate['task']['logs'] = this.state.logs
+    // Add final submit log
+    taskUpdate['task']['logs'] = this.logSubmit()
 
     $.ajax({
       type: "POST",
