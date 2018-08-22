@@ -2,6 +2,7 @@ class Mturk
   attr_reader :client
 
   DEFAULT_ACCEPT_MESSAGE = 'Thank you for your work!'
+  DEFAULT_REJECT_MESSAGE = ''
 
   def initialize(sandbox: true)
     @client = get_client(sandbox)
@@ -98,7 +99,7 @@ class Mturk
     end
   end
 
-  def reject_assignment(assignment_id, message)
+  def reject_assignment(assignment_id, message: '')
     if message.empty?
       Rails.logger.error 'Needs a non-empty rejection message' if message.empty?
       return
@@ -108,9 +109,9 @@ class Mturk
     end
   end
 
-  def list_reviewable_hits(hit_type_id: nil, next_token: nil)
+  def list_reviewable_hits(hit_type_id: nil, next_token: nil, max_results: 30)
     hits = []
-    resp = _list_reviewable_hits(hit_type_id, next_token)
+    resp = _list_reviewable_hits(hit_type_id, next_token, max_results)
     resp.hits.each do |hit|
       list_assignments = list_assignments_for_hit(hit.hit_id)
       if list_assignments.assignments.empty?
@@ -150,9 +151,9 @@ class Mturk
     end
   end
 
-  def _list_reviewable_hits(hit_type_id, next_token)
+  def _list_reviewable_hits(hit_type_id, next_token, max_results)
     handle_error(error_return_value: {'hits': [], 'next_token': '', num_results: 0}) do
-      @client.list_reviewable_hits(hit_type_id: hit_type_id, next_token: next_token, max_results: 100)
+      @client.list_reviewable_hits(hit_type_id: hit_type_id, next_token: next_token, max_results: max_results)
     end
   end
 

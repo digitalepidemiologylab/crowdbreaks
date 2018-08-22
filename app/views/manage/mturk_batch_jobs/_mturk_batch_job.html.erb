@@ -18,10 +18,17 @@
         Queue <i class="fa fa-angle-double-right" aria-hidden="true"></i>
       <% end %>
     </div>
+    <div> 
+      <%= link_to mturk_reviewable_hits_path(hit_type_id: mturk_batch_job.hittype_id, come_from: 'mturk_batch_jobs') do %>
+        Review <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+      <% end %>
+    </div>
+  </td>
+  <td>
     <div>
       <% if mturk_batch_job.hittype_id.present? %>
         <%= link_to mturk_url(mturk_batch_job.hittype_id, mturk_batch_job.sandbox), target: 'blank' do %>
-          HIT Group <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+          Mturk <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>
       <% end %>
     </div>

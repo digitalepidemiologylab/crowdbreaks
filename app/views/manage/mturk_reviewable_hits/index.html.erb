@@ -2,54 +2,117 @@
 
 <div class="row mb-5">
   <div class="col-12">
-    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
-      Go back
+    <% if params[:come_from] == 'mturk_batch_jobs' %>
+      <%= link_to mturk_batch_jobs_path, class: 'btn btn-secondary btn-lg' do %>
+        Go back
+      <% end %>
+    <% elsif params[:come_from] == 'mturk_hits' %>
+      <%= link_to mturk_hits_path, class: 'btn btn-secondary btn-lg' do %>
+        Go back
+      <% end %>
+    <% else %>
+      <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
+        Go back
+      <% end %>
     <% end %>
   </div>
 </div>
 
 <div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10">
-    <h2>Reviewable Batches</h2>
+  <div class="col-12">
+    <% if @show_all %>
+      <h2>Review all HITs<%= ' (sandbox)' if @sandbox %></h2>
+    <% else %>
+      <h2>Review HITs for batch <%= 'job'.pluralize(@mturk_batch_jobs.size) %></h2>
+    <% end %>
   </div>
 </div>
 
 <div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10">
-    <h4>Options</h4>
-    <label class="label-inline checkbox">
-      <input type="checkbox" id="sandbox-checkbox"  <%= @sandbox ? ' checked="checked"' : ''%>/>
-      Sandbox
-    </label>
-  </div>
-</div>
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10">
-    <%= paginate @mturk_batch_jobs %>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Batch name</th>
-          <th>Project</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @mturk_batch_jobs.each do |mturk_batch_job| %>
-          <tr>
-            <td><%= mturk_batch_job.name %></td>
-            <td><%= mturk_batch_job.project.title %></td>
-            <td>
-              <% if mturk_batch_job.is_submitted? %>
-                <%= link_to 'Review batch', mturk_reviewable_hit_path(mturk_batch_job.hittype_id) %>
-              <% else %>
-                <span>Batch is not yet submitted</span>
-              <% end %>
-            </td>
-          </tr>
+  <div class="col-12">
+    <div>
+      <% if not @show_all %>
+        <% if @mturk_batch_jobs.size > 1 %>j
+          <div class='alert alert-danger'>Note: HIT type (<%= @mturk_batch_jobs.first.hittype_id %>) could be associated with several batches: <%= @mturk_batch_jobs.pluck(:name).join(', ') %></div>
+        <% else %>
+          <p>
+          <div>Batch name: <%= @mturk_batch_jobs.first.name %></div>
+          <div>HIT type Id: <%= @mturk_batch_jobs.first.hittype_id %></div>
+          <div>Sandbox: <%= @sandbox ? 'Yes' : 'No' %></div>
+          </p>
         <% end %>
-      </tbody>
-    </table>
+      <% end %>
+    </div>
+    <div>
+      <% if @show_all %>
+        <label class="label-inline checkbox">
+          <input type="checkbox" id="sandbox-checkbox"  <%= @sandbox ? ' checked="checked"' : ''%>/>
+          Sandbox
+        </label>
+      <% else %>
+        <%= link_to 'See all', mturk_reviewable_hits_path(sandbox: @sandbox, come_from: params[:come_from]) %>
+      <% end %>
+    </div>
+    <div>
+      <% if @num_hits == @results_per_page %>
+        Page: <%= @page %>
+      <% unless @page == 1 %>
+        <%= link_to 'First page', mturk_reviewable_hits_path(hit_type_id: @hit_type_id, sandbox: @sandbox, page: 1), class: 'btn btn-link' %>
+      <% end %>
+      <%= link_to 'Next page', mturk_reviewable_hits_path(hit_type_id: @hit_type_id, next_token: @next_token, page: @page + 1, sandbox: @sandbox), class: 'btn btn-link' %>
+    <% end %>
+    </div>
   </div>
 </div>
+
+<%= form_tag multi_review_mturk_reviewable_hits_path do %>
+  <div class="row justify-content-center mb-4">
+    <div class="col-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Hit ID/<br>Task</th>
+            <th>Assignment status</th>
+            <th>Assignment Id</th>
+            <th>Accept</th>
+            <th>Links</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @hits.each_with_index do |hit, index| %>
+            <tr>
+              <td><%= (@page - 1) * @num_hits + index %></td>
+              <td><%= find_task(hit[:hit_id]) %></td>
+              <td><%= hit[:assignment_status] %></td>
+              <td><%= hit[:assignment_id] %></td>
+              <td>
+                <% if hit[:assignment_id].present? %>
+                  <%= check_box_tag 'accepted[]', hit[:assignment_id], false, disabled: hit[:assignment_status] != 'Submitted' %>
+                <% end %>
+              </td>
+              <td>
+                <% if can? :read, :mturk_hit %>
+                  <%= link_to 'HIT details', mturk_hit_path(hit[:hit_id], sandbox: @sandbox), title: 'Show HIT details' %>
+                <% end %>
+              </td>
+              <td>
+                <% if hit[:assignment_id].present? and task_exists_for_hit?(hit[:hit_id]) %>
+                  <span>
+                    <%= link_to fa_icon("eye"), mturk_reviewable_hit_path(hit[:assignment_id]), title: 'Review individual HIT' %>
+                  </span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <% unless @hits.empty? or %>
+        <div class="form-actions mt-5">
+          <%= submit_tag 'Accept selected', class: 'btn btn-primary btn-lg', name: nil %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

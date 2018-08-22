@@ -9,57 +9,77 @@
 </div>
 
 <div class="row justify-content-center mb-4">
-  <div class="col-12">
-    <h2>Review HITs for batch <%= 'job'.pluralize(@mturk_batch_jobs.size) %></h2>
-    <% if @mturk_batch_jobs.size > 1 %>
-      <div class='alert alert-danger'>Note: The following batches could be associated with the same HIT type: <%= @mturk_batch_jobs.pluck(:name).join(', ') %></div>
-    <% end %>
+  <div class="col-12 col-md-10 col-lg-8">
+    <h2 class='mb-4'>Review individual HIT</h2>
   </div>
 </div>
 
-<%= form_tag mturk_reviewable_hit_multi_review_path(params[:id]) do %>
-  <div class="row justify-content-center mb-4">
-    <div class="col-12">
-      <table class="table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Hit ID/<br>Task</th>
-            <th>Assignment status</th>
-            <th>Assignment Id</th>
-            <th>Accept</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @hits.each_with_index do |hit, index| %>
-            <tr>
-              <td><%= (@page - 1) * @num_hits + index %></td>
-              <td><%= find_task(hit[:hit_id]) %></td>
-              <td><%= hit[:assignment_status] %></td>
-              <td><%= hit[:assignment_id] %></td>
-              <td>
-                <% if hit[:assignment_id].present? %>
-                  <%= check_box_tag 'accepted[]', hit[:assignment_id] %>
-                <% end %>
-              </td>
-              <td>
-                <span>
-                  <% if can? :read, :mturk_hit %>
-                    <%= link_to fa_icon("eye"), mturk_hit_path(hit[:hit_id], sandbox: @sandbox),
-                      title: 'Show HIT details' %>
-                  <% end %>
-                </span>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
+
+<% if @assignment_not_found %>
+  <div class="row justify-content-center mb-5">
+    <div class="col-12 col-md-8">
+      <div class='alert alert-danger'>Assignment could not be retrieved</div>
+    </div>
+  </div>
+<% end %>
+<% if @task_not_found %>
+  <div class="row justify-content-center mb-5">
+    <div class="col-12 col-md-8">
+      <div class='alert alert-danger'>Task for assignment could not be found</div>
+    </div>
+  </div>
+<% end %>
+<% if not @assignment_not_found and not @task_not_found %>
+  <div class="row justify-content-center mb-5">
+    <div class="col-12 col-md-8">
+      <table class="table vertical-align">
+        <col width="250px"/>
+        <col />
+
+        <tr>
+          <td><h4>HIT id</h4></td>
+          <td><%= @hit_id %></td>
+        </tr>
+        <tr>
+          <td><h4>Worker id</h4></td>
+          <td><%= @task.mturk_worker&.worker_id %></td>
+        </tr>
+        <tr>
+          <td><h4>Num results</h4></td>
+          <td><%= @task.results.count %></td>
+        </tr>
+        <tr>
+          <td><h4>Question Sequence Log</h4></td>
+          <td><%= @log %></td>
+        </tr>
       </table>
-      <% unless @hits.empty? %>
-        <div class="form-actions mt-5">
-          <%= submit_tag 'Accept selected', class: 'btn btn-primary btn-lg', name: nil %>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mb-5">
+    <div class="col-12 col-md-8">
+      <%= simple_form_for(:hit, url: mturk_reviewable_hit_accept_path(@assignment_id)) do |f| %>
+        <div class="form-group">
+          <%= f.input :message, label: 'Acceptance message', as: :text, hint: 'Write a acceptance message to the worker', input_html: {value: @default_accept_message, rows: 3} %>
+        </div>
+        <div class="form-actions">
+          <%= submit_tag 'Accept', class: 'btn btn-primary btn-lg' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mb-5">
+    <div class="col-12 col-md-8">
+      <%= simple_form_for(:hit, url: mturk_reviewable_hit_reject_path(@assignment_id)) do |f| %>
+        <div class="form-group">
+          <%= f.input :message, label: 'Rejection message', as: :text, hint: 'Write a rejection message to the worker', input_html: {value: @default_reject_message, rows: 3} %>
+        </div>
+        <div class="form-actions">
+          <%= submit_tag 'Reject', class: 'btn btn-primary btn-negative btn-lg' %>
         </div>
       <% end %>
     </div>
   </div>
 <% end %>
+
