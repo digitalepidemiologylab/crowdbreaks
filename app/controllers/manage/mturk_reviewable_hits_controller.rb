@@ -56,12 +56,13 @@ module Manage
     end
 
     def accept
-      @mturk.approve_assignment(review_params[:id], message: review_params[:message])
+      # note: params[:mturk_reviewable_hit_id] is the HIT assignment Id!
+      @mturk.approve_assignment(params[:mturk_reviewable_hit_id], message: review_params[:message])
       redirect_to(mturk_reviewable_hits_path, notice: "Successfully accepted HIT.") and return
     end
 
     def reject
-      @mturk.reject_assignment(review_params[:id], message: review_params[:message])
+      @mturk.reject_assignment(params[:mturk_reviewable_hit_id], message: review_params[:message])
       redirect_to(mturk_reviewable_hits_path, notice: "Successfully rejected HIT.") and return
     end
 
@@ -77,7 +78,7 @@ module Manage
     end
 
     def review_params
-      params.require(:hit).permit(:id, :message)  
+      params.require(:hit).permit(:message)  
     end
 
     def mturk_init
