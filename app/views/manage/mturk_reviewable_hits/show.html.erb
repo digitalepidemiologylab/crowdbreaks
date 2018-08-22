@@ -49,7 +49,7 @@
         </tr>
         <tr>
           <td><h4>Total time spent</h4></td>
-          <td><%= @log[:totalDurationUntilMturkSubmit]/1000 %></td>
+          <td><%= @log[:totalDurationUntilMturkSubmit].to_i/1000 if @log.has_key?('totalDurationUntilMturkSubmit') %></td>
         </tr>
         <tr>
           <td><h4>Full log</h4></td>

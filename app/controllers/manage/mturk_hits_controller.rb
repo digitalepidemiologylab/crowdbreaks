@@ -20,7 +20,7 @@ module Manage
     def destroy
       return_val = @mturk.delete_hit(mturk_hit_params[:id])
       if return_val.nil?
-        redirect_to(mturk_hits_path, alert: 'Could not delte HIT. HITs can only be deleted in states of "Reviewing" or "Reviewable".')
+        redirect_to(mturk_hits_path, alert: 'Could not delte HIT. HITs can only be deleted in states of "Assignable", "Reviewing" or "Reviewable".')
       else
         redirect_to(mturk_hits_path, notice: 'Successfully deleted HIT.')
       end

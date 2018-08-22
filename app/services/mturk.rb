@@ -69,7 +69,7 @@ class Mturk
         @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
         Rails.logger.info "Attempt to delete hit #{hit_id}..."
       else
-        Rails.logger.error "Cannot delete hit #{hit_id}. HIT needs to be either Assignable, Reviewable or Reviewing"
+        Rails.logger.error "Cannot delete hit #{hit_id}. HIT needs to be either Assignable, Reviewable or Reviewing."
         return
       end
     end
