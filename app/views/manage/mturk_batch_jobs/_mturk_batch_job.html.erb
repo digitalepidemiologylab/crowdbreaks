@@ -14,16 +14,20 @@
         <% end %>
       </div>
     <% end %>
-    <div class="no-wrap"> 
-      <%= link_to mturk_batch_job_mturk_tweets_path(mturk_batch_job.id) do %>
-        Queue&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      <% end %>
-    </div>
-    <div class="no-wrap"> 
-      <%= link_to mturk_reviewable_hits_path(hit_type_id: mturk_batch_job.hittype_id, come_from: 'mturk_batch_jobs') do %>
-        Review&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      <% end %>
-    </div>
+    <% if can? :read, mturk_batch_job => MturkTweet %>
+      <div class="no-wrap"> 
+        <%= link_to mturk_batch_job_mturk_tweets_path(mturk_batch_job.id) do %>
+          Queue&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    <% end %>
+    <% if can? :read, :mturk_reviewable_hit and mturk_batch_job.is_submitted? %>
+      <div class="no-wrap"> 
+        <%= link_to mturk_reviewable_hits_path(hit_type_id: mturk_batch_job.hittype_id, come_from: 'mturk_batch_jobs') do %>
+          Review&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    <% end %>
   </td>
   <td>
     <div class="no-wrap">

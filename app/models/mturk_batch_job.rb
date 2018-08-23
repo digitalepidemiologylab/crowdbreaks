@@ -12,6 +12,7 @@ class MturkBatchJob < ApplicationRecord
   validates_inclusion_of :minimal_approval_rate, in: 0..100, message: 'Minimal approval rate needs to be between 0 and 100', allow_nil: true
   validates_inclusion_of :number_of_assignments, in: 1..100, message: 'Number assignments cannot be 1 or >100'
   validates_with CsvValidator, fields: [:job_file]
+  validates_with HitTypeValidator
 
 
   attr_accessor :job_file
