@@ -21,6 +21,7 @@ class CreateTasksJob < ApplicationJob
 
     if destroy_first
       mturk_batch_job.cleanup
+      mturk_batch_job.tasks.delete_all
     end
 
     tweet_ids.each do |tweet_id|

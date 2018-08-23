@@ -21,7 +21,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     if not @preview_mode
       # worker has accepted the HIT
       @tweet_id = get_tweet_id_for_worker(@worker_id, task)
-      @no_work_available = @tweet_id.nil?
+      @no_work_available = @tweet_id.blank?
     end
 
     # Collect question sequence info

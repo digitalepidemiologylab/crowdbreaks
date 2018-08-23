@@ -1,0 +1,117 @@
+<%= simple_form_for(@mturk_batch_job, html: {id: 'mturk-batch-job-form'}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-group">
+    <%= f.input :name, hint: 'Has to be unique' %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.input :title, hint: 'Title of each HIT on Mturk, short and descriptive', input_html: {value: f.object.title || "Label tweet"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :description, hint: 'A general description about the HIT, displayed on Mturk', input_html: {value: f.object.description || "Answer a few questions about a tweet"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :keywords, hint: 'Comma-separated list of keywords (used by Mturk for searching)', input_html: {value:  f.object.keywords || "twitter, science, sentiment, opinion"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.association :project, hint: 'Choose the question sequence' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :instructions, hint: 'Instructions to the worker (visible on top of the question sequence) in Markdown', input_html: {value: f.object.instructions.present? ? f.object.instructions : @mturk_batch_job.default_mturk_instructions, style: "font-family: monospace;", rows: 10} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :job_file,
+      as: :file,
+      label: "Tweet IDs",
+      hint: 'Please use a csv in which each line corresponds to a tweet ID',
+      :input_html => { :class => 'file-input-form-control' } %>
+    <% if @mturk_batch_job.tasks.count > 0 %>
+      <div class="alert alert-danger">Note: Existing tasks and tweet IDs will be overwritten if file is provided.</div>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :number_of_assignments,
+      as: :integer, 
+      input_html: { value: f.object.number_of_assignments || 1 },
+      hint: "Label every tweet n times" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Reward', hint: "Reward per finished question sequence" do %>
+      <div class="input-group">
+        <span class="input-group-text">$</span>
+        <%= f.input_field :reward,
+          class: 'form-control',
+          value: f.object.reward || 0.03 %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Lifetime', hint: "Time after which a HIT is no longer available for users." do %>
+      <div class="input-group">
+        <%= f.input_field :lifetime_in_seconds,
+          class: 'form-control',
+          value: f.object.lifetime_in_seconds.nil? ? 30 : f.object.lifetime_in_seconds / (24*3600)
+        %>
+        <span class="input-group-text">days</span>
+      </div>
+    <% end %>
+    <%= f.error :lifetime_in_seconds %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Auto-approval', hint: "Time after which a completed HIT gets auto-approved" do %>
+      <div class="input-group">
+        <%= f.input_field :auto_approval_delay_in_seconds,
+          class: 'form-control',
+          value: f.object.auto_approval_delay_in_seconds.nil? ? 7 : f.object.auto_approval_delay_in_seconds / (24*3600)
+        %>
+        <span class="input-group-text">days</span>
+      </div>
+    <% end %>
+    <%= f.error :auto_approval_delay_in_seconds %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Assignment duration', hint: "Time which is given to a worker to complete the task" do %>
+      <div class="input-group">
+        <%= f.input_field :assignment_duration_in_seconds,
+          class: 'form-control',
+          value: f.object.assignment_duration_in_seconds.nil? ? 20 : f.object.assignment_duration_in_seconds / (60)
+        %>
+        <span class="input-group-text">min</span>
+      </div>
+      <%= f.error :assignment_duration_in_seconds %>
+    <% end %>
+  </div>
+
+  <div class="form-group mt-5 mb-5">
+    <h4>Qualifications</h4>
+    <%= f.input 'Minimal approval rate', hint: "Workers need at least this HIT approval rate in order to work on this batch. Only allows full integers. Leave empty for having no minimal approval rate." do %>
+      <div class="input-group">
+        <%= f.input_field :minimal_approval_rate,
+          class: 'form-control',
+          type: :number
+        %>
+        <span class="input-group-text">%</span>
+      </div>
+    <% end %>
+    <%= f.error :minimal_approval_rate %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :sandbox, input_html: {class: "mr-2", checked: f.object.sandbox || true}, label_html: {class: 'checkbox-inline'} %>
+  </div>
+
+  <div class="form-actions" style="margin-top:25px;">
+    <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
+  </div>
+<% end %>

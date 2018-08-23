@@ -33,7 +33,7 @@
         <%= f.input :es_index_name, hint: 'Name of ElasticSearch index to store tweets into, make sure to name the index project_*', input_html: {value: @project.es_index_name || ""} %>
       </div>
       <div class="form-group">
-        <%= f.input :active_stream, input_html: {style: "margin-right:5px;", value: @project.active_stream}, hint: "Activate stream (if false, logstash won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
+        <%= f.input :active_stream, input_html: {class: "mr-2", value: @project.active_stream}, hint: "Activate stream (if false, logstash won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
       </div>
     </div>
   </div>
@@ -41,11 +41,11 @@
   <div class="mb-5">
     <h4>Other</h4>
     <div class="form-group">
-      <%= f.input :public, label: "Make public", input_html: {style: "margin-right:5px", value: @project.public || false}, hint: 'List project under /projects publicly', label_html: {class: 'label-inline'} %>
+      <%= f.input :public, label: "Make public", input_html: {class: "mr-2", value: @project.public || false}, hint: 'List project under /projects publicly', label_html: {class: 'label-inline'} %>
     </div>
   </div>
 
-  <div class="form-actions" style="margin-top:25px;">
+  <div class="form-actions" class="mt-2">
     <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
   </div>
 <% end %>

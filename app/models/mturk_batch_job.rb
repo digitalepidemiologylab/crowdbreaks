@@ -4,22 +4,17 @@ class MturkBatchJob < ApplicationRecord
   has_many :tasks, dependent: :delete_all
   has_many :mturk_tweets, dependent: :delete_all
   belongs_to :project
+  has_many :results, through: :tasks
 
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
-  validates_presence_of :sandbox, :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward
-  validate :number_of_assignments_range
+  validates_presence_of :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward
+  validates_inclusion_of :sandbox, in: [true, false]
+  validates_inclusion_of :minimal_approval_rate, in: 0..100, message: 'Minimal approval rate needs to be between 0 and 100', allow_nil: true
+  validates_inclusion_of :number_of_assignments, in: 1..100, message: 'Number assignments cannot be 1 or >100'
   validates_with CsvValidator, fields: [:job_file]
 
 
   attr_accessor :job_file
-
-  def number_of_assignments_range
-    if number_of_assignments.present?
-      if number_of_assignments.to_i == 0 or number_of_assignments.to_i > 100
-        errors.add(:number_of_assignments, 'Number assignments cannot be 0 or >100')
-      end
-    end
-  end
 
   def num_tasks
     tasks.count
@@ -36,7 +31,7 @@ class MturkBatchJob < ApplicationRecord
   def percentage_completed
     total_done = num_tasks_where(:completed)
     return 0 if num_tasks == 0
-    (total_done / num_tasks * 100).to_i
+    (total_done.to_f / num_tasks.to_f * 100.0).to_i
   end
 
   def is_submitted?
@@ -54,6 +49,7 @@ class MturkBatchJob < ApplicationRecord
 
   def cleanup(destroy_results: false)
     # Delete all associated HITs on Mturk
+    Rails.logger.info "Cleaning up MturkBatchJob..."
     tasks.each do |task|
       task.delete_hit
       if destroy_results

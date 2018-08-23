@@ -59,7 +59,7 @@
         </tr>
         <tr>
           <td><h4>Total time spent</h4></td>
-          <td><%= (@log['totalDurationUntilMturkSubmit'].to_i/1000.0).to_s + ' s' if @log.has_key?('totalDurationUntilMturkSubmit') %></td>
+          <td><%= (@log['totalDurationQuestionSequence'].to_i/1000.0).to_s + ' s' if @log.has_key?('totalDurationQuestionSequence') %></td>
         </tr>
         <tr>
           <td><h4>Full log</h4></td>

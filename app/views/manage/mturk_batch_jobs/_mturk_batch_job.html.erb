@@ -5,27 +5,28 @@
   <td><%= time_ago_in_words(mturk_batch_job.created_at) %> ago</td>
   <td><span class='badge badge-sentiment'><%= status(mturk_batch_job.status) %></span></td>
   <td><%= mturk_batch_job.percentage_completed %> %</td>
+  <td><%= mturk_batch_job.num_tasks %></td>
   <td>
-    <div> 
-      <% if can? :read, mturk_batch_job => Task %>
+    <% if can? :read, mturk_batch_job => Task %>
+      <div class="no-wrap"> 
         <%= link_to mturk_batch_job_tasks_path(mturk_batch_job.id) do %>
-          Tasks <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+          Tasks&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>
-      <% end %>
-    </div>
-    <div> 
+      </div>
+    <% end %>
+    <div class="no-wrap"> 
       <%= link_to mturk_batch_job_mturk_tweets_path(mturk_batch_job.id) do %>
-        Queue <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        Queue&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
       <% end %>
     </div>
-    <div> 
+    <div class="no-wrap"> 
       <%= link_to mturk_reviewable_hits_path(hit_type_id: mturk_batch_job.hittype_id, come_from: 'mturk_batch_jobs') do %>
-        Review <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        Review&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
       <% end %>
     </div>
   </td>
   <td>
-    <div>
+    <div class="no-wrap">
       <% if mturk_batch_job.hittype_id.present? %>
         <%= link_to mturk_url(mturk_batch_job.hittype_id, mturk_batch_job.sandbox), target: 'blank' do %>
           Mturk <i class="fa fa-angle-double-right" aria-hidden="true"></i>
@@ -35,20 +36,24 @@
   </td>
   <td>
     <div>
-      <%= link_to fa_icon('trash'),
-        mturk_batch_job_path(mturk_batch_job.id, destroy_results: false),
-        method: :delete,
-        title: "Delete batch, without results",
-        data: {confirm: "Delete batch, tasks, but without associated results?"} 
-      %>
-      <%= link_to fa_icon('times-circle'),
-        mturk_batch_job_path(mturk_batch_job.id, destroy_results: true),
-        method: :delete,
-        style: "color:red;",
-        title: "Delete batch, with results",
-        data: {confirm: "Delete batch, tasks, and all associated results?"} 
-      %>
-      <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id), title: 'Edit' %>
+      <% if can? :destroy, mturk_batch_job %>
+        <%= link_to fa_icon('trash'),
+          mturk_batch_job_path(mturk_batch_job.id, destroy_results: false),
+          method: :delete,
+          title: "Delete batch, without results",
+          data: {confirm: "Delete batch, tasks, but without associated results?"} %>
+        <% if mturk_batch_job.results.count > 0 %>
+          <%= link_to fa_icon('times-circle'),
+            mturk_batch_job_path(mturk_batch_job.id, destroy_results: true),
+            method: :delete,
+            style: "color:red;",
+            title: "Delete batch, with results",
+            data: {confirm: "Delete batch, tasks, and all associated results?"} %>
+        <% end %>
+      <% end %>
+      <% if mturk_batch_job.status == 'unsubmitted' and can? :update, mturk_batch_job %>
+        <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id), title: 'Edit' %>
+      <% end %>
       <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job.id), title: 'Expand' %>
     </div>
   </td>

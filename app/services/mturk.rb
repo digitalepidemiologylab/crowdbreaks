@@ -16,8 +16,19 @@ class Mturk
       reward: batch_job.reward.to_s,
       keywords: batch_job.keywords,
       auto_approval_delay_in_seconds: batch_job.auto_approval_delay_in_seconds,
-      assignment_duration_in_seconds: batch_job.assignment_duration_in_seconds
+      assignment_duration_in_seconds: batch_job.assignment_duration_in_seconds,
     }
+    unless batch_job.minimal_approval_rate.nil?
+      qual_props = {
+        qualification_requirements: [
+          qualification_type_id: '000000000000000000L0',
+          comparator: 'GreaterThanOrEqualTo',
+          integer_values: [batch_job.minimal_approval_rate],
+          actions_guarded: "Accept"
+        ]
+      }
+      props = props.merge(qual_props)
+    end
     @client.create_hit_type(props).hit_type_id
   end
 
@@ -27,7 +38,7 @@ class Mturk
       max_assignments: 1,
       lifetime_in_seconds: batch_job.lifetime_in_seconds, 
       question: get_external_question_file,
-      requester_annotation: task_id.to_s
+      requester_annotation: task_id.to_s,
     }
     @client.create_hit_with_hit_type(params).hit
   end

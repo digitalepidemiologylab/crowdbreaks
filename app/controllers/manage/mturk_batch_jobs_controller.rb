@@ -14,15 +14,14 @@ module Manage
     end
 
     def edit
-      @is_submitted = @mturk_batch_job.is_submitted?
     end
 
     def update
       @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
       if @mturk_batch_job.update_attributes(mturk_batch_job_params)
+        tweet_ids = retrieve_tweet_ids_from_job_file
         if @mturk_batch_job.job_file.present?
-          # generate tasks
-          tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{ |row| row[0] }
+          # only overwrite if file was provided
           CreateTasksJob.perform_now(@mturk_batch_job.id, tweet_ids, destroy_first: true)
         end
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being updated...")
@@ -34,10 +33,8 @@ module Manage
     def create
       if @mturk_batch_job.save
         # generate tasks
-        if @mturk_batch_job.job_file.present?
-          tweet_ids = CSV.foreach(@mturk_batch_job.job_file.path).map{|row| row[0]}
-          CreateTasksJob.perform_later(@mturk_batch_job.id, tweet_ids)
-        end
+        tweet_ids = retrieve_tweet_ids_from_job_file
+        CreateTasksJob.perform_later(@mturk_batch_job.id, tweet_ids)
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being created...")
       else
         render :new and return
@@ -68,9 +65,16 @@ module Manage
 
     private
 
-
     def mturk_batch_job_params
-      params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions)
+      params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions, :minimal_approval_rate)
+    end
+
+    def retrieve_tweet_ids_from_job_file
+      if @mturk_batch_job.job_file.present?
+        CSV.foreach(@mturk_batch_job.job_file.path).map{ |row| row[0] }
+      else
+        []
+      end
     end
   end
 end
