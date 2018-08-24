@@ -9,7 +9,14 @@ class Mturk
   end
 
   def create_hit_type(batch_job)
-    # create a new hit type given a Mturk Batch Job object
+    # create a qualification type of this batch (used for dynamic exclusions of workers)
+    qual_type_id = generate_exclude_worker_qualification(batch_job.name)
+    if qual_type_id.nil?
+      Rails.logger.error "Something went wrong when generating the qualification type. Aborting."
+      return
+    end
+    Rails.logger.info "Generated new qualifaction type ID: #{qual_type_id}"
+    # create a HIT type
     props = {
       title: batch_job.title,
       description: batch_job.description,
@@ -17,19 +24,25 @@ class Mturk
       keywords: batch_job.keywords,
       auto_approval_delay_in_seconds: batch_job.auto_approval_delay_in_seconds,
       assignment_duration_in_seconds: batch_job.assignment_duration_in_seconds,
+      qualification_requirements: [
+        {
+          qualification_type_id: qual_type_id,
+          comparator: 'DoesNotExist',   # If worker does not exist on list, worker is qualified
+          actions_guarded: "Accept"     # Worker can still preview the task but not accept
+        }
+      ]
     }
+    # system qualfifications (minimum approval rate)
     unless batch_job.minimal_approval_rate.nil?
       qual_props = {
-        qualification_requirements: [
-          qualification_type_id: '000000000000000000L0',
-          comparator: 'GreaterThanOrEqualTo',
-          integer_values: [batch_job.minimal_approval_rate],
-          actions_guarded: "Accept"
-        ]
+        qualification_type_id: '000000000000000000L0',
+        comparator: 'GreaterThanOrEqualTo',
+        integer_values: [batch_job.minimal_approval_rate],
+        actions_guarded: "Accept"
       }
-      props = props.merge(qual_props)
+      props[:qualification_requirements].push(qual_props)
     end
-    @client.create_hit_type(props).hit_type_id
+    return @client.create_hit_type(props).hit_type_id, qual_type_id
   end
 
   def create_hit_with_hit_type(task_id, hit_type_id, batch_job)
@@ -90,6 +103,10 @@ class Mturk
     end
   end
 
+  # #############################
+  # HIT review
+  # #############################
+  
   def approve_assignment(assignment_id, message: '')
     assignment = get_assignment(assignment_id)
     if assignment.nil?
@@ -145,11 +162,58 @@ class Mturk
     return {'hits': hits, 'next_token': resp.next_token, 'num_results': resp.num_results}
   end
 
-
   def list_assignments_for_hit(hit_id)
     handle_error(error_return_value: {'assignments': [], num_results: 0}) do
       # By default max_assignments is set to 1, therefore we only expect 1 result
       @client.list_assignments_for_hit(hit_id: hit_id, max_results: 1)
+    end
+  end
+
+
+  # #############################
+  # QUALIFICATIONS
+  # #############################
+
+  def generate_exclude_worker_qualification(batch_job_name)
+    # create a qualification type to exclude workers under certain conditions
+    name = "ExcludeWorkersFromBatch_#{batch_job_name}"
+    qual_type = find_existing_qualification_type_id(name)
+    if not qual_type.nil?
+      # delete old type and recreate
+      Rails.logger.info "Found old qualification type: #{qual_type}"
+      delete_qualification_type(qual_type)
+    end
+    Rails.logger.info "Creating a new qualification type called '#{name}' to exclude workers..."
+    props = {
+      name: name,
+      description: 'This is a negative qualification which allows to exclude \
+      certain workers once they have finished all available work for them.',
+      qualification_type_status: "Active",
+      auto_granted: true
+    }
+    handle_error do
+      @client.create_qualification_type(props).qualification_type.qualification_type_id
+    end
+  end
+
+  def delete_qualification_type(qual_type)
+    handle_error do
+      Rails.logger.info "Deleting qualification type #{qual_type}..."
+      # Note: Sometimes this seems to throw an error when executing a short time after creation of the qual type
+      @client.delete_qualification_type(qualification_type_id: qual_type)
+    end
+  end
+
+
+  def find_existing_qualification_type_id(name)
+    handle_error do
+      qual_types = @client.list_qualification_types(query: name, must_be_requestable: false, must_be_owned_by_caller: true)
+      Rails.logger.debug "Found #{qual_types.num_results} for search of qualification types"
+      if qual_types.num_results > 0
+        return qual_types.qualification_types.first.qualification_type_id
+      else
+        nil
+      end
     end
   end
 

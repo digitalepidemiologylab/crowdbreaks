@@ -17,7 +17,6 @@ module Manage
     end
 
     def update
-      @mturk_batch_job = MturkBatchJob.find_by(id: params[:id])
       if @mturk_batch_job.update_attributes(mturk_batch_job_params)
         tweet_ids = retrieve_tweet_ids_from_job_file
         if @mturk_batch_job.job_file.present?
@@ -31,6 +30,7 @@ module Manage
     end
 
     def create
+      @mturk_batch_job.sanitize_keywords!
       if @mturk_batch_job.save
         # generate tasks
         tweet_ids = retrieve_tweet_ids_from_job_file

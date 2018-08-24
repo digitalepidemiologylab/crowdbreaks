@@ -34,7 +34,7 @@
       as: :file,
       label: "Tweet IDs",
       hint: 'Please use a csv in which each line corresponds to a tweet ID',
-      :input_html => { :class => 'file-input-form-control' } %>
+      :input_html => { :class => 'file-input-form-control', value: f.object.job_file || nil } %>
     <% if @mturk_batch_job.tasks.count > 0 %>
       <div class="alert alert-danger">Note: Existing tasks and tweet IDs will be overwritten if file is provided.</div>
     <% end %>

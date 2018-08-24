@@ -11,6 +11,7 @@ class DestroyMturkBatchJob < ApplicationJob
     mturk_batch_job = MturkBatchJob.find_by(id: mturk_batch_job_id)
     return unless mturk_batch_job.present?
     mturk_batch_job.cleanup(destroy_results: destroy_results)
+    mturk_batch_job.remove_qualification
     mturk_batch_job.destroy
   end
 end

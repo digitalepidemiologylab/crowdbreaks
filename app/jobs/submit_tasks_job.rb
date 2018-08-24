@@ -21,8 +21,16 @@ class SubmitTasksJob < ApplicationJob
     mturk = Mturk.new(sandbox: mturk_batch_job.sandbox)
 
     # create new HIT type for this batch
-    hittype_id = mturk.create_hit_type(mturk_batch_job)
-    mturk_batch_job.update_attribute(:hittype_id, hittype_id)
+    hittype_id, qualification_type_id = mturk.create_hit_type(mturk_batch_job)
+    if hittype_id.nil? or qualification_type_id.nil?
+      logger.error "Something went wrong when creating HIT type. Aborting"
+      return
+    end
+    logger.info "HIT type: #{hittype_id}, qualification type: #{qualification_type_id}"
+    mturk_batch_job.update_attributes!({
+      hittype_id: hittype_id,
+      qualification_type_id: qualification_type_id
+    })
 
     # create hit given that HIT type
     mturk_batch_job.tasks.each do |t|
