@@ -204,7 +204,6 @@ class Mturk
     end
   end
 
-
   def find_existing_qualification_type_id(name)
     handle_error do
       qual_types = @client.list_qualification_types(query: name, must_be_requestable: false, must_be_owned_by_caller: true)
@@ -214,6 +213,15 @@ class Mturk
       else
         nil
       end
+    end
+  end
+
+  def exclude_worker_from_qualification(worker_id, qualification_type_id)
+    handle_error do
+      @client.associate_qualification_with_worker({
+        qualification_type_id: qualification_type_id,
+        worker_id: worker_id
+      })
     end
   end
 

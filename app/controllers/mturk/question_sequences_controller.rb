@@ -17,16 +17,20 @@ class Mturk::QuestionSequencesController < ApplicationController
     @worker_id = params[:workerId]
     @tweet_id = nil
     @no_work_available = false
+    @sandbox = task.mturk_batch_job.sandbox
 
     if not @preview_mode
       # worker has accepted the HIT
       @tweet_id = get_tweet_id_for_worker(@worker_id, task)
-      @no_work_available = @tweet_id.blank?
+      if @tweet_id.blank?
+        # All work for worker has been done, exclude from qualification 
+        Mturk.new(sandbox: @sandbox).exclude_worker_from_qualification(@worker_id, task.mturk_batch_job.qualification_type_id)
+        @no_work_available = true # used for rendering information to the worker that he has finished all work
+      end
     end
 
     # Collect question sequence info
     @project = task.mturk_batch_job.project
-    @sandbox = task.mturk_batch_job.sandbox
     @mturk_instructions = task.mturk_batch_job.instructions
     @question_sequence = QuestionSequence.new(@project).load
   end
