@@ -17,7 +17,7 @@
     <% if can? :read, mturk_batch_job => MturkTweet %>
       <div class="no-wrap"> 
         <%= link_to mturk_batch_job_mturk_tweets_path(mturk_batch_job.id) do %>
-          Queue&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+          Tweets&nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>
       </div>
     <% end %>

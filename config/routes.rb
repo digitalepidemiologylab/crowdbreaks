@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :projects, except: [:show]
     resources :question_sequences
     resources :users
+    resources :results, except: [:update]
   end
 
   scope :api do

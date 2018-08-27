@@ -18,4 +18,16 @@ module ApplicationHelper
   def current_namespace?(namespace)
     controller_path.split('/').first == namespace
   end
+
+  def status_yes_no(bool_val)
+    if bool_val
+      tag.span('Yes', class: 'badge badge-success')
+    else
+      tag.span('No', class: 'badge badge-danger')
+    end
+  end
+
+  def link_to_tweet(tweet_id)
+    link_to tweet_id.to_s, 'https://twitter.com/statuses/' + tweet_id.to_s, target: '_blank'
+  end
 end

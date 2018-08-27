@@ -13,6 +13,7 @@ class AdminAbility
       can :manage, Project
       cannot :destroy, Project
       can :manage, :question_sequence
+      can :manage, Result
     elsif user.contributor?
       # to be specified
     end

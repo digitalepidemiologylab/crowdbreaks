@@ -199,14 +199,16 @@ class Mturk
   def delete_qualification_type(qual_type)
     handle_error do
       Rails.logger.info "Deleting qualification type #{qual_type}..."
-      # Note: Sometimes this seems to throw an error when executing a short time after creation of the qual type
+      # Note: Sometimes this seems to throw an error when executing a short time befor or after the creation of the same qual type
+      # From the docs: It may take up to 48 hours before DeleteQualificationType completes and the unique name of 
+      # the Qualification type is available for reuse with CreateQualificationType.
       @client.delete_qualification_type(qualification_type_id: qual_type)
     end
   end
 
   def find_existing_qualification_type_id(name)
     handle_error do
-      qual_types = @client.list_qualification_types(query: name, must_be_requestable: false, must_be_owned_by_caller: true)
+      qual_types = @client.list_qualification_types(query: name, must_be_requestable: true, must_be_owned_by_caller: true)
       Rails.logger.debug "Found #{qual_types.num_results} for search of qualification types"
       if qual_types.num_results > 0
         return qual_types.qualification_types.first.qualification_type_id

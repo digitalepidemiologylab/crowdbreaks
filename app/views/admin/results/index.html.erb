@@ -1,17 +1,9 @@
-<% @title ||= 'Queued Tweets'; title @title %>
-
-<div class="row mb-5">
-  <div class="col-12">
-    <%= link_to mturk_batch_jobs_path, class: 'btn btn-secondary btn-lg' do %>
-      Go back
-    <% end %>
-  </div>
-</div>
+<% @title ||= 'Results'; title @title %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <h2 class='mb-4'>
-      In queue for '<%= @mturk_batch_job.name %>'
+      Results
     </h2>
   </div>
 </div>
@@ -19,7 +11,7 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <%= paginate @mturk_tweets %>
+    <%= paginate @results %>
   </div>
 </div>
 
@@ -28,13 +20,17 @@
     <table class="table">
       <thead>
         <tr>
+          <th>Id</th>
+          <th>Project</th>
+          <th>User</th>
           <th>Tweet Id</th>
-          <th>Num workers</th>
-          <th>Is available?</th>
+          <th>Type</th>
+          <th>Created at</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <%= render @mturk_tweets %>
+        <%= render @results %>
       </tbody>
     </table>
   </div>

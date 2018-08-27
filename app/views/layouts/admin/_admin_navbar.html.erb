@@ -22,6 +22,11 @@
             <%= link_to 'Users', admin_users_path, class: admin_link_class('users') %>
           </li>
         <% end %>
+        <% if can? :read, Result %>
+          <li class="nav-item">
+            <%= link_to 'Results', admin_results_path, class: admin_link_class('results') %>
+          </li>
+        <% end %>
       </ul>
     </div>
   </nav>
