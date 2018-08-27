@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180824120141) do
+ActiveRecord::Schema.define(version: 20180827111140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -169,9 +169,9 @@ ActiveRecord::Schema.define(version: 20180824120141) do
     t.datetime "updated_at", null: false
     t.bigint "tweet_id"
     t.bigint "task_id"
-    t.boolean "mturk_result", default: false, null: false
     t.bigint "local_batch_job_id"
     t.bigint "question_sequence_log_id"
+    t.integer "res_type", default: 0, null: false
     t.index ["answer_id"], name: "index_results_on_answer_id"
     t.index ["local_batch_job_id"], name: "index_results_on_local_batch_job_id"
     t.index ["project_id"], name: "index_results_on_project_id"

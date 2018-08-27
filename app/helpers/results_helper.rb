@@ -1,14 +1,18 @@
 module ResultsHelper
-  def result_type(result)
-    if result.task.present?
-      # mturk batch job result
-      tag.span('Mturk', class: 'badge badge-light')
-    elsif result.local_batch_job.present?
-      # local batch job
-      tag.span('local',class:  'badge badge-secondary')
-    else
+  def result_type(type)
+    case type
+    when 'public'
       # public result
       tag.span('public', class: 'badge badge-primary')
+    when 'local'
+      # local batch job
+      tag.span('local',class:  'badge badge-secondary')
+    when 'mturk'
+      # mturk batch job
+      tag.span('Mturk', class: 'badge badge-light')
+    else
+      # public result
+      tag.span('unknown', class: 'badge')
     end
   end
 
