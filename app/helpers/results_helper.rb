@@ -13,10 +13,12 @@ module ResultsHelper
   end
 
   def link_to_user_profile(user)
-    if can? :read, user
-      link_to user&.username, admin_user_path(user)
-    else
-      user&.username
+    if user.present?
+      if can? :read, user
+        link_to user.username, admin_user_path(user)
+      else
+        user&.username
+      end
     end
   end
 end

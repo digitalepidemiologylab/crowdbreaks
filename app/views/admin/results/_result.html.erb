@@ -1,9 +1,7 @@
 <tr>
   <td><%= result.id %></td>
   <td><%= result.project&.title %></td>
-  <td>
-    <%= link_to_user_profile(result.user) %>
-  </td>
+  <td><%= link_to_user_profile(result.user) %></td>
   <td><%= link_to_tweet(result.tweet_id) %></td>
   <td><%= result_type(result) %></td>
   <td><%= time_ago_in_words(result.created_at) %> ago</td>
