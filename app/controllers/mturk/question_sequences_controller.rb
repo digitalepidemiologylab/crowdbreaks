@@ -78,7 +78,7 @@ class Mturk::QuestionSequencesController < ApplicationController
   def create_results_for_task(results, task_id, logs)
     qs_log = QuestionSequenceLog.create(log: logs)
     results.each do |r|
-      results_params = r[:result].merge({task_id: task_id, mturk_result: true, question_sequence_log_id: qs_log.id})
+      results_params = r[:result].merge({task_id: task_id, res_type: :mturk, question_sequence_log_id: qs_log.id})
       result = Result.new(results_params)
       if not result.save
         return false
@@ -111,7 +111,7 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
   def results_params
-    params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id).merge(task_id: get_task(params[:hit_id]).try(:id), mturk_result: true)
+    params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id).merge(task_id: get_task(params[:hit_id]).try(:id), res_type: :mturk)
   end
 
   def get_task(hit_id)

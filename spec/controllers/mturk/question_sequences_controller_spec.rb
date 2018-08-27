@@ -10,7 +10,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:transition) { FactoryBot.create(:transition, :starting_question, to_question: question, project: project) }
 
   # Batch with max assignment 3
-  let!(:mturk_batch_job) { FactoryBot.create(:mturk_batch_job, project: project, number_of_assignments: 3) }
+  let!(:mturk_batch_job) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 3) }
   let!(:mturk_tweet1) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job) }
   let!(:mturk_tweet2) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job) }
 
@@ -26,7 +26,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_reviewable3) { FactoryBot.create(:task, :completed, mturk_worker: mturk_worker3, mturk_tweet: mturk_tweet2, mturk_batch_job: mturk_batch_job) }
 
   # Batch with max assignment 2
-  let!(:mturk_batch_job2) { FactoryBot.create(:mturk_batch_job, project: project, number_of_assignments: 2) }
+  let!(:mturk_batch_job2) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 2) }
   let!(:mturk_tweet3) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job2) }
   let!(:mturk_worker4) { FactoryBot.create(:mturk_worker) } # worker 4 has done tweet 4
   let!(:mturk_worker5) { FactoryBot.create(:mturk_worker) } # worker 5 hasn't done anything
@@ -36,7 +36,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_reviewable4) { FactoryBot.create(:task, :completed, mturk_worker: mturk_worker4, mturk_tweet: mturk_tweet3, mturk_batch_job: mturk_batch_job2) }
   
   # Batch with unavailable tweet
-  let!(:mturk_batch_job3) { FactoryBot.create(:mturk_batch_job, project: project, number_of_assignments: 1) }
+  let!(:mturk_batch_job3) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1) }
   let!(:mturk_tweet4) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job3) } # valid
   let!(:mturk_tweet5) { FactoryBot.create(:mturk_tweet, :invalid_tweet, mturk_batch_job: mturk_batch_job3) } # invalid
   let!(:task_submitted5) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job3) }
@@ -248,7 +248,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(task.lifecycle_status).to eq('completed')
       expect(task.time_completed).to eq(Time.current)
       expect(task.results.count).to eq(1)
-      expect(task.results.first.mturk_result).to eq(true)
+      expect(task.results.first.res_type).to eq('mturk')
       expect(task.results.first.question_id).to eq(question.id)
     end
 
@@ -274,7 +274,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(response).to be_success
       task.reload
       expect(task.results.count).to eq(1)
-      expect(task.results.first.mturk_result).to eq(true)
+      expect(task.results.first.res_type).to eq('mturk')
       expect(task.results.first.question_id).to eq(question.id)
     end
   end
