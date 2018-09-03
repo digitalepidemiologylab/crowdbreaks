@@ -79,7 +79,7 @@ class LocalBatchJobsController < ApplicationController
   def create_results(results, local_batch_job_id, logs)
     qs_log = QuestionSequenceLog.create(log: logs)
     results.each do |r|
-      result_params = r[:result].merge({local_batch_job_id: local_batch_job_id, question_sequence_log_id: qs_log.id})
+      result_params = r[:result].merge({local_batch_job_id: local_batch_job_id, res_type: :local, question_sequence_log_id: qs_log.id})
       result = Result.new(result_params)
       return false if not result.save
     end

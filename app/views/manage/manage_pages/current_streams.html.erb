@@ -21,7 +21,14 @@
         </tr>
       </thead>
       <tbody>
-        <%= render partial: "current_stream", collection: @current_streams, as: 'stream' %>
+        <% @current_streams.each do |stream| %>
+          <tr>
+            <td><%= stream[0] %></td>
+            <td><%= stream[1]['es_index_name'] %></td>
+            <td><%= stream[1]['keywords'].join(', ') %></td>
+            <td><%= stream[1]['languages'].join(', ') %></td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>

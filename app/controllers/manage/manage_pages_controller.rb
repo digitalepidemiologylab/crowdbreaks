@@ -12,13 +12,9 @@ module Manage
       authorize! :configure, :streaming
       @stream_status = @api.status_streaming
       @current_streams = @api.get_config
+      @current_streams ||= []
       @is_up_to_date = Project.is_up_to_date(@current_streams)
       @projects = Project.all
-    end
-
-    def current_streams
-      authorize! :configure, :streaming
-      @current_streams = @api.get_config
     end
 
     def monitor_streams

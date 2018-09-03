@@ -1,5 +1,5 @@
 <% @title ||= 'Manage'; title @title %>
-<div class="row mb-4">
+<div class="row mb-5">
   <div class="col-12">
     <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
       Go back
@@ -7,78 +7,61 @@
   </div>
 </div>
 
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10 col-lg-8">
+<div class="row justify-content-center mb-5">
+  <div class="col-12 col-md-10">
     <h2 class='mb-4'>Streaming configuration</h2>
     <span class="mb=4"> Streaming status: </span>
     <span class="badge badge-sentiment"><%= label_based_on_status(@stream_status) %></span><br/>
   </div>
 </div>
 
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10 col-lg-8">
-    <span class="mb=4">Streaming configuration:</span>
-    <span class="badge badge-sentiment"><%= label_up_to_date(@is_up_to_date) %></span><br/>
-  </div>
-</div>
+<% if not @stream_status == 'error' %>
+  <div class="row justify-content-center mb-5">
+    <div class="col-12 col-md-10 mb-5">
+      <% if @stream_status == 'running' %>
+        <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), change_stream_status: 'stop', class: 'btn btn-lg btn-negative mr-2' do %>
+          <i class="fa fa-stop" style="margin-right:10px;color:#fff;"></i>
+          Stop stream
+        <% end %>
+        <%= link_to stream_status_path(api: {change_stream_status: 'restart'}), class: 'btn btn-lg btn-primary' do %>
+          <i class="fa fa-refresh" style="margin-right:10px;color:#fff;"></i>
+          Restart stream
+        <% end %>
+      <% else %>
+        <%= link_to stream_status_path(api: {change_stream_status: 'start'}), class: 'btn btn-lg btn-success' do %>
+          <i class="fa fa-play" style="margin-right:10px;color:#fff;"></i>
+          Start stream
+        <% end %>
+      <% end %>
+    </div>
 
-
-<div class="row justify-content-center mb-6">
-  <div class="col-12 col-md-10 col-lg-8">
-    <% if @stream_status == 'running' %>
-      <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), change_stream_status: 'stop', class: 'btn btn-lg btn-negative mr-2' do %>
-        <i class="fa fa-stop" style="margin-right:10px;color:#fff;"></i>
-        Stop stream
-      <% end %>
-      <%= link_to stream_status_path(api: {change_stream_status: 'restart'}), class: 'btn btn-lg btn-primary' do %>
-        <i class="fa fa-refresh" style="margin-right:10px;color:#fff;"></i>
-        Restart stream
-      <% end %>
-    <% else %>
-      <%= link_to stream_status_path(api: {change_stream_status: 'start'}), class: 'btn btn-lg btn-success' do %>
-        <i class="fa fa-play" style="margin-right:10px;color:#fff;"></i>
-        Start stream
-      <% end %>
+    <% if not @is_up_to_date %>
+      <div class="col-12 col-md-10 mb-5">
+        <div class="alert alert-danger">The streaming configuration is not up-to-date.</div>
+        <%= link_to 'Update configuration', set_config_path, class: 'btn btn-primary btn-lg mr-2' %>
+      </div>
     <% end %>
   </div>
-</div>
+<% end %>
 
-<div class="row justify-content-center mb-6">
-  <div class="col-12 col-md-10 col-lg-8">
+<div class="row justify-content-center mb-5">
+  <div class="col-12 col-md-10">
     <h4>Current projects</h4>
     <table class="table">
       <thead>
-        <tr>
-          <th>Project</th><th>Elasticsearch index</th><th>Keywords</th><th>Lanugages</th><th>Public?</th><th>Active stream?</th><th>Actions</th>
+        <tr class='no-wrap'>
+          <th>Project</th>
+          <th>Elasticsearch index</th>
+          <th>Keywords</th>
+          <th>Lanugages</th>
+          <th>Storage mode</th>
+          <th>Active stream?</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <%= render partial: "admin/projects/project", collection: @projects %>
+        <%= render partial: "current_project", collection: @projects %>
       </tbody>
     </table>
-  </div>
-</div>
-
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10 col-lg-8">
-    <span class="mb=4">Streaming configuration:</span>
-    <span class="badge badge-sentiment"><%= label_up_to_date(@is_up_to_date) %></span><br/>
-  </div>
-</div>
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10 col-lg-8">
-    <% if not @is_up_to_date %>
-      <%= link_to 'Update configuration', set_config_path, class: 'btn btn-primary btn-lg mr-2' %>
-    <% end %>
-  </div>
-</div>
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-10 col-lg-8">
-    <%= link_to current_streams_path, class: 'btn btn-secondary btn-lg' do %>
-      See current configuration
-    <% end %>
   </div>
 </div>

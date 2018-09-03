@@ -1,6 +1,6 @@
 module Admin
   class ProjectsController < BaseController
-    load_and_authorize_resource
+    load_and_authorize_resource param_method: :sanitized_projects_params, find_by: :slug
 
     def new
       @project = Project.new
@@ -24,11 +24,9 @@ module Admin
     end
 
     def edit
-      @project = Project.friendly.find(params[:id])
     end
 
     def update
-      @project = Project.friendly.find(params[:id])
       if @project.update_attributes(sanitized_projects_params)
         flash[:notice] = 'Project successfully updated!'
         redirect_to streaming_path
@@ -39,7 +37,6 @@ module Admin
     end
 
     def destroy
-      @project = Project.friendly.find(params[:id])
       if @project.results.count > 0
         redirect_to(admin_projects_path, alert: 'Cannot delete a project with existing answers to questions (results). Delete results or define a new project.')
       else
@@ -55,13 +52,14 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :keywords, :es_index_name, :image, :public, :active_stream, :lang)
+      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode)
     end
 
     def sanitized_projects_params
       sanitized_params = project_params
       sanitized_params[:keywords] = array_from_string(project_params[:keywords])
       sanitized_params[:lang] = array_from_string(project_params[:lang])
+      sanitized_params[:storage_mode] = sanitized_params[:storage_mode].to_i
       sanitized_params
     end
 

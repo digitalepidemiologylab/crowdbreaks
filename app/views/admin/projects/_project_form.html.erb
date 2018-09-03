@@ -33,7 +33,10 @@
         <%= f.input :es_index_name, hint: 'Name of ElasticSearch index to store tweets into, make sure to name the index project_*', input_html: {value: @project.es_index_name || ""} %>
       </div>
       <div class="form-group">
-        <%= f.input :active_stream, input_html: {class: "mr-2", value: @project.active_stream}, hint: "Activate stream (if false, logstash won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
+        <%= f.input :storage_mode, collection: Project.storage_modes, include_blank: false, selected: @project.read_attribute_before_type_cast(:storage_mode), hint: 'Where to store tweets. In any case tweets will be stored on S3. If project is public it should include Elasticsearch (es).' %>
+      </div>
+      <div class="form-group">
+        <%= f.input :active_stream, input_html: {class: "mr-2", value: @project.active_stream}, hint: "Activate stream (if false, won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
       </div>
     </div>
   </div>

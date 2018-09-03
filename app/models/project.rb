@@ -13,6 +13,8 @@ class Project < ApplicationRecord
 
   default_scope { order(created_at: :asc)  }
 
+  enum storage_mode: [:'s3-es', :'s3-es-no-retweets', :s3, :test]
+
   def display_name
     title
   end
@@ -25,17 +27,21 @@ class Project < ApplicationRecord
 
   def self.is_up_to_date(remote_config)
     # test if given stream configuration is identical to projects
+    return false if remote_config.nil?
     return false if remote_config.length != Project.where(active_stream: true).count
     remote_config.each do |c|
-      p = Project.find_by(slug: c[0])
+      p = Project.find_by(slug: c['slug'])
       return false if p.nil?
-      if p.keywords.sort != c[1]['keywords'].sort
+      if p.keywords.sort != c['keywords'].sort
         return false
       end
-      if p.lang.sort != c[1]['languages'].sort
+      if p.lang.sort != c['lang'].sort
         return false
       end
-      if p.es_index_name != c[1]['es_index_name']
+      if p.es_index_name != c['es_index_name']
+        return false
+      end
+      if p.storage_mode != c['storage_mode']
         return false
       end
     end

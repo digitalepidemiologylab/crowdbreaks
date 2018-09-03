@@ -1,0 +1,20 @@
+<tr>
+  <td><%= current_project.title %></td>
+  <td><%= current_project.es_index_name %></td>
+  <td><%= truncate(current_project.keywords.join(', '), length: 80, separator: ',') %></td>
+  <td><%= current_project.lang.join(', ') %></td>
+  <td><%= current_project.storage_mode %></td>
+  <td><%= status_yes_no(current_project.active_stream?) %></td>
+  <td>
+    <span class="no-wrap"> 
+      <% if can? :destroy, current_project %>
+        <%= link_to fa_icon("trash"), admin_project_path(current_project),
+          method: :delete,
+          data: {confirm: "Delete current_project?"} %>
+      <% end %>
+      <% if can? :update, current_project %>
+        <%= link_to fa_icon("pencil"), edit_admin_project_path(current_project)  %>
+      <% end %>
+    </span>
+  </td>
+</tr>

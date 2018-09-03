@@ -1,26 +1,26 @@
 <tr>
   <td><%= project.title %></td>
   <td><%= project.es_index_name %></td>
-  <td><%= truncate(project.keywords.to_s) %></td>
-  <td><%= project.lang %></td>
-  <td><span class="label label-<%= project.public ? 'success' : 'default' %>"><%= project.public ? 'Yes' : 'No' %></span></td>
-  <td><span class="label label-<%= project.active_stream ? 'success' : 'default' %>"><%= project.active_stream ? 'Yes' : 'No' %></span></td>
+  <td><%= truncate(project.keywords.join(', ')) %></td>
+  <td><%= project.lang.join(', ') %></td>
+  <td><%= status_yes_no(project.public?) %></td>
+  <td><%= status_yes_no(project.active_stream?) %></td>
   <td>
     <span> 
       <% if can? :update, :question_sequence %>
-        <%= link_to fa_icon("pencil") + ' Edit question sequence', edit_admin_question_sequence_path(project.id)  %>
+        <%= link_to fa_icon("pencil") + ' Edit question sequence', edit_admin_question_sequence_path(project)  %>
       <% end %>
     </span>
   </td>
   <td>
-    <span> 
+    <span class="no-wrap"> 
       <% if can? :destroy, project %>
-        <%= link_to fa_icon("trash"), admin_project_path(project.id),
+        <%= link_to fa_icon("trash"), admin_project_path(project),
           method: :delete,
           data: {confirm: "Delete project?"} %>
       <% end %>
       <% if can? :update, project %>
-        <%= link_to fa_icon("pencil"), edit_admin_project_path(project.id)  %>
+        <%= link_to fa_icon("pencil"), edit_admin_project_path(project)  %>
       <% end %>
     </span>
   </td>

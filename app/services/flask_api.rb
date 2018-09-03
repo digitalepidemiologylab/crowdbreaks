@@ -42,6 +42,7 @@ class FlaskApi
   def get_config
     handle_error(error_return_value: []) do
       resp = self.class.get('/pipeline/config')
+      p resp.parsed_response
       resp.parsed_response
     end
   end
@@ -54,7 +55,7 @@ class FlaskApi
 
   def status_streaming
     handle_error(error_return_value: 'error') do
-      resp = self.class.get('/pipeline/status/logstash')
+      resp = self.class.get('/pipeline/status/stream')
       return resp.length > 20 ? 'error' : resp.strip
     end
   end
@@ -67,7 +68,7 @@ class FlaskApi
 
   def stop_streaming
     handle_error_notification do
-      self.class.get('/pipeline/stop')
+      self.class.get('/pipeline/stop', {timeout: 15})
     end
   end
 
