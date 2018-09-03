@@ -11,9 +11,9 @@ module Manage
     def streaming
       authorize! :configure, :streaming
       @stream_status = @api.status_streaming
-      @current_streams = @api.get_config
-      @current_streams ||= []
-      @is_up_to_date = Project.is_up_to_date(@current_streams)
+      current_streams = @api.get_config
+      current_streams ||= []
+      @is_up_to_date = Project.is_up_to_date(current_streams)
       @projects = Project.all
     end
 
@@ -24,7 +24,8 @@ module Manage
         @current_streams = []
         return
       end
-      @current_streams = Project.select(:title_translations, :es_index_name).where(slug: config.keys)
+      @current_streams = Project.where(es_index_name: config.map{|stream| stream['es_index_name']})
+      @stream_status = @api.status_streaming
     end
 
     def sentiment_analysis_chart

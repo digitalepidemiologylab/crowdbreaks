@@ -14,4 +14,12 @@
   </div>
 </div>
 
-<%= render partial: "monitor_stream", collection: @current_streams, as: 'project' %>
+<div class="row">
+  <% if @stream_status == 'running' %>
+    <%= render partial: "monitor_stream", collection: @current_streams, as: 'project' %>
+  <% else %>
+    <div class="col-12">
+      <div class="alert alert-primary">There are no streams running currently.</div>
+    </div>
+  <% end %>
+</div>
