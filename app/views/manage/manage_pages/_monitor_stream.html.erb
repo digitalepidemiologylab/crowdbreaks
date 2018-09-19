@@ -1,9 +1,14 @@
-<div class="col-12" style="margin-top: 20px;">
-  <%= react_component 'MonitorStream', {
-    'project_name': project.title,
-    'es_index_name': project.es_index_name,
-    'data_endpoint': stream_data_path,
-    'past_minutes': 5,
-    'auto_update': true
-  } %>
+<div class="col-12 mt-2">
+  <% unless [:'s3-es', :'s3-es-no-retweets'].include?(project.storage_mode) %>
+    <%= react_component 'MonitorStream', {
+      'project_name': project.title,
+      'es_index_name': project.es_index_name,
+      'data_endpoint': stream_data_path,
+      'past_minutes': 5,
+      'auto_update': true} %>
+  <% else %>
+    <div class="alert alert-primary">
+      Stream monitoring is only available for streams which store to Elasticsearch
+    </div>
+  <% end %>
 </div>
