@@ -21,13 +21,16 @@ export class QuestionSequence extends React.Component {
       // Note: This could lead to problems if a user has multiple Question sequences in one window
       window.onCaptchaVerify = this.verifyCallback.bind(this);
     }
-    // Only show loading clip if tweet is displayed using the Embedding API
-    let showLoadingClip = props.tweetText == "" ? true : false;
+    // Check if tweet text is provided
+    let tweetTextPresent = true;
+    if (props.tweetText == "" || props.tweetText === undefined) {
+      tweetTextPresent = false;
+    }
     // set initial question state
     this.state = {
       'currentQuestion': props.questions[props.initialQuestionId],
-      'tweetIsLoading': showLoadingClip,
-      'showTweetText': !showLoadingClip,
+      'tweetIsLoading': !tweetTextPresent,
+      'showTweetText': tweetTextPresent,
       'numQuestionsAnswered': 0,
       'unverifiedAnswers': [],
       'answersDisabled': true,
