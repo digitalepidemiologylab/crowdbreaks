@@ -45,4 +45,8 @@ class LocalBatchJob < ApplicationRecord
     return false if user_id.nil?
     users.exists?(user_id) ? true : false
   end
+
+  def default_instructions
+    "# Instructions for this task"
+  end
 end

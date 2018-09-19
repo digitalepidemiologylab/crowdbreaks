@@ -30,11 +30,18 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :job_file,
-      as: :file,
-      label: "Tweet IDs",
-      hint: 'Please use a csv in which each line corresponds to a tweet ID',
-      :input_html => { :class => 'file-input-form-control', value: f.object.job_file || nil } %>
+    <%= f.input 'Upload tweet IDs',
+      hint: 'Please use a header-less CSV in which each row corresponds to a tweet ID. You can specify a second column for the text. In that case the text instead of the entire tweet will be shown to turkers.',
+      label_html: {class: 'label-no-wrap'} do %>
+      <div class="btn btn-secondary" onClick="document.getElementById('job-file').click();">
+        <%= fa_icon 'upload', class: 'mr-2' %>
+        <span>Choose file</span>
+      </div>
+    <% end %>
+    <div class='hidden-file-upload'>
+      <%= f.input :job_file, as: :file, input_html: {id: 'job-file', class: 'input-file'} %>
+    </div>
+    <%= f.error :job_file %>
     <% if @mturk_batch_job.tasks.count > 0 %>
       <div class="alert alert-danger">Note: Existing tasks and tweet IDs will be overwritten if file is provided.</div>
     <% end %>
@@ -48,11 +55,18 @@
   </div>
 
   <div class="form-group">
+    <%= f.input :max_tasks_per_worker,
+      as: :integer, 
+      input_html: { value: f.object.max_tasks_per_worker || 1 },
+      hint: "Maximum number of tasks by a worker in this batch" %>
+  </div>
+
+  <div class="form-group">
     <%= f.input 'Reward', hint: "Reward per finished question sequence" do %>
       <div class="input-group">
         <span class="input-group-text">$</span>
         <%= f.input_field :reward,
-          class: 'form-control',
+          class: 'form-control border-left-0',
           value: f.object.reward || 0.03 %>
       </div>
     <% end %>
@@ -62,7 +76,7 @@
     <%= f.input 'Lifetime', hint: "Time after which a HIT is no longer available for users." do %>
       <div class="input-group">
         <%= f.input_field :lifetime_in_seconds,
-          class: 'form-control',
+          class: 'form-control border-right-0',
           value: f.object.lifetime_in_seconds.nil? ? 30 : f.object.lifetime_in_seconds / (24*3600)
         %>
         <span class="input-group-text">days</span>
@@ -75,7 +89,7 @@
     <%= f.input 'Auto-approval', hint: "Time after which a completed HIT gets auto-approved" do %>
       <div class="input-group">
         <%= f.input_field :auto_approval_delay_in_seconds,
-          class: 'form-control',
+          class: 'form-control border-right-0',
           value: f.object.auto_approval_delay_in_seconds.nil? ? 7 : f.object.auto_approval_delay_in_seconds / (24*3600)
         %>
         <span class="input-group-text">days</span>
@@ -88,7 +102,7 @@
     <%= f.input 'Assignment duration', hint: "Time which is given to a worker to complete the task" do %>
       <div class="input-group">
         <%= f.input_field :assignment_duration_in_seconds,
-          class: 'form-control',
+          class: 'form-control border-right-0',
           value: f.object.assignment_duration_in_seconds.nil? ? 20 : f.object.assignment_duration_in_seconds / (60)
         %>
         <span class="input-group-text">min</span>
@@ -102,7 +116,7 @@
     <%= f.input 'Minimal approval rate', hint: "Workers need at least this HIT approval rate in order to work on this batch. Only allows full integers. Leave empty for having no minimal approval rate." do %>
       <div class="input-group">
         <%= f.input_field :minimal_approval_rate,
-          class: 'form-control',
+          class: 'form-control border-right-0',
           type: :number
         %>
         <span class="input-group-text">%</span>

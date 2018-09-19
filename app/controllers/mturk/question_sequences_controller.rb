@@ -21,7 +21,7 @@ class Mturk::QuestionSequencesController < ApplicationController
 
     if not @preview_mode
       # worker has accepted the HIT
-      @tweet_id = get_tweet_id_for_worker(@worker_id, task)
+      @tweet_id, @tweet_text = get_tweet_for_worker(@worker_id, task)
       if @tweet_id.blank?
         # All work for worker has been done, exclude from qualification 
         Mturk.new(sandbox: @sandbox).exclude_worker_from_qualification(@worker_id, task.mturk_batch_job.qualification_type_id)
@@ -87,19 +87,22 @@ class Mturk::QuestionSequencesController < ApplicationController
     true
   end
 
-  def get_tweet_id_for_worker(worker_id, task)
+  def get_tweet_for_worker(worker_id, task)
     Rails.logger.debug "Assigning task for worker #{worker_id}..."
     w = MturkWorker.find_by(worker_id: worker_id)
     w = MturkWorker.create(worker_id: worker_id) if w.nil?
+    # find a new tweet for worker and assign it through the task
     w.assign_task(task)
+    # retrieve assigned tweet
     tweet_id = task.mturk_tweet.try(:tweet_id)
     if tweet_id.nil?
       Rails.logger.info "No tweet ID could be set"
+      return tweet_id.to_s, ""
     else
       Rails.logger.info "Tweet found successfully to be #{tweet_id}"
+      tweet_text = task.mturk_tweet.tweet_text
+      return tweet_id.to_s, tweet_text.to_s
     end
- 
-    return tweet_id.to_s
   end
 
   def tasks_params

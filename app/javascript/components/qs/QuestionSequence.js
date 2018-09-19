@@ -12,20 +12,22 @@ import { Answer } from './Answer';
 import { Question } from './Question';
 import { QuestionInstructions } from './QuestionInstructions';
 import { TweetEmbedding } from './TweetEmbedding';
+import { TweetTextEmbedding } from './TweetTextEmbedding';
 
 export class QuestionSequence extends React.Component {
   constructor(props) {
     super(props);
-
     if (!props.userSignedIn && !props.captchaVerified) {
       // Note: This could lead to problems if a user has multiple Question sequences in one window
       window.onCaptchaVerify = this.verifyCallback.bind(this);
     }
-
+    // Only show loading clip if tweet is displayed using the Embedding API
+    let showLoadingClip = props.tweetText == "" ? true : false;
     // set initial question state
     this.state = {
       'currentQuestion': props.questions[props.initialQuestionId],
-      'tweetIsLoading': true,
+      'tweetIsLoading': showLoadingClip,
+      'showTweetText': !showLoadingClip,
       'numQuestionsAnswered': 0,
       'unverifiedAnswers': [],
       'answersDisabled': true,
@@ -44,6 +46,10 @@ export class QuestionSequence extends React.Component {
       'timeLastAnswer': this.getTime(),
       'logs': newLog
     })
+    // Enable Answer delay at this moment in case of showing tweet text
+    if (this.state.showTweetText) {
+      this.delayEnableAnswers();
+    }
   }
 
   getInitializedLog() {
@@ -236,8 +242,9 @@ export class QuestionSequence extends React.Component {
 
   render() {
     let parentThis = this;
-    let progressDots = []
-    let Q = "Q" + (this.state.numQuestionsAnswered+1).toString()
+    let progressDots = [];
+    let Q = "Q" + (this.state.numQuestionsAnswered+1).toString();
+    let tweetEmbedding;
     for (let i = 0; i < this.props.numTransitions; ++i) {
       let liClassName = "";
       if (i < this.state.numQuestionsAnswered) {
@@ -249,15 +256,17 @@ export class QuestionSequence extends React.Component {
         <li className={liClassName} key={i}><span>{i}</span></li>
       )
     }
+    if (this.state.showTweetText) {
+      tweetEmbedding = <TweetTextEmbedding tweetText={this.props.tweetText} />
+    } else {
+      tweetEmbedding = <TweetEmbedding tweetId={this.props.tweetId} onTweetLoad={() => this.onTweetLoad()} />
+    }
     let questionSequenceBody = <div ref={(tweet) => this.tweet = tweet}>
       {/* Title and tweet */}
       <div className='row justify-content-center'> 
         <div className="col-12">
           {this.props.projectTitle && <h4 className="mb-5">{this.props.projectTitle}</h4>} 
-          <TweetEmbedding 
-            tweetId={this.props.tweetId}
-            onTweetLoad={() => this.onTweetLoad()}
-          />
+          {tweetEmbedding}
         </div>
       </div>
       {/* Loading clip */}

@@ -7,19 +7,24 @@ class LocalBatchJobsController < ApplicationController
     if not user_signed_in? or not @local_batch_job.allows_user?(@user_id)
       raise CanCan::AccessDenied
     end
-
     # calculate counts
     @user_count = @local_batch_job.results.counts_by_user(@user_id)
     @total_count = @local_batch_job.local_tweets.is_available.count
     @total_count_unavailable = @local_batch_job.local_tweets.is_unavailable.count
-
-    @tweet_id = @local_batch_job.local_tweets.not_assigned_to_user(@user_id, @local_batch_job.id).is_available.first&.tweet_id
+    # Get inital tweet
+    local_tweet = @local_batch_job.local_tweets.not_assigned_to_user(@user_id, @local_batch_job.id).is_available.first 
+    @tweet_id = local_tweet&.tweet_id
+    @tweet_text = local_tweet&.tweet_text
     @no_work_available = @tweet_id.nil?
-    @tweet_is_available = TweetValidation.new.tweet_is_valid?(@tweet_id)
-    if not @tweet_is_available
-      LocalTweet.set_to_unavailable(@tweet_id, @local_batch_job.id)
+    if @tweet_text.nil?
+      @tweet_is_available = TweetValidation.new.tweet_is_valid?(@tweet_id)
+      if not @tweet_is_available
+        LocalTweet.set_to_unavailable(@tweet_id, @local_batch_job.id)
+      end
+    else
+      # If in text mode, tweet is always available
+      @tweet_is_available = true
     end
-
     @project = @local_batch_job.project
     @instructions = @local_batch_job.instructions
     @question_sequence = QuestionSequence.new(@project).load
@@ -43,19 +48,23 @@ class LocalBatchJobsController < ApplicationController
     end
 
     # fetch next tweet
-    tweet_id = local_batch_job.
+    local_tweet = local_batch_job.
       local_tweets.
       not_assigned_to_user(user_id, local_batch_job.id).
       is_available&.
-      first&.
-      tweet_id&.
-      to_s
+      first
+    tweet_id = local_tweet&.tweet_id&.to_s
+    tweet_text = local_tweet&.tweet_text
 
     # validate tweet
     no_work_available = tweet_id.nil?
-    tweet_is_available = TweetValidation.new.tweet_is_valid?(tweet_id)
-    if not tweet_is_available
-      LocalTweet.set_to_unavailable(tweet_id.to_i, local_batch_job.id)
+    if tweet_text == ""
+      tweet_is_available = TweetValidation.new.tweet_is_valid?(tweet_id)
+      if not tweet_is_available
+        LocalTweet.set_to_unavailable(tweet_id.to_i, local_batch_job.id)
+      end
+    else
+      tweet_is_available = true
     end
 
     # calculate counts
@@ -66,6 +75,7 @@ class LocalBatchJobsController < ApplicationController
     # send info back
     render json: {
       tweet_id: tweet_id,
+      tweet_text: tweet_text,
       tweet_is_available: tweet_is_available,
       user_count: user_count,
       total_count: total_count,

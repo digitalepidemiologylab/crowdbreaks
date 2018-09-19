@@ -8,12 +8,12 @@
   <td><%= number_with_delimiter(local_batch_job.local_tweets.is_unavailable.count, delimiter: ' ') %></td>
   <td>
     <% if local_batch_job.local_tweets.count > 0 %>
-      <div> 
+      <div class='no-wrap'> 
         <%= link_to manage_local_batch_job_local_tweets_path(local_batch_job) do %>
           Queue <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>
       </div>
-      <div> 
+      <div class='no-wrap'> 
         <%= link_to local_batch_job_path(local_batch_job) do %>
           Start <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>

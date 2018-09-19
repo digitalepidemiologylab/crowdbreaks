@@ -1,0 +1,49 @@
+<%= simple_form_for [:manage, @local_batch_job] do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-group">
+    <%= f.input :name, hint: 'Has to be unique' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.association :project, hint: 'Choose question sequence' %>
+  </div>
+
+  <div class="form-group">
+    <div class="input field_with_hint">
+      <div>
+        <label>Give access to admin users</label>
+      </div>
+      <%= f.collection_check_boxes :user_ids, User.where.not(role: 'default'), :id, :user_email do |b| %>
+        <% b.label(style: "margin-right: 10px") { b.check_box(style: "margin-right: 3px") + b.text}%>
+      <% end %>
+      <p class="help-block">Give access to users</p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :instructions, hint: 'Instructions to the worker (visible on top of the question sequence) in Markdown', input_html: {value: f.object.instructions.present? ? f.object.instructions : @local_batch_job.default_instructions, style: "font-family: monospace;", rows: 10} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Upload tweet IDs',
+      hint: 'Please use a header-less CSV in which each row corresponds to a tweet ID. You can specify a second column for the text. In that case the text instead of the entire tweet will be shown to turkers.',
+      label_html: {class: 'label-no-wrap'} do %>
+      <div class="btn btn-secondary" onClick="document.getElementById('local-job-file').click();">
+        <%= fa_icon 'upload', class: 'mr-2' %>
+        <span>Choose file</span>
+      </div>
+    <% end %>
+    <div class='hidden-file-upload'>
+      <%= f.input :job_file, as: :file, input_html: {id: 'local-job-file', class: 'input-file'} %>
+    </div>
+    <%= f.error :job_file %>
+    <% if @local_batch_job.local_tweets.count > 0 %>
+      <div class="alert alert-danger">Note: Existing tasks and tweet IDs will be overwritten if file is provided.</div>
+    <% end %>
+  </div>
+
+  <div class="form-actions" style="margin-top:25px;">
+    <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
+  </div>
+<% end %>

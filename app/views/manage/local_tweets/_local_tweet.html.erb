@@ -1,5 +1,6 @@
 <tr>
   <td><%= link_to_tweet(local_tweet.tweet_id) %></td>
+  <td><%= local_tweet.tweet_text == "" ? status_badge('Not present', 'dark') : local_tweet.tweet_text %></td>
   <td><%= status_yes_no(local_tweet.is_available?) %></td>
   <td><%= local_tweet.done_by&.join(' ') %></td>
 </tr>

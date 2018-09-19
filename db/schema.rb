@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180903142152) do
+ActiveRecord::Schema.define(version: 20180907153245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20180903142152) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_available", default: true
+    t.text "tweet_text", default: ""
     t.index ["local_batch_job_id"], name: "index_local_tweets_on_local_batch_job_id"
   end
 
@@ -99,6 +100,7 @@ ActiveRecord::Schema.define(version: 20180903142152) do
     t.integer "number_of_assignments", default: 1
     t.integer "minimal_approval_rate"
     t.string "qualification_type_id"
+    t.integer "max_tasks_per_worker"
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
   end
 
@@ -106,6 +108,7 @@ ActiveRecord::Schema.define(version: 20180903142152) do
     t.bigint "tweet_id"
     t.bigint "mturk_batch_job_id"
     t.boolean "is_available", default: true
+    t.text "tweet_text", default: ""
     t.index ["mturk_batch_job_id"], name: "index_mturk_tweets_on_mturk_batch_job_id"
   end
 

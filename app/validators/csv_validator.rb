@@ -23,19 +23,28 @@ class CsvValidator < ActiveModel::Validator
       return false, 'Unsuccessful. File was empty.'
     end
 
-    if not file_contains_tweet_ids?(csv_file)
-      return false, 'One or more tweet IDs were invalid integers.'
+    # check how many columns 
+    first_row = CSV.open(csv_file.path, 'r') {|csv| csv.first} 
+    with_text = false
+    if first_row.count == 2
+      with_text = true
+    elsif first_row.count > 2
+      return false, 'Detected more than 2 columns in CSV'
     end
-    return true, nil
-  end
 
-  def file_contains_tweet_ids?(csv_file)
-    CSV.foreach(csv_file.path) do |line|
-      tweet_id = line[0].to_s
+    # check content validity
+    CSV.foreach(csv_file.path) do |row|
+      tweet_id = row[0].to_s
       if not tweet_id =~ /\A\d{1,}\z/
-        return false
+        return false, 'Detected tweet ID with invalid format'
+      end
+      if with_text
+        text = row[1].to_s
+        if text.empty?
+          return false, 'Found empty tweet text'
+        end
       end
     end
-    return true
+    return true, nil
   end
 end

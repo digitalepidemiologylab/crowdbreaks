@@ -27,6 +27,10 @@ module ApplicationHelper
     end
   end
 
+  def status_badge(label, type)
+    tag.span(label, class: "badge badge-#{type}")
+  end
+
   def link_to_tweet(tweet_id)
     link_to tweet_id.to_s, 'https://twitter.com/statuses/' + tweet_id.to_s, target: '_blank'
   end

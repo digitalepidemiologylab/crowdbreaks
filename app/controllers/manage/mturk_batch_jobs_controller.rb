@@ -18,10 +18,9 @@ module Manage
 
     def update
       if @mturk_batch_job.update_attributes(mturk_batch_job_params)
-        tweet_ids = retrieve_tweet_ids_from_job_file
         if @mturk_batch_job.job_file.present?
           # only overwrite if file was provided
-          CreateTasksJob.perform_now(@mturk_batch_job.id, tweet_ids, destroy_first: true)
+          CreateTasksJob.perform_later(@mturk_batch_job.id, retrieve_tweet_rows_from_job_file, destroy_first: true)
         end
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being updated...")
       else
@@ -33,8 +32,7 @@ module Manage
       @mturk_batch_job.sanitize_keywords!
       if @mturk_batch_job.save
         # generate tasks
-        tweet_ids = retrieve_tweet_ids_from_job_file
-        CreateTasksJob.perform_later(@mturk_batch_job.id, tweet_ids)
+        CreateTasksJob.perform_later(@mturk_batch_job.id, retrieve_tweet_rows_from_job_file)
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being created...")
       else
         render :new and return
@@ -69,9 +67,9 @@ module Manage
       params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions, :minimal_approval_rate)
     end
 
-    def retrieve_tweet_ids_from_job_file
+    def retrieve_tweet_rows_from_job_file
       if @mturk_batch_job.job_file.present?
-        CSV.foreach(@mturk_batch_job.job_file.path).map{ |row| row[0] }
+        CSV.foreach(@mturk_batch_job.job_file.path).map{ |row| row }
       else
         []
       end

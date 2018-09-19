@@ -1,5 +1,6 @@
 <tr>
   <td><%= link_to_tweet(mturk_tweet.tweet_id) %></td>
+  <td><%= mturk_tweet.tweet_text == "" ? status_badge('Not present', 'dark') : mturk_tweet.tweet_text %></td>
   <td><%= mturk_tweet.mturk_workers.count %></td>
   <td><%= status_yes_no(mturk_tweet.is_available) %></td>
 </tr>

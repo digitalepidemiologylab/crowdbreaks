@@ -81,7 +81,12 @@ select.form-control {
 .form-control-range {
   display: block;
 }
-
+.hidden-file-upload {
+  display: none;
+}
+.label-no-wrap {
+  display: block;
+}
 
 //
 // Labels

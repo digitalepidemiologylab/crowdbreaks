@@ -15,8 +15,8 @@ module Manage
     def update
       if @local_batch_job.update_attributes(local_batch_job_params)
         if @local_batch_job.job_file.present?
-          tweet_ids = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row[0] }
-          CreateLocalTweetsJob.perform_later(@local_batch_job.id, tweet_ids, destroy_first: true)
+          tweet_rows = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row }
+          CreateLocalTweetsJob.perform_later(@local_batch_job.id, tweet_rows, destroy_first: true)
         end
         redirect_to(manage_local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' is being updated...")
       else
@@ -27,8 +27,8 @@ module Manage
     def create
       if @local_batch_job.save
         if @local_batch_job.job_file.present?
-          tweet_ids = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row[0] }
-          CreateLocalTweetsJob.perform_later(@local_batch_job.id, tweet_ids)
+          tweet_rows = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row }
+          CreateLocalTweetsJob.perform_later(@local_batch_job.id, tweet_rows)
         end
         redirect_to(manage_local_batch_jobs_path, notice: "Job '#{@local_batch_job.name}' is being created...")
       else

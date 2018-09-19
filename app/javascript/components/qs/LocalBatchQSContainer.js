@@ -17,6 +17,7 @@ export class LocalBatchQSContainer extends React.Component {
       'questionSequenceHasEnded': false,
       'nextTweetId': 0,
       'tweetId': props.tweetId,
+      'tweetText': props.tweetText,
       'transitions': props.transitions,
       'questions': props.questions,
       'errors': [],
@@ -75,6 +76,7 @@ export class LocalBatchQSContainer extends React.Component {
           this.setState({
             'nextTweetId': tweetId,
             'nextTweetIsAvailable': response['tweet_is_available'],
+            'tweetText': response['tweet_text'],
             'questionSequenceHasEnded': true,
             'userCount': response['user_count'],
             'totalCount': response['total_count'],
@@ -133,6 +135,7 @@ export class LocalBatchQSContainer extends React.Component {
           questions={this.state.questions}
           transitions={this.state.transitions}
           tweetId={this.state.tweetId}
+          tweetText={this.state.tweetText}
           userId={this.props.userId}
           projectId={this.props.projectId}
           submitResult={(args) => this.submitResult(args)}

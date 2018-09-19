@@ -44,3 +44,13 @@
     vertical-align: top !important;
   }
 }
+
+// Mimics Twitter Embedding, used when Tweet text is provided
+.question-sequence-fake-tweet {
+  max-width: 500px;
+  margin: auto;
+  background-color: #fff;
+  border: 1px solid #ced7de;
+  border-radius: 5px;
+  padding: 1.5rem;
+}
