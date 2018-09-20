@@ -7,8 +7,11 @@
       'past_minutes': 5,
       'auto_update': true} %>
   <% else %>
-    <div class="alert alert-primary">
-      Stream monitoring is only available for streams which store to Elasticsearch
+    <div class="mt-2">
+      <h3 style="text-align:center;font-size:24px;"><%= project.title %></h3>
+      <div class="alert alert-primary">
+        Stream monitoring is only available for streams which store to Elasticsearch
+      </div>
     </div>
   <% end %>
 </div>
