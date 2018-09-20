@@ -1,5 +1,5 @@
 <div class="col-12 mt-2">
-  <% unless ['s3-es', 's3-es-no-retweets'].include?(project.storage_mode) %>
+  <% if ['s3-es', 's3-es-no-retweets'].include?(project.storage_mode) %>
     <%= react_component 'MonitorStream', {
       'project_name': project.title,
       'es_index_name': project.es_index_name,

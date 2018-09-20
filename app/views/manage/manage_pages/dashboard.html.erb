@@ -43,6 +43,9 @@
     <% if can? :read, :mturk_hit %>
       <%= link_to 'Mturk HITs', mturk_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
+    <% if can? :read, :mturk_reviewable_hit %>
+      <%= link_to 'Review HITs', mturk_reviewable_hits_path, class: 'btn btn-primary btn-lg btn-block' %>
+    <% end %>
   </div>
 </div>
 

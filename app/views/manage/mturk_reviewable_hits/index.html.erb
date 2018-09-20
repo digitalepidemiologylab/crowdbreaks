@@ -94,7 +94,7 @@
               </td>
               <td>
                 <% if can? :read, :mturk_hit %>
-                  <%= link_to 'HIT details', mturk_hit_path(hit[:hit_id], sandbox: @sandbox), title: 'Show HIT details' %>
+                  <%= link_to 'HIT details', mturk_hit_path(hit[:hit_id], sandbox: @sandbox, come_from: 'mturk_reviewable_hits'), title: 'Show HIT details' %>
                 <% end %>
               </td>
               <td>
