@@ -51,14 +51,13 @@
     <%= f.input :number_of_assignments,
       as: :integer, 
       input_html: { value: f.object.number_of_assignments || 1 },
-      hint: "Label every tweet n times" %>
+      hint: "Label every tweet n times by n different workers." %>
   </div>
 
   <div class="form-group">
     <%= f.input :max_tasks_per_worker,
       as: :integer, 
-      input_html: { value: f.object.max_tasks_per_worker || 1 },
-      hint: "Maximum number of tasks by a worker in this batch" %>
+      hint: "Maximum number of tasks a worker can complete for this batch. If left empty, a worker may work through all his available tasks." %>
   </div>
 
   <div class="form-group">

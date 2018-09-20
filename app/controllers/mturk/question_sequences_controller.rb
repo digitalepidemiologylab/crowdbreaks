@@ -88,6 +88,8 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
   def get_tweet_for_worker(worker_id, task)
+    ##
+    # Returns tweet_id (str), tweet_text (str) pair for a specific worker_id and task pair. If no available task for worker can be found it returns empty strings.
     Rails.logger.debug "Assigning task for worker #{worker_id}..."
     w = MturkWorker.find_by(worker_id: worker_id)
     w = MturkWorker.create(worker_id: worker_id) if w.nil?
@@ -97,7 +99,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     tweet_id = task.mturk_tweet.try(:tweet_id)
     if tweet_id.nil?
       Rails.logger.info "No tweet ID could be set"
-      return tweet_id.to_s, ""
+      return "", ""
     else
       Rails.logger.info "Tweet found successfully to be #{tweet_id}"
       tweet_text = task.mturk_tweet.tweet_text

@@ -34,7 +34,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_submitted3) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job2) }
   let!(:task_submitted4) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job2) }
   let!(:task_reviewable4) { FactoryBot.create(:task, :completed, mturk_worker: mturk_worker4, mturk_tweet: mturk_tweet3, mturk_batch_job: mturk_batch_job2) }
-  
+
   # Batch with unavailable tweet
   let!(:mturk_batch_job3) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1) }
   let!(:mturk_tweet4) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job3) } # valid
@@ -42,12 +42,21 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_submitted5) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job3) }
   let!(:task_submitted6) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job3) }
 
+  # Batch with max_tasks_per_worker
+  let!(:mturk_batch_job4) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1, max_tasks_per_worker: 1) }
+  let!(:mturk_tweet6) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job4) }
+  let!(:mturk_tweet7) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job4) }
+  let!(:task_submitted7) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job4) }
+  let!(:task_submitted8) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job4) }
+  let!(:mturk_worker8) { FactoryBot.create(:mturk_worker) }
+
   # SHOW ACTION
   describe "GET show" do
     it "throws an error if HIT id is missing in params" do
       get :show
       expect(response).to be_a_bad_request
     end
+
     it "throws an error if HIT id is invalid" do
       get :show, params: {:hitId => 'invalid-hit-id'}
       expect(response).to be_a_bad_request
@@ -107,7 +116,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       expect(assigns(:tweet_id)).to eq("")
     end
-    
+
     it "worker 1 requests task that which was previous assigned to worker 2" do
       # worker 1 accepts hit
       get :show, params: {
@@ -172,7 +181,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       task.reload
       expect(task.time_assigned).to eq(Time.current)
     end
-    
+
     it "respects number of maximum assignments" do
       task = Task.find(task_submitted3.id)
       expect(task.mturk_tweet_id).to eq(nil)
@@ -192,7 +201,6 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(assigns(:tweet_id)).to eq("")
     end
 
-
     it "only shows available tweets" do
       # worker 1 should receive tweet which is available
       get :show, params: {
@@ -206,6 +214,23 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       get :show, params: {
         hitId: task_submitted6.hit_id,
         workerId: mturk_worker1.worker_id,
+        assignmentId: '123'
+      }
+      expect(assigns(:tweet_id)).to eq("")
+    end
+
+    it "respects max_tasks_per_worker" do
+      get :show, params: {
+        hitId: task_submitted7.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      expect(assigns(:tweet_id)).to eq(mturk_tweet6.tweet_id.to_s).or eq(mturk_tweet7.tweet_id.to_s)
+
+      # max_tasks_per_worker (=1) reached!
+      get :show, params: {
+        hitId: task_submitted8.hit_id,
+        workerId: mturk_worker8.worker_id,
         assignmentId: '123'
       }
       expect(assigns(:tweet_id)).to eq("")
