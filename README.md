@@ -19,7 +19,8 @@ git clone git@github.com:salathegroup/crowdbreaks.git && cd crowdbreaks
 bundle install
 ```
 4. Create Postgres using `rake db:setup`
-5. Run development server
+5. Change config in `config/application.yml`
+6. Run development server
 ```
 # Rails development server
 bin/rails s
@@ -28,7 +29,7 @@ bin/server
 # Background jobs
 bundle exec sidekiq -q default -q mailers 
 ```
-6. Run tests using `rspec` or `bundle exec guard`
+7. Run tests using `rspec` or `bundle exec guard`
 You may need to run [crowdbreaks-api](https://github.com/salathegroup/crowdbreaks-api) for full functionality, but in principle, the Rails application should run without errors on its own.
 
 # Production
