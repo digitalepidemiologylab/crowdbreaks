@@ -35,7 +35,12 @@ class MturkBatchJob < ApplicationRecord
   end
 
   def is_submitted?
-    status == 'unsubmitted' ? false : true
+    case status
+    when 'in progress', 'completed'
+      true
+    else
+      false
+    end
   end
 
   def status
