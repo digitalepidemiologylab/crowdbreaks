@@ -175,6 +175,7 @@ export class MturkQSContainer extends React.Component {
         questions={this.props.questions}
         transitions={this.props.transitions}
         tweetId={this.props.tweetId}
+        tweetText={this.props.tweetText}
         userId={null}
         projectId={this.props.projectId}
         submitResult={(args) => this.submitResult(args)}
