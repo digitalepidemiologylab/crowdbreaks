@@ -13,7 +13,7 @@ class Project < ApplicationRecord
 
   default_scope { order(created_at: :asc)  }
 
-  enum storage_mode: [:'s3-es', :'s3-es-no-retweets', :s3, :test]
+  enum storage_mode: [:'s3-es', :'s3-es-no-retweets', :s3, :test_mode]
 
   def display_name
     title
