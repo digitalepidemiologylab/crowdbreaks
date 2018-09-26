@@ -1,6 +1,6 @@
 module Manage
   class LocalBatchJobsController < BaseController
-    load_and_authorize_resource :find_by => :slug
+    load_and_authorize_resource param_method: :sanitized_local_batch_job_params, :find_by => :slug 
 
     def index
       @local_batch_jobs = LocalBatchJob.all.order('created_at DESC').page(params[:page]).per(10)
@@ -13,7 +13,7 @@ module Manage
     end
 
     def update
-      if @local_batch_job.update_attributes(local_batch_job_params)
+      if @local_batch_job.update_attributes(sanitized_local_batch_job_params)
         if @local_batch_job.job_file.present?
           tweet_rows = CSV.foreach(@local_batch_job.job_file.path).map{ |row| row }
           CreateLocalTweetsJob.perform_later(@local_batch_job.id, tweet_rows, destroy_first: true)
@@ -47,8 +47,14 @@ module Manage
 
     private
 
+    def sanitized_local_batch_job_params
+      sanitized_params = local_batch_job_params
+      sanitized_params[:processing_mode] = sanitized_params[:processing_mode].to_i
+      sanitized_params
+    end
+
     def local_batch_job_params
-      params.require(:local_batch_job).permit(:name, :project_id, :job_file, :instructions, :user_ids => [])
+      params.require(:local_batch_job).permit(:name, :project_id, :job_file, :instructions, :processing_mode, :user_ids => [])
     end
   end
 end

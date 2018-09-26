@@ -13,6 +13,8 @@ class LocalBatchJob < ApplicationRecord
   validates_presence_of :project
   validates_with CsvValidator, fields: [:job_file]
 
+  enum processing_mode: [:default, :test]
+
   attr_accessor :job_file
 
   def num_tweets_unavailable
