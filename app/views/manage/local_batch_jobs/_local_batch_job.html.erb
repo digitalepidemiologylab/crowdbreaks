@@ -6,6 +6,7 @@
   <td><%= local_batch_job.completed_by.join(' ') %></td>
   <td><%= number_with_delimiter(local_batch_job.local_tweets.count, delimiter: ' ') %></td>
   <td><%= number_with_delimiter(local_batch_job.local_tweets.is_unavailable.count, delimiter: ' ') %></td>
+  <td><%= local_batch_job.processing_mode %></td>
   <td>
     <% if local_batch_job.local_tweets.count > 0 %>
       <div class='no-wrap'> 

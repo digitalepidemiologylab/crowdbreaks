@@ -6,6 +6,7 @@ import { QuestionSequence } from './QuestionSequence';
 import { LocalBatchFinal } from './LocalBatchFinal';
 import { LocalBatchNoMoreWork } from './LocalBatchFinal';
 import { LocalBatchTweetNotAvailable } from './LocalBatchFinal';
+import { LocalBatchCounts } from './LocalBatchCounts';
 import { InstructionModal } from './InstructionModal';
 import { Instructions } from './Instructions';
 
@@ -103,17 +104,6 @@ export class LocalBatchQSContainer extends React.Component {
     }
   }
 
-  getCounts() {
-    if (this.state.noWorkAvailable) {
-      return null;
-    }
-    if (this.state.userCount == 0 && this.state.totalCountUnavailable == 0) {
-      return <p>Welcome {this.props.userName}! Feel free to start your batch.</p>
-    } else {
-      return <p className='text-light'>Keep going! You have finished {this.state.userCount} out of {this.state.totalCount} tweets ({this.state.totalCountUnavailable} unavailable).</p>
-    }
-  }
-
   getQuestionSequence() {
     if (this.state.noWorkAvailable) {
       return <LocalBatchNoMoreWork 
@@ -158,7 +148,17 @@ export class LocalBatchQSContainer extends React.Component {
 
   render() {
     let body = this.getQuestionSequence()
-    let counts = this.getCounts()
+    let counts = <div className="mb-3">
+      <LocalBatchCounts 
+        noWorkAvailable={this.state.noWorkAvailable}
+        testMode={this.props.testMode}
+        userCount={this.state.userCount}
+        totalCount={this.state.totalCount}
+        totalCountUnavailable={this.state.totalCountUnavailable}
+        userName={this.props.userName}
+        tweetTextAvailable={(this.state.tweetText == "" || this.state.tweetText === undefined) ? false : true}
+      />
+    </div>;
     let title = this.props.projectTitle && <h4 className="mb-4">
       {this.props.projectTitle}
     </h4>;

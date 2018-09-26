@@ -16,7 +16,7 @@ class LocalBatchJobsController < ApplicationController
     @tweet_id = local_tweet&.tweet_id
     @tweet_text = local_tweet&.tweet_text
     @no_work_available = @tweet_id.nil?
-    if @tweet_text.nil?
+    if @tweet_text == ""
       @tweet_is_available = TweetValidation.new.tweet_is_valid?(@tweet_id)
       if not @tweet_is_available
         LocalTweet.set_to_unavailable(@tweet_id, @local_batch_job.id)
@@ -41,18 +41,22 @@ class LocalBatchJobsController < ApplicationController
     # store results
     results = final_params.fetch(:results, []) 
     logs = final_params.fetch(:logs, {}) 
-    unless results.empty?
+    if not results.empty? and not local_batch_job.test?
       if not create_results(results, local_batch_job.id, logs)
         head :bad_request
       end
     end
 
     # fetch next tweet
-    local_tweet = local_batch_job.
-      local_tweets.
-      not_assigned_to_user(user_id, local_batch_job.id).
-      is_available&.
-      first
+    if local_batch_job.test?
+      local_tweet = local_batch_job.local_tweets.is_available.order("RANDOM()").first
+    else
+      local_tweet = local_batch_job.
+        local_tweets.
+        not_assigned_to_user(user_id, local_batch_job.id).
+        is_available&.
+        first
+    end
     tweet_id = local_tweet&.tweet_id&.to_s
     tweet_text = local_tweet&.tweet_text
 
@@ -98,7 +102,7 @@ class LocalBatchJobsController < ApplicationController
 
   def final_params   
       params.require(:qs).permit(:tweet_id, :user_id, :project_id, results: [result: [:answer_id, :question_id, :tweet_id, :user_id, :project_id]],
-                                 logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized,
+                                 logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized, :totalDurationQuestionSequence, :timeQuestionSequenceEnd,
                                         results: [:submitTime, :timeSinceLastAnswer, :questionId],
                                         resets: [:resetTime, :resetAtQuestionId, previousResultLog: [:submitTime, :timeSinceLastAnswer, :questionId]]])
   end
