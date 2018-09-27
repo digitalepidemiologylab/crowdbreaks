@@ -53,6 +53,16 @@ module Admin
     end
 
     def update
+      project = Project.friendly.find(params[:id])
+      transitions = question_sequence_params.fetch(:transitions).to_h
+      questions = question_sequence_params.fetch(:questions).to_h
+      
+      # make sure no survey data is lost
+      raise 'Project has existing answers to questions. Aborting.' if project.results.count > 0
+
+      QuestionSequence.new(project).update(questions, transitions)
+      flash[:notice] = 'Successfully updated question sequence.'
+      head :ok
     end
 
     def destroy
@@ -60,68 +70,20 @@ module Admin
       if project.results.count > 0
         redirect_to(admin_question_sequences_path, alert: 'Cannot delete question sequence with existing answers to questions (results). Delete results or define a new project.')
       else
-        delete_question_sequence(project)
+        QuestionSequence.new(project).destroy
         redirect_to(admin_question_sequences_path, notice: 'Successfully deleted question sequence.')
       end
-
     end
+    
 
     private
-
-    def delete_question_sequence(project)
-      # delete any existing answers or questions
-      project.questions.each do |q|
-        # deletes answers and QuestionAnswers on join table
-        Answer.where(id: q.answers.pluck(:id)).destroy_all
-      end
-      project.questions.destroy_all
-
-      # delete any existing transitions
-      project.transitions.destroy_all
-    end
-
-    def create_question_sequence(project, questions, transitions)
-      answer_mapping = {}
-      question_mapping = {}
-      success = true
-      questions.each do |q_id, q|
-        question = Question.new(project: project, question: q[:question], instructions: q[:instructions])
-        q[:answers].each_with_index do |a, idx|
-          answer = Answer.new(answer: a[:answer], label: a[:label], color: a[:color])
-          question.question_answers.build(answer: answer, order: idx)
-        end
-        success = success && question.save
-        question_mapping[q[:id]] = question.id
-        question.answers.each_with_index do |a, idx|
-          answer_mapping[q[:answers][idx][:id].to_i] = a.id
-        end
-      end
-
-      # create new transitions
-      transitions.to_a.each do |id, t|
-        from_question = nil
-        if t[:from_question] != 'start'
-          from_question = question_mapping[t[:from_question].to_i]
-        end
-        answer = nil
-        if t[:transition][:answer] != ""
-          answer = answer_mapping[t[:transition][:answer].to_i]
-        end
-        transition = Transition.create(from_question_id: from_question,
-                                       to_question_id: question_mapping[t[:transition][:to_question].to_i],
-                                       answer_id: answer,
-                                       project: project)
-        success = success && transition.persisted?
-      end
-      success
-    end
 
     def show_params
       params.permit(:id, :hitId, :assignmentId, :workerId, :mode, :locale, :preview_mode, :no_work_available)
     end
 
     def question_sequence_params
-      params.require(:question_sequence).permit(:projectId, :questions => {}, :transitions => {})
+      params.require(:question_sequence).permit(:questions => {}, :transitions => {})
     end
   end
 end

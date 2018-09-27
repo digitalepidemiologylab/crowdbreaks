@@ -24,7 +24,7 @@
         endQuestionSequencePath: local_batch_job_final_url(@local_batch_job),
         projectId: @project.id,
         enableAnswersDelay: 1000,
-        testMode: @local_batch_job.test?,
+        testMode: @local_batch_job.test_processing_mode?,
         instructions: @instructions,
         noWorkAvailable: @no_work_available,
         exitPath: get_exit_path,

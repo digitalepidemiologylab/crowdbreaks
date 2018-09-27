@@ -16,17 +16,28 @@ export class EditQuestionSequence extends React.Component {
 
     let questions = props.questions;
     if (Object.keys(props.questions).length == 0) {
-      questions[0]  = {id: 0, question: '', answers: []}
+      questions[0]  = {id: 0, question: '', answers: [], original_id: undefined}
+    } else {
+      for (let questionId in questions) {
+        questions[questionId].original_id = Number(questionId)
+        for (let answerId in questions[questionId].answers) {
+          questions[questionId].answers[answerId].original_id = Number(questions[questionId].answers[answerId].id)
+        }
+      }
     }
     let transitions = props.transitions;
     if (Object.keys(props.transitions).length == 0) {
-      transitions[0]  = {id: 0, from_question: 'start', transition: {to_question: 0, answer: ''}}
+      transitions[0]  = {id: 0, from_question: 'start', transition: {to_question: 0, answer: ''}, original_id: undefined}
+    } else {
+      for (let transitionId in transitions) {
+        transitions[transitionId].original_id = Number(transitionId)
+      }
     }
 
     this.state = {
       questions: questions,
       transitions: transitions,
-      showQuestions: false,
+      showQuestions: true,
       showAnswers: false,
       showTransitions: false,
       newQuestionIdCounter: Math.max( ...Object.keys(questions).map(Number)) + 1,
@@ -35,6 +46,8 @@ export class EditQuestionSequence extends React.Component {
       isLoading: false,
       errors: []
     };
+    console.log(this.state.questions)
+    console.log(this.state.transitions)
   }
 
   findMaxAnswerId(questions) {
@@ -106,7 +119,7 @@ export class EditQuestionSequence extends React.Component {
 
   addNewQuestion() {
     let newQuestions = this.state.questions;
-    newQuestions[this.state.newQuestionIdCounter] = {id: this.state.newQuestionIdCounter, question: '', answers: []}
+    newQuestions[this.state.newQuestionIdCounter] = {id: this.state.newQuestionIdCounter, question: '', answers: [], original_id: null}
     this.setState({
       questions: newQuestions,
       newQuestionIdCounter: this.state.newQuestionIdCounter + 1
@@ -115,7 +128,7 @@ export class EditQuestionSequence extends React.Component {
 
   addNewAnswer(questionId) {
     var dummyQuestions = this.state.questions;
-    dummyQuestions[questionId].answers.push({'id': this.state.newAnswerIdCounter, 'answer': '', 'color': 'btn-primary', 'label': ''})
+    dummyQuestions[questionId].answers.push({'id': this.state.newAnswerIdCounter, 'answer': '', 'color': 'btn-primary', 'label': '', original_id: null})
     this.setState({
       questions: dummyQuestions,
       newAnswerIdCounter: this.state.newAnswerIdCounter + 1
@@ -124,7 +137,7 @@ export class EditQuestionSequence extends React.Component {
 
   addNewTransition() {
     let newTransition = this.state.transitions;
-    newTransition[this.state.newTransitionIdCounter] = {id: this.state.newTransitionIdCounter, from_question: '', transition: {to_question: '', answer: ''}}
+    newTransition[this.state.newTransitionIdCounter] = {id: this.state.newTransitionIdCounter, from_question: '', transition: {to_question: '', answer: ''}, original_id: null}
     this.setState({
       transitions: newTransition,
       newTransitionIdCounter: this.state.newTransitionIdCounter + 1
@@ -132,14 +145,31 @@ export class EditQuestionSequence extends React.Component {
   }
 
   onDeleteQuestion(questionId, e) {
+    // Delete question and its answers
     let newQuestions = this.state.questions;
     delete newQuestions[questionId]
+    // Delete associated transitions
+    let newTransitions = this.state.transitions;
+    for (let tId in newTransitions) {
+      if (newTransitions[tId].from_question == questionId)  {
+        delete newTransitions[tId]
+      } else if (newTransitions[tId].transition.to_question == questionId) {
+        if (newTransitions[tId].from_question == 'start') {
+          newTransitions[tId].transition = {to_question: 0, answer: ''}
+        } else {
+          delete newTransitions[tId]
+        }
+      }
+    }
+    // Update state
     this.setState({
-      questions: newQuestions
+      questions: newQuestions,
+      transitions: newTransitions
     })
   }
 
   onDeleteAnswer(answerId, questionId, e) {
+    // Delete answers from questions
     var newAnswers = [];
     var oldAnswers = this.state.questions[questionId].answers;
     var newQuestions = this.state.questions;
@@ -149,8 +179,17 @@ export class EditQuestionSequence extends React.Component {
       }
     }
     newQuestions[questionId].answers = newAnswers;
+    // Delete associated transitions
+    let newTransitions = this.state.transitions;
+    for (let tId in newTransitions) {
+      if (newTransitions[tId].transition.answer == answerId) {
+        delete newTransitions[tId]
+      }
+    }
+    // Update state
     this.setState({
-      questions: newQuestions
+      questions: newQuestions,
+      transitions: newTransitions
     })
   }
 
@@ -186,14 +225,13 @@ export class EditQuestionSequence extends React.Component {
 
   saveQuestionSequence() {
     var data = {
-      projectId: this.props.projectId,
       questions: this.state.questions,
       transitions: this.state.transitions
     };
     this.setState({isLoading: true});
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-      type: "POST",
+      type: 'PATCH',
       crossDomain: true,
       url: this.props.saveQuestionSequencePath,
       data: JSON.stringify(data),
@@ -246,7 +284,6 @@ export class EditQuestionSequence extends React.Component {
               <tbody>
                 {Object.keys(this.state.questions).map( (questionId, id) => {
                   var q = prevThis.state.questions[questionId]
-                  console.log(q)
                   return <EditQuestion 
                     key={q.id} 
                     questionId={questionId} 
