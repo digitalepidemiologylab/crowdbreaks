@@ -1,6 +1,6 @@
 module AdminHelper
   def admin_link_class(target_controller_name)
-    css_classes = 'btn nav-admin-link'
+    css_classes = 'btn btn-lg nav-admin-link'
     if controller_name == target_controller_name
       css_classes += ' btn-primary'
     else

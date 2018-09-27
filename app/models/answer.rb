@@ -4,7 +4,7 @@ class Answer < ApplicationRecord
   has_many :transitions
   has_many :results
 
-  before_validation :set_key!
+  before_validation :set_key!, on: :create
 
   validates_presence_of :answer
   validates :key, presence: true, uniqueness: true

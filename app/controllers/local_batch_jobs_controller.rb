@@ -41,14 +41,14 @@ class LocalBatchJobsController < ApplicationController
     # store results
     results = final_params.fetch(:results, []) 
     logs = final_params.fetch(:logs, {}) 
-    if not results.empty? and not local_batch_job.test?
+    if not results.empty? and not local_batch_job.test_processing_mode?
       if not create_results(results, local_batch_job.id, logs)
         head :bad_request
       end
     end
 
     # fetch next tweet
-    if local_batch_job.test?
+    if local_batch_job.test_processing_mode?
       local_tweet = local_batch_job.local_tweets.is_available.order("RANDOM()").first
     else
       local_tweet = local_batch_job.

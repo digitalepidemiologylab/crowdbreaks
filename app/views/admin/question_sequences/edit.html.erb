@@ -27,7 +27,7 @@
       projectId: @project.id,
       colorOptions: Answer::COLORS,
       labelOptions: Answer::LABELS.values.push(''),
-      saveQuestionSequencePath: admin_question_sequences_path,
+      saveQuestionSequencePath: admin_question_sequence_path(@project.id),
       redirectPath: admin_question_sequences_path
     }) %>
   </div>
