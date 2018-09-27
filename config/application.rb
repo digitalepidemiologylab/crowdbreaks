@@ -51,5 +51,8 @@ module Crowdbreaks
 
     # Job scheduling
     config.active_job.queue_adapter = :sidekiq
+
+    # Issues with I18n load_path not available on assets:precompile 
+    config.assets.initialize_on_precompile = false
   end
 end

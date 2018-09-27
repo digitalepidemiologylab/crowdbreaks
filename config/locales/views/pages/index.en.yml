@@ -21,7 +21,6 @@ en:
       no_contributions: "You've not contributed yet."
       no_contributions_button: 'View projects'
       leadline:
-        classified_as: "Labelled as"
+        classified_as: "Labelled as" 
         by: "by"
         in_project: "in project"
-        
