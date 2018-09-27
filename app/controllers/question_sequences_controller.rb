@@ -3,14 +3,10 @@ class QuestionSequencesController < ApplicationController
 
   def show
     @project = Project.friendly.find(params[:project_id])
-
     # Collect question sequence info
     @question_sequence = QuestionSequence.new(@project).load
-    
     # Other
     @user_id = current_or_guest_user.id
-    @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
-
     # Fetch new tweet ID
     @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
 

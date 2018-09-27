@@ -3,7 +3,6 @@ class PagesController < ApplicationController
 
   def index
     @num_tweets_classified = Project.where(public: true).pluck(:question_sequences_count).sum
-    @translations = I18n.backend.send(:translations)[I18n.locale][:pages][:index][:leadline]
     if user_signed_in?
       # Project vaccine sentiment
       counts = current_user.results.joins(:project).where(projects: {es_index_name: 'project_vaccine_sentiment'}).joins(:answer).group('answers.label').count
@@ -12,7 +11,6 @@ class PagesController < ApplicationController
       @neutral_vaccine_count = counts['neutral'] || 0
       @total_count_vaccine_sentiment = @pro_vaccine_count + @anti_vaccine_count + @neutral_vaccine_count
       @vaccine_sentiment_project = Project.find_by(es_index_name: 'project_vaccine_sentiment')
-
       @total_count = current_user.results.distinct.count(:tweet_id)
     end
   end

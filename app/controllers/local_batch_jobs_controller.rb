@@ -28,7 +28,6 @@ class LocalBatchJobsController < ApplicationController
     @project = @local_batch_job.project
     @instructions = @local_batch_job.instructions
     @question_sequence = QuestionSequence.new(@project).load
-    @translations = I18n.backend.send(:translations)[I18n.locale][:question_sequences]
   end
 
   def final
