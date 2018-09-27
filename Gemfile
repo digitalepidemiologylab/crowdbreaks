@@ -8,6 +8,8 @@ end
 
 gem 'rails', '~> 5.1.0'
 
+gem 'coffee-rails'
+
 # Postgresql db
 gem 'pg', '~> 0.18'
 # Ruby server
