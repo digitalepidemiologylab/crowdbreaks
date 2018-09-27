@@ -39,11 +39,6 @@ gem 'simple_form', github: 'elsurudo/simple_form', branch: 'rails-5.1.0'
 gem 'bootstrap', '~> 4.0.0'
 # Use autoprefixes for CSS
 gem 'autoprefixer-rails', '6.7.6'
-# Active admin
-# gem 'activeadmin', github: 'activeadmin'
-gem 'activeadmin', '~> 1.0.0.pre1' # downgrade was needed for sortable_tree to work 
-gem 'inherited_resources', github: 'activeadmin/inherited_resources'
-gem "active_admin-sortable_tree"
 # HTTP requests
 gem 'httparty', '~> 0.13.7'
 # I18n for model columns using JSONB

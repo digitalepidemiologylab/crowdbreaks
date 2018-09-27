@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  ActiveAdmin.routes(self)
-
   root 'pages#index'
 
   namespace :admin do
