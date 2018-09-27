@@ -4,15 +4,6 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   helper_method :current_or_guest_user
 
-
-  def authenticate_active_admin_user!
-    authenticate_user!
-    return if current_or_guest_user.admin?
-    flash[:alert] = "Unauthorized Access!"
-    redirect_to root_path
-  end
-
-
   # Dealing with guest user
   # ---------
   # if user is logged in, return current_user, else return guest_user
