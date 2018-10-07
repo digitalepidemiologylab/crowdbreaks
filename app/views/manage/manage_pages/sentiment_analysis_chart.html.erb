@@ -13,14 +13,13 @@
 </div>
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <%= react_component 'SentimentVisualization',
-      {
+    <%= react_component 'SentimentVisualization', {
       'interval': @interval,
       'updateVisualizationPath': update_visualization_path,
       'es_index_name': @project.es_index_name,
       'start_date': 'now-2M',
-      'end_date': 'now'
-    }
-  %>
-</div>
+      'end_date': 'now',
+      'include_retweets': false
+    } %>
+  </div>
 </div>

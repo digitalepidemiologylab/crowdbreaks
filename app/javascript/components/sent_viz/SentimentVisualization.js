@@ -24,7 +24,8 @@ export class SentimentVisualization extends React.Component {
       dropdownOpen: false,
       interval: this.props.interval,
       point_radius: this.default_point_radius,
-      border_width: this.default_border_width
+      border_width: this.default_border_width,
+      includeRetweets: props.include_retweets
     };
 
     this.options = {
@@ -81,7 +82,8 @@ export class SentimentVisualization extends React.Component {
         "interval": this.props.interval,
         "es_index_name": this.props.es_index_name,
         "start_date": this.props.start_date,
-        "end_date": this.props.end_date
+        "end_date": this.props.end_date,
+        "include_retweets": this.props.include_retweets
       }
     };
     this.setData(data);
@@ -97,7 +99,6 @@ export class SentimentVisualization extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
-        console.log(result)
         this.setState({
           labels: result.all_data.map((d) => new Date(d.key_as_string)),
           all_data: result.all_data.map((d) => d.doc_count),
@@ -129,7 +130,8 @@ export class SentimentVisualization extends React.Component {
         "interval": this.state.interval,
         "es_index_name": this.props.es_index_name,
         "start_date": this.state.start_date,
-        "end_date": this.state.end_date
+        "end_date": this.state.end_date,
+        "include_retweets": this.state.includeRetweets
       }
     };
     this.changePlotFormatting();
@@ -168,6 +170,12 @@ export class SentimentVisualization extends React.Component {
     this.setState({
       end_date: event.target.value
     })
+  }
+
+  onCheckboxToggle() {
+    this.setState({
+      includeRetweets: !this.state.includeRetweets
+    });
   }
 
   render() {
@@ -243,21 +251,21 @@ export class SentimentVisualization extends React.Component {
         <Row className="mb-4">
           <Col>
             <Row>
-              <Col xs="12" md="4">
+              <Col xs="12" md="3">
                 <div className="form-group">
                   <label className="label-form-control">Start</label>
                   <Input type="text" name="start_date" onChange={(ev) => this.handleChangeStart(ev)} value={this.state.start_date}/>
                   <FormText color="muted">Format: YYYY-MM-dd HH:mm:ss</FormText>
                 </div>
               </Col>
-              <Col xs="12" md="4">
+              <Col xs="12" md="3">
                 <div className="form-group">
                   <label className="label-form-control">End</label>
                   <Input type="text" name="end_date" onChange={(ev) => this.handleChangeEnd(ev)} value={this.state.end_date}/>
                   <FormText color="muted">Format: YYYY-MM-dd HH:mm:ss</FormText>
                 </div>
               </Col>
-              <Col xs="12" md="4">
+              <Col xs="12" md="3">
                 <div className="form-group">
                   <label className="label-form-control">Interval</label>
                   <Input type="select" name="interval" defaultValue={this.state.interval} onChange={(ev) => this.onSelect(ev)}>
@@ -265,6 +273,14 @@ export class SentimentVisualization extends React.Component {
                       return <option key={interval}>{interval}</option>
                     })}
                   </Input>
+                </div>
+              </Col>
+              <Col xs="12" md="3">
+                <div className="form-group">
+                  <label className="label-form-control">
+                    Include retweets
+                    <Input className="ml-2" type="checkbox" defaultValue={this.state.includeRetweets} onChange={() => this.onCheckboxToggle()}/>
+                  </label>
                 </div>
               </Col>
             </Row>
