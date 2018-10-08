@@ -46,7 +46,7 @@ module Admin
     def edit
       @project = Project.friendly.find(params[:id])
       if @project.results.count > 0
-        redirect_to(admin_question_sequences_path, alert: 'Cannot modify a question sequence with existing answers to questions (results). Delete results or define a new project.')
+        flash[:warning] = "This question sequence is associated with existing answers to questions (results). Therefore certain fields cannot be modified as this would invalidate old data."
       end
       @question_sequence = QuestionSequence.new(@project).edit
     end
@@ -56,9 +56,6 @@ module Admin
       transitions = question_sequence_params.fetch(:transitions).to_h
       questions = question_sequence_params.fetch(:questions).to_h
       
-      # make sure no survey data is lost
-      raise 'Project has existing answers to questions. Aborting.' if project.results.count > 0
-
       QuestionSequence.new(project).update(questions, transitions)
       flash[:notice] = 'Successfully updated question sequence.'
       head :ok

@@ -21,7 +21,6 @@ export class EditQuestion extends React.Component {
   }
 
   startEditMode() {
-    console.log(this.state.internalInstructions)
     this.setState({
       editMode: true,
       editInstructions: this.state.internalInstructions == "" ? false : true
@@ -59,6 +58,7 @@ export class EditQuestion extends React.Component {
   render() {
     let question = this.props.question
     if (this.state.editMode) {
+      <p>editable: {this.props.isEditable}</p>
       question = <div>
         <textarea 
           value={this.state.internalQuestion} 
@@ -66,6 +66,7 @@ export class EditQuestion extends React.Component {
           style={{marginBottom: '20px'}}
           className="form-control"
           onChange={(e) => this.handleInputChange(e)}
+          disabled={this.props.isEditable ? false : 'disabled'}
           rows='2'>
         </textarea>
         {!this.state.editInstructions && <button 
@@ -98,11 +99,11 @@ export class EditQuestion extends React.Component {
               style={buttonStyle}
               className="btn btn-secondary">Edit
             </button>
-            <button 
+            {this.props.isEditable && <button 
               onClick={(questionId, e) => this.props.onDeleteQuestion(questionId, e)}
               style={buttonStyle}
               className="btn btn-negative">Delete
-            </button>
+            </button>}
           </div>
           }
           { this.state.editMode && <div>

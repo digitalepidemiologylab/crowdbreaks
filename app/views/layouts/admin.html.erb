@@ -18,12 +18,12 @@
 
   <body class="<%= content_for :body_class %>" <%= content_for :disable_turbolinks %>>
     <%= render 'layouts/shared/navbar' %>
+    <%= flash_messages %>
     <div class="admin-wrapper">
       <div class="container-fluid">
         <div class="row">
           <%= render 'layouts/admin/admin_navbar' %>
           <div class="col-12 col-xl-10 admin-content">
-            <%= flash_messages %>
             <%= yield %>
           </div>
         </div>

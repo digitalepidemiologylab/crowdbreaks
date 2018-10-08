@@ -16,7 +16,7 @@ export class EditQuestionSequence extends React.Component {
 
     let questions = props.questions;
     if (Object.keys(props.questions).length == 0) {
-      questions[0]  = {id: 0, question: '', answers: [], original_id: undefined}
+      questions[0]  = {id: 0, question: '', answers: [], original_id: undefined, is_editable: true}
     } else {
       for (let questionId in questions) {
         questions[questionId].original_id = Number(questionId)
@@ -37,7 +37,7 @@ export class EditQuestionSequence extends React.Component {
     this.state = {
       questions: questions,
       transitions: transitions,
-      showQuestions: true,
+      showQuestions: false,
       showAnswers: false,
       showTransitions: false,
       newQuestionIdCounter: Math.max( ...Object.keys(questions).map(Number)) + 1,
@@ -119,7 +119,7 @@ export class EditQuestionSequence extends React.Component {
 
   addNewQuestion() {
     let newQuestions = this.state.questions;
-    newQuestions[this.state.newQuestionIdCounter] = {id: this.state.newQuestionIdCounter, question: '', answers: [], original_id: null}
+    newQuestions[this.state.newQuestionIdCounter] = {id: this.state.newQuestionIdCounter, question: '', answers: [], is_editable: true, original_id: null}
     this.setState({
       questions: newQuestions,
       newQuestionIdCounter: this.state.newQuestionIdCounter + 1
@@ -289,6 +289,7 @@ export class EditQuestionSequence extends React.Component {
                     questionId={questionId} 
                     question={q.question} 
                     instructions={q.instructions}
+                    isEditable={q.is_editable}
                     onUpdateQuestion={(e) => prevThis.onUpdateQuestion(e)}
                     onDeleteQuestion={(e) => prevThis.onDeleteQuestion(questionId, e)}
                   />
@@ -333,6 +334,7 @@ export class EditQuestionSequence extends React.Component {
                 labelOptions={prevThis.props.labelOptions}
                 onUpdateAnswers={(e) => prevThis.onUpdateAnswers(e)}
                 onDeleteAnswer={prevThis.onDeleteAnswer.bind(prevThis)}
+                isEditable={q.is_editable}
                 addNewAnswer={(e) => prevThis.addNewAnswer(e)}
               />
             })}
