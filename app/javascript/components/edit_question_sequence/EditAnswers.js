@@ -64,6 +64,7 @@ export class EditAnswers extends React.Component {
               colorOptions={this.props.colorOptions}
               labelOptions={this.props.labelOptions}
               questionId={this.props.questionId}
+              isEditable={this.props.isEditable}
               onUpdateInternalAnswer={(e) => this.onUpdateInternalAnswer(e)}
               onDeleteAnswer={this.props.onDeleteAnswer}
             />
@@ -71,11 +72,11 @@ export class EditAnswers extends React.Component {
         }
       </div>
       <div>
-        <button 
+        {this.props.isEditable && <button 
           onClick={() => this.props.addNewAnswer(this.props.questionId)} 
           className='btn btn-primary'>
           <i className='fa fa-plus' style={{color: '#fff'}}></i>&emsp;Add new answer
-        </button>
+        </button>}
       </div>
       </div>
     }

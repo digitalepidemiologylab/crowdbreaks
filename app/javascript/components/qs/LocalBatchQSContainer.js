@@ -136,7 +136,7 @@ export class LocalBatchQSContainer extends React.Component {
           userSignedIn={true}
           captchaVerified={true}
           enableAnswersDelay={this.props.enableAnswersDelay}
-          displayQuestionInstructions={false}
+          displayQuestionInstructions={true}
         /> 
     } else {
       return <LocalBatchFinal 

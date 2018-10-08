@@ -12,7 +12,7 @@ class QuestionSequence
     initial_question_id = @project.initial_question.try(:id)
 
     # transitions
-    transitions = get_transitions(mode: 'load')
+    transitions = get_transitions
     num_transitions = Transition.find_path_length(transitions)
     
     return {
@@ -25,8 +25,8 @@ class QuestionSequence
 
   def edit
     return {
-      'questions': get_questions,
-      'transitions': get_transitions(mode: 'edit')
+      'questions': get_questions(edit_mode: true),
+      'transitions': get_editable_transitions
     }
   end
 
@@ -46,8 +46,8 @@ class QuestionSequence
     @project.transitions.destroy_all
   end
 
-  private 
 
+  private 
 
   def update_question_answers(questions)
     id_mapping = {questions: {}, answers: {}}
@@ -76,7 +76,7 @@ class QuestionSequence
         question.question_answers.build(question_answers)
         unused_answers = previous_answers - new_answers
         if unused_answers.length > 0
-          Answer.where(id: unused_answers).delete_all
+          delete_answers(unused_answers)
         end
       end
       question.save
@@ -146,9 +146,20 @@ class QuestionSequence
   def delete_questions(ids)
     questions = Question.where(id: ids)
     questions.each do |q|
+      raise 'Cannot delete question with associated results' if q.results.count > 0
       q.question_answers.delete_all
       q.destroy
     end
+  end
+
+  def delete_answers(ids)
+    answers = Answer.where(id: ids)
+    return if answers.empty?
+    # ensure none of the answers have associated results
+    if not answers.map{|a| a.results.count == 0 }.all?
+      raise 'Cannot delete answers with associated results'
+    end
+    answers.delete_all
   end
 
   def update_answer(a)
@@ -161,37 +172,34 @@ class QuestionSequence
     return Answer.create(answer: a[:answer], color: a[:color], label: a[:label])
   end
 
-  def get_questions
-    options = {locale: I18n.locale.to_s}
+  def get_questions(edit_mode: false)
+    options = {locale: I18n.locale.to_s, edit_mode: edit_mode}
     questions_serialized = ActiveModelSerializers::SerializableResource.new(@project.questions, options).as_json
     questions = {}
     # collect possible answers for each question
     questions_serialized.each do |q|
-      questions[q[:id]] = {
-        'id': q[:id],
-        'question': q[:question],
-        'answers': q[:answers],
-        'instructions': q[:instructions]
-      }
+      questions[q[:id]] = q
     end
     return questions
   end
 
-  def get_transitions(mode: 'edit')
+  def get_transitions
     options = {locale: I18n.locale.to_s}
     transitions_serialized = ActiveModelSerializers::SerializableResource.new(@project.transitions, options).as_json
-    if mode == 'load'
-      transitions = Hash.new{|h, k| h[k] = []}
-      transitions_serialized.each do |t|
-        transitions[t[:from_question]] << t[:transition]
-      end
-      return transitions
-    elsif mode == 'edit'
-      transitions = {}
-      transitions_serialized.each do |t|
-        transitions[t[:id]] = {'id': t[:id], 'from_question': t[:from_question], 'transition': t[:transition]}
-      end
-      return transitions
+    transitions = Hash.new{|h, k| h[k] = []}
+    transitions_serialized.each do |t|
+      transitions[t[:from_question]] << t[:transition]
     end
+    return transitions
+  end
+
+  def get_editable_transitions
+    options = {locale: I18n.locale.to_s}
+    transitions_serialized = ActiveModelSerializers::SerializableResource.new(@project.transitions, options).as_json
+    transitions = {}
+    transitions_serialized.each do |t|
+      transitions[t[:id]] = {'id': t[:id], 'from_question': t[:from_question], 'transition': t[:transition]}
+    end
+    return transitions
   end
 end
