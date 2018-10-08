@@ -44,6 +44,12 @@ class QuestionSequencesController < ApplicationController
     project = Project.find_by(id: final_params[:project_id])
     user_id = final_params[:user_id]
     tweet_id = final_params[:tweet_id]
+    test_mode = final_params[:test_mode]
+
+    if test_mode
+      new_tweet_id = api.get_tweet(project.es_index_name, user_id: user_id)
+      render json: {tweet_id: new_tweet_id}, status: 200 and return
+    end
     
     # update count
     project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
@@ -65,7 +71,6 @@ class QuestionSequencesController < ApplicationController
         Rails.logger.error("Could not find any previous results to Question Sequence Log #{qs_log.id}")
       end
     end
-
     # simply return new tweet ID
     render json: {
       tweet_id: new_tweet_id,
@@ -75,8 +80,8 @@ class QuestionSequencesController < ApplicationController
   private
 
   def final_params
-    params.require(:qs).permit(:tweet_id, :user_id, :project_id,
-                               logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized,
+    params.require(:qs).permit(:tweet_id, :user_id, :project_id, :test_mode,
+                               logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized, :totalDurationQuestionSequence, :timeQuestionSequenceEnd,
                                       results: [:submitTime, :timeSinceLastAnswer, :questionId],
                                       resets: [:resetTime, :resetAtQuestionId, previousResultLog: [:submitTime, :timeSinceLastAnswer, :questionId]]])
   end

@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     get '/', to: redirect('admin/dashboard')
     get 'dashboard', to: 'admin_pages#dashboard'
     resources :projects, except: [:show]
-    resources :question_sequences
+    resources :question_sequences, except: [:create]
     resources :users
     resources :results, except: [:update]
   end
