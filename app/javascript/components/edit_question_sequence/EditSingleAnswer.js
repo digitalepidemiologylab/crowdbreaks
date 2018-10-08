@@ -55,7 +55,6 @@ export class EditSingleAnswer extends React.Component {
           <select 
             className='form-control' 
             value={this.state.color}
-            disabled={this.props.isEditable ? false : 'disabled'}
             onChange={(e) => this.onUpdateColor(e)}>
             {
               Object.keys(this.props.colorOptions).map( (label, i) => {
@@ -68,7 +67,6 @@ export class EditSingleAnswer extends React.Component {
           <select 
             className='form-control' 
             value={this.state.label}
-            disabled={this.props.isEditable ? false : 'disabled'}
             onChange={(e) => this.onUpdateLabel(e)}>
             {
               this.props.labelOptions.map( (label, i) => {
@@ -77,7 +75,7 @@ export class EditSingleAnswer extends React.Component {
             }
           </select>
         </div>
-        {this.props.isEditable && updateButton}
+        {updateButton}
         {this.props.isEditable && <button 
           onClick={(e) => this.props.onDeleteAnswer(this.props.answerId, this.props.questionId, e)}
           style={buttonStyle}

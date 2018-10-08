@@ -23,26 +23,6 @@ module Admin
       @no_work_available = show_params[:no_work_available] == 'true' ? true : false
     end
 
-    def create
-      project = Project.friendly.find(question_sequence_params[:projectId])
-      transitions = question_sequence_params.fetch(:transitions).to_h
-      questions = question_sequence_params.fetch(:questions).to_h
-
-      # make sure no survey data is lost
-      raise 'Project has existing answers to questions. Aborting.' if project.results.count > 0
-
-      # delete all pre-existing questions, answers and transitions
-      delete_question_sequence(project)
-
-      # create new questions and answers
-      if create_question_sequence(project, questions, transitions)
-        flash[:notice] = 'Successfully updated question sequence.'
-        head :ok
-      else
-        head :bad_request
-      end
-    end
-
     def edit
       @project = Project.friendly.find(params[:id])
       if @project.results.count > 0

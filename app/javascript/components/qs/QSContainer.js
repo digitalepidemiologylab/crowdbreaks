@@ -10,6 +10,12 @@ export class QSContainer extends React.Component {
   constructor(props) {
     super(props);
 
+    // By default set test mode to false
+    let testMode = props.testMode
+    if (testMode === undefined) {
+      testMode = false;
+    }
+
     this.state = {
       'questionSequenceHasEnded': false,
       'captchaVerified': !props.enableCaptcha,  // if captcha is disabled, sets captcha permanently to verified state
@@ -19,12 +25,13 @@ export class QSContainer extends React.Component {
       'numTransitions': props.numTransitions,
       'questions': props.questions,
       'openModal': !props.userSignedIn,
-      'errors': []
+      'errors': [],
+      'testMode': testMode
     };
   }
 
   submitResult(resultData) {
-    if (this.props.testMode) {
+    if (this.state.testMode) {
       return true;
     }
 
@@ -84,7 +91,8 @@ export class QSContainer extends React.Component {
         'tweet_id': this.state.tweetId,
         'user_id': this.props.userId,
         'project_id': this.props.projectId,
-        'logs': logs
+        'logs': logs,
+        'test_mode': this.state.testMode
       }
     };
     // Note: results contains a collection of all previous results which is not used here but may be used by other container components
