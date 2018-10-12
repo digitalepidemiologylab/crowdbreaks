@@ -22,5 +22,6 @@ en:
       no_contributions_button: 'View projects'
       leadline:
         classified_as: "Labelled as" 
+        classified: "Annontated" 
         by: "by"
         in_project: "in project"
