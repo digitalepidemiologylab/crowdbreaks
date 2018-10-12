@@ -21,6 +21,7 @@ de:
       no_contributions: 'Noch keine Beiträge.'
       no_contributions_button: 'Zu den Projekten'
       leadline:
-        classified_as: "Klassifiziert als"
+        classified_as: "Annotiert als"
+        classified: "Annotiert" 
         by: "von"
         in_project: "im Projekt"
