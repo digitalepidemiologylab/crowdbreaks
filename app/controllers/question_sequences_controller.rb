@@ -10,6 +10,7 @@ class QuestionSequencesController < ApplicationController
     # Fetch new tweet ID
     @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
 
+    # @tweet_id = '1047868518224416769'
     # @tweet_id = '564984221203431000'  # invalid tweet
     # @tweet_id = '955454023519391744'  # invalid tweet
   end

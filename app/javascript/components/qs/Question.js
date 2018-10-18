@@ -13,7 +13,7 @@ export const Question = (props) => {
 
   }
   return (
-    <div>
+    <div className='no-wrap'>
       <h2 className='mb-5'>
         { props.question }
         { instructionsSymbol }
