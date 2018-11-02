@@ -1,0 +1,2 @@
+class MturkCachedHit < ApplicationRecord
+end

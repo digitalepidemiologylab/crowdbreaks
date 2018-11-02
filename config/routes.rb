@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   root 'pages#index'
 
+  # cables
+  mount ActionCable.server => '/cable'
+
   namespace :admin do
     get '/', to: redirect('admin/dashboard')
     get 'dashboard', to: 'admin_pages#dashboard'
