@@ -21,7 +21,7 @@
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <% if @show_all %>
-      <h2>Review all HITs<%= ' (sandbox)' if @sandbox %></h2>
+      <h2>Review all HITs<%= @sandbox ? ' (sandbox)' : ' (production)'  %></h2>
     <% else %>
       <h2>Review HITs for batch <%= 'job'.pluralize(@mturk_batch_jobs.size) %></h2>
     <% end %>
@@ -45,9 +45,10 @@
     </div>
     <div>
       <% if @show_all %>
-        <label class="label-inline checkbox">
-          <input type="checkbox" id="sandbox-checkbox"  <%= @sandbox ? ' checked="checked"' : ''%>/>
-          Sandbox
+        <label class="switch">
+          <input type="checkbox" id="production-checkbox" <%= @sandbox ? '' : ' checked="checked"' %>>
+          <span class="slider round"></span>
+          <span class='switch-label'>Production</span>
         </label>
       <% else %>
         <%= link_to 'See all', mturk_reviewable_hits_path(sandbox: @sandbox, come_from: params[:come_from]) %>

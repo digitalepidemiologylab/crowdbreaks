@@ -10,28 +10,44 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <h2 class='mb-4'>Mturk HITs</h2>
+    <h2 class='mb-4'>Mturk HITs<%= @sandbox ? ' (sandbox)' : ' (production)'  %></h2>
   </div>
 </div>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <h4>Options</h4>
-    <label class="label-inline checkbox">
-      <input type="checkbox" id="sandbox-checkbox"  <%= @sandbox ? ' checked="checked"' : ''%>/>
-      Sandbox
-    </label>
+    <div class="mb-2">
+      <div class="input-group">
+        <label class="switch">
+          <input type="checkbox" id="production-checkbox" <%= @sandbox ? '' : ' checked="checked"' %>>
+          <span class="slider round"></span>
+          <span class='switch-label'>Production</span>
+        </label>
+      </div>
+      <div class="input-group">
+        <label class="switch">
+          <input type="checkbox" id="filtered-checkbox" <%= @filtered ? ' checked="checked"' : '' %>>
+          <span class="slider round"></span>
+          <span class='switch-label'>Filter</span>
+        </label>
+      </div>
+      <p>
+      <button class='mt-2 btn btn-secondary'>
+        Refresh HITs&bsp;&nbsp;<%= fa_icon('refresh') %>
+      </button>
+      </p>
+    </div>
     <p>Available balance: $<%= @balance %></p>
     <div>
       Page: <%= @page %>
     <% unless @page == 1 %>
-      <%= link_to 'First page', mturk_hits_path(sandbox: @sandbox, page: 1), class: 'btn btn-link' %>
+      <%= link_to 'First page', mturk_hits_path(sandbox: @sandbox, page: 1, filtered: @filtered), class: 'btn btn-link' %>
     <% end %>
-    <%= link_to 'Next page', mturk_hits_path(next_token: @next_token, page: @page + 1, sandbox: @sandbox), class: 'btn btn-link' %>
+    <%= link_to 'Next page', mturk_hits_path(next_token: @next_token, page: @page + 1, sandbox: @sandbox, filtered: @filtered), class: 'btn btn-link' %>
     </div>
   </div>
 </div>
-
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
@@ -44,6 +60,7 @@
           <th>Hit Type ID/<br>Batch Job</th>
           <th>Status</th>
           <th>Review status</th>
+          <th>Creation time</th>
           <th>Review actions</th>
           <th>Actions</th>
         </tr>
@@ -63,6 +80,7 @@
             </td>
             <td><%= hit[:status] %></td>
             <td><%= hit[:review_status] %></td>
+            <td><%= time_ago_in_words(hit[:creation_time]) + ' ago' %></td>
             <td>
               <span>
                 <% if can? :update, :mturk_hit and batch_job_exists_for_hit?(hit[:hit_id])%>

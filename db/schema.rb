@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180927123403) do
+ActiveRecord::Schema.define(version: 20181102115227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,32 @@ ActiveRecord::Schema.define(version: 20180927123403) do
     t.string "qualification_type_id"
     t.integer "max_tasks_per_worker"
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
+  end
+
+  create_table "mturk_cached_hits", force: :cascade do |t|
+    t.string "hit_id"
+    t.string "hit_type_id"
+    t.string "hit_group_id"
+    t.string "hit_layout_id"
+    t.text "title"
+    t.text "description"
+    t.text "question"
+    t.text "keywords"
+    t.string "requester_annotation"
+    t.string "hit_status"
+    t.string "hit_review_status"
+    t.integer "max_assignments"
+    t.integer "number_of_assignments_pending"
+    t.integer "number_of_assignments_available"
+    t.integer "number_of_assignments_completed"
+    t.decimal "reward", precision: 8, scale: 2
+    t.integer "auto_approval_delay_in_seconds"
+    t.integer "assignment_duration_in_seconds"
+    t.jsonb "qualification_requirements"
+    t.datetime "creation_time"
+    t.datetime "expiration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mturk_tweets", force: :cascade do |t|
