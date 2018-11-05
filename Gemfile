@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 5.1.0'
+gem 'rails', '~> 5.2.1'
 
 # Postgresql db
 gem 'pg', '~> 0.18'
@@ -34,7 +34,8 @@ gem 'font-awesome-rails', '~> 4.7.0.1'
 # Pagination
 gem 'kaminari', '~> 1.0.1'
 # Forms
-gem 'simple_form', github: 'elsurudo/simple_form', branch: 'rails-5.1.0'
+gem 'simple_form'
+# gem 'simple_form', github: 'elsurudo/simple_form', branch: 'rails-5.1.0'
 # Bootstrap
 gem 'bootstrap', '~> 4.0.0'
 # Use autoprefixes for CSS
@@ -90,7 +91,7 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'rubocop', require: false
-  gem 'rails_real_favicon'
+  # gem 'rails_real_favicon'
 end
 
 group :test do

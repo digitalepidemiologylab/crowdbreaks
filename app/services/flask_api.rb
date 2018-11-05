@@ -179,7 +179,7 @@ class FlaskApi
     Rails.logger.error "API is down, fetching random old tweet"
     return '20' if Result.count == 0
     trials = 0
-    tweet_id = Result.limit(1000).order('RANDOM()').first&.tweet_id&.to_s
+    tweet_id = Result.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
     tv = TweetValidation.new
     while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH_DB
       Rails.logger.info "Tweet #{tweet_id} is not available anymore, trying another"
