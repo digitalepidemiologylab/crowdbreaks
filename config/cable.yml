@@ -1,10 +1,7 @@
-development:
-  adapter: async
-
-test:
-  adapter: async
-
-production:
+redis: &redis
   adapter: redis
-  url: redis://localhost:6379/1
-  channel_prefix: crowdbreaks_production
+  url: <%= ENV['REDISTOGO_URL'] %>
+
+production: *redis
+development: *redis
+test: *redis

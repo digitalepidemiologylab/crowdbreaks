@@ -14,7 +14,11 @@
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application' %>
+    <%= action_cable_meta_tag %>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <% if user_signed_in? %>
+      <%= tag :meta, name: "user-signed-in" %>
+    <% end %>
   </head>
 
   <body class="<%= content_for :body_class %>" <%= content_for :disable_turbolinks %>>

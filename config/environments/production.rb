@@ -50,7 +50,7 @@ Rails.application.configure do
   config.log_tags = [ :request_id ]
 
   # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
+  # config.cache_store = :redis_cache_store, { url: ENV['REDISTOGO_URL'] }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
@@ -62,7 +62,7 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default :charset => "utf-8"
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_options = {from: 'no-reply@example.com'}
+  config.action_mailer.default_options = {from: 'no-reply@crowdbreaks.org'}
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :user_name => ENV['EMAIL_USERNAME'],

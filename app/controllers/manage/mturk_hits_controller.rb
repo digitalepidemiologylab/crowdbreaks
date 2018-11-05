@@ -1,5 +1,6 @@
 module Manage
   class MturkHitsController < BaseController
+    # protect_from_forgery except: :update_cached_hits
     authorize_resource class: false
     before_action :mturk_init
 
@@ -30,6 +31,23 @@ module Manage
         redirect_to(mturk_hits_path, alert: 'Could not delte HIT. HITs can only be deleted in states of "Assignable", "Reviewing" or "Reviewable".')
       else
         redirect_to(mturk_hits_path, notice: 'Successfully deleted HIT.')
+      end
+    end
+
+    def update_cached_hits
+      if current_user
+        # Make sure job is only run once every 20sec
+        if session[:mturk_hits_last_updated].nil? or Time.parse(session[:mturk_hits_last_updated]) < 20.seconds.ago
+          session[:mturk_hits_last_updated] = Time.current
+          UpdateMturkChachedHitsJob.perform_later(current_user.id)
+          respond_to do |format|
+            format.js { head :ok }
+          end
+        else
+          respond_to do |format|
+            format.js { head :bad_request }
+          end
+        end
       end
     end
 
