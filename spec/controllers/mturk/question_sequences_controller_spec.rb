@@ -268,7 +268,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           ]
         }
       }
-      expect(response).to be_success
+      expect(response).to be_successful
       task.reload
       expect(task.lifecycle_status).to eq('completed')
       expect(task.time_completed).to eq(Time.current)
@@ -296,7 +296,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           results: []
         }
       }
-      expect(response).to be_success
+      expect(response).to be_successful
       task.reload
       expect(task.results.count).to eq(1)
       expect(task.results.first.res_type).to eq('mturk')
