@@ -64,7 +64,9 @@ Rails.application.routes.draw do
         get 'submit'
       end
       resources :mturk_workers, only: [:index]
-      resources :mturk_hits
+      resources :mturk_hits do
+        get 'update_cached_hits', on: :collection
+      end
       resources :mturk_reviewable_hits, only: [:index, :show] do
         post 'multi_review', on: :collection
         post 'accept'

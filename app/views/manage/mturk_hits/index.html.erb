@@ -33,9 +33,17 @@
         </label>
       </div>
       <p>
-      <button class='mt-2 btn btn-secondary'>
-        Refresh HITs&bsp;&nbsp;<%= fa_icon('refresh') %>
-      </button>
+      <div class="input-group">
+        <%= link_to update_cached_hits_mturk_hits_path(sandbox: @sandbox, filtered: @filtered, format: :js),
+          id: 'refresh-mturk-hits',
+          class: 'btn btn-secondary',
+          remote: true do
+            "Refresh&nbsp;&nbsp;#{fa_icon('refresh')}".html_safe
+          end
+        %>
+        <div class="spinner mr-3" id="refresh-mturk-hits-spinner" style='display:None'></div>
+        <div class='pt-1' id="refresh-mturk-hits-spinner-info" style='display:None;'>Some text</div>
+      </div>
       </p>
     </div>
     <p>Available balance: $<%= @balance %></p>
