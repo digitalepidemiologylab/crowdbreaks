@@ -34,7 +34,7 @@ class UpdateMturkChachedHitsJob < ApplicationJob
       all_hits.each do |hit|
         # m = MturkCachedHit.new(hit.to_h)
         m = MturkCachedHit.new
-        m.sandbox = sandbox
+        # m.sandbox = sandbox
         m.save
       end
       next_token = resp.next_token
