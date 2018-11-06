@@ -37,8 +37,8 @@ module Manage
     def update_cached_hits
       if current_user
         # Make sure job is only run once every 20sec
-        if session[:mturk_hits_last_updated].nil? or Time.parse(session[:mturk_hits_last_updated]) < 20.seconds.ago
-          session[:mturk_hits_last_updated] = Time.current
+        if not Rails.cache.exist?('mturk_hits_recently_updated')
+          Rails.cache.write('mturk_hits_recently_updated', 1, expires_in: 20.seconds)
           UpdateMturkChachedHitsJob.perform_later(current_user.id)
           respond_to do |format|
             format.js { head :ok }
