@@ -60,33 +60,8 @@ class Mturk
     @client.get_account_balance
   end
 
-  def list_hits(next_token: nil)
-    hits = []
-    num_hits = 20
-    resp = _list_hits(next_token)
-    resp.hits.each do |hit|
-      hits.push({
-        hit_id: hit.hit_id,
-        hit_type_id: hit.hit_type_id,
-        title: hit.title,
-        status: hit.hit_status,
-        review_status: hit.hit_review_status,
-        creation_time: hit.creation_time
-      })
-    end
-    return {'hits': hits, 'next_token': resp.next_token, 'num_results': resp.num_results}
-  end
-
-  def list_all_hits
-    next_token = nil
-    all_hits = []
-    loop do
-      resp = _list_hits(next_token, max_results: 100)
-      all_hits.push(*resp.hits)
-      next_token = resp.next_token
-      break if next_token.nil?
-    end
-    all_hits
+  def list_hits(next_token: nil, max_results: 10)
+    _list_hits(next_token, max_results: max_results)
   end
 
   def get_hit(hit_id)

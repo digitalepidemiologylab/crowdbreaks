@@ -12,53 +12,69 @@
   <div class="col-12">
     <h2 class='mb-4'>Mturk HITs<%= @sandbox ? ' (sandbox)' : ' (production)'  %></h2>
   </div>
-</div>
-
-<div class="row justify-content-center mb-4">
-  <div class="col-12">
-    <h4>Options</h4>
-    <div class="mb-2">
-      <div class="input-group">
-        <label class="switch">
-          <input type="checkbox" id="production-checkbox" <%= @sandbox ? '' : ' checked="checked"' %>>
-          <span class="slider round"></span>
-          <span class='switch-label'>Production</span>
-        </label>
+  <div class="col-md-6 mb-2">
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-2">
+          <h4 class='mb-0'>Account balance</h4>$<%= num(@balance) %>
+        </div>
+        <div class="mb-2">
+          <h4 class='mb-0'>Total number of HITs</h4><%= num(@num_hits) %>
+        </div>
+        <div class="mb-0">
+          <h4 class='mb-0'>Number of reviewable HITs</h4><%= num(@num_hits_reviewable) %>
+        </div>
       </div>
-      <div class="input-group">
-        <label class="switch">
-          <input type="checkbox" id="filtered-checkbox" <%= @filtered ? ' checked="checked"' : '' %>>
-          <span class="slider round"></span>
-          <span class='switch-label'>Filter</span>
-        </label>
-      </div>
-      <p>
-      <div class="input-group">
-        <%= link_to update_cached_hits_mturk_hits_path(sandbox: @sandbox, filtered: @filtered, format: :js),
-          id: 'refresh-mturk-hits',
-          class: 'btn btn-secondary',
-          remote: true do
-            "Refresh&nbsp;&nbsp;#{fa_icon('refresh')}".html_safe
-          end
-        %>
-        <div class="spinner mr-3" id="refresh-mturk-hits-spinner" style='display:None'></div>
-        <div class='pt-1' id="refresh-mturk-hits-spinner-info" style='display:None;'>Some text</div>
-      </div>
-      </p>
     </div>
-    <p>Available balance: $<%= @balance %></p>
-    <div>
-      Page: <%= @page %>
-    <% unless @page == 1 %>
-      <%= link_to 'First page', mturk_hits_path(sandbox: @sandbox, page: 1, filtered: @filtered), class: 'btn btn-link' %>
-    <% end %>
-    <%= link_to 'Next page', mturk_hits_path(next_token: @next_token, page: @page + 1, sandbox: @sandbox, filtered: @filtered), class: 'btn btn-link' %>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Options</h4>
+        <div>
+          <label class="switch">
+            <input type="checkbox" id="production-checkbox" <%= @sandbox ? '' : ' checked="checked"' %>>
+            <span class="slider round"></span>
+            <span class='switch-label'>Production</span>
+          </label>
+        </div>
+        <div>
+          <label class="switch">
+            <input type="checkbox" id="filtered-checkbox" <%= @filtered ? ' checked="checked"' : '' %>>
+            <span class="slider round"></span>
+            <span class='switch-label'>Filter</span>
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
+    <div id="refresh-mturk-hits-group">
+      <%= link_to update_cached_hits_mturk_hits_path(sandbox: @sandbox, filtered: @filtered, format: :js),
+        id: 'refresh-mturk-hits',
+        class: 'btn btn-secondary mr-2',
+        remote: true do
+          "Refresh&nbsp;&nbsp;#{fa_icon('refresh')}".html_safe
+        end
+      %>
+    <% if not @last_updated.nil? %>
+      <%= 'Updated ' + time_ago_in_words(@last_updated) + ' ago' %>
+    <% end %>
+    </div>
+    <div id="refresh-mturk-hits-group-running" style="display:none;">
+      <div class="spinner mr-3" id="refresh-mturk-hits-spinner" style='display:inline-block;'></div>
+      <div id="refresh-mturk-hits-spinner-info" class='mt-1' style='display:inline-block;margin:auto;position:absolute;'>Hello</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= paginate @hits %>
     <table class="table">
       <thead>
         <tr>
@@ -76,19 +92,19 @@
       <tbody>
         <% @hits.each_with_index do |hit, index| %>
           <tr>
-            <td><%= (@page - 1) * @num_hits + index %></td>
-            <td><%= hit[:title] %></td>
-            <td><%= find_task(hit[:hit_id]) %></td>
+            <td><%= ((params[:page] || 1).to_i - 1) * 50 + index %></td>
+            <td><%= hit.title %></td>
+            <td><%= find_task(hit.hit_id) %></td>
             <td>
-              <% if batch_job_exists_for_hit?(hit[:hit_id]) %>
-                <%= find_batch_job(hit[:hit_id])%>
+              <% if batch_job_exists_for_hit?(hit.hit_id) %>
+                <%= find_batch_job(hit.hit_id)%>
                 <% else %>
-                  <%= hit[:hit_type_id] %>
+                  <%= hit.hit_type_id %>
               <% end %>
             </td>
-            <td><%= hit[:status] %></td>
-            <td><%= hit[:review_status] %></td>
-            <td><%= time_ago_in_words(hit[:creation_time]) + ' ago' %></td>
+            <td><%= hit.hit_status %></td>
+            <td><%= hit.hit_review_status %></td>
+            <td><%= time_ago_in_words(hit.creation_time) + ' ago' %></td>
             <td>
               <span>
                 <% if can? :update, :mturk_hit and batch_job_exists_for_hit?(hit[:hit_id])%>

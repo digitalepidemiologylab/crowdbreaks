@@ -1,24 +1,16 @@
 module Manage
   class MturkHitsController < BaseController
-    # protect_from_forgery except: :update_cached_hits
     authorize_resource class: false
     before_action :mturk_init
 
     def index
-      @page = params[:page].present? ? params[:page].to_i : 1
       @sandbox = in_sandbox?
       @filtered = filtered?
-      # hits_list = @mturk.list_hits
-      @hits = []
-      @next_token = nil
-      @num_hits = 0
-      @balance = 0
-
-      # hits_list = @mturk.list_hits
-      # @hits = hits_list[:hits]
-      # @next_token = hits_list[:next_token]
-      # @num_hits = hits_list[:num_results]
-      # @balance = @mturk.check_balance.available_balance
+      @hits = MturkCachedHit.where(sandbox: @sandbox).all.order('creation_time DESC').page(params[:page]).per(50)
+      @num_hits = MturkCachedHit.where(sandbox: @sandbox).count
+      @num_hits_reviewable = @num_hits - MturkCachedHit.where(sandbox: @sandbox, hit_review_status: 'NotReviewed').count
+      @balance = @mturk.check_balance.available_balance
+      @last_updated = MturkCachedHit.where(sandbox: @sandbox).order('updated_at').last&.updated_at
     end
 
     def show
@@ -36,17 +28,13 @@ module Manage
 
     def update_cached_hits
       if current_user
-        # Make sure job is only run once every 20sec
-        if not Rails.cache.exist?('mturk_hits_recently_updated')
-          Rails.cache.write('mturk_hits_recently_updated', 1, expires_in: 20.seconds)
-          UpdateMturkChachedHitsJob.perform_later(current_user.id)
-          respond_to do |format|
-            format.js { head :ok }
-          end
-        else
-          respond_to do |format|
-            format.js { head :bad_request }
-          end
+        UpdateMturkChachedHitsJob.perform_later(current_user.id, in_sandbox?)
+        respond_to do |format|
+          format.js { head :ok }
+        end
+      else
+        respond_to do |format|
+          format.js { head :bad_request }
         end
       end
     end
