@@ -25,20 +25,21 @@ class UpdateMturkChachedHitsJob < ApplicationJob
 
     sleep(2.seconds)
 
-    # loop do
-      # all_hits = []
-      # resp = mturk.list_hits(next_token: next_token, max_results: 100)
-      # all_hits.push(*resp.hits)
-      # total += all_hits.length
-      # ActionCable.server.broadcast("job_notification:#{user_id}", job_status: 'running', job_type: 'update_mturk_hits', hits_loaded: total)
+    loop do
+      all_hits = []
+      resp = mturk.list_hits(next_token: next_token, max_results: 100)
+      all_hits.push(*resp.hits)
+      total += all_hits.length
+      ActionCable.server.broadcast("job_notification:#{user_id}", job_status: 'running', job_type: 'update_mturk_hits', hits_loaded: total)
       # all_hits.each do |hit|
       #   m = MturkCachedHit.new(hit.to_h)
       #   m.sandbox = sandbox
       #   m.save
       # end
-      # next_token = resp.next_token
-      # break if next_token.nil? or total >= max_hits
-    # end
+      next_token = resp.next_token
+      break
+      break if next_token.nil? or total >= max_hits
+    end
 
     # Get rid of key again
     Rails.cache.delete(cache_key)
