@@ -14,7 +14,7 @@ Rails.application.configure do
 
   # Enable/disable caching. By default caching is disabled.
   config.action_controller.perform_caching = true
-  # config.cache_store = :redis_cache_store, { url: ENV['REDISTOGO_URL'] }
+  config.cache_store = :redis_cache_store, { url: ENV['REDISTOGO_URL'] }
 
   # Action mailer
   config.action_mailer.default_url_options = { :host => ENV['HOST']  }
