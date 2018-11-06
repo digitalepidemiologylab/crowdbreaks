@@ -31,11 +31,12 @@ class UpdateMturkChachedHitsJob < ApplicationJob
       all_hits.push(*resp.hits)
       total += all_hits.length
       ActionCable.server.broadcast("job_notification:#{user_id}", job_status: 'running', job_type: 'update_mturk_hits', hits_loaded: total)
-      # all_hits.each do |hit|
-      #   m = MturkCachedHit.new(hit.to_h)
-      #   m.sandbox = sandbox
-      #   m.save
-      # end
+      all_hits.each do |hit|
+        # m = MturkCachedHit.new(hit.to_h)
+        m = MturkCachedHit.new
+        m.sandbox = sandbox
+        m.save
+      end
       next_token = resp.next_token
       break
       break if next_token.nil? or total >= max_hits
