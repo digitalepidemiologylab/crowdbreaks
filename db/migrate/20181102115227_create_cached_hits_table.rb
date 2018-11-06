@@ -22,6 +22,7 @@ class CreateCachedHitsTable < ActiveRecord::Migration[5.1]
       t.jsonb :qualification_requirements
       t.datetime :creation_time
       t.datetime :expiration
+      t.boolean :sandbox, default: true, null: false
       t.timestamps
     end
   end

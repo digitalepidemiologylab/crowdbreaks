@@ -107,6 +107,16 @@ Rails.application.configure do
       [u, p] == [ENV['STAGING_USERNAME'], ENV['STAGING_PASSWORD']]
     end
   end
+
+  # Websockets for action cable
+  if ENV['ENVIRONMENT_NAME'] == 'staging'
+    config.web_socket_server_url = "wss://crowdbreaks-stg.herokuapp.com/cable" 
+    config.action_cable.allowed_request_origins = ['https://crowdbreaks-stg.herokuapp.com', 'http://crowdbreaks-stg.herokuapp.com']
+  else
+    config.web_socket_server_url = "wss://crowdbreaks-prd.herokuapp.com/cable" 
+    config.action_cable.allowed_request_origins = ['https://crowdbreaks-prd.herokuapp.com', 'http://crowdbreaks-prd.herokuapp.com']
+  end
+
 end
 
 # Default Mailer host (this is apparently needed for devise to work)
