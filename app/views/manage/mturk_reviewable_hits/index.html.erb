@@ -7,7 +7,7 @@
         Go back
       <% end %>
     <% elsif params[:come_from] == 'mturk_hits' %>
-      <%= link_to mturk_hits_path, class: 'btn btn-secondary btn-lg' do %>
+      <%= link_to mturk_cached_hits_path, class: 'btn btn-secondary btn-lg' do %>
         Go back
       <% end %>
     <% else %>
@@ -32,14 +32,16 @@
   <div class="col-12">
     <div>
       <% if not @show_all %>
-        <% if @mturk_batch_jobs.size > 1 %>j
+        <% if @mturk_batch_jobs.size > 1 %>
           <div class='alert alert-danger'>Note: HIT type (<%= @mturk_batch_jobs.first.hittype_id %>) could be associated with several batches: <%= @mturk_batch_jobs.pluck(:name).join(', ') %></div>
         <% else %>
-          <p>
-          <div>Batch name: <%= @mturk_batch_jobs.first.name %></div>
-          <div>HIT type Id: <%= @mturk_batch_jobs.first.hittype_id %></div>
-          <div>Sandbox: <%= @sandbox ? 'Yes' : 'No' %></div>
-          </p>
+          <% if @mturk_batch_jobs.size > 0 %>
+            <p>
+            <div>Batch name: <%= @mturk_batch_jobs.first.name %></div>
+            <div>HIT type Id: <%= @mturk_batch_jobs.first.hittype_id %></div>
+            <div>Sandbox: <%= @sandbox ? 'Yes' : 'No' %></div>
+            </p>
+          <% end %>
         <% end %>
       <% end %>
     </div>
@@ -95,7 +97,7 @@
               </td>
               <td>
                 <% if can? :read, :mturk_hit %>
-                  <%= link_to 'HIT details', mturk_hit_path(hit[:hit_id], sandbox: @sandbox, come_from: 'mturk_reviewable_hits'), title: 'Show HIT details' %>
+                  <%= link_to 'HIT details', mturk_cached_hit_path(hit[:hit_id], sandbox: @sandbox, come_from: 'mturk_reviewable_hits'), title: 'Show HIT details' %>
                 <% end %>
               </td>
               <td>

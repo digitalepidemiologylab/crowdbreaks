@@ -15,22 +15,27 @@
   <div class="col-md-6 mb-2">
     <div class="card">
       <div class="card-body">
-        <div class="mb-2">
-          <h4 class='mb-0'>Account balance</h4>$<%= num(@balance) %>
-        </div>
-        <div class="mb-2">
-          <h4 class='mb-0'>Total number of HITs</h4><%= num(@num_hits) %>
-        </div>
-        <div class="mb-0">
-          <h4 class='mb-0'>Number of reviewable HITs</h4><%= num(@num_hits_reviewable) %>
-        </div>
+        <table class="table vertical-align borderless-table">
+          <tr>
+            <td><h4>Account balance</h4></td>
+            <td align='right'>$<%= num(@balance) %></td>
+          </tr>
+          <tr>
+            <td><h4>Total number of HITs</h4></td>
+            <td align='right'><%= num(@num_hits) %></td>
+          </tr>
+          <tr>
+            <td><h4>Number of reviewable HITs</h4></td>
+            <td align='right'><%= num(@num_hits_reviewable) %></td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
   <div class="col-md-6">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Options</h4>
+        <h4 class="card-title">Filters</h4>
         <div>
           <label class="switch">
             <input type="checkbox" id="production-checkbox" <%= @sandbox ? '' : ' checked="checked"' %>>
@@ -42,7 +47,14 @@
           <label class="switch">
             <input type="checkbox" id="filtered-checkbox" <%= @filtered ? ' checked="checked"' : '' %>>
             <span class="slider round"></span>
-            <span class='switch-label'>Filter</span>
+            <span class='switch-label'>Platform only</span>
+          </label>
+        </div>
+        <div>
+          <label class="switch">
+            <input type="checkbox" id="reviewable-checkbox" <%= @reviewable ? ' checked="checked"' : '' %>>
+            <span class="slider round"></span>
+            <span class='switch-label'>Reviewable</span>
           </label>
         </div>
       </div>

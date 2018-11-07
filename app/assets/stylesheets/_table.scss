@@ -7,3 +7,13 @@
     vertical-align: middle;
   }
 }
+
+.borderless-table {
+  tr {
+    td {
+      border: none;
+      padding: 3px;
+    }
+  }
+  margin: 0px;
+}

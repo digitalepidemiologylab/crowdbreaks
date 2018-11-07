@@ -9,7 +9,7 @@
 
   <td>
     <% if task.hit_id.present? and can? :read, :mturk_hit %>
-      <%= link_to 'HIT details', mturk_hit_path(task.hit_id, sandbox: task.mturk_batch_job.sandbox, come_from: task.mturk_batch_job.id) %>
+      <%= link_to 'HIT details', mturk_cached_hit_path(task.hit_id, sandbox: task.mturk_batch_job.sandbox, come_from: task.mturk_batch_job.id) %>
     <% end %>
   </td>
   <td>
