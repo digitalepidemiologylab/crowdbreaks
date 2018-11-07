@@ -4,7 +4,7 @@
 <div class="row mb-5">
   <div class="col-12">
     <% if params[:come_from].present? %>
-      <%= link_to mturk_hits_path, class: 'btn btn-secondary btn-lg' do %>
+      <%= link_to mturk_cached_hits_path, class: 'btn btn-secondary btn-lg' do %>
         Go back
       <% end %>
     <% else %>

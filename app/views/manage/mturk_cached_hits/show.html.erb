@@ -25,13 +25,13 @@
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-8">
     <table class="table vertical-align">
-      <col width="200px"/>
+      <col width="100px"/>
       <col />
 
       <% @mturk_cached_hit.attributes.each do |key, val| %>
         <tr>
           <td><h4><%= key %></h4></td>
-          <td><%= val %></td>
+          <td><%= truncate(val.to_s, length: 1000) %></td>
         </tr>
       <% end %>
     </table>

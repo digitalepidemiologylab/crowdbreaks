@@ -4,7 +4,7 @@ module Manage
     before_action :mturk_init
 
     def index
-      @sandbox = param_is_truthy?(:sandbox)
+      @sandbox = param_is_truthy?(:sandbox, default: true)
       @filtered = param_is_truthy?(:filtered)
       @reviewable = param_is_truthy?(:reviewable)
       filters = {sandbox: @sandbox}
@@ -26,17 +26,22 @@ module Manage
     end
 
     def destroy
-      return_val = @mturk.delete_hit(mturk_hit_params[:id])
+      return_val = @mturk.delete_hit(@mturk_cached_hit.hit_id)
       if return_val.nil?
-        redirect_to(mturk_hits_path, alert: 'Could not delte HIT. HITs can only be deleted in states of "Assignable", "Reviewing" or "Reviewable".')
+        if @mturk.get_hit(@mturk_cached_hit.hit_id).nil?
+          redirect_to(mturk_cached_hits_path, alert: 'Destroying HIT failed. Hit does not exist anymore')
+        else
+          redirect_to(mturk_cached_hits_path, alert: 'Could not delte HIT. HITs can only be deleted in states of "Assignable", "Reviewing" or "Reviewable".')
+        end
       else
-        redirect_to(mturk_hits_path, notice: 'Successfully deleted HIT.')
+        @mturk_cached_hit.destroy
+        redirect_to(mturk_cached_hits_path, notice: 'Successfully deleted HIT.')
       end
     end
 
     def update_cached_hits
       if current_user
-        UpdateMturkChachedHitsJob.perform_later(current_user.id, param_is_truthy?(:sandbox))
+        UpdateMturkChachedHitsJob.perform_later(current_user.id, param_is_truthy?(:sandbox, default: true))
         respond_to do |format|
           format.js { head :ok }
         end
@@ -57,11 +62,11 @@ module Manage
       @mturk = Mturk.new(sandbox: param_is_truthy?(:sandbox))
     end
 
-    def param_is_truthy?(param)
+    def param_is_truthy?(param, default: false)
       if params[param].present?
         params[param] == 'true' ? true : false
       else
-        false
+        default
       end
     end
   end
