@@ -1,12 +1,12 @@
 module Manage
-  class MturkHitsController < BaseController
-    authorize_resource class: false
+  class MturkCachedHitsController < BaseController
+    load_and_authorize_resource
     before_action :mturk_init
 
     def index
       @sandbox = in_sandbox?
       @filtered = filtered?
-      @hits = MturkCachedHit.where(sandbox: @sandbox).all.order('creation_time DESC').page(params[:page]).per(50)
+      @mturk_cached_hits = MturkCachedHit.where(sandbox: @sandbox).all.order('creation_time DESC').page(params[:page]).per(50)
       @num_hits = MturkCachedHit.where(sandbox: @sandbox).count
       @num_hits_reviewable = @num_hits - MturkCachedHit.where(sandbox: @sandbox, hit_review_status: 'NotReviewed').count
       @balance = @mturk.check_balance.available_balance
@@ -14,7 +14,6 @@ module Manage
     end
 
     def show
-      @hit = @mturk.get_hit(mturk_hit_params[:id])
     end
 
     def destroy
@@ -28,7 +27,8 @@ module Manage
 
     def update_cached_hits
       if current_user
-        UpdateMturkChachedHitsJob.perform_later(current_user.id, in_sandbox?)
+        # UpdateMturkChachedHitsJob.perform_later(current_user.id, in_sandbox?)
+        MturkCachedHit.create(hit_id: '12', sandbox: false)
         respond_to do |format|
           format.js { head :ok }
         end

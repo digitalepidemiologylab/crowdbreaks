@@ -53,7 +53,7 @@
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <div id="refresh-mturk-hits-group">
-      <%= link_to update_cached_hits_mturk_hits_path(sandbox: @sandbox, filtered: @filtered, format: :js),
+      <%= link_to update_cached_hits_mturk_cached_hits_path(sandbox: @sandbox, filtered: @filtered, format: :js),
         id: 'refresh-mturk-hits',
         class: 'btn btn-secondary mr-2',
         remote: true do
@@ -74,7 +74,7 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <%= paginate @hits %>
+    <%= paginate @mturk_cached_hits %>
     <table class="table">
       <thead>
         <tr>
@@ -90,7 +90,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @hits.each_with_index do |hit, index| %>
+        <% @mturk_cached_hits.each_with_index do |hit, index| %>
           <tr>
             <td><%= ((params[:page] || 1).to_i - 1) * 50 + index %></td>
             <td><%= hit.title %></td>
@@ -104,23 +104,27 @@
             </td>
             <td><%= hit.hit_status %></td>
             <td><%= hit.hit_review_status %></td>
-            <td><%= time_ago_in_words(hit.creation_time) + ' ago' %></td>
+            <% if not hit.creation_time.nil? %>
+              <td><%= time_ago_in_words(hit.creation_time) + ' ago' %></td>
+            <% else %>
+              <td><%= '' %></td>
+            <% end %>
             <td>
               <span>
-                <% if can? :update, :mturk_hit and batch_job_exists_for_hit?(hit[:hit_id])%>
-                  <%= link_to 'Review batch', mturk_reviewable_hits_path(hit_type_id: hit[:hit_type_id], sandbox: @sandbox, come_from: 'mturk_hits') %>
+                <% if can? :update, hit and batch_job_exists_for_hit?(hit.hit_id)%>
+                  <%= link_to 'Review batch', mturk_reviewable_hits_path(hit_type_id: hit.hit_type_id, sandbox: @sandbox, come_from: 'mturk_hits') %>
                 <% end %>
               </span>
             </td>
             <td>
               <span>
-                <% if can? :read, :mturk_hit %>
-                  <%= link_to fa_icon("eye"), mturk_hit_path(hit[:hit_id], sandbox: @sandbox),
+                <% if can? :read, hit %>
+                  <%= link_to fa_icon("eye"), mturk_cached_hit_path(hit.hit_id, sandbox: @sandbox),
                     title: 'Show HIT details' %>
                 <% end %>
               
-                <% if can? :destroy, :mturk_hit %>
-                  <%= link_to fa_icon("trash"), mturk_hit_path(hit[:hit_id], sandbox: @sandbox),
+                <% if can? :destroy, hit %>
+                  <%= link_to fa_icon("trash"), mturk_cached_hit_path(hit.hit_id, sandbox: @sandbox),
                     title: 'Delete HIT on Mturk',
                     method: :delete,
                     data: {confirm: "Delete HIT?"} %>
