@@ -235,8 +235,7 @@ class Mturk
     begin
       yield
     rescue StandardError => e
-      RorVsWild.record_error(e)
-      p e
+      # RorVsWild.record_error(e)
       if error_return_value.is_a?(Hash)
         # convert to Hashie Mash to behave similar to a response object
         return Hashie::Mash.new(error_return_value)
