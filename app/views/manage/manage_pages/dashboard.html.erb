@@ -40,8 +40,8 @@
     <% if can? :read, MturkWorker %>
       <%= link_to 'Mturk workers', mturk_workers_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
-    <% if can? :read, :mturk_hit %>
-      <%= link_to 'List HITs', mturk_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <% if can? :read, MturkCachedHit %>
+      <%= link_to 'List HITs', mturk_cached_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
     <% if can? :read, :mturk_reviewable_hit %>
       <%= link_to 'Review HITs', mturk_reviewable_hits_path, class: 'btn btn-primary btn-lg btn-block' %>
