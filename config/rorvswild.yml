@@ -1,5 +1,5 @@
-production:
-  api_key: <%= ENV['RORVSWILD_API_KEY'] %>
+# production:
+#   api_key: <%= ENV['RORVSWILD_API_KEY'] %>
   # ignored_exceptions:
   #   - ActionController::RoutingError
   #   - UncommentToIgnoreAnyExceptionNameListedHere
