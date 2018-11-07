@@ -28,7 +28,7 @@ module Manage
     def update_cached_hits
       if current_user
         # UpdateMturkChachedHitsJob.perform_later(current_user.id, in_sandbox?)
-        UpdateMturkChachedHitsJob.perform_later(4, true)
+        UpdateMturkChachedHitsJob.perform_later
         respond_to do |format|
           format.js { head :ok }
         end
