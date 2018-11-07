@@ -11,6 +11,7 @@ module Manage
       @num_hits_reviewable = @num_hits - MturkCachedHit.where(sandbox: @sandbox, hit_review_status: 'NotReviewed').count
       @balance = @mturk.check_balance.available_balance
       @last_updated = MturkCachedHit.where(sandbox: @sandbox).order('updated_at').last&.updated_at
+      UpdateMturkChachedHitsJob.perform_later
     end
 
     def show
