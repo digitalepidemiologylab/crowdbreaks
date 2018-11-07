@@ -14,16 +14,6 @@ class CreateLocalTweetsJob < ApplicationJob
   end
 
   def perform(local_batch_job_id, tweet_rows, destroy_first: false)
-    begin  
-      QuestionSequenceLog.create
-    rescue StandardError => e  
-      puts 'Question sequence log raised error'
-      p e
-    else
-      puts 'No error in QSLOG'
-      QuestionSequenceLog.last.destroy
-    end  
-
     local_batch_job = LocalBatchJob.find_by(id: local_batch_job_id)
     return if local_batch_job.nil?
 
