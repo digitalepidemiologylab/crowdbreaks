@@ -32,7 +32,28 @@ class UpdateMturkChachedHitsJob < ApplicationJob
       total += all_hits.length
       ActionCable.server.broadcast("job_notification:#{user_id}", job_status: 'running', job_type: 'update_mturk_hits', hits_loaded: total)
       all_hits.each do |hit|
-        MturkCachedHit.create(hit.to_h.merge({sandbox: sandbox}))
+
+        begin  
+          QuestionSequenceLog.create
+        rescue StandardError => e  
+          puts 'Question sequence log raised error'
+          p e
+        else
+          puts 'No error in QSLOG'
+          QuestionSequenceLog.last.destroy
+        end  
+
+        begin  
+          MturkCachedHit.create
+        rescue StandardError => e  
+          puts 'MturkCachedHit raised error'
+          p e
+        else
+          puts 'No error in MTurkCacheHIt'
+          MturkCachedHit.last.destroy
+        end  
+
+        # MturkCachedHit.create(hit.to_h.merge({sandbox: sandbox}))
       end
       next_token = resp.next_token
       break if next_token.nil? or total >= max_hits
