@@ -13,6 +13,16 @@ class UpdateMturkChachedHitsJob < ApplicationJob
     end  
 
     begin  
+      LocalTweet.create
+    rescue StandardError => e  
+      puts 'Local tweet raised error'
+      p e
+    else
+      puts 'No error in Localtweet'
+      LocalTweet.last.destroy
+    end  
+
+    begin  
       MturkCachedHit.create
     rescue StandardError => e  
       puts 'MturkCachedHit raised error'
