@@ -11,7 +11,6 @@ module Manage
       @num_hits_reviewable = @num_hits - MturkCachedHit.where(sandbox: @sandbox, hit_review_status: 'NotReviewed').count
       @balance = @mturk.check_balance.available_balance
       @last_updated = MturkCachedHit.where(sandbox: @sandbox).order('updated_at').last&.updated_at
-      UpdateMturkChachedHitsJob.perform_later
     end
 
     def show
@@ -28,8 +27,7 @@ module Manage
 
     def update_cached_hits
       if current_user
-        # UpdateMturkChachedHitsJob.perform_later(current_user.id, in_sandbox?)
-        UpdateMturkChachedHitsJob.perform_later
+        UpdateMturkChachedHitsJob.perform_later(current_user.id, in_sandbox?)
         respond_to do |format|
           format.js { head :ok }
         end

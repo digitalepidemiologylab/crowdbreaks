@@ -61,8 +61,6 @@ gem 'active_model_serializers', '~> 0.10.0'
 gem 'hashie', '~> 3.4', '>= 3.4.6'
 # Twitter API
 gem 'twitter' 
-# Monitoring
-gem 'rorvswild'
 # Job scheduling
 gem 'sidekiq'
 gem 'redis'
