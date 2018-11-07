@@ -213,7 +213,6 @@ class FlaskApi
     begin
       yield
     rescue StandardError => e
-      RorVsWild.record_error(e)
       error_return_value
     end
   end
@@ -222,7 +221,6 @@ class FlaskApi
     begin
       yield
     rescue StandardError => e
-      RorVsWild.record_error(e)
       Hashie::Mash.new({success: false, parsed_response: message, code: 400})
     end
   end
