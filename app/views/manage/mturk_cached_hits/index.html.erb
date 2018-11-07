@@ -119,12 +119,12 @@
             <td>
               <span>
                 <% if can? :read, hit %>
-                  <%= link_to fa_icon("eye"), mturk_cached_hit_path(hit.hit_id, sandbox: @sandbox),
+                  <%= link_to fa_icon("eye"), mturk_cached_hit_path(hit, sandbox: @sandbox),
                     title: 'Show HIT details' %>
                 <% end %>
               
                 <% if can? :destroy, hit %>
-                  <%= link_to fa_icon("trash"), mturk_cached_hit_path(hit.hit_id, sandbox: @sandbox),
+                  <%= link_to fa_icon("trash"), mturk_cached_hit_path(hit, sandbox: @sandbox),
                     title: 'Delete HIT on Mturk',
                     method: :delete,
                     data: {confirm: "Delete HIT?"} %>
