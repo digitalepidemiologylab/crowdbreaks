@@ -62,7 +62,7 @@ gem 'hashie', '~> 3.4', '>= 3.4.6'
 # Twitter API
 gem 'twitter' 
 # Monitoring
-# gem "rorvswild", "~> 1.0.0"
+gem 'rorvswild'
 # Job scheduling
 gem 'sidekiq'
 gem 'redis'
