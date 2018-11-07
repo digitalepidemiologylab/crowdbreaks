@@ -62,7 +62,7 @@
   </div>
 </div>
 
-<div class="row justify-content-center mb-4">
+<div class="row justify-content-center mb-5">
   <div class="col-12">
     <div id="refresh-mturk-hits-group">
       <%= link_to update_cached_hits_mturk_cached_hits_path(sandbox: @sandbox, filtered: @filtered, format: :js),
@@ -97,7 +97,7 @@
           <th>Status</th>
           <th>Review status</th>
           <th>Creation time</th>
-          <th>Review actions</th>
+          <th>Review</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -105,13 +105,13 @@
         <% @mturk_cached_hits.each_with_index do |hit, index| %>
           <tr>
             <td><%= ((params[:page] || 1).to_i - 1) * 50 + index %></td>
-            <td><%= hit.title %></td>
+            <td><%= truncate(hit.title) %></td>
             <td><%= find_task(hit.hit_id) %></td>
             <td>
               <% if batch_job_exists_for_hit?(hit.hit_id) %>
                 <%= find_batch_job(hit.hit_id)%>
                 <% else %>
-                  <%= hit.hit_type_id %>
+                  <%= truncate(hit.hit_type_id, length: 12) %>
               <% end %>
             </td>
             <td><%= hit.hit_status %></td>
@@ -123,8 +123,11 @@
             <% end %>
             <td>
               <span>
-                <% if can? :update, hit and batch_job_exists_for_hit?(hit.hit_id)%>
-                  <%= link_to 'Review batch', mturk_reviewable_hits_path(hit_type_id: hit.hit_type_id, sandbox: @sandbox, come_from: 'mturk_hits') %>
+                <% if can? :update, hit and hit.hit_status == 'Reviewable' %>
+                  <%= link_to 'HIT', mturk_reviewable_hit_path(hit.hit_id, sandbox: @sandbox, come_from: 'mturk_hits') %>
+                <% end %>
+                <% if can? :update, hit and batch_job_exists_for_hit?(hit.hit_id) %>
+                  <%= link_to 'Batch', mturk_reviewable_hits_path(hit_type_id: hit.hit_type_id, sandbox: @sandbox, come_from: 'mturk_hits') %>
                 <% end %>
               </span>
             </td>
