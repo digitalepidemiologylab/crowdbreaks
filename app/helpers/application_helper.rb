@@ -36,6 +36,6 @@ module ApplicationHelper
   end
 
   def num(num)
-    number_with_delimiter(num, delimiter: '&thinsp;'.html_safe)
+    number_with_delimiter(num, delimiter: '&#x202f;'.html_safe)
   end
 end

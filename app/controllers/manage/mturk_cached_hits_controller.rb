@@ -4,9 +4,18 @@ module Manage
     before_action :mturk_init
 
     def index
-      @sandbox = in_sandbox?
-      @filtered = filtered?
-      @mturk_cached_hits = MturkCachedHit.where(sandbox: @sandbox).all.order('creation_time DESC').page(params[:page]).per(50)
+      @sandbox = param_is_truthy?(:sandbox)
+      @filtered = param_is_truthy?(:filtered)
+      @reviewable = param_is_truthy?(:reviewable)
+      filters = {sandbox: @sandbox}
+      if @filtered
+        hit_types = MturkBatchJob.pluck(:hittype_id).reject{|v| v.blank?}
+        filters['hit_type_id'] = hit_types
+      end
+      if @reviewable
+        filters['hit_status'] = 'Reviewable'
+      end
+      @mturk_cached_hits = MturkCachedHit.where(filters).all.order('creation_time DESC').page(params[:page]).per(50)
       @num_hits = MturkCachedHit.where(sandbox: @sandbox).count
       @num_hits_reviewable = @num_hits - MturkCachedHit.where(sandbox: @sandbox, hit_review_status: 'NotReviewed').count
       @balance = @mturk.check_balance.available_balance
@@ -27,7 +36,7 @@ module Manage
 
     def update_cached_hits
       if current_user
-        UpdateMturkChachedHitsJob.perform_later(current_user.id, in_sandbox?)
+        UpdateMturkChachedHitsJob.perform_later(current_user.id, param_is_truthy?(:sandbox))
         respond_to do |format|
           format.js { head :ok }
         end
@@ -45,20 +54,12 @@ module Manage
     end
 
     def mturk_init
-      @mturk = Mturk.new(sandbox: in_sandbox?)
+      @mturk = Mturk.new(sandbox: param_is_truthy?(:sandbox))
     end
 
-    def in_sandbox?
-      if params[:sandbox].present?
-        params[:sandbox] == 'true' ? true : false
-      else
-        true
-      end
-    end
-
-    def filtered?
-      if params[:filtered].present?
-        params[:filtered] == 'true' ? true : false
+    def param_is_truthy?(param)
+      if params[param].present?
+        params[param] == 'true' ? true : false
       else
         false
       end

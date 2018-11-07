@@ -36,32 +36,32 @@ function onRefreshMturkHits() {
 // Toggle switches
 function toggleSandbox() {
   $('#production-checkbox').change(function() {
-    var url = new URL(window.location.href);
-    url.searchParams.delete('page')
-    url.searchParams.delete('next_token')
-    url.searchParams.delete('sandbox')
-    if($(this).is(':checked')) {
-      url.searchParams.append('sandbox', false)
-    } else {
-      url.searchParams.append('sandbox', true)
-    }
-    window.location.href = url.href
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('sandbox', !toBeChecked);
+  });
+}
+function toggleFiltered() {
+  $('#filtered-checkbox').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('filtered', toBeChecked);
+  });
+}
+function toggleReviewable() {
+  $('#reviewable-checkbox').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('reviewable', toBeChecked);
   });
 }
 
-function toggleFiltered() {
-  $('#filtered-checkbox').change(function() {
-    var url = new URL(window.location.href);
-    url.searchParams.delete('page')
-    url.searchParams.delete('next_token')
-    url.searchParams.delete('filtered')
-    if($(this).is(':checked')) {
-      url.searchParams.append('filtered', true)
-    } else {
-      url.searchParams.append('filtered', false)
-    }
-    window.location.href = url.href
-  });
+function toggleParam(param, toBeChecked) {
+  var url = new URL(window.location.href);
+  url.searchParams.delete(param)
+  if (toBeChecked) {
+    url.searchParams.append(param, true)
+  } else {
+    url.searchParams.append(param, false)
+  }
+  window.location.href = url.href
 }
 
 // helper
@@ -76,5 +76,6 @@ function setSpinnerInfoText(text, hideSpinner) {
 $(document).on('turbolinks:load', function() {
   toggleSandbox();
   toggleFiltered();
+  toggleReviewable();
   onRefreshMturkHits();
 })
