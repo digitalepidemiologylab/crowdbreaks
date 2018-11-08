@@ -1,12 +1,5 @@
 <% @title ||= 'HITs overview'; title @title %>
-
-<div class="row mb-5">
-  <div class="col-12">
-    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
-      Go back
-    <% end %>
-  </div>
-</div>
+<%= go_back_btn dashboard_path %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
@@ -16,18 +9,9 @@
     <div class="card">
       <div class="card-body">
         <table class="table vertical-align borderless-table">
-          <tr>
-            <td><h4>Account balance</h4></td>
-            <td align='right'>$<%= num(@balance) %></td>
-          </tr>
-          <tr>
-            <td><h4>Total number of HITs</h4></td>
-            <td align='right'><%= num(@num_hits) %></td>
-          </tr>
-          <tr>
-            <td><h4>Number of reviewable HITs</h4></td>
-            <td align='right'><%= num(@num_hits_reviewable) %></td>
-          </tr>
+          <%= table_row('Account balance', num(@balance)) %>
+          <%= table_row('Total number of HITs', num(@num_hits)) %>
+          <%= table_row('Number of reviewable HITs', num(@num_hits_reviewable)) %>
         </table>
       </div>
     </div>
@@ -36,27 +20,9 @@
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Filters</h4>
-        <div>
-          <label class="switch">
-            <input type="checkbox" id="production-checkbox" <%= @sandbox ? '' : ' checked="checked"' %>>
-            <span class="slider round"></span>
-            <span class='switch-label'>Production</span>
-          </label>
-        </div>
-        <div>
-          <label class="switch">
-            <input type="checkbox" id="filtered-checkbox" <%= @filtered ? ' checked="checked"' : '' %>>
-            <span class="slider round"></span>
-            <span class='switch-label'>Platform only</span>
-          </label>
-        </div>
-        <div>
-          <label class="switch">
-            <input type="checkbox" id="reviewable-checkbox" <%= @reviewable ? ' checked="checked"' : '' %>>
-            <span class="slider round"></span>
-            <span class='switch-label'>Reviewable</span>
-          </label>
-        </div>
+        <%= toggle_switch(!@sandbox, 'Production', 'production-checkbox') %>
+        <%= toggle_switch(@filtered, 'Platform only', 'filtered-checkbox') %>
+        <%= toggle_switch(@reviewable, 'Reviewable', 'reviewable-checkbox') %>
       </div>
     </div>
   </div>
@@ -102,52 +68,11 @@
         </tr>
       </thead>
       <tbody>
-        <% @mturk_cached_hits.each_with_index do |hit, index| %>
-          <tr>
-            <td><%= ((params[:page] || 1).to_i - 1) * 50 + index %></td>
-            <td><%= truncate(hit.title) %></td>
-            <td><%= find_task(hit.hit_id) %></td>
-            <td>
-              <% if batch_job_exists_for_hit?(hit.hit_id) %>
-                <%= find_batch_job(hit.hit_id)%>
-                <% else %>
-                  <%= truncate(hit.hit_type_id, length: 12) %>
-              <% end %>
-            </td>
-            <td><%= hit.hit_status %></td>
-            <td><%= hit.hit_review_status %></td>
-            <% if not hit.creation_time.nil? %>
-              <td><%= time_ago_in_words(hit.creation_time) + ' ago' %></td>
-            <% else %>
-              <td><%= '' %></td>
-            <% end %>
-            <td>
-              <span>
-                <% if can? :update, hit and hit.hit_status == 'Reviewable' %>
-                  <%= link_to 'HIT', mturk_reviewable_hit_path(hit.hit_id, sandbox: @sandbox, come_from: 'mturk_hits') %>
-                <% end %>
-                <% if can? :update, hit and batch_job_exists_for_hit?(hit.hit_id) %>
-                  <%= link_to 'Batch', mturk_reviewable_hits_path(hit_type_id: hit.hit_type_id, sandbox: @sandbox, come_from: 'mturk_hits') %>
-                <% end %>
-              </span>
-            </td>
-            <td>
-              <span>
-                <% if can? :read, hit %>
-                  <%= link_to fa_icon("eye"), mturk_cached_hit_path(hit, sandbox: @sandbox),
-                    title: 'Show HIT details' %>
-                <% end %>
-              
-                <% if can? :destroy, hit %>
-                  <%= link_to fa_icon("trash"), mturk_cached_hit_path(hit, sandbox: @sandbox),
-                    title: 'Delete HIT on Mturk',
-                    method: :delete,
-                    data: {confirm: "Delete HIT?"} %>
-                <% end %>
-              </span>
-            </td>
-          </tr>
-        <% end %>
+        <%= render partial: 'mturk_cached_hit',
+          collection: @mturk_cached_hits,
+          as: 'hit',
+          locals: {page: params[:page], sandbox: @sandbox, come_from: 'mturk_hits'}
+        %>
       </tbody>
     </table>
   </div>

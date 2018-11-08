@@ -1,12 +1,5 @@
 <% @title ||= 'Queued Tweets'; title @title %>
-
-<div class="row mb-5">
-  <div class="col-12">
-    <%= link_to manage_local_batch_jobs_path, class: 'btn btn-secondary btn-lg' do %>
-      Go back
-    <% end %>
-  </div>
-</div>
+<%= go_back_btn manage_local_batch_jobs_path %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">

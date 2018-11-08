@@ -38,4 +38,31 @@ module ApplicationHelper
   def num(num)
     number_with_delimiter(num, delimiter: '&#x202f;'.html_safe)
   end
+
+  def toggle_switch(instance_var, label, name)
+    content_tag :div do
+      content_tag :label, class: 'switch' do
+        concat check_box_tag(name, 'checkbox', instance_var, class: name) 
+        concat tag.span(class: 'slider round')
+        concat tag.span(label, class: 'switch-label')
+      end
+    end
+  end
+
+  def table_row(label, value)
+    content_tag :tr do
+      concat tag.td tag.h4 label
+      concat content_tag :td, value, {align: 'right'}
+    end
+  end
+
+  def go_back_btn(path, col: 'col-12', mb: 'mb-5')
+    content_tag :div, class: "row #{mb}" do
+      content_tag :div, class: col do
+        link_to path, class: 'btn btn-secondary btn-lg' do 
+          'Go back'
+        end
+      end
+    end
+  end
 end

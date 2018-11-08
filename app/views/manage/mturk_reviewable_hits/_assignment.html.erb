@@ -1,0 +1,52 @@
+<div class="row justify-content-center mb-5">
+  <div class="col-12 col-md-10 col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <table class="table vertical-align borderless-table">
+          <col width="250px"/>
+          <col />
+          <%= table_row('Assignment status', assignment.assignment_status) %>
+          <% if hit_info.task_found? %>
+            <%= table_row('Worker ID', hit_info.task&.mturk_worker&.worker_id) %>
+            <%= table_row('Result count', hit_info.task.results.count) %>
+            <% if not hit_info.log&.totalDurationQuestionSequence.nil? %>
+              <%= table_row('Total time spent', (hit_info.log.totalDurationQuestionSequence.to_i/1000.0).to_s + ' s') %>
+            <% end %>
+            <tr>
+              <td><h4>Full log</h4></td>
+              <td><pre style="font: 14px Inconsolata, monospace;"><%= JSON.pretty_generate(hit_info.log.to_h).strip %></pre></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if assignment.assignment_status == 'Submitted' %>
+  <div class="row justify-content-center mb-5">
+    <div class="col-12 col-md-10 col-lg-8">
+      <%= simple_form_for(:hit, url: mturk_reviewable_hit_accept_path(assignment.assignment_id)) do |f| %>
+        <div class="form-group">
+          <%= f.input :message, label: 'Acceptance message', as: :text, hint: 'Write a acceptance message to the worker', input_html: {value: @default_accept_message, rows: 3} %>
+        </div>
+        <div class="form-actions">
+          <%= submit_tag 'Accept', class: 'btn btn-primary btn-lg' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="row justify-content-center mb-5">
+    <div class="col-12 col-md-10 col-lg-8">
+      <%= simple_form_for(:hit, url: mturk_reviewable_hit_reject_path(assignment.assignment_id)) do |f| %>
+        <div class="form-group">
+          <%= f.input :message, label: 'Rejection message', as: :text, hint: 'Write a rejection message to the worker', input_html: {value: @default_reject_message, rows: 3} %>
+        </div>
+        <div class="form-actions">
+          <%= submit_tag 'Reject', class: 'btn btn-primary btn-negative btn-lg' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
