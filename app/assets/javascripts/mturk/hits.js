@@ -35,21 +35,27 @@ function onRefreshMturkHits() {
 
 // Toggle switches
 function toggleSandbox() {
-  $('#production-checkbox').change(function() {
+  $('.production-checkbox').change(function() {
     let toBeChecked = $(this).is(':checked');
     toggleParam('sandbox', !toBeChecked);
   });
 }
 function toggleFiltered() {
-  $('#filtered-checkbox').change(function() {
+  $('.filtered-checkbox').change(function() {
     let toBeChecked = $(this).is(':checked');
     toggleParam('filtered', toBeChecked);
   });
 }
 function toggleReviewable() {
-  $('#reviewable-checkbox').change(function() {
+  $('.reviewable-checkbox').change(function() {
     let toBeChecked = $(this).is(':checked');
     toggleParam('reviewable', toBeChecked);
+  });
+}
+function toggleIncludeReviewed() {
+  $('.include-reviewed-checkbox').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('include_reviewed', toBeChecked);
   });
 }
 
@@ -78,4 +84,5 @@ $(document).on('turbolinks:load', function() {
   toggleFiltered();
   toggleReviewable();
   onRefreshMturkHits();
+  toggleIncludeReviewed();
 })

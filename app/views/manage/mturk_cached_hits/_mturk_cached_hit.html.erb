@@ -1,0 +1,44 @@
+<tr>
+  <td><%= ((page || 1).to_i - 1) * 50 + hit_counter + 1 %></td>
+  <td><%= truncate(hit.title) %></td>
+  <td><%= find_task(hit.hit_id) %></td>
+  <td>
+    <% if batch_job_exists_for_hit?(hit.hit_id) %>
+      <%= find_batch_job(hit.hit_id)%>
+    <% else %>
+      <%= truncate(hit.hit_type_id, length: 12) %>
+    <% end %>
+  </td>
+  <td><%= hit.hit_status %></td>
+  <td><%= hit.hit_review_status %></td>
+  <% if not hit.creation_time.nil? %>
+    <td><%= time_ago_in_words(hit.creation_time) + ' ago' %></td>
+  <% else %>
+    <td><%= '' %></td>
+  <% end %>
+  <td>
+    <span>
+      <% if can? :update, hit and hit.hit_status == 'Reviewable' %>
+        <%= link_to 'HIT', mturk_reviewable_hit_path(hit.hit_id, sandbox: sandbox, come_from: 'mturk_hits') %>
+      <% end %>
+      <% if can? :update, hit and batch_job_exists_for_hit?(hit.hit_id) %>
+        <%= link_to 'Batch', mturk_reviewable_hits_path(hit_type_id: hit.hit_type_id, sandbox: sandbox, come_from: 'mturk_hits') %>
+      <% end %>
+    </span>
+  </td>
+  <td>
+    <span>
+      <% if can? :read, hit %>
+        <%= link_to fa_icon("eye"), mturk_cached_hit_path(hit, sandbox: sandbox),
+          title: 'Show HIT details' %>
+      <% end %>
+
+      <% if can? :destroy, hit %>
+        <%= link_to fa_icon("trash"), mturk_cached_hit_path(hit, sandbox: sandbox),
+          title: 'Delete HIT on Mturk',
+          method: :delete,
+          data: {confirm: "Delete HIT?"} %>
+      <% end %>
+    </span>
+  </td>
+</tr>

@@ -1,20 +1,11 @@
 <% @title ||= 'HIT details'; title @title %>
-
-<div class="row mb-5">
-  <div class="col-12">
-    <% if params[:come_from].present? %>
-      <% if params[:come_from] == 'mturk_reviewable_hits' %>
-        <%= link_to mturk_reviewable_hits_path, class: 'btn btn-secondary btn-lg' do %>
-          Go back
-        <% end %>
-      <% end %>
-    <% else %>
-      <%= link_to mturk_cached_hits_path, class: 'btn btn-secondary btn-lg' do %>
-        Go back
-      <% end %>
-    <% end %>
-  </div>
-</div>
+<% if params[:come_from].present? %>
+  <% if params[:come_from] == 'mturk_reviewable_hits' %>
+    <%= go_back_btn mturk_reviewable_hits_path %>
+  <% end %>
+<% else %>
+  <%= go_back_btn mturk_cached_hits_path %>
+<% end %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-8">
@@ -27,12 +18,8 @@
     <table class="table vertical-align">
       <col width="100px"/>
       <col />
-
       <% @mturk_cached_hit.attributes.each do |key, val| %>
-        <tr>
-          <td><h4><%= key %></h4></td>
-          <td><%= truncate(val.to_s, length: 1000) %></td>
-        </tr>
+        <%= table_row(key, truncate(val.to_s, length: 1000)) %>
       <% end %>
     </table>
   </div>

@@ -22,26 +22,22 @@ module Manage
     end
 
     def show
-      @assignment_id = mturk_reviewable_hit_params[:id]
-      @assignment_not_found = false
-      @task_not_found = false
-      assignment = @mturk.get_assignment(@assignment_id)
-      if assignment.nil?
-        Rails.logger.error "Could not find assignment for assignment Id #{@assignment_id}"
-        @assignment_not_found = true
-        return
-      end
-      @status = assignment.assignment.assignment_status
-      @hit_id = assignment.hit.hit_id
-      @hit_type_id = assignment.hit.hit_type_id
-      @task = Task.find_by(hit_id: @hit_id)
-      if not @task.present?
-        Rails.logger.error "Could not find task for HIT Id #{@hit_id}"
-        @task_not_found = true
-        return
+      @assignments = []
+      # assume provided param is assignemnt ID
+      assignment = @mturk.get_assignment(mturk_reviewable_hit_params[:id])
+      if assignment.present?
+        @hit_info = Hashie::Mash.new(get_hit_info(assignment.hit.hit_id))
+        @assignments.push(assignment.assignment)
+      else
+        # check if provided param is HIT id
+        hit_assignments = @mturk.list_assignments_for_hit(mturk_reviewable_hit_params[:id])
+        return if hit_assignments.nil?
+        @hit_info = Hashie::Mash.new(get_hit_info(mturk_reviewable_hit_params[:id]))
+        hit_assignments.assignments.each do |assignment|
+          @assignments.push(assignment)
+        end
       end
       @sandbox = in_sandbox?
-      @log = @task.results.first&.question_sequence_log&.log
       @default_accept_message = Mturk::DEFAULT_ACCEPT_MESSAGE
       @default_reject_message = Mturk::DEFAULT_REJECT_MESSAGE
     end
@@ -93,6 +89,17 @@ module Manage
       else
         true
       end
+    end
+
+    def get_hit_info(hit_id)
+      task = Task.find_by(hit_id: hit_id)
+      log = nil
+      task_found = false
+      if task.present?
+        task_found = true
+        log = task.results.first&.question_sequence_log&.log
+      end
+      return {task: task, log: log, task_found: task_found, hit_id: hit_id}
     end
   end
 end

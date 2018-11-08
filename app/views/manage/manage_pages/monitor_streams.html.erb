@@ -1,12 +1,5 @@
 <% @title ||= 'Monitor streams'; title @title %>
-<div class="row mb-6">
-  <div class="col-12">
-    <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
-      <i class="glyphicon glyphicon-chevron-left"></i>
-      Go back
-    <% end %>
-  </div>
-</div>
+<%= go_back_btn dashboard_path, mb: 'mb-6' %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">

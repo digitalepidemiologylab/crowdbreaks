@@ -1,11 +1,6 @@
 <% @title ||= 'New ES index'; title @title %>
-<div class="row mb-4">
-  <div class="col-12">
-    <%= link_to elasticsearch_indexes_path, class: 'btn btn-secondary btn-lg' do %>
-      Go back
-    <% end %>
-  </div>
-</div>
+<%= go_back_btn elasticsearch_indexes_path, mb: 'mb-4' %>
+
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-8 col-lg-6">
     <h2 class='mb-4'>Create new Elasticsearch index</h2>

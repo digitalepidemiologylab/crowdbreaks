@@ -1,30 +1,31 @@
 <% @title ||= 'HIT review'; title @title %>
 
-<div class="row mb-5">
-  <div class="col-12">
-    <% if params[:come_from] == 'mturk_batch_jobs' %>
-      <%= link_to mturk_batch_jobs_path, class: 'btn btn-secondary btn-lg' do %>
-        Go back
-      <% end %>
-    <% elsif params[:come_from] == 'mturk_hits' %>
-      <%= link_to mturk_cached_hits_path, class: 'btn btn-secondary btn-lg' do %>
-        Go back
-      <% end %>
-    <% else %>
-      <%= link_to dashboard_path, class: 'btn btn-secondary btn-lg' do %>
-        Go back
-      <% end %>
-    <% end %>
-  </div>
-</div>
+<% if params[:come_from] == 'mturk_batch_jobs' %>
+  <%= go_back_btn mturk_batch_jobs_path %>
+<% elsif params[:come_from] == 'mturk_hits' %>
+  <%= go_back_btn mturk_cached_hits_path %>
+<% else %>
+  <%= go_back_btn dashboard_path %>
+<% end %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <% if @show_all %>
-      <h2>Review all HITs<%= @sandbox ? ' (sandbox)' : ' (production)'  %></h2>
+      <h2>Review HITs<%= @sandbox ? ' (sandbox)' : ' (production)'  %></h2>
     <% else %>
       <h2>Review HITs for batch <%= 'job'.pluralize(@mturk_batch_jobs.size) %></h2>
     <% end %>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Filters</h4>
+        <%= toggle_switch(!@sandbox, 'Production', 'production-checkbox') %>
+        <%= toggle_switch(@include_reviewed, 'Include reviewed', 'include-reviewed-checkbox') %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb-2">
   </div>
 </div>
 
@@ -43,17 +44,6 @@
             </p>
           <% end %>
         <% end %>
-      <% end %>
-    </div>
-    <div>
-      <% if @show_all %>
-        <label class="switch">
-          <input type="checkbox" id="production-checkbox" <%= @sandbox ? '' : ' checked="checked"' %>>
-          <span class="slider round"></span>
-          <span class='switch-label'>Production</span>
-        </label>
-      <% else %>
-        <%= link_to 'See all', mturk_reviewable_hits_path(sandbox: @sandbox, come_from: params[:come_from]) %>
       <% end %>
     </div>
     <div>
@@ -79,7 +69,6 @@
             <th>Assignment status</th>
             <th>Assignment Id</th>
             <th>Accept</th>
-            <th>Links</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -91,17 +80,12 @@
               <td><%= hit[:assignment_status] %></td>
               <td><%= hit[:assignment_id] %></td>
               <td>
+                <% if hit[:assignment_id].present? and hit[:assignment_status] == 'Submitted' %>
+                  <%= check_box_tag 'accepted', hit[:assignment_id], false %>
+                <% end %>
+              </td>
+              <td>
                 <% if hit[:assignment_id].present? %>
-                  <%= check_box_tag 'accepted[]', hit[:assignment_id], false, disabled: hit[:assignment_status] != 'Submitted' %>
-                <% end %>
-              </td>
-              <td>
-                <% if can? :read, :mturk_hit %>
-                  <%= link_to 'HIT details', mturk_cached_hit_path(hit[:hit_id], sandbox: @sandbox, come_from: 'mturk_reviewable_hits'), title: 'Show HIT details' %>
-                <% end %>
-              </td>
-              <td>
-                <% if hit[:assignment_id].present? and task_exists_for_hit?(hit[:hit_id]) %>
                   <span>
                     <%= link_to fa_icon("eye"), mturk_reviewable_hit_path(hit[:assignment_id], sandbox: @sandbox), title: 'Review individual HIT' %>
                   </span>

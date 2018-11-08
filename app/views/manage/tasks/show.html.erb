@@ -1,20 +1,9 @@
 <% @title ||= Task.model_name.human; title @title %>
-
-
-<div class="row mb-5">
-  <div class="col-12">
-    <% if params[:come_from].present? %>
-      <%= link_to mturk_hits_path, class: 'btn btn-secondary btn-lg' do %>
-        Go back
-      <% end %>
-    <% else %>
-      <%= link_to mturk_batch_job_tasks_path(@task.mturk_batch_job.id), class: 'btn btn-secondary btn-lg' do %>
-        Go back
-      <% end %>
-    <% end %>
-  </div>
-</div>
-
+<% if params[:come_from].present? %>
+  <%= go_back_btn mturk_cached_hits_path %>
+<% else %>
+  <%= go_back_btn mturk_batch_job_tasks_path(@task.mturk_batch_job.id) %>
+<% end %>
 
 <% if @task.present? %>
   <div class="row justify-content-center mb-4">
@@ -29,10 +18,7 @@
         <col width="200px"/>
         <col />
         <% @task.attributes.each do |key, val| %>
-          <tr>
-            <td><h4><%= key %></h4></td>
-            <td><%= val %></td>
-          </tr>
+          <%= table_row(key, val) %>
         <% end %>
       </table>
     </div>

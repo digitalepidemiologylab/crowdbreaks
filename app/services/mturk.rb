@@ -106,7 +106,17 @@ class Mturk
       message = DEFAULT_ACCEPT_MESSAGE
     end
     handle_error do
-      @client.approve_assignment(assignment_id: assignment_id, requester_feedback: message)
+      resp = @client.approve_assignment(assignment_id: assignment_id, requester_feedback: message)
+      if resp.successful?
+        # Put HIT into reviewing state, so it doesn't show up anymore
+        update_hit_review_status(assignment.hit.hit_id)
+      end
+    end
+  end
+
+  def update_hit_review_status(hit_id, revert: false)
+    handle_error do
+      @client.update_hit_review_status(hit_id: hit_id, revert: revert)
     end
   end
 
@@ -121,8 +131,16 @@ class Mturk
       Rails.logger.error 'Needs a non-empty rejection message' if message.empty?
       return
     end
+    assignment = get_assignment(assignment_id)
+    if assignment.nil?
+      Rails.logger.error "Could not find assignment for assignment Id #{assignment_id}"
+      return
+    end
     handle_error do
-      @client.reject_assignment(assignment_id: assignment_id, requester_feedback: message)
+      resp = @client.reject_assignment(assignment_id: assignment_id, requester_feedback: message)
+    end
+    if resp.successful?
+      update_hit_review_status(assignment.hit.hit_id)
     end
   end
 
@@ -154,7 +172,7 @@ class Mturk
   def list_assignments_for_hit(hit_id)
     handle_error(error_return_value: {'assignments': [], num_results: 0}) do
       # By default max_assignments is set to 1, therefore we only expect 1 result
-      @client.list_assignments_for_hit(hit_id: hit_id, max_results: 1)
+      @client.list_assignments_for_hit(hit_id: hit_id)
     end
   end
 
