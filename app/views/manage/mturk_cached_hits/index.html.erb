@@ -9,7 +9,7 @@
     <div class="card">
       <div class="card-body">
         <table class="table vertical-align borderless-table">
-          <%= table_row('Account balance', num(@balance)) %>
+          <%= table_row('Account balance', '$&nbsp;'.html_safe + num(@balance)) %>
           <%= table_row('Total number of HITs', num(@num_hits)) %>
           <%= table_row('Number of reviewable HITs', num(@num_hits_reviewable)) %>
         </table>
