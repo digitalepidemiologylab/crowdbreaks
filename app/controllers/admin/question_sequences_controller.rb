@@ -19,7 +19,7 @@ module Admin
       @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
       @assignment_id = show_params[:assignmentId]
       @worker_id = show_params[:workerId]
-      @preview_mode = show_params[:preview_mode] == 'false' ? false : true
+      @preview_mode = show_params[:preview_mode] == 'true' ? true : false
       @no_work_available = show_params[:no_work_available] == 'true' ? true : false
     end
 
