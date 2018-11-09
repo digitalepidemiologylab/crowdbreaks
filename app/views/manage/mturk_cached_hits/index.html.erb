@@ -28,8 +28,11 @@
   </div>
 </div>
 
-<div class="row justify-content-center mb-5">
+<div class="row justify-content-center mb-3">
   <div class="col-12">
+    <%= link_to mturk_reviewable_hits_path(sandbox: @sandbox), class: 'btn btn-lg btn-primary mb-5' do %>
+      Review HITs&nbsp;&nbsp;<%= fa_icon 'angle-double-right', style: 'color:white;' %>
+    <% end %>
     <div id="refresh-mturk-hits-group">
       <%= link_to update_cached_hits_mturk_cached_hits_path(sandbox: @sandbox, filtered: @filtered, format: :js),
         id: 'refresh-mturk-hits',
@@ -38,21 +41,27 @@
           "Refresh&nbsp;&nbsp;#{fa_icon('refresh')}".html_safe
         end
       %>
-    <% if not @last_updated.nil? %>
-      <%= 'Updated ' + time_ago_in_words(@last_updated) + ' ago' %>
-    <% end %>
+      <% if not @last_updated.nil? %>
+        <%= 'Updated ' + time_ago_in_words(@last_updated) + ' ago' %>
+      <% end %>
     </div>
     <div id="refresh-mturk-hits-group-running" style="display:none;">
       <div class="spinner mr-3" id="refresh-mturk-hits-spinner" style='display:inline-block;'></div>
-      <div id="refresh-mturk-hits-spinner-info" class='mt-1' style='display:inline-block;margin:auto;position:absolute;'>Hello</div>
+      <div id="refresh-mturk-hits-spinner-info" class='mt-1' style='display:inline-block;margin:auto;position:absolute;'></div>
     </div>
   </div>
 </div>
 
-
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <%= paginate @mturk_cached_hits %>
+    <div class="row">
+      <div class="col-6">
+        <%= paginate @mturk_cached_hits %>
+      </div>
+      <div class="col-6">
+        
+      </div>
+    </div>
     <table class="table">
       <thead>
         <tr>

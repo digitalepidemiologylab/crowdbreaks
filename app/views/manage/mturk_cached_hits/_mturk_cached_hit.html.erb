@@ -19,10 +19,14 @@
   <td>
     <span>
       <% if can? :update, hit and hit.hit_status == 'Reviewable' %>
-        <%= link_to 'HIT', mturk_reviewable_hit_path(hit.hit_id, sandbox: sandbox, come_from: 'mturk_hits') %>
+        <%= link_to mturk_reviewable_hit_path(hit.hit_id, sandbox: sandbox, come_from: 'mturk_hits') do %>
+          HIT&nbsp;<%= fa_icon 'angle-double-right' %><br>
+        <% end %>
       <% end %>
       <% if can? :update, hit and batch_job_exists_for_hit?(hit.hit_id) %>
-        <%= link_to 'Batch', mturk_reviewable_hits_path(hit_type_id: hit.hit_type_id, sandbox: sandbox, come_from: 'mturk_hits') %>
+        <%= link_to mturk_reviewable_hits_path(hit_type_id: hit.hit_type_id, sandbox: sandbox, come_from: 'mturk_hits') do %>
+          Batch&nbsp;<%= fa_icon 'angle-double-right' %><br>
+        <% end %>
       <% end %>
     </span>
   </td>
