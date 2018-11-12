@@ -33,43 +33,6 @@ function onRefreshMturkHits() {
   })
 }
 
-// Toggle switches
-function toggleSandbox() {
-  $('.production-checkbox').change(function() {
-    let toBeChecked = $(this).is(':checked');
-    toggleParam('sandbox', !toBeChecked);
-  });
-}
-function toggleFiltered() {
-  $('.filtered-checkbox').change(function() {
-    let toBeChecked = $(this).is(':checked');
-    toggleParam('filtered', toBeChecked);
-  });
-}
-function toggleReviewable() {
-  $('.reviewable-checkbox').change(function() {
-    let toBeChecked = $(this).is(':checked');
-    toggleParam('reviewable', toBeChecked);
-  });
-}
-function toggleIncludeReviewed() {
-  $('.include-reviewed-checkbox').change(function() {
-    let toBeChecked = $(this).is(':checked');
-    toggleParam('include_reviewed', toBeChecked);
-  });
-}
-
-function toggleParam(param, toBeChecked) {
-  var url = new URL(window.location.href);
-  url.searchParams.delete(param)
-  if (toBeChecked) {
-    url.searchParams.append(param, true)
-  } else {
-    url.searchParams.append(param, false)
-  }
-  window.location.href = url.href
-}
-
 // helper
 function setSpinnerInfoText(text, hideSpinner) {
   $('#refresh-mturk-hits-spinner-info').text(text);
@@ -80,9 +43,5 @@ function setSpinnerInfoText(text, hideSpinner) {
 }
 
 $(document).on('turbolinks:load', function() {
-  toggleSandbox();
-  toggleFiltered();
-  toggleReviewable();
   onRefreshMturkHits();
-  toggleIncludeReviewed();
 })

@@ -1,44 +1,55 @@
 <% @title ||= 'Result'; title @title %>
-<%= go_back_btn admin_results_path %>
+<%= go_back_btn admin_results_path(group_by_qs: @group_by_qs, project_id_filter: params[:project_id_filter], res_type_filter: params[:res_type_filter]) %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-8">
-    <h2>Result</h2>
+    <h2><%= @qs_results.present? ? 'Result: Question Sequence' : 'Result' %></h2>
   </div>
 </div>
 
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-8">
-    <h4>Attributes</h4>
-    <table class="table vertical-align">
-      <col width="200px"/>
-      <col />
-      <% @result.attributes.each do |key, val| %>
-        <tr>
-          <td><h4><%= key %></h4></td>
-          <td><%= val %></td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-</div>
-
-<% if @result.question_sequence_log.present? %>
-  <div class="row justify-content-center mb-4">
-    <div class="col-12 col-md-8">
-      <h4>Log info</h4>
-      <table class="table vertical-align">
-        <col width="200px"/>
-        <col />
-        <tr>
-          <td><h4>Total time spent</h4></td>
-          <td><%= (@result.question_sequence_log.log['totalDurationQuestionSequence'].to_i/1000.0).to_s + ' s' if @result.question_sequence_log.log.has_key?('totalDurationQuestionSequence') %></td>
-        </tr>
-        <tr>
-          <td><h4>Full log</h4></td>
-          <td><pre style="font: 14px Inconsolata, monospace;"><%= JSON.pretty_generate(@result.question_sequence_log.log).strip %></pre></td>
-        </tr>
-      </table>
+<% if @qs_results.present? %>
+  <% if @tweet_text.present? %>
+    <div class="row justify-content-center mb-4">
+      <div class="col-12 col-md-8 col-lg-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Tweet text</h4>
+            <%= @tweet_text %>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-8 col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <table class="table vertical-align borderless-table">
+              <%= table_row('Num results', num(@qs_results.count)) %>
+              <% if @log.present? %>
+                <%= table_row('Total time', (@log['totalDurationQuestionSequence'].to_i/1000.0).to_s + ' s') %>
+              <% end %>
+              <%= table_row('Result type', result_type(@result.res_type)) %>
+              <%= table_row('Submitted', time_ago(@qs_results.last.created_at)) %>
+              <% if @qs_results.first.mturk_res_type? %>
+                <%= table_row('Worker', @qs_results.first.task.mturk_worker.worker_id) %>
+              <% else %>
+                <%= table_row('User', @qs_results.first.user.username) %>
+              <% end %>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
+  <% end %>
+
+  <div class="row justify-content-center mb-4">
+      <% @qs_results.each_with_index do |result, ix| %>
+        <div class="col-12 col-md-8 mb-4">
+          <h4>Question <%= ix + 1 %> <%= @log.present? ? "(#{@log['results'][ix]['timeSinceLastAnswer'].to_i/1000.0} s)" : '' %></h4>
+          <p><%= result.question.question %></p>
+          <p><%= answer_btn(result.answer.answer, result.answer.color) %></p>
+        </div>
+      <% end %>
   </div>
+<% else %>
+  <%= attributes_table(@result) %>
 <% end %>
+

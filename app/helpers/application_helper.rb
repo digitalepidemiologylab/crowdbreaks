@@ -65,4 +65,22 @@ module ApplicationHelper
       end
     end
   end
+
+  def attributes_table(record, mb: 'mb-4', center: true, col: 'col-md-8')
+    content_tag :div, class: "row #{center ? 'justify-content-center' : ''} #{mb}" do
+      content_tag :div, class: "#{col}" do
+        content_tag :table, class: 'table vertical-align' do
+          concat tag.col
+          concat tag.col
+          record.attributes.each do |key, val|
+            concat table_row(key, val)
+          end
+        end
+      end
+    end
+  end
+
+  def time_ago(time_at)
+    time_ago_in_words(time_at) + ' ago'
+  end
 end

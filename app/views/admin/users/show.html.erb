@@ -6,14 +6,4 @@
   </div>
 </div>
 
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-8">
-    <table class="table vertical-align" style='wdith=300px;'>
-      <col width="200px"/>
-      <col />
-      <% @user.attributes.each do |key, val| %>
-        <%= table_row(key, val) %>
-      <% end %>
-    </table>
-  </div>
-</div>
+<%= attributes_table(@user) %>

@@ -2,12 +2,31 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
-    <h2 class='mb-4'>
-      Results
-    </h2>
+    <h2 class='mb-4'>Results</h2>
+  </div>
+  <div class="col-md-6 mb-5">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Filters</h4>
+        <div class='mb-3'>
+          <%= toggle_switch(@group_by_qs, 'Group by question sequence', 'groupby-qs') %>
+        </div>
+        <div class='mb-3'>
+          <label>Result type</label>
+          <%= select('res_type', 'res_type', Result.res_types, {selected: @res_type_filter, include_blank: true}, 
+                     {id: 'results-res-type-filterfilter', class: 'select form-control'}) %>
+        </div>
+        <div >
+          <label>Project</label>
+          <%= select('project', 'project_id', Project.all.collect{|p| [p.title, p.id]}, {selected: @project_id_filter, include_blank: true}, 
+                     {id: 'results-select-project-filter', class: 'select form-control'}) %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
   </div>
 </div>
-
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
@@ -20,7 +39,7 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Id</th>
+          <th><%= @group_by_qs ? 'Num results' : 'Id' %></th>
           <th>Project</th>
           <th>User</th>
           <th>Tweet Id</th>
