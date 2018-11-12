@@ -1,5 +1,5 @@
 <tr>
-  <td><%= result.id %></td>
+  <td><%= @group_by_qs ? result.num_results : result.id %></td>
   <td><%= result.project&.title %></td>
   <td><%= link_to_user_profile(result.user) %></td>
   <td><%= link_to_tweet(result.tweet_id) %></td>
@@ -7,14 +7,20 @@
   <td><%= time_ago_in_words(result.created_at) %> ago</td>
   <td>
     <div>
-      <% if can? :destroy, result %>
-        <%= link_to fa_icon('trash'),
-          admin_result_path(result),
-          method: :delete,
-          data: {confirm: "Delete result?"} %>
-      <% end %>
-      <% if can? :update, result %>
-        <%= link_to fa_icon('eye'), admin_result_path(result) %>
+      <% if @group_by_qs %>
+        <% if can? :read, Result %>
+          <%= link_to fa_icon('eye'), admin_result_path(result, group_by_qs: @group_by_qs, project_id: result.project_id, user_id: result.user_id, tweet_id: result.tweet_id, mturk_worker_id: result.mturk_worker_id, project_id_filter: @project_id_filter, res_type_filter: @res_type_filter) %>
+        <% end %>
+      <% else %>
+        <% if can? :destroy, result %>
+          <%= link_to fa_icon('trash'),
+            admin_result_path(result),
+            method: :delete,
+            data: {confirm: "Delete result?"} %>
+        <% end %>
+        <% if can? :read, result %>
+          <%= link_to fa_icon('eye'), admin_result_path(result) %>
+        <% end %>
       <% end %>
     </div>
   </td>

@@ -11,14 +11,4 @@
   </div>
 </div>
 
-<div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-8">
-    <table class="table vertical-align">
-      <col width="200px"/>
-      <col />
-      <% @mturk_batch_job.attributes.each do |key, val| %>
-        <%= table_row(key, val) %>
-      <% end %>
-    </table>
-  </div>
-</div>
+<%= attributes_table(@mturk_batch_job) %>

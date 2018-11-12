@@ -25,4 +25,16 @@ module ResultsHelper
       end
     end
   end
+
+  def answer_btn(answer, color)
+    predefined_btn_types = ['btn-primary', 'btn-secondary', 'btn-positive', 'btn-negative']
+    class_name = 'btn'
+    style = ''
+    if predefined_btn_types.include?(color)
+      class_name += " #{color}"
+    else
+      style += "background-color:#{color};"
+    end
+    tag.button answer, class: class_name, style: style
+  end
 end

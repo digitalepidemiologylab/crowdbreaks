@@ -3,10 +3,39 @@ module Admin
     load_and_authorize_resource
 
     def show
+      @group_by_qs = param_is_truthy?(:group_by_qs)
+      if @group_by_qs
+        @qs_results = Result.joins(:task).where(tweet_id: params[:tweet_id], user_id: params[:user_id], project_id: params[:project_id], 'tasks.mturk_worker_id': params[:mturk_worker_id])
+        @tweet_text = MturkTweet.find_by(tweet_id: params[:tweet_id])&.tweet_text
+        @log = @qs_results&.first&.question_sequence_log&.log
+      end
     end
 
     def index
-      @results = Result.order(created_at: :desc).page params[:page]
+      @group_by_qs = param_is_truthy?(:group_by_qs)
+      @project_id_filter = params[:project_id_filter]
+      @res_type_filter = params[:res_type_filter]
+      query = Result.all
+      # project filter
+      if @project_id_filter.present?
+        query = query.where(project_id: @project_id_filter)
+      end
+      # res_type filter
+      if @res_type_filter.present?
+        query = query.where(res_type: @res_type_filter)
+      end
+      # group by qs
+      if @group_by_qs
+        query = query
+          .left_outer_joins(:task)
+          .select('MAX(results.id) as id', 'MAX(results.created_at) as created_at', 'count(*) as num_results',
+        'tasks.mturk_worker_id as mturk_worker_id', :res_type, :project_id, :tweet_id, :user_id)
+          .group(:res_type, :project_id, :tweet_id, :user_id, 'tasks.mturk_worker_id')
+          .order(Arel.sql('max(results.created_at) DESC'))
+      else
+        query = query.order(created_at: :desc)
+      end
+      @results = query.page params[:page]
     end
 
     def destroy
@@ -14,6 +43,17 @@ module Admin
         redirect_to(admin_results_path, notice: "Result successfully destroyed.")
       else
         redirect_to(admin_results_path, alert: 'Something went wrong when destroying result.')
+      end
+    end
+
+
+    private
+
+    def param_is_truthy?(param, default: false)
+      if params[param].present?
+        params[param] == 'true' ? true : false
+      else
+        default
       end
     end
   end
