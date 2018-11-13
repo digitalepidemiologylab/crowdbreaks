@@ -27,6 +27,16 @@ module ApplicationHelper
     end
   end
 
+  def availability_status(status)
+    if status == 'unknown'
+      tag.span(status, class: 'badge badge-light')
+    elsif status == 'available'
+      tag.span(status, class: 'badge badge-success')
+    else
+      tag.span(status, class: 'badge badge-danger')
+    end
+  end
+
   def status_badge(label, type)
     tag.span(label, class: "badge badge-#{type}")
   end

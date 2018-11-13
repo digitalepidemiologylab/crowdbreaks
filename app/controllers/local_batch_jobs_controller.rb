@@ -9,17 +9,19 @@ class LocalBatchJobsController < ApplicationController
     end
     # calculate counts
     @user_count = @local_batch_job.results.counts_by_user(@user_id)
-    @total_count = @local_batch_job.local_tweets.is_available.count
+    @total_count = @local_batch_job.local_tweets.may_be_available.count
     @total_count_unavailable = @local_batch_job.local_tweets.is_unavailable.count
     # Get inital tweet
-    local_tweet = @local_batch_job.local_tweets.not_assigned_to_user(@user_id, @local_batch_job.id).is_available.first 
+    local_tweet = @local_batch_job.local_tweets.not_assigned_to_user(@user_id, @local_batch_job.id).may_be_available.first 
     @tweet_id = local_tweet&.tweet_id
     @tweet_text = local_tweet&.tweet_text
     @no_work_available = @tweet_id.nil?
     if @tweet_text == ""
       @tweet_is_available = TweetValidation.new.tweet_is_valid?(@tweet_id)
-      if not @tweet_is_available
-        LocalTweet.set_to_unavailable(@tweet_id, @local_batch_job.id)
+      if @tweet_is_available
+        local_tweet.available!
+      else
+        local_tweet.unavailable!
       end
     else
       # If in text mode, tweet is always available
@@ -48,12 +50,12 @@ class LocalBatchJobsController < ApplicationController
 
     # fetch next tweet
     if local_batch_job.test_processing_mode?
-      local_tweet = local_batch_job.local_tweets.is_available.order("RANDOM()").first
+      local_tweet = local_batch_job.local_tweets.may_be_available.order("RANDOM()").first
     else
       local_tweet = local_batch_job.
         local_tweets.
         not_assigned_to_user(user_id, local_batch_job.id).
-        is_available&.
+        may_be_available&.
         first
     end
     tweet_id = local_tweet&.tweet_id&.to_s
@@ -63,15 +65,17 @@ class LocalBatchJobsController < ApplicationController
     no_work_available = tweet_id.nil?
     if tweet_text == ""
       tweet_is_available = TweetValidation.new.tweet_is_valid?(tweet_id)
-      if not tweet_is_available
-        LocalTweet.set_to_unavailable(tweet_id.to_i, local_batch_job.id)
+      if tweet_is_available
+        local_tweet.available!
+      else
+        local_tweet.unavailable!
       end
     else
       tweet_is_available = true
     end
 
     # calculate counts
-    total_count = local_batch_job.local_tweets.is_available.count
+    total_count = local_batch_job.local_tweets.may_be_available.count
     user_count = local_batch_job.results.counts_by_user(user_id)
     total_count_unavailable = local_batch_job.local_tweets.is_unavailable.count
 

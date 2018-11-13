@@ -28,7 +28,7 @@ class MturkWorker < ApplicationRecord
     tv = TweetValidation.new
     while not tv.tweet_is_valid?(mturk_tweet.tweet_id) and c < max_trials 
       Rails.logger.info "Tweet with ID #{mturk_tweet.tweet_id} was found to be unavailable. Setting to unavailable and trying to find new tweet." 
-      mturk_tweet.set_to_unavailable
+      mturk_tweet.unavailable!
       mturk_tweet = retrieve_mturk_tweet_for_task(task)
       if mturk_tweet.nil?
         Rails.logger.info "All tasks have beeen completed."
@@ -39,6 +39,9 @@ class MturkWorker < ApplicationRecord
         Rails.logger.info "Reached max_trials"
       end
     end
+
+    # setting tweet to available
+    mturk_tweet.available!
     
     # assign the task
     Rails.logger.info "Found valid tweet to be #{mturk_tweet.tweet_id}"
@@ -61,7 +64,7 @@ class MturkWorker < ApplicationRecord
     Rails.logger.info "Retrieving new tweet for worker/task pair" 
     # retrieve a tweet among those which have never been labelled and are available
     ActiveRecord::Base.uncached() do
-      available_in_batch = task.mturk_batch_job.mturk_tweets.is_available
+      available_in_batch = task.mturk_batch_job.mturk_tweets.may_be_available
       mturk_tweet = available_in_batch.unassigned.first
       if mturk_tweet.nil?
         Rails.logger.info "All tweets have been assigned at least once. Selecting from multi-labelled pool... " 
