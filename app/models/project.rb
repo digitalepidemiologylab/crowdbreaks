@@ -25,6 +25,27 @@ class Project < ApplicationRecord
     first_transition.to_question
   end
 
+  def to_csv
+    CSV.generate do |csv|
+      # questions
+      csv << ['Questions']
+      question_cols = ['id', 'question', 'instructions']
+      csv << question_cols
+      questions.each do |question|
+        csv << question.attributes.values_at(*question_cols)
+      end
+      # answers
+      csv << ['Answers']
+      answer_cols = ['id', 'answer']
+      csv << answer_cols
+      questions.each do |question|
+        question.answers.each do |answer|
+          csv << answer.attributes.values_at(*answer_cols)
+        end
+      end
+    end
+  end
+
   def self.is_up_to_date(remote_config)
     # test if given stream configuration is identical to projects
     return false if remote_config.nil?

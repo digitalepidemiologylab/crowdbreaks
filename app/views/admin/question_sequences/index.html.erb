@@ -39,6 +39,11 @@
                 <% if can? :update, :question_sequence %>
                   <%= link_to fa_icon("pencil"), edit_admin_question_sequence_path(p.id), title: "Edit question sequence"  %>
                 <% end %>
+                <% if can? :read, :question_sequence %>
+                  <% if p.questions.count > 0 %>
+                    <%= link_to fa_icon('download'), admin_question_sequence_path(p.id, format: 'csv'), title: 'Download question sequence info' %>
+                  <% end %>
+                <% end %>
               </span>
             </td>
           </tr>

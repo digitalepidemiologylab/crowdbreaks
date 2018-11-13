@@ -10,17 +10,24 @@ module Admin
     end
 
     def show
-      @project = Project.friendly.find(show_params[:id])
-      @question_sequence = QuestionSequence.new(@project).load
-      @user_id = current_or_guest_user.id
-      @hit_id = show_params[:hitId]
-      @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
-      @mode = show_params[:mode]
-      @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
-      @assignment_id = show_params[:assignmentId]
-      @worker_id = show_params[:workerId]
-      @preview_mode = show_params[:preview_mode] == 'true' ? true : false
-      @no_work_available = show_params[:no_work_available] == 'true' ? true : false
+      respond_to do |format|
+        @project = Project.friendly.find(show_params[:id])
+        format.html {
+          @question_sequence = QuestionSequence.new(@project).load
+          @user_id = current_or_guest_user.id
+          @hit_id = show_params[:hitId]
+          @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
+          @mode = show_params[:mode]
+          @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
+          @assignment_id = show_params[:assignmentId]
+          @worker_id = show_params[:workerId]
+          @preview_mode = show_params[:preview_mode] == 'true' ? true : false
+          @no_work_available = show_params[:no_work_available] == 'true' ? true : false
+        }
+        format.csv {
+          send_data @project.to_csv, filename: "#{@project.title}-#{Time.current.strftime("%d-%m-%Y")}.csv"
+        }
+      end
     end
 
     def edit

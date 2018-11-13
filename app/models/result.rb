@@ -12,4 +12,5 @@ class Result < ApplicationRecord
   enum res_type: [:public, :local, :mturk], _suffix: true
 
   private
+
 end

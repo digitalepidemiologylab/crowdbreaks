@@ -1,5 +1,3 @@
-require 'csv'
-
 class CreateTasksJob < ApplicationJob
   queue_as :default
 

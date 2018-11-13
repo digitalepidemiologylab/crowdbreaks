@@ -84,6 +84,21 @@ class MturkBatchJob < ApplicationRecord
     self.keywords += ', ' + SecureRandom.hex[0..6]
   end
 
+  def to_csv
+    model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'project_id', 'task_id', 'created_at']
+    added_cols = ['log', 'worker_id', 'tweet_text']
+    CSV.generate do |csv|
+      csv << model_cols + added_cols
+      results.each do |result|
+        row = result.attributes.values_at(*model_cols)
+        row += [result.question_sequence_log&.log.to_s,
+                result.task&.mturk_worker&.worker_id,
+                result.task&.mturk_tweet&.tweet_text]
+        csv << row
+      end
+    end
+  end
+
   private 
 
 end
