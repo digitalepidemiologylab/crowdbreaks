@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_02_115227) do
+ActiveRecord::Schema.define(version: 2018_11_13_151621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,8 +62,8 @@ ActiveRecord::Schema.define(version: 2018_11_02_115227) do
     t.bigint "local_batch_job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_available", default: true
     t.text "tweet_text", default: ""
+    t.integer "availability", default: 0
     t.index ["local_batch_job_id"], name: "index_local_tweets_on_local_batch_job_id"
   end
 
@@ -121,8 +121,8 @@ ActiveRecord::Schema.define(version: 2018_11_02_115227) do
   create_table "mturk_tweets", force: :cascade do |t|
     t.bigint "tweet_id"
     t.bigint "mturk_batch_job_id"
-    t.boolean "is_available", default: true
     t.text "tweet_text", default: ""
+    t.integer "availability", default: 0
     t.index ["mturk_batch_job_id"], name: "index_mturk_tweets_on_mturk_batch_job_id"
   end
 

@@ -17,14 +17,11 @@ class LocalBatchJob < ApplicationRecord
 
   attr_accessor :job_file
 
-  def num_tweets_unavailable
-    local_tweets.count - local_tweets.is_available.count
-  end
 
   def completed_by
     return [] unless status == 'ready'
     completed_by = []
-    total_count = local_tweets.is_available.count
+    total_count = local_tweets.may_be_available.count
     users.each do |u|
       user_count = results.counts_by_user(u.id)
       completed_by.push(u.username) if user_count == total_count
