@@ -1,7 +1,4 @@
-require 'csv'
-
 class CsvValidator < ActiveModel::Validator
-
   def validate(record)
     if record.job_file.present?
       valid, error = file_valid?(record.job_file)

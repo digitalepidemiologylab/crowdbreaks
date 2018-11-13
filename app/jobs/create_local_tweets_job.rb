@@ -1,5 +1,3 @@
-require 'csv'
-
 class CreateLocalTweetsJob < ApplicationJob
   queue_as :default
 

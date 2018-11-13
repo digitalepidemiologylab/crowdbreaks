@@ -11,6 +11,10 @@ module Manage
     end
 
     def show
+      respond_to do |format|
+        format.html
+        format.csv { send_data @mturk_batch_job.to_csv, filename: "#{@mturk_batch_job.name}-#{Time.current.strftime("%d-%m-%Y")}-v#{@mturk_batch_job.results.maximum(:updated_at).to_i}.csv"}
+      end
     end
 
     def edit
