@@ -14,11 +14,11 @@ if Project.all.size == 0
   
   # create example question sequence
   a1 = Answer.create(order: 0, answer: "Yes")
-  a2 = Answer.create(order: 1, answer: "Maybe"})
-  a3 = Answer.create(order: 2, answer: "No"})
-  a4 = Answer.create(order: 0, answer: "Positive"})
-  a5 = Answer.create(order: 1, answer: "Neutral"})
-  a6 = Answer.create(order: 2, answer: "Negative"})
+  a2 = Answer.create(order: 1, answer: "Maybe")
+  a3 = Answer.create(order: 2, answer: "No")
+  a4 = Answer.create(order: 0, answer: "Positive")
+  a5 = Answer.create(order: 1, answer: "Neutral")
+  a6 = Answer.create(order: 2, answer: "Negative")
   q1 = Question.create(project_id: project.id, answer_ids: [a1.id, a2.id, a3.id], 
                        question: "Is this tweet related to vaccines?",
                        meta_field: "relevant_to_vaccines")
