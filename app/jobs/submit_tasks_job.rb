@@ -32,8 +32,18 @@ class SubmitTasksJob < ApplicationJob
       qualification_type_id: qualification_type_id
     })
 
-    # create hit given that HIT type
-    mturk_batch_job.tasks.each do |t|
+    # number of HITs to be generated
+    if mturk_batch_job.check_availability_before? or mturk_batch_job.check_availability_before_and_after?
+      num_hits = mturk_batch_job.mturk_tweets.available.count * mturk_batch_job.number_of_assignments
+    else
+      num_hits = mturk_batch_job.tasks.count
+    end
+    mturk_batch_job.tasks.each_with_index do |t, ix|
+      if ix >= num_hits
+        # exceeded num_his - get rid of remaining tasks
+        t.destroy
+      end
+      # create hit given that HIT type
       hit = mturk.create_hit_with_hit_type(t.id, hittype_id, mturk_batch_job)
       t.update_attributes({
         hit_id: hit.hit_id

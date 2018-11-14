@@ -59,10 +59,10 @@
         <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id), title: 'Edit' %>
       <% end %>
       <% if can? :read, mturk_batch_job %>
-        <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
         <% if mturk_batch_job.results.count > 0 %>
-          <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job), title: 'Expand' %>
+          <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
         <% end %>
+        <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job), title: 'Expand' %>
       <% end %>
     </div>
   </td>

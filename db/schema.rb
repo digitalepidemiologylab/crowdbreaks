@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_13_151621) do
+ActiveRecord::Schema.define(version: 2018_11_14_123843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(version: 2018_11_13_151621) do
     t.integer "minimal_approval_rate"
     t.string "qualification_type_id"
     t.integer "max_tasks_per_worker"
+    t.integer "check_availability", default: 0
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
   end
 

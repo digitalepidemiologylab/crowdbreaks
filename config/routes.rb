@@ -60,7 +60,9 @@ Rails.application.routes.draw do
       # mturk
       resources :mturk_batch_jobs do
         resources :tasks
-        resources :mturk_tweets, only: [:index]
+        resources :mturk_tweets, only: [:index] do
+          get 'update_availability', on: :collection
+        end
         get 'submit'
       end
       resources :mturk_workers, only: [:index]
