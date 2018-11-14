@@ -5,14 +5,16 @@ module Manage
 
     def index
       @hit_type_id = mturk_reviewable_hit_params[:hit_type_id]
+      @include_reviewed = param_bool_val(params[:include_reviewed])
       @show_all = false
       @results_per_page = 30   # max 100
+      status = @include_reviewed ? 'Reviewing' : 'Reviewable'
       if not @hit_type_id.present?
         @show_all = true
-        hits_list = @mturk.list_reviewable_hits(next_token: params[:next_token], max_results: @results_per_page)
+        hits_list = @mturk.list_reviewable_hits(next_token: params[:next_token], max_results: @results_per_page, status: status)
       else
         @mturk_batch_jobs = MturkBatchJob.where(hittype_id: @hit_type_id)
-        hits_list = @mturk.list_reviewable_hits(hit_type_id: @hit_type_id, next_token: mturk_reviewable_hit_params[:next_token])
+        hits_list = @mturk.list_reviewable_hits(hit_type_id: @hit_type_id, next_token: mturk_reviewable_hit_params[:next_token], status: status)
       end
       @hits = hits_list[:hits]
       @next_token = hits_list[:next_token]

@@ -7,6 +7,20 @@
       In queue for '<%= @mturk_batch_job.name %>'
     </h2>
   </div>
+  <div class="col-md-6 mb-2">
+    <div class="card">
+      <div class="card-body">
+        <table class="table vertical-align borderless-table">
+          <%= table_row('Total', @mturk_tweets.count) %>
+          <%= table_row('&#8226;'.html_safe + ' Available', @mturk_tweets.available.count) %>
+          <%= table_row('&#8226;'.html_safe + ' Unavailable', @mturk_tweets.unavailable.count) %>
+          <%= table_row('&#8226;'.html_safe + ' Unknown', @mturk_tweets.unknown.count) %>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+  </div>
 </div>
 
 
