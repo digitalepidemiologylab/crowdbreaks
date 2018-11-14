@@ -22,6 +22,11 @@ $(document).on("turbolinks:load", function() {
             onUpdateMturkHitsFailed();
           }
         }
+        if (data['job_type'] = 'refresh_mturk_tweets') {
+          if (data['job_status'] == 'completed') {
+            onRefreshAvailabilityComplete();
+          }
+        }
       }
     });
   }

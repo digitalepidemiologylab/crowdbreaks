@@ -14,5 +14,4 @@ class MturkTweet < ApplicationRecord
   scope :is_available, -> { where(availability: :available) }
   scope :is_unavailable, -> { where(availability: :unavailable) }
   scope :may_be_available, -> { where(availability: [:available, :unknown]) }
-
 end

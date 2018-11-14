@@ -47,7 +47,11 @@ class QuestionSequencesController < ApplicationController
     tweet_id = final_params[:tweet_id]
     test_mode = final_params[:test_mode]
 
-    if test_mode
+    if project.nil?
+      render json: {}, status: 400 and return
+    end
+
+    if test_mode 
       new_tweet_id = api.get_tweet(project.es_index_name, user_id: user_id)
       render json: {tweet_id: new_tweet_id}, status: 200 and return
     end

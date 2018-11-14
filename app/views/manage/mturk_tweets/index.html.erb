@@ -24,7 +24,16 @@
           <th>Tweet Id</th>
           <th>Tweet text</th>
           <th>Num workers</th>
-          <th>Availability</th>
+          <th>Availability
+            <% if @mturk_tweets.unknown.count > 0 %>
+              <span id="refresh-availability">
+                <%= link_to fa_icon('refresh'), update_availability_mturk_batch_job_mturk_tweets_path(@mturk_batch_job), class: 'ml-2', title: 'Check availability', remote: true %>
+              </span>
+              <span id="refresh-availability-running" style="display:none;">
+                <div class="spinner-small ml-2" id="refresh-availability-spinner" style='display:inline-block;'></div>
+              </span>
+            <% end %>
+          </th>
         </tr>
       </thead>
       <tbody>

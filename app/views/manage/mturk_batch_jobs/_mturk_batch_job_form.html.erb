@@ -110,8 +110,7 @@
     <% end %>
   </div>
 
-  <div class="form-group mt-5 mb-5">
-    <h4>Qualifications</h4>
+  <div class="form-group">
     <%= f.input 'Minimal approval rate', hint: "Workers need at least this HIT approval rate in order to work on this batch. Only allows full integers. Leave empty for having no minimal approval rate." do %>
       <div class="input-group">
         <%= f.input_field :minimal_approval_rate,
@@ -122,6 +121,12 @@
       </div>
     <% end %>
     <%= f.error :minimal_approval_rate %>
+  </div>
+
+
+  <div class="form-group">
+    <%= f.input :check_availability, as: :select, collection: MturkBatchJob.check_availabilities.keys.to_a, include_blank: false,
+      hint: 'Determine at which stage a tweet should be checked for whether it is still available. Before: Check before creating tasks (this will create tasks only for available tweets). After: Create tasks for all tweets and check during worker assignment for availability. Never: Try to display tweet and never test for availability.' %>
   </div>
 
   <div class="form-group">

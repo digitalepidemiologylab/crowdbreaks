@@ -37,8 +37,8 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
 
   # Batch with unavailable tweet
   let!(:mturk_batch_job3) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1) }
-  let!(:mturk_tweet4) { FactoryBot.create(:mturk_tweet, mturk_batch_job: mturk_batch_job3) } # valid
-  let!(:mturk_tweet5) { FactoryBot.create(:mturk_tweet, :invalid_tweet, mturk_batch_job: mturk_batch_job3) } # invalid
+  let!(:mturk_tweet4) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job3) }
+  let!(:mturk_tweet5) { FactoryBot.create(:mturk_tweet, :unavailable, mturk_batch_job: mturk_batch_job3) }
   let!(:task_submitted5) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job3) }
   let!(:task_submitted6) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job3) }
 
@@ -49,6 +49,13 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_submitted7) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job4) }
   let!(:task_submitted8) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job4) }
   let!(:mturk_worker8) { FactoryBot.create(:mturk_worker) }
+
+  # Batch with before and after availability checking
+  let!(:mturk_batch_job5) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1, check_availability: :before_and_after) }
+  let!(:mturk_tweet8) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job5) }
+  let!(:mturk_tweet9) { FactoryBot.create(:mturk_tweet, :wrongly_set_to_available, mturk_batch_job: mturk_batch_job5) }
+  let!(:task_submitted9) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job5) }
+  let!(:task_submitted10) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job5) }
 
   # SHOW ACTION
   describe "GET show" do
@@ -230,6 +237,23 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       # max_tasks_per_worker (=1) reached!
       get :show, params: {
         hitId: task_submitted8.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      expect(assigns(:tweet_id)).to eq("")
+    end
+
+    it "detects wrongly assigned availability with before_and_after check availability option" do
+      # make sure wrongly assigned tweet is not being retrieved
+      get :show, params: {
+        hitId: task_submitted9.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      expect(assigns(:tweet_id)).to eq(mturk_tweet8.tweet_id.to_s)
+
+      get :show, params: {
+        hitId: task_submitted10.hit_id,
         workerId: mturk_worker8.worker_id,
         assignmentId: '123'
       }
