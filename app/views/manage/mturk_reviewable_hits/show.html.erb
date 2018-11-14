@@ -1,8 +1,8 @@
 <% @title ||= 'HIT review'; title @title %>
 <% if @hit_type_id.nil? %>
-  <%= go_back_btn mturk_reviewable_hits_path %>
+  <%= go_back_btn mturk_reviewable_hits_path(sandbox: @sandbox, include_reviewed: params[:include_reviewed]) %>
 <% else %>
-  <%= go_back_btn mturk_reviewable_hits_path(hit_type_id: @hit_type_id) %>
+  <%= go_back_btn mturk_reviewable_hits_path(hit_type_id: @hit_type_id, sandbox: @sandbox, include_reviewed: params[:include_reviewed]) %>
 <% end %>
 
 <div class="row justify-content-center mb-2">

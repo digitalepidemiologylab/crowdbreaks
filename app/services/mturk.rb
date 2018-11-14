@@ -144,9 +144,9 @@ class Mturk
     end
   end
 
-  def list_reviewable_hits(hit_type_id: nil, next_token: nil, max_results: 30)
+  def list_reviewable_hits(hit_type_id: nil, next_token: nil, max_results: 30, status: 'Reviewable')
     hits = []
-    resp = _list_reviewable_hits(hit_type_id, next_token, max_results)
+    resp = _list_reviewable_hits(hit_type_id, next_token, max_results, status)
     resp.hits.each do |hit|
       list_assignments = list_assignments_for_hit(hit.hit_id)
       if list_assignments.assignments.empty?
@@ -243,9 +243,9 @@ class Mturk
     end
   end
 
-  def _list_reviewable_hits(hit_type_id, next_token, max_results)
+  def _list_reviewable_hits(hit_type_id, next_token, max_results, status)
     handle_error(error_return_value: {'hits': [], 'next_token': '', num_results: 0}) do
-      @client.list_reviewable_hits(hit_type_id: hit_type_id, next_token: next_token, max_results: max_results)
+      @client.list_reviewable_hits(hit_type_id: hit_type_id, next_token: next_token, max_results: max_results, status: status)
     end
   end
 
