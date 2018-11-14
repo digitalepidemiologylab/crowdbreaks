@@ -53,8 +53,10 @@ class QuestionSequencesController < ApplicationController
     end
     
     # update count
-    project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
-    project.save
+    if project.results.count > 0
+      project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
+      project.save
+    end
 
     # update tweet in Redis pool
     api.update_tweet(project.es_index_name, user_id, tweet_id)

@@ -8,15 +8,15 @@ FactoryBot.define do
     end
 
     trait :admin do
-      role :admin
+      role { :admin }
     end
 
     trait :collaborator do
-      role :collaborator
+      role { :collaborator }
     end
 
     trait :contributor do
-      role :collaborator
+      role { :collaborator }
     end
   end
 end

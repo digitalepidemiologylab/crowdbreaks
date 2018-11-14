@@ -5,7 +5,7 @@ FactoryBot.define do
     association :project
 
     trait :starting_question do
-      from_question nil
+      from_question { nil }
     end
 
   end
