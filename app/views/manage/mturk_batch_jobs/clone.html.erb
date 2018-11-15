@@ -1,0 +1,9 @@
+<% @title ||= MturkBatchJob.model_name.human; title @title %>
+<%= go_back_btn mturk_batch_jobs_path %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-8">
+    <h2>Clone batch job '<%= @mturk_batch_job.cloned_name %>'</h2>
+    <%= render 'mturk_batch_job_form' %>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 class CreateTasksJob < ApplicationJob
   queue_as :default
 
-  after_enqueue do |job|
+  before_perform do |job|
     mturk_batch_job = MturkBatchJob.find_by(id: job.arguments.first)
     return unless mturk_batch_job.present?
     mturk_batch_job.update_attribute(:processing, true)

@@ -3,7 +3,6 @@ module Manage
     load_and_authorize_resource
 
     def new
-      @mturk_batch_job = MturkBatchJob.new
     end
 
     def index
@@ -64,6 +63,16 @@ module Manage
       SubmitTasksJob.perform_later(mturk_batch_job.id)
       redirect_to(mturk_batch_jobs_path, notice: "HITs for batch #{mturk_batch_job.name} are being submitted...")
     end
+
+    def clone
+      mturk_batch_job_clone = MturkBatchJob.find(params[:clone_id])
+      cloned_attributes = mturk_batch_job_clone.attributes.select{ |a| ['name', 'project_id', 'description', 'title', 'keywords', 'reward', 'lifetime_in_seconds', 'auto_approval_delay_in_seconds', 'assignment_duration_in_seconds', 'instructions', 'number_of_assignments', 'minimal_approval_rate', 'max_tasks_per_worker', 'check_availability'].include?(a)}
+      @mturk_batch_job = MturkBatchJob.new(cloned_attributes)
+      @mturk_batch_job.cloned_name = @mturk_batch_job.name
+      @mturk_batch_job.name = @mturk_batch_job.name + '-copy'
+      render :clone
+    end
+
 
     private
 
