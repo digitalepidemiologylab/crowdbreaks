@@ -64,6 +64,7 @@ Rails.application.routes.draw do
           get 'update_availability', on: :collection
         end
         get 'submit'
+        get 'clone', on: :collection
       end
       resources :mturk_workers, only: [:index]
       resources :mturk_cached_hits, path: 'mturk_hits' do

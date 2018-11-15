@@ -16,13 +16,13 @@ class MturkBatchJob < ApplicationRecord
   validates_with CsvValidator, fields: [:job_file]
   validates_with HitTypeValidator, on: :create
 
-  attr_accessor :job_file
+  attr_accessor :job_file, :cloned_name
 
   def num_tasks
     tasks.count
   end
 
-  def num_queued_tasks
+  def num_tweets
     mturk_tweets.count
   end
 
@@ -48,7 +48,7 @@ class MturkBatchJob < ApplicationRecord
   def status
     return 'deleting' if marked_for_deletion
     return 'processing' if processing
-    return 'empty' if num_queued_tasks == 0
+    return 'empty' if num_tweets == 0
     return 'unsubmitted' if num_tasks_where(:unsubmitted) == num_tasks
     return 'completed' if num_tasks_where(:completed) == num_tasks
     'in progress'
