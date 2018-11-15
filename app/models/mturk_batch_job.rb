@@ -93,7 +93,7 @@ class MturkBatchJob < ApplicationRecord
       csv << model_cols + added_cols
       results.each do |result|
         row = result.attributes.values_at(*model_cols)
-        row += [result.question_sequence_log&.log.to_s,
+        row += [result.question_sequence_log&.log&.to_json,
                 result.task&.mturk_worker&.worker_id,
                 result.task&.mturk_tweet&.tweet_text]
         csv << row
