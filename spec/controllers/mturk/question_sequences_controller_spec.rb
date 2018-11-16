@@ -57,6 +57,11 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_submitted9) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job5) }
   let!(:task_submitted10) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job5) }
 
+  # Batch with large tweet ids
+  let!(:mturk_batch_job6) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1, check_availability: :before) }
+  let!(:mturk_tweet10) { FactoryBot.create(:mturk_tweet, :available, tweet_id: '1050562002664468480', mturk_batch_job: mturk_batch_job6) }
+  let!(:task_submitted11) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job6) }
+
   # SHOW ACTION
   describe "GET show" do
     it "throws an error if HIT id is missing in params" do
@@ -299,7 +304,44 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(task.results.count).to eq(1)
       expect(task.results.first.res_type).to eq('mturk')
       expect(task.results.first.question_id).to eq(question.id)
+      expect(task.mturk_tweet.tweet_id).to eq(task.results.last.tweet_id)
     end
+
+    it "creates new records properly on final action" do
+      # worker 8 is assigned new tweet
+      task = Task.find(task_submitted11.id)
+      expect(task.mturk_tweet_id).to eq(nil)
+      get :show, params: {
+        hitId: task_submitted11.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      task.reload
+      expect(task.mturk_tweet_id).to eq(mturk_tweet10.id)
+      expect(task.mturk_tweet.tweet_id).to eq(mturk_tweet10.tweet_id)
+      expect(task.results.count).to eq(0)
+      # worker 8 submits his solution
+      post :final, params: {
+        task: {
+          hit_id: task.hit_id,
+          worker_id: mturk_worker8.worker_id,
+          assignment_id: '123',
+          tweet_id: task.mturk_tweet.tweet_id,
+          results: [
+            result: {
+              answer_id: answer1.id,
+              question_id: question.id,
+              tweet_id: task.mturk_tweet.tweet_id,
+              project_id: project.id
+            }
+          ]
+        }
+      }
+      expect(response).to be_successful
+      task.reload
+      expect(task.mturk_tweet.tweet_id).to eq(task.results.last.tweet_id)
+    end
+
 
     # CREATE ACTION
     it "creates single results" do

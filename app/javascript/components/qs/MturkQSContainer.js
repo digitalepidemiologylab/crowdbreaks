@@ -56,7 +56,6 @@ export class MturkQSContainer extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-
     if (this.props.testMode) {
       alert('No submit possible, since you are running in test mode.')
       return true;
@@ -68,7 +67,7 @@ export class MturkQSContainer extends React.Component {
         'assignmentId': this.props.assignmentId,
         'tweetId': this.props.tweetId,
         'hitId': this.props.hitId,
-        'results': this.state.results
+        'results': this.state.results,
       }
     });
     // Add final submit log
