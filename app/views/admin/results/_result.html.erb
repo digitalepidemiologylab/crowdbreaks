@@ -8,30 +8,30 @@
   <td>
     <div>
       <% if @group_by_qs %>
-        <% if can? :read, Result %>
-          <% if can? :destroy, result %>
-            <%= link_to fa_icon('trash'),
-              admin_result_path(result, project_id: result.project_id, user_id: result.user_id,
-                                tweet_id: result.tweet_id, mturk_worker_id: result.mturk_worker_id, res_type: result.res_type,
-                                mturk_batch_job_id: result.mturk_batch_job_id, **@options),
+        <% if can? :destroy, result %>
+          <%= link_to fa_icon('trash'),
+            admin_result_path(result, project_id: result.project_id, user_id: result.user_id,
+              tweet_id: result.tweet_id, mturk_worker_id: result.mturk_worker_id, res_type: result.res_type,
+              mturk_batch_job_id: result.mturk_batch_job_id, **@options),
               method: :delete,
               data: {confirm: "Delete result?"} %>
-          <% end %>
+            <% end %>
+        <% if can? :read, result %>
           <%= link_to fa_icon('eye'),
             admin_result_path(result, project_id: result.project_id, user_id: result.user_id,
-                              tweet_id: result.tweet_id, mturk_worker_id: result.mturk_worker_id,
-                              mturk_batch_job_id: result.mturk_batch_job_id,
-                              res_type: result.res_type, **@options) %>
-        <% end %>
+              tweet_id: result.tweet_id, mturk_worker_id: result.mturk_worker_id,
+              mturk_batch_job_id: result.mturk_batch_job_id,
+              res_type: result.res_type, **@options) %>
+          <% end %>
       <% else %>
         <% if can? :destroy, result %>
           <%= link_to fa_icon('trash'),
-            admin_result_path(result),
+            admin_result_path(result, **@options),
             method: :delete,
             data: {confirm: "Delete result?"} %>
         <% end %>
         <% if can? :read, result %>
-          <%= link_to fa_icon('eye'), admin_result_path(result) %>
+          <%= link_to fa_icon('eye'), admin_result_path(result, **@options) %>
         <% end %>
       <% end %>
     </div>
