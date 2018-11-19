@@ -109,6 +109,7 @@ end
 # else:
 Capybara.javascript_driver = :headless_chrome
 Capybara.server_port = '3001'
+Capybara.server = :puma, { Silent: true }
 
 # Webmock (reject any outside API calls)
 WebMock.disable_net_connect!(allow_localhost: true)
