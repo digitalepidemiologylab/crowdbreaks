@@ -72,8 +72,8 @@ module Admin
     def get_filter_options
       {
         project_id_filter: params[:project_id_filter],
-        res_type_filter: params[:res_type_id_filter],
-        group_by_qs: params[:group_by_qs]
+        res_type_filter: params[:res_type_filter],
+        group_by_qs: param_is_truthy?(:group_by_qs, default: true)
       }
     end
 
