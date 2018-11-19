@@ -131,11 +131,13 @@ export class QSContainer extends React.Component {
   }
 
   onNextQuestionSequence() {
+    // Reset logging
+    this.log.reset();
+
     if (this.state.nextTweetId == 0 || isNaN(this.state.nextTweetId)) {
       // Something went wrong, simply reload page to get new question sequence
       window.location.reload(false);
     } else {
-      this.log = new QSLogger(this.props.answersDelay)
       this.setState({
         tweetId: this.state.nextTweetId,
         questionSequenceHasEnded: false,
