@@ -81,7 +81,7 @@ export class MturkQSContainer extends React.Component {
       }
     });
     // Add final submit log
-    this.log.logSubmit()
+    this.log.logMturkSubmit();
     taskUpdate['task']['logs'] = this.log.getLog();
     $.ajax({
       type: "POST",
@@ -208,7 +208,6 @@ export class MturkQSContainer extends React.Component {
   }
 
   render() {
-    console.log(this.log.getLog())
     let title = this.props.mturkTitle && <h4 className="mb-4">
       {this.props.mturkTitle}
     </h4>;
