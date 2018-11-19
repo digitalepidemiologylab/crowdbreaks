@@ -2,8 +2,10 @@ import moment from 'moment';
 
 export class QSLogger {
   constructor(answerDelay) {
-    this.log = this.getInitializedLog(answerDelay);
     this.timeLastAnswer = null;
+    this.answerDelay = answerDelay;
+    this.timeMounted = null;
+    this.initializeLog();
   }
 
   getLog() {
@@ -14,6 +16,10 @@ export class QSLogger {
     return new Date().getTime();
   }
 
+  reset() {
+    this.initializeLog();
+  }
+
   logResult(questionId) {
     const now = this.getTime()
     this.log['results'].push({
@@ -21,6 +27,7 @@ export class QSLogger {
       'timeSinceLastAnswer': now - this.timeLastAnswer,
       'questionId': questionId,
     });
+    this.timeLastAnswer = now;
   }
 
   logFinal() {
@@ -35,19 +42,22 @@ export class QSLogger {
     this.log['timeMturkSubmit'] = now;
   }
 
-  getInitializedLog(answerDelay) {
-    return {
+  initializeLog(answerDelay) {
+    this.log = {
       'timeInitialized': this.getTime(),
       'userTimeInitialized': moment().format(),
       'results': [],
       'resets': [],
       'answerDelay': answerDelay,
+      'timeMounted': this.timeMounted,
     }
   }
 
   logMounted() {
-    this.log['timeMounted'] = this.getTime();
-    this.timeLastAnswer = this.getTime();
+    const now = this.getTime()
+    this.log['timeMounted'] = now;
+    this.timeLastAnswer = now;
+    this.timeMounted = now;
   }
 
   logReset(questionId) {

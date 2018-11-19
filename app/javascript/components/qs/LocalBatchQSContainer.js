@@ -1,6 +1,10 @@
 // React
 import React from 'react'
 
+// Other
+let humps = require('humps');
+import { QSLogger } from './QSLogger';
+
 // Sub-components
 import { QuestionSequence } from './QuestionSequence';
 import { LocalBatchFinal } from './LocalBatchFinal';
@@ -19,7 +23,6 @@ export class LocalBatchQSContainer extends React.Component {
       'nextTweetId': 0,
       'tweetId': props.tweetId,
       'tweetText': props.tweetText,
-      'transitions': props.transitions,
       'questions': props.questions,
       'errors': [],
       'noWorkAvailable': props.noWorkAvailable,
@@ -28,37 +31,49 @@ export class LocalBatchQSContainer extends React.Component {
       'totalCountUnavailable': props.totalCountUnavailable,
       'tweetIsAvailable': props.tweetIsAvailable,
       'nextTweetIsAvailable': true,
-      'displayInstructions': false
+      'displayInstructions': false,
+      'currentQuestion': props.questions[props.initialQuestionId],
+      'numQuestionsAnswered': 0,
+      'results': [],
     };
+
+    this.log = new QSLogger(props.answersDelay);
   }
 
-  submitResult(resultData) {
-    // Nothing to do here
-    return true;
+  componentDidMount() {
+    this.log.logMounted()
   }
 
-  onTweetLoadError() {
-    this.setState({
-      errors: this.state.errors.concat(["Error when trying to load tweet. Ensure you disable browser plugins which may block this content."])
+  onAnswerSubmit(answerId) {
+    // Log result
+    this.log.logResult(this.state.currentQuestion.id);
+    // collect result data
+    let resultData = humps.decamelizeKeys({
+      result: {
+        answerId: answerId,
+        questionId: this.state.currentQuestion.id,
+        userId: this.props.userId,
+        tweetId: this.props.tweetId,
+        projectId: this.props.projectId
+      }
     });
-  }
-
-  onToggleInstructionDisplay() {
+    // Increment answer counter
     this.setState({
-      displayInstructions: !this.state.displayInstructions
+      results: this.state.results.concat([resultData]),
+      numQuestionsAnswered: this.state.numQuestionsAnswered + 1,
     })
   }
 
-  onQuestionSequenceEnd(results, logs) {
-    var data = {
-      'qs': {
-        'tweet_id': this.state.tweetId,
-        'user_id': this.props.userId,
-        'project_id': this.props.projectId,
-        'results': results,
-        'logs': logs
+  onQuestionSequenceEnd() {
+    let data = humps.decamelizeKeys({
+      qs: {
+        tweetId: this.state.tweetId,
+        userId: this.props.userId,
+        projectId: this.props.projectId,
+        results: this.state.results,
       }
-    };
+    });
+    data['qs']['logs'] = this.log.getLog();
 
     $.ajax({
       type: "POST",
@@ -66,7 +81,7 @@ export class LocalBatchQSContainer extends React.Component {
       data: JSON.stringify(data),
       contentType: "application/json",
       success: (response) => {
-        var tweetId = response['tweet_id'];
+        let tweetId = response['tweet_id'];
         if (tweetId == "") {
           // No more work to be done
           this.setState({
@@ -82,7 +97,7 @@ export class LocalBatchQSContainer extends React.Component {
             'userCount': response['user_count'],
             'totalCount': response['total_count'],
             'totalCountUnavailable': response['total_count_unavailable'],
-            'noWorkAvailable': response['no_work_available']
+            'noWorkAvailable': response['no_work_available'],
           });
         }
       }
@@ -90,6 +105,9 @@ export class LocalBatchQSContainer extends React.Component {
   }
 
   onNextQuestionSequence() {
+    // Reset logging
+    this.log.reset();
+
     if (this.state.nextTweetId == 0 || isNaN(this.state.nextTweetId || this.state.nextTweetId == this.state.tweetId)) {
       // Something went wrong, simply reload page to get new question sequence
       window.location.reload(false);
@@ -99,10 +117,33 @@ export class LocalBatchQSContainer extends React.Component {
         tweetIsAvailable: this.state.nextTweetIsAvailable,
         questionSequenceHasEnded: false,
         openModal: false,
-        nextTweetId: 0
+        nextTweetId: 0,
+        currentQuestion: this.props.questions[this.props.initialQuestionId],
+        numQuestionsAnswered: 0,
+        results: [],
       });
     }
   }
+
+  gotoNextQuestion(nextQuestion) {
+    // Go to next question
+    this.setState({
+      'currentQuestion': this.props.questions[nextQuestion],
+    });
+  }
+
+  onTweetLoadError() {
+    this.setState({
+      errors: this.state.errors.concat(["Error when trying to load tweet. Ensure you disable browser plugins which may block this content."])
+    });
+  }
+
+  onToggleInstructionDisplay() {
+    this.setState({
+      displayInstructions: !this.state.displayInstructions
+    })
+  }
+
 
   getQuestionSequence() {
     if (this.state.noWorkAvailable) {
@@ -121,22 +162,24 @@ export class LocalBatchQSContainer extends React.Component {
     if (!this.state.questionSequenceHasEnded) {
       return <QuestionSequence 
           ref={qs => {this.questionSequence = qs;}}
-          initialQuestionId={this.props.initialQuestionId}
           questions={this.state.questions}
-          transitions={this.state.transitions}
+          currentQuestion={this.state.currentQuestion}
+          transitions={this.props.transitions}
           tweetId={this.state.tweetId}
           tweetText={this.state.tweetText}
           userId={this.props.userId}
           projectId={this.props.projectId}
-          submitResult={(args) => this.submitResult(args)}
           onTweetLoadError={() => this.onTweetLoadError()}
-          onQuestionSequenceEnd={(results, logs) => this.onQuestionSequenceEnd(results, logs)}
+          onAnswerSubmit={(answerId) => this.onAnswerSubmit(answerId)}
+          onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+          gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
           numTransitions={this.props.numTransitions}
           captchaSiteKey={""}
           userSignedIn={true}
           captchaVerified={true}
-          enableAnswersDelay={this.props.enableAnswersDelay}
+          answersDelay={this.props.answersDelay}
           displayQuestionInstructions={true}
+          numQuestionsAnswered={this.state.numQuestionsAnswered}
         /> 
     } else {
       return <LocalBatchFinal 

@@ -40,38 +40,9 @@ export class QSContainer extends React.Component {
     this.log = new QSLogger(props.answersDelay);
   }
 
-  verifyCallback(response) {
-    // executed once the captcha has been verified
-    let resultData;
-    // Post any unverified data to server
-    while (this.state.unverifiedAnswers.length > 0) {
-      resultData = this.state.unverifiedAnswers.pop()
-      resultData['recaptcha_response'] = response;
-      $.ajax({
-        type: "POST",
-        url: this.props.resultsPath,
-        data: JSON.stringify(resultData),
-        contentType: "application/json",
-        success: (response) => {
-          if (response['captcha_verified']) {
-            console.log('successfully verified captcha');
-            this.setState({
-              captchaVerified: true
-            })
-            return true;
-          }
-          return false;
-        },
-        error: (response) => {
-          let errors = response['responseJSON']['errors'];
-          this.setState({
-            errors: this.state.errors.concat(errors)
-          });
-          return false;
-        }
-      });
-    }
-  };
+  componentDidMount() {
+    this.log.logMounted()
+  }
 
   onAnswerSubmit(answerId) {
     // Increment answer counter
@@ -84,7 +55,7 @@ export class QSContainer extends React.Component {
     if (this.testMode) {
       return true;
     }
-    // Compile result
+    // Send single result
     let resultData = humps.decamelizeKeys({
       result: {
         answerId: answerId,
@@ -174,6 +145,39 @@ export class QSContainer extends React.Component {
     }
   }
 
+  verifyCallback(response) {
+    // executed once the captcha has been verified
+    let resultData;
+    // Post any unverified data to server
+    while (this.state.unverifiedAnswers.length > 0) {
+      resultData = this.state.unverifiedAnswers.pop()
+      resultData['recaptcha_response'] = response;
+      $.ajax({
+        type: "POST",
+        url: this.props.resultsPath,
+        data: JSON.stringify(resultData),
+        contentType: "application/json",
+        success: (response) => {
+          if (response['captcha_verified']) {
+            console.log('successfully verified captcha');
+            this.setState({
+              captchaVerified: true
+            })
+            return true;
+          }
+          return false;
+        },
+        error: (response) => {
+          let errors = response['responseJSON']['errors'];
+          this.setState({
+            errors: this.state.errors.concat(errors)
+          });
+          return false;
+        }
+      });
+    }
+  };
+
   render() {
     let body = null;
     if (!this.state.questionSequenceHasEnded) {
@@ -192,7 +196,7 @@ export class QSContainer extends React.Component {
           userId={this.props.userId}
           projectId={this.props.projectId}
           onTweetLoadError={() => this.onTweetLoadError()}
-          onQuestionSequenceEnd={(results, logs) => this.onQuestionSequenceEnd(results, logs)}
+          onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
           onAnswerSubmit={(answerId) => this.onAnswerSubmit(answerId)}
           gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
           numTransitions={this.props.numTransitions}
