@@ -1,8 +1,8 @@
 import React from 'react'
 
 export const SingleAnswer = (props) => {
-  var buttonStyle = {};
-  var btnClassName = 'btn btn-lg';
+  let buttonStyle = {};
+  let btnClassName = 'btn btn-lg';
   const predefinedBtnTypes = ['btn-primary', 'btn-secondary', 'btn-positive', 'btn-negative'];
   if (predefinedBtnTypes.includes(props.color)) {
     btnClassName += ' '+props.color;

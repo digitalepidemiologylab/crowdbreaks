@@ -18,12 +18,12 @@ export class SentimentTextBox extends React.Component {
   }
 
   onHandleChange(value) {
-    var data = {"text": value};
+    let data = {"text": value};
     let newLabel = this.state.label;
     this.setState({
       'textValue': value,
     });
-    var input_num_words = value.trim().split(' ').length
+    const input_num_words = value.trim().split(' ').length
     if (value == '' || input_num_words <= 2) {
       this.setState({'label': 'undetermined'});
       return
@@ -45,8 +45,8 @@ export class SentimentTextBox extends React.Component {
       contentType: "application/json",
       success: (result) => {
         result = JSON.parse(result);
-        var p_vals = {}
-        for (var i=0; i<result['labels'].length; i++) {
+        let p_vals = {}
+        for (let i=0; i<result['labels'].length; i++) {
           p_vals[result['labels'][i]] = result['probabilities'][i];
         }
         console.log('Received label '+result['labels'][0]);
@@ -66,8 +66,8 @@ export class SentimentTextBox extends React.Component {
   }
 
   round(input, precision=3) {
-    var factor = Math.pow(10, precision)
-    var res = Math.round(input*100*factor)/factor 
+    const factor = Math.pow(10, precision)
+    const res = Math.round(input*100*factor)/factor 
     if (res>100.0) {
       return 100;
     } else {
@@ -87,9 +87,9 @@ export class SentimentTextBox extends React.Component {
       'Vaccines are evil',
       'My child was diagnosed with autism after vaccination'
     ];
-    var parentThis = this;
-    var color = { 'undetermined': 'grey', 'pro-vaccine': 'green', 'anti-vaccine': 'red', 'other': 'grey' }[this.state.label];
-    var labelStyle = {
+    let parentThis = this;
+    const color = { 'undetermined': 'grey', 'pro-vaccine': 'green', 'anti-vaccine': 'red', 'other': 'grey' }[this.state.label];
+    const labelStyle = {
       color: color
     }
 

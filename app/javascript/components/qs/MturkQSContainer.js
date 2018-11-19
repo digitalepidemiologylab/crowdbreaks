@@ -2,7 +2,7 @@
 import React from 'react'
 
 // Other 
-var humps = require('humps');
+let humps = require('humps');
 import { QSLogger } from './QSLogger';
 
 // Components
@@ -71,7 +71,7 @@ export class MturkQSContainer extends React.Component {
       alert('No submit possible, since you are running in test mode.')
       return true;
     }
-    var taskUpdate = humps.decamelizeKeys({
+    let taskUpdate = humps.decamelizeKeys({
       task: {
         'workerId': this.props.workerId,
         'assignmentId': this.props.assignmentId,
@@ -105,7 +105,7 @@ export class MturkQSContainer extends React.Component {
   }
 
   getSubmitUrl() {
-    var sandbox_prefix = this.props.sandbox ? 'workersandbox' : 'www';
+    const sandbox_prefix = this.props.sandbox ? 'workersandbox' : 'www';
     return "https://" + sandbox_prefix + ".mturk.com/mturk/externalSubmit";
   }
 

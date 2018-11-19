@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Bar, defaults } from 'react-chartjs-2';
 import { Input, Col, Row, FormText, Table } from 'reactstrap';
-var moment = require('moment');
+let moment = require('moment');
 
 export class UserActivity extends React.Component {
   constructor(props) {
@@ -56,7 +56,7 @@ export class UserActivity extends React.Component {
   }
 
   componentWillMount() {
-    var data = {
+    const data = {
       "user_activity": {
         "start_date": this.state.start_date,
         "end_date": this.state.end_date
@@ -75,14 +75,14 @@ export class UserActivity extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
-        var labels = [];
-        var counts = [];
-        var dates = Object.keys(result['counts']);
+        let labels = [];
+        let counts = [];
+        let dates = Object.keys(result['counts']);
         dates.sort();
-        var data = Object.values(result['counts']);
-        var fillDate = moment(this.state.start_date, 'YYYY-MM-DD');
-        var currentDate;
-        for (var i=0; i<dates.length; i++) {
+        let data = Object.values(result['counts']);
+        let fillDate = moment(this.state.start_date, 'YYYY-MM-DD');
+        let currentDate;
+        for (let i=0; i<dates.length; i++) {
           currentDate = moment(dates[i], 'YYYY-MM-DD');
           while (fillDate.isBefore(currentDate, 'day')) {
             labels.push(fillDate.format('YYYY-MM-DD HH:mm:ss'))
@@ -94,7 +94,7 @@ export class UserActivity extends React.Component {
           fillDate = fillDate.add(1, 'days');
         }
         if (labels.length > 0) {
-          var lastDate = moment(labels[labels.length - 1]) 
+          let lastDate = moment(labels[labels.length - 1]) 
           while (!lastDate.isSame(moment(this.state.end_date, 'YYYY-MM-DD'), 'day')) {
             lastDate = lastDate.add(1, 'days')
             labels.push(lastDate.format('YYYY-MM-DD HH:mm:ss'))
@@ -111,7 +111,7 @@ export class UserActivity extends React.Component {
   }
 
   refresh() {
-    var data = {
+    let data = {
       "user_activity": {
         "start_date": this.state.start_date,
         "end_date": this.state.end_date
@@ -133,8 +133,8 @@ export class UserActivity extends React.Component {
   }
 
   render() {
-    var dateFormat = "YYYY-MM-DD";
-    var data = {
+    const dateFormat = "YYYY-MM-DD";
+    let data = {
       labels: this.state.labels,
       datasets: [{
         label: 'Answers',

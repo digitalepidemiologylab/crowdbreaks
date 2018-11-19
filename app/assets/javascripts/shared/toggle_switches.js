@@ -47,7 +47,7 @@ function selectResTypeResults() {
 
 // helpers
 function toggleParam(param, toBeChecked) {
-  var url = new URL(window.location.href);
+  let url = new URL(window.location.href);
   url.searchParams.delete(param)
   if (toBeChecked) {
     url.searchParams.append(param, true)
@@ -58,7 +58,7 @@ function toggleParam(param, toBeChecked) {
 }
 
 function changeSelectParam(param, value) {
-  var url = new URL(window.location.href);
+  let url = new URL(window.location.href);
   url.searchParams.delete(param)
   url.searchParams.append(param, value)
   window.location.href = url.href

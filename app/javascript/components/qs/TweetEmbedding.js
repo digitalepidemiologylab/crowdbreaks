@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed'
 
 export const TweetEmbedding = (props) => {
-  var options = {
+  const options = {
     cards: 'hidden',
     conversation: 'none'
   };

@@ -125,7 +125,7 @@ export class SentimentVisualization extends React.Component {
   }
 
   refresh() {
-    var data = {
+    const data = {
       "viz": {
         "interval": this.state.interval,
         "es_index_name": this.props.es_index_name,
@@ -139,7 +139,7 @@ export class SentimentVisualization extends React.Component {
   }
 
   changePlotFormatting() {
-    var point_radius, border_width;
+    let point_radius, border_width;
     switch (this.state.interval) {
       case '1h': // Fallthrough
       case '2h':
@@ -180,7 +180,7 @@ export class SentimentVisualization extends React.Component {
 
   render() {
     const intervalOptions = ['1h', '2h', '3h', '6h', '12h', '24h'];
-    var data = {
+    const data = {
       labels: this.state.labels,
       datasets: [
         {
@@ -244,7 +244,7 @@ export class SentimentVisualization extends React.Component {
         }
       ]
     };
-    var prevThis = this;
+    let prevThis = this;
 
     return(
       <div>

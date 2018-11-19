@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 export class EditTransition extends React.Component {
   constructor(props) {
     super(props);
-    var isStartingNode = false;
-    var editMode = false;
+    let isStartingNode = false;
+    let editMode = false;
     if (props.sourceId == 'start') {
       isStartingNode = true;
     } else if (props.sourceId == '') {

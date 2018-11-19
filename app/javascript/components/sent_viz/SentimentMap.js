@@ -65,7 +65,7 @@ export class SentimentMap extends React.Component {
 	}
 
   render() {
-    var spec = {
+    const spec = {
       "padding": 5,
       "width": 1000,
       "height": 800,

@@ -25,7 +25,7 @@ export class EditAnswers extends React.Component {
   }
 
   onUpdateInternalAnswer(e) {
-    var dummyAnswers = this.props.answers;
+    let dummyAnswers = this.props.answers;
     dummyAnswers[e.answerPos].answer = e.answer;
     dummyAnswers[e.answerPos].color = e.color;
     dummyAnswers[e.answerPos].label = e.label;

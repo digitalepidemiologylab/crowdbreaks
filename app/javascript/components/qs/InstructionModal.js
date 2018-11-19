@@ -27,7 +27,7 @@ export class InstructionModal extends React.Component {
   }
 
   updateModalSize() {
-    var modalWidth;
+    let modalWidth;
     const windowWidth = window.innerWidth;
     if (windowWidth > 768) {
       // desktop
@@ -54,7 +54,7 @@ export class InstructionModal extends React.Component {
   }
 
   render() {
-    var modalStyle = {
+    const modalStyle = {
       content : {
         top                   : '50%',
         left                  : '50%',

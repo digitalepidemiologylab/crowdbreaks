@@ -27,7 +27,7 @@ export class QuestionInstructions extends React.Component {
   }
 
   updateModalSize() {
-    var modalWidth;
+    let modalWidth;
     const windowWidth = window.innerWidth;
     if (windowWidth > 768) {
       // desktop

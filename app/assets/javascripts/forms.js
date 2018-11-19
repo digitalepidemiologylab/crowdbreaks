@@ -5,7 +5,7 @@ $(document).on('turbolinks:load', function() {
   let inputs = document.querySelectorAll('.input-file');
   inputs.forEach((input) => {
     let uploadButton = input.parentNode.parentNode.previousSibling.previousSibling.querySelector('div')
-    var filename = ''
+    let filename = ''
     input.addEventListener('change', (e) => {
       filename = e.target.value.split('\\').pop()
       uploadButton.querySelector('span').innerHTML = filename
