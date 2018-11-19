@@ -1,15 +1,15 @@
 <% @title ||= 'Result'; title @title %>
-<%= go_back_btn admin_results_path(group_by_qs: @group_by_qs, project_id_filter: params[:project_id_filter], res_type_filter: params[:res_type_filter]) %>
+<%= go_back_btn admin_results_path(group_by_qs: @group_by_qs, project_id_filter: params[:project_id_filter], res_type_filter: params[:res_type_filter]), center: true, col: 'col-xl-10' %>
 
 <div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-8">
+  <div class="col-xl-10">
     <h2><%= @qs_results.present? ? 'Result: Question Sequence' : 'Result' %></h2>
   </div>
 </div>
 
 <% if @qs_results.present? %>
-  <div class="row justify-content-center mb-4">
-    <div class="col-12 col-md-8 col-lg-4 mb-4">
+  <div class="row justify-content-center mb-5">
+    <div class="col-xl-5">
       <% if @tweet_text.present? %>
         <div class="card">
           <div class="card-body">
@@ -26,7 +26,7 @@
         </div>
       <% end %>
     </div>
-    <div class="col-12 col-md-8 col-lg-4">
+    <div class="col-xl-5">
       <div class="card">
         <div class="card-body">
           <table class="table vertical-align borderless-table">
@@ -47,9 +47,9 @@
     </div>
   </div>
 
-  <div class="row justify-content-center mb-4">
+  <div class="row justify-content-center mb-5">
       <% @qs_results.each_with_index do |result, ix| %>
-        <div class="col-12 col-md-8 mb-4">
+        <div class="col-xl-10 mb-4">
           <% if @log&.results&.length.to_i > 0 %>
             <h4>Question <%= ix + 1 %> <%= "(#{@log.results[ix].timeSinceLastAnswer.to_i/1000.0} s)" %></h4>
           <% else %>
@@ -62,4 +62,15 @@
   </div>
 <% else %>
   <%= attributes_table(@result) %>
+<% end %>
+
+<% if @log.present? %>
+  <div class="row justify-content-center mb-4">
+    <div class="col-xl-10 mb-4">
+      <h4>Full log</h4>
+      <div>
+        <pre style="font: 14px Inconsolata, monospace;"><%= JSON.pretty_generate(@log.to_h).strip %></pre>
+      </div>
+    </div>
+  </div>
 <% end %>

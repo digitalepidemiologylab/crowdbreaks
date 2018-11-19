@@ -46,8 +46,6 @@ export class EditQuestionSequence extends React.Component {
       isLoading: false,
       errors: []
     };
-    console.log(this.state.questions)
-    console.log(this.state.transitions)
   }
 
   findMaxAnswerId(questions) {
