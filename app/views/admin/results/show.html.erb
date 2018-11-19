@@ -8,42 +8,53 @@
 </div>
 
 <% if @qs_results.present? %>
-  <% if @tweet_text.present? %>
-    <div class="row justify-content-center mb-4">
-      <div class="col-12 col-md-8 col-lg-4 mb-4">
+  <div class="row justify-content-center mb-4">
+    <div class="col-12 col-md-8 col-lg-4 mb-4">
+      <% if @tweet_text.present? %>
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">Tweet text</h4>
             <%= @tweet_text %>
           </div>
         </div>
-      </div>
-      <div class="col-12 col-md-8 col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <table class="table vertical-align borderless-table">
-              <%= table_row('Num results', num(@qs_results.count)) %>
-              <% if @log.present? %>
-                <%= table_row('Total time', (@log['totalDurationQuestionSequence'].to_i/1000.0).to_s + ' s') %>
-              <% end %>
-              <%= table_row('Result type', result_type(@result.res_type)) %>
-              <%= table_row('Submitted', time_ago(@qs_results.last.created_at)) %>
-              <% if @qs_results.first.mturk_res_type? %>
-                <%= table_row('Worker', @qs_results.first.task.mturk_worker.worker_id) %>
-              <% else %>
-                <%= table_row('User', @qs_results.first.user.username) %>
-              <% end %>
-            </table>
-          </div>
+        <% else %>
+          <div class="justify-content-center">
+            <%= react_component('TweetEmbed', {
+              id: params[:tweet_id],
+              options: {cards: 'hidden', conversation: 'none'}
+            }) %>
+        </div>
+      <% end %>
+    </div>
+    <div class="col-12 col-md-8 col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <table class="table vertical-align borderless-table">
+            <%= table_row('Num results', num(@qs_results.count)) %>
+            <% if @log.present? %>
+              <%= table_row('Total time', (@log.totalDurationQuestionSequence.to_i/1000.0).to_s + ' s') %>
+            <% end %>
+            <%= table_row('Result type', result_type(@result.res_type)) %>
+            <%= table_row('Submitted', time_ago(@qs_results.last.created_at)) %>
+            <% if @qs_results.first.mturk_res_type? %>
+              <%= table_row('Worker', @qs_results.first.task.mturk_worker.worker_id) %>
+            <% else %>
+              <%= table_row('User', @qs_results.first.user.username) %>
+            <% end %>
+          </table>
         </div>
       </div>
     </div>
-  <% end %>
+  </div>
 
   <div class="row justify-content-center mb-4">
       <% @qs_results.each_with_index do |result, ix| %>
         <div class="col-12 col-md-8 mb-4">
-          <h4>Question <%= ix + 1 %> <%= @log.present? ? "(#{@log['results'][ix]['timeSinceLastAnswer'].to_i/1000.0} s)" : '' %></h4>
+          <% if @log&.results&.length.to_i > 0 %>
+            <h4>Question <%= ix + 1 %> <%= "(#{@log.results[ix].timeSinceLastAnswer.to_i/1000.0} s)" %></h4>
+          <% else %>
+            <h4>Question <%= ix + 1 %></h4>
+          <% end %>
           <p><%= result.question.question %></p>
           <p><%= answer_btn(result.answer.answer, result.answer.color) %></p>
         </div>
@@ -52,4 +63,3 @@
 <% else %>
   <%= attributes_table(@result) %>
 <% end %>
-
