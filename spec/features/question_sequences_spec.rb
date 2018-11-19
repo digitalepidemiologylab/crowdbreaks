@@ -30,7 +30,6 @@ RSpec.feature "Question sequence", type: :feature, js: true do
 
       # Make sure questio sequence was correctly stored
       # This fails with the database cleaning strategy, would need some hacky way to make it work
-      # expect(Result.count).to eq(2)
       # expect(QuestionSequenceLog.count).to eq(1)
       # expect(QuestionSequenceLog.first.results.first).to eq(project.results.last)
       # expect(Result.last.answer).to eq(answer1)

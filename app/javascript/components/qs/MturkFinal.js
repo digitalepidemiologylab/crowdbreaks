@@ -11,7 +11,7 @@ export const MturkFinal = (props) => {
         </div>
 
         <div className='mb-5'>
-          <form onSubmit={props.onSubmit} id="submit-form" action={props.submitUrl}>
+          <form onSubmit={props.onMturkSubmit} id="submit-form" action={props.submitUrl}>
             <input type="hidden" name="assignmentId" value={props.assignmentId} />
             <input type="hidden" name="hitId" value={props.hitId} />
             <input type="hidden" name="dummy" value="dummyvalue" />
@@ -24,7 +24,7 @@ export const MturkFinal = (props) => {
 };
 
 MturkFinal.propTypes = {
-  onSubmit: PropTypes.func,
+  onMturkSubmit: PropTypes.func,
   submitUrl: PropTypes.string,
   assignmentId: PropTypes.string,
   hitId: PropTypes.string
