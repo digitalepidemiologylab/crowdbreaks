@@ -18,12 +18,11 @@ export class MturkQSContainer extends React.Component {
       'errors': [],
       'results': [],
       'displayInstructions': false,
-      'timeLastAnswer': null,
       'numQuestionsAnswered': 0,
       'currentQuestion': props.questions[props.initialQuestionId],
     };
 
-    this.log = new QSLogger(props.enableAnswersDelay);
+    this.log = new QSLogger(props.answersDelay);
   }
 
   componentDidMount() {
@@ -194,7 +193,7 @@ export class MturkQSContainer extends React.Component {
         gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
         numTransitions={0}
         captchaVerified={true}
-        enableAnswersDelay={this.props.enableAnswersDelay}
+        answersDelay={this.props.answersDelay}
         displayQuestionInstructions={true}
         numQuestionsAnswered={this.state.numQuestionsAnswered}
       /> 

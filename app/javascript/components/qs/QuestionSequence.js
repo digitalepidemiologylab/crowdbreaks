@@ -13,6 +13,15 @@ import { QuestionInstructions } from './QuestionInstructions';
 import { TweetEmbedding } from './TweetEmbedding';
 import { TweetTextEmbedding } from './TweetTextEmbedding';
 
+/*
+This component exposes the following callbacks (results and current question state are handled by parent)
+- onAnswerSubmit(answerId): User clicked on answer button
+- onQuestionSequenceEnd: Question sequence has ended
+- gotoNextQuestion: Question sequence has not ended, go to next question
+- onTweetLoadError
+- onCaptchaVerify: Executed once Captcha has been verified
+*/
+
 export class QuestionSequence extends React.Component {
   constructor(props) {
     super(props);
