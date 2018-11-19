@@ -21,7 +21,7 @@
       <div class="card-body">
         <h4 class="card-title">Filters</h4>
         <%= toggle_switch(!@sandbox, 'Production', 'production-checkbox') %>
-        <%= toggle_switch(@include_reviewed, 'Include reviewed', 'include-reviewed-checkbox') %>
+        <%= toggle_switch(@show_reviewed, 'Show reviewed', 'show-reviewed-checkbox') %>
       </div>
     </div>
   </div>
@@ -76,7 +76,7 @@
             <th>Hit ID/<br>Task</th>
             <th>Assignment status</th>
             <th>Assignment Id</th>
-            <th>Accept</th>
+            <th><input type="checkbox" id="check-all"></th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -89,13 +89,13 @@
               <td><%= hit[:assignment_id] %></td>
               <td>
                 <% if hit[:assignment_id].present? and hit[:assignment_status] == 'Submitted' %>
-                  <%= check_box_tag 'accepted', hit[:assignment_id], false %>
+                  <%= check_box_tag 'accepted_ids[]', hit[:assignment_id], false, class: 'multi-checkable' %>
                 <% end %>
               </td>
               <td>
                 <% if hit[:assignment_id].present? %>
                   <span>
-                    <%= link_to fa_icon("eye"), mturk_reviewable_hit_path(hit[:assignment_id], sandbox: @sandbox, include_reviewed: @include_reviewed), title: 'Review individual HIT' %>
+                    <%= link_to fa_icon("eye"), mturk_reviewable_hit_path(hit[:assignment_id], sandbox: @sandbox, show_reviewed: @show_reviewed), title: 'Review individual HIT' %>
                   </span>
                 <% end %>
               </td>
