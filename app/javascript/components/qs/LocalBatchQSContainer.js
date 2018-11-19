@@ -65,6 +65,9 @@ export class LocalBatchQSContainer extends React.Component {
   }
 
   onQuestionSequenceEnd() {
+    // Save final time
+    this.log.logFinal();
+
     let data = humps.decamelizeKeys({
       qs: {
         tweetId: this.state.tweetId,

@@ -5,14 +5,14 @@ module Admin
     def show
       @group_by_qs = param_is_truthy?(:group_by_qs)
       if @group_by_qs
-        @qs_results = Result.joins(:task).where(tweet_id: params[:tweet_id], user_id: params[:user_id], project_id: params[:project_id], 'tasks.mturk_worker_id': params[:mturk_worker_id])
+        @qs_results = get_qs
         @tweet_text = MturkTweet.find_by(tweet_id: params[:tweet_id])&.tweet_text
-        @log = @qs_results&.first&.question_sequence_log&.log
+        @log = Hashie::Mash.new @qs_results&.first&.question_sequence_log&.log
       end
     end
 
     def index
-      @group_by_qs = param_is_truthy?(:group_by_qs)
+      @group_by_qs = param_is_truthy?(:group_by_qs, default: true)
       @project_id_filter = params[:project_id_filter]
       @res_type_filter = params[:res_type_filter]
       query = Result.all
@@ -39,15 +39,36 @@ module Admin
     end
 
     def destroy
-      if @result.destroy
-        redirect_to(admin_results_path, notice: "Result successfully destroyed.")
+      if param_is_truthy?(:group_by_qs)
+        qs_results = get_qs
+        expected_num_deleted = qs_results.count
+        destroyed = qs_results.destroy_all
+        if destroyed.length == expected_num_deleted
+          message = {notice: "#{expected_num_deleted} results successfully destroyed."}
+        else
+          message = {alert: 'Something went wrong when trying to destroy question sequence.'}
+        end
       else
-        redirect_to(admin_results_path, alert: 'Something went wrong when destroying result.')
+        if @result.destroy
+          message = {notice: "Result successfully destroyed."}
+        else
+          message = {alert: 'Something went wrong when destroying result.'}
+        end
       end
+      redirect_to(admin_results_path(project_id_filter: params[:project_id_filter], res_type_filter: params[:res_type_filter], group_by_qs: params[:group_by_qs]), **message)
     end
 
 
     private
+
+    def get_qs
+      if params[:res_type] == 'mturk'
+        query = Result.joins(:task).where(tweet_id: params[:tweet_id], user_id: params[:user_id], project_id: params[:project_id], 'tasks.mturk_worker_id': params[:mturk_worker_id])
+      else
+        query = Result.where(tweet_id: params[:tweet_id], user_id: params[:user_id], project_id: params[:project_id])
+      end
+      query.order(created_at: :asc)
+    end
 
     def param_is_truthy?(param, default: false)
       if params[param].present?
