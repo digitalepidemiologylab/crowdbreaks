@@ -34,10 +34,10 @@ export class LocalBatchQSContainer extends React.Component {
       'displayInstructions': false,
       'currentQuestion': props.questions[props.initialQuestionId],
       'numQuestionsAnswered': 0,
-      'results': [],
     };
 
     this.log = new QSLogger(props.answersDelay);
+    this.results = [];
   }
 
   componentDidMount() {
@@ -59,21 +59,22 @@ export class LocalBatchQSContainer extends React.Component {
     });
     // Increment answer counter
     this.setState({
-      results: this.state.results.concat([resultData]),
       numQuestionsAnswered: this.state.numQuestionsAnswered + 1,
     })
+    this.results.push(resultData);
   }
 
   onQuestionSequenceEnd() {
     // Save final time
     this.log.logFinal();
+    console.log(this.results)
 
     let data = humps.decamelizeKeys({
       qs: {
         tweetId: this.state.tweetId,
         userId: this.props.userId,
         projectId: this.props.projectId,
-        results: this.state.results,
+        results: this.results,
       }
     });
     data['qs']['logs'] = this.log.getLog();
@@ -123,8 +124,8 @@ export class LocalBatchQSContainer extends React.Component {
         nextTweetId: 0,
         currentQuestion: this.props.questions[this.props.initialQuestionId],
         numQuestionsAnswered: 0,
-        results: [],
       });
+      this.results = [];
     }
   }
 
@@ -193,6 +194,7 @@ export class LocalBatchQSContainer extends React.Component {
   }
 
   render() {
+    console.log(this.results)
     let body = this.getQuestionSequence()
     let counts = <div className="mb-3">
       <LocalBatchCounts 
