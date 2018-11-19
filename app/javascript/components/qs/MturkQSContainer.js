@@ -16,13 +16,13 @@ export class MturkQSContainer extends React.Component {
     this.state = {
       'questionSequenceHasEnded': false,
       'errors': [],
-      'results': [],
       'displayInstructions': false,
       'numQuestionsAnswered': 0,
       'currentQuestion': props.questions[props.initialQuestionId],
     };
 
     this.log = new QSLogger(props.answersDelay);
+    this.results = [];
   }
 
   componentDidMount() {
@@ -44,9 +44,9 @@ export class MturkQSContainer extends React.Component {
     });
     // store internally
     this.setState({
-      results: this.state.results.concat([resultData]),
       numQuestionsAnswered: this.state.numQuestionsAnswered + 1
     })
+    this.results.push(resultData);
   }
 
   onQuestionSequenceEnd() {
@@ -77,7 +77,7 @@ export class MturkQSContainer extends React.Component {
         'assignmentId': this.props.assignmentId,
         'tweetId': this.props.tweetId,
         'hitId': this.props.hitId,
-        'results': this.state.results,
+        'results': this.results,
       }
     });
     // Add final submit log
@@ -126,9 +126,9 @@ export class MturkQSContainer extends React.Component {
         this.setState({
           currentQuestion: this.props.questions[this.props.initialQuestionId],
           numQuestionsAnswered: 0,
-          results: [],
           questionSequenceHasEnded: false
         })
+        this.results = [];
       }
     }
   }
