@@ -140,7 +140,11 @@ export class QSContainer extends React.Component {
         tweetId: this.state.nextTweetId,
         questionSequenceHasEnded: false,
         openModal: false,
-        nextTweetId: 0
+        nextTweetId: 0,
+        currentQuestion: this.props.questions[this.props.initialQuestionId],
+        unverifiedAnswers: [],
+        numQuestionsAnswered: 0,
+        errors: [],
       });
     }
   }
