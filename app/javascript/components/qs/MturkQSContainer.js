@@ -3,6 +3,7 @@ import React from 'react'
 
 // Other 
 var humps = require('humps');
+import { QSLogger } from './QSLogger';
 
 // Components
 import { QuestionSequence } from './QuestionSequence';
@@ -13,54 +14,64 @@ export class MturkQSContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      'tweetLoadError': false,
       'questionSequenceHasEnded': false,
       'errors': [],
       'results': [],
       'displayInstructions': false,
-      'logs': {}
+      'timeLastAnswer': null,
+      'numQuestionsAnswered': 0,
+      'currentQuestion': props.questions[props.initialQuestionId],
     };
+
+    this.log = new QSLogger(props.enableAnswersDelay);
   }
 
-  submitResult(resultData) {
-    // Single answer submit hook, do nothing
-    return true;
+  componentDidMount() {
+    this.log.logMounted()
   }
 
-  onTweetLoadError() {
-    this.setState({
-      errors: this.state.errors.concat(['Error when trying to load tweet. Ensure you disable browser plugins which may block this content.'])
+  onAnswerSubmit(answerId) {
+    // logging
+    this.log.logResult(this.state.currentQuestion.id);
+    // collect result data
+    let resultData = humps.decamelizeKeys({
+      result: {
+        answerId: answerId,
+        questionId: this.state.currentQuestion.id,
+        userId: this.props.userId,
+        tweetId: this.props.tweetId,
+        projectId: this.props.projectId
+      }
     });
+    // store internally
+    this.setState({
+      results: this.state.results.concat([resultData]),
+      numQuestionsAnswered: this.state.numQuestionsAnswered + 1
+    })
   }
 
-  onQuestionSequenceEnd(results, logs) {
-    // Set final state which gets submitted in onSubmit()
+  onQuestionSequenceEnd() {
+    // logging
+    this.log.logFinal()
+    // Set final state which gets submitted in onMturkSubmit()
     this.setState({
       'questionSequenceHasEnded': true,
-      'results': results,
-      'logs': logs
     });
   }
 
-  getTime() {
-    return new Date().getTime();
+  gotoNextQuestion(nextQuestion) {
+    // Go to next question
+    this.setState({
+      'currentQuestion': this.props.questions[nextQuestion],
+    });
   }
 
-  logSubmit() {
-    let newLog = this.state.logs;
-    const now = this.getTime();
-    newLog['totalDurationUntilMturkSubmit'] = now - newLog['timeMounted'];
-    newLog['timeMturkSubmit'] = now;
-    return newLog
-  }
-
-  onSubmit(event) {
+  onMturkSubmit(event) {
     event.preventDefault();
     if (this.props.testMode) {
       alert('No submit possible, since you are running in test mode.')
       return true;
     }
-
     var taskUpdate = humps.decamelizeKeys({
       task: {
         'workerId': this.props.workerId,
@@ -71,8 +82,8 @@ export class MturkQSContainer extends React.Component {
       }
     });
     // Add final submit log
-    taskUpdate['task']['logs'] = this.logSubmit()
-
+    this.log.logSubmit()
+    taskUpdate['task']['logs'] = this.log.getLog();
     $.ajax({
       type: "POST",
       url: this.props.finalSubmitPath,
@@ -111,23 +122,29 @@ export class MturkQSContainer extends React.Component {
       return
     }
     if (confirm('Are you sure you want to restart the task? All previous answers given will be deleted.')) {
-      if (!this.state.questionSequenceHasEnded && !this.props.noWorkAvailable) {
-        this.questionSequence.restartQuestionSequence()
+      if (!this.props.noWorkAvailable) {
+        this.log.logReset(this.state.currentQuestion.id);
+        this.setState({
+          currentQuestion: this.props.questions[this.props.initialQuestionId],
+          numQuestionsAnswered: 0,
+          results: [],
+          questionSequenceHasEnded: false
+        })
       }
-      this.setState({
-        results: [],
-        errors: [],
-        logs: [],
-        questionSequenceHasEnded: false
-      })
     }
   }
 
+  onTweetLoadError() {
+    this.setState({
+      errors: this.state.errors.concat(['Error when trying to load tweet. Ensure you disable browser plugins which may block this content.'])
+    });
+  }
+  
+  //// RENDER helpers
   onHelp() {
     window.location.href= 'mailto:'.concat(this.props.helpEmail,  
       '?subject=Mturk worker question, hitId=', this.props.hitId)
   }
-
   getOptionButtons() {
     if (this.props.previewMode) {
       return;
@@ -145,21 +162,17 @@ export class MturkQSContainer extends React.Component {
       </button>
     </div>
   }
-
   getPreviewText() {
     return <div>
       <p>Please accept the HIT to start working on it.</p>
     </div>
   }
-
   getNoWorkAvailableText() {
     return <div>
       <h3>You have completed all work in this HIT group.</h3>
       <p style={{color: "red"}}>This HIT and future HITs in this group can not be completed. We kindly ask you to return the HIT.</p>
     </div>
-
   }
-
   getQuestionSequence() {
     if (this.props.previewMode) {
       return this.getPreviewText()
@@ -170,24 +183,24 @@ export class MturkQSContainer extends React.Component {
     if (!this.state.questionSequenceHasEnded) {
       return <QuestionSequence 
         ref={qs => {this.questionSequence = qs;}}
-        initialQuestionId={this.props.initialQuestionId}
         questions={this.props.questions}
+        currentQuestion={this.state.currentQuestion}
         transitions={this.props.transitions}
         tweetId={this.props.tweetId}
         tweetText={this.props.tweetText}
-        userId={null}
-        projectId={this.props.projectId}
-        submitResult={(args) => this.submitResult(args)}
         onTweetLoadError={() => this.onTweetLoadError()}
-        onQuestionSequenceEnd={(results, logs) => this.onQuestionSequenceEnd(results, logs)}
+        onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+        onAnswerSubmit={(answerId) => this.onAnswerSubmit(answerId)}
+        gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
         numTransitions={0}
         captchaVerified={true}
         enableAnswersDelay={this.props.enableAnswersDelay}
         displayQuestionInstructions={true}
+        numQuestionsAnswered={this.state.numQuestionsAnswered}
       /> 
     } else {
       return <MturkFinal 
-        onSubmit={(event) => this.onSubmit(event)}
+        onMturkSubmit={(event) => this.onMturkSubmit(event)}
         submitUrl={this.getSubmitUrl()}
         assignmentId={this.props.assignmentId}
         hitId={this.props.hitId}
@@ -196,6 +209,7 @@ export class MturkQSContainer extends React.Component {
   }
 
   render() {
+    console.log(this.log.getLog())
     let title = this.props.mturkTitle && <h4 className="mb-4">
       {this.props.mturkTitle}
     </h4>;
@@ -212,14 +226,14 @@ export class MturkQSContainer extends React.Component {
         return <li key={i}>{error}</li>
       })}
     </ul>
-      return(
-        <div className="col-12 text-center" style={{paddingTop: '30px'}}>
-          {title}
-          {mturkInstructions} 
-          {optionButtons}
-          {errors}
-          {body}
-        </div>
-      );
+    return(
+      <div className="col-12 text-center" style={{paddingTop: '30px'}}>
+        {title}
+        {mturkInstructions} 
+        {optionButtons}
+        {errors}
+        {body}
+      </div>
+    );
   }
 }

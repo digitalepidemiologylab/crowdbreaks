@@ -1,6 +1,11 @@
 // React
 import React from 'react'
 
+// Other
+let humps = require('humps');
+import { QSLogger } from './QSLogger';
+
+// Components
 import { QuestionSequence } from './QuestionSequence';
 import { Final } from './Final';
 import { InstructionModal } from './InstructionModal';
@@ -9,34 +14,39 @@ import { InstructionModal } from './InstructionModal';
 export class QSContainer extends React.Component {
   constructor(props) {
     super(props);
+    if (!props.userSignedIn && !props.captchaVerified) {
+      // Note: This could lead to problems if a user has multiple Question sequences in one window
+      window.onCaptchaVerify = this.verifyCallback.bind(this);
+    }
 
     // By default set test mode to false
-    let testMode = props.testMode
-    if (testMode === undefined) {
-      testMode = false;
+    this.testMode = props.testMode
+    if (this.testMode === undefined) {
+      this.testMode = false;
     }
 
     this.state = {
       'questionSequenceHasEnded': false,
       'captchaVerified': !props.enableCaptcha,  // if captcha is disabled, sets captcha permanently to verified state
-      'nextTweetId': 0,
       'tweetId': props.tweetId,
-      'transitions': props.transitions,
-      'numTransitions': props.numTransitions,
-      'questions': props.questions,
       'openModal': !props.userSignedIn,
       'errors': [],
-      'testMode': testMode
+      'nextTweetId': 0,
+      'currentQuestion': props.questions[props.initialQuestionId],
+      'unverifiedAnswers': [],
+      'numQuestionsAnswered': 0,
     };
+
+    this.log = new QSLogger(props.answersDelay);
   }
 
-  submitResult(resultData) {
-    if (this.state.testMode) {
-      return true;
-    }
-
-    if ('recaptcha_response' in resultData) {
-      // Make sure to only continue on successful verification
+  verifyCallback(response) {
+    // executed once the captcha has been verified
+    let resultData;
+    // Post any unverified data to server
+    while (this.state.unverifiedAnswers.length > 0) {
+      resultData = this.state.unverifiedAnswers.pop()
+      resultData['recaptcha_response'] = response;
       $.ajax({
         type: "POST",
         url: this.props.resultsPath,
@@ -53,13 +63,43 @@ export class QSContainer extends React.Component {
           return false;
         },
         error: (response) => {
-          var errors = response['responseJSON']['errors'];
+          let errors = response['responseJSON']['errors'];
           this.setState({
             errors: this.state.errors.concat(errors)
           });
           return false;
         }
       });
+    }
+  };
+
+  onAnswerSubmit(answerId) {
+    // Increment answer counter
+    this.setState({
+      numQuestionsAnswered: this.state.numQuestionsAnswered + 1
+    })
+    // Log result
+    this.log.logResult(this.state.currentQuestion.id);
+    // Exit in case of test mode
+    if (this.testMode) {
+      return true;
+    }
+    // Compile result
+    let resultData = humps.decamelizeKeys({
+      result: {
+        answerId: answerId,
+        questionId: this.state.currentQuestion.id,
+        userId: this.props.userId,
+        tweetId: this.state.tweetId,
+        projectId: this.props.projectId
+      }
+    });
+    // Captcha verification
+    if (!this.props.userSignedIn && !this.state.captchaVerified) {
+      // add to waiting queue to be verified by captcha
+      this.state.unverifiedAnswers.push(resultData);
+      // trigger captcha verification
+      grecaptcha.execute();
     } else {
       $.ajax({
         type: "POST",
@@ -84,34 +124,38 @@ export class QSContainer extends React.Component {
     });
   }
 
-  onQuestionSequenceEnd(results, logs) {
-    // remember user has answered tweet
-    var data = {
-      'qs': {
-        'tweet_id': this.state.tweetId,
-        'user_id': this.props.userId,
-        'project_id': this.props.projectId,
-        'logs': logs,
-        'test_mode': this.state.testMode
+  onQuestionSequenceEnd() {
+    this.log.logFinal();
+    let data = humps.decamelizeKeys({
+      qs: {
+        tweetId: this.state.tweetId,
+        userId: this.props.userId,
+        projectId: this.props.projectId,
+        testMode: this.state.testMode,
       }
-    };
-    // Note: results contains a collection of all previous results which is not used here but may be used by other container components
-
+    });
+    data['qs']['logs'] = this.log.getLog();
     $.ajax({
       type: "POST",
       url: this.props.endQuestionSequencePath,
       data: JSON.stringify(data),
       contentType: "application/json",
       success: (response) => {
-        var tweet_id = response['tweet_id'];
+        let tweet_id = response['tweet_id'];
         this.setState({
           nextTweetId: tweet_id
         });
       }
     });
-    
     this.setState({
       'questionSequenceHasEnded': true
+    });
+  }
+
+  gotoNextQuestion(nextQuestion) {
+    // Go to next question
+    this.setState({
+      'currentQuestion': this.props.questions[nextQuestion],
     });
   }
 
@@ -120,6 +164,7 @@ export class QSContainer extends React.Component {
       // Something went wrong, simply reload page to get new question sequence
       window.location.reload(false);
     } else {
+      this.log = new QSLogger(this.props.answersDelay)
       this.setState({
         tweetId: this.state.nextTweetId,
         questionSequenceHasEnded: false,
@@ -131,7 +176,6 @@ export class QSContainer extends React.Component {
 
   render() {
     let body = null;
-
     if (!this.state.questionSequenceHasEnded) {
       body = <div>
         <InstructionModal 
@@ -141,21 +185,23 @@ export class QSContainer extends React.Component {
         <QuestionSequence 
           ref={qs => {this.questionSequence = qs;}}
           projectTitle={this.props.projectTitle}
-          initialQuestionId={this.props.initialQuestionId}
-          questions={this.state.questions}
-          transitions={this.state.transitions}
+          questions={this.props.questions}
+          currentQuestion={this.state.currentQuestion}
+          transitions={this.props.transitions}
           tweetId={this.state.tweetId}
           userId={this.props.userId}
           projectId={this.props.projectId}
-          submitResult={(args) => this.submitResult(args)}
           onTweetLoadError={() => this.onTweetLoadError()}
           onQuestionSequenceEnd={(results, logs) => this.onQuestionSequenceEnd(results, logs)}
-          numTransitions={this.state.numTransitions}
+          onAnswerSubmit={(answerId) => this.onAnswerSubmit(answerId)}
+          gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
+          numTransitions={this.props.numTransitions}
           captchaSiteKey={this.props.captchaSiteKey}
           userSignedIn={this.props.userSignedIn}
           captchaVerified={this.state.captchaVerified}
-          enableAnswersDelay={this.props.enableAnswersDelay}
+          answersDelay={this.props.answersDelay}
           displayQuestionInstructions={false}
+          numQuestionsAnswered={this.state.numQuestionsAnswered}
         /> 
       </div>
     } else {

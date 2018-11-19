@@ -65,7 +65,7 @@ class QuestionSequencesController < ApplicationController
     # update tweet in Redis pool
     api.update_tweet(project.es_index_name, user_id, tweet_id)
 
-    # get next question sequence data
+    # get next tweet
     new_tweet_id = api.get_tweet(project.es_index_name, user_id: user_id)
 
     # save logs
