@@ -6,7 +6,13 @@ module Admin
       @group_by_qs = param_is_truthy?(:group_by_qs)
       if @group_by_qs
         @qs_results = get_qs
-        @tweet_text = MturkTweet.find_by(tweet_id: params[:tweet_id])&.tweet_text
+        if get_qs.first.mturk_res_type?
+          @tweet_text = MturkTweet.find_by(tweet_id: params[:tweet_id])&.tweet_text
+        elsif get_qs.first.local_res_type?
+          @tweet_text = LocalTweet.find_by(tweet_id: params[:tweet_id])&.tweet_text
+        else
+          @tweet_text = ""
+        end
         @log = Hashie::Mash.new @qs_results&.first&.question_sequence_log&.log
       end
     end

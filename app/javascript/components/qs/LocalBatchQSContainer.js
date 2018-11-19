@@ -67,7 +67,6 @@ export class LocalBatchQSContainer extends React.Component {
   onQuestionSequenceEnd() {
     // Save final time
     this.log.logFinal();
-    console.log(this.results)
 
     let data = humps.decamelizeKeys({
       qs: {
@@ -194,7 +193,6 @@ export class LocalBatchQSContainer extends React.Component {
   }
 
   render() {
-    console.log(this.results)
     let body = this.getQuestionSequence()
     let counts = <div className="mb-3">
       <LocalBatchCounts 

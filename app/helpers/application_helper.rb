@@ -66,8 +66,8 @@ module ApplicationHelper
     end
   end
 
-  def go_back_btn(path, col: 'col-12', mb: 'mb-5')
-    content_tag :div, class: "row #{mb}" do
+  def go_back_btn(path, col: 'col-12', center: false, mb: 'mb-5')
+    content_tag :div, class: "row #{center ? 'justify-content-center' : ''} #{mb}" do
       content_tag :div, class: col do
         link_to path, class: 'btn btn-secondary btn-lg' do 
           'Go back'
