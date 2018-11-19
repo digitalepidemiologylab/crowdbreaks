@@ -1,5 +1,5 @@
 <% @title ||= 'Result'; title @title %>
-<%= go_back_btn admin_results_path(group_by_qs: @group_by_qs, project_id_filter: params[:project_id_filter], res_type_filter: params[:res_type_filter]), center: true, col: 'col-xl-10' %>
+<%= go_back_btn admin_results_path(**@options), center: true, col: 'col-xl-10' %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-xl-10">

@@ -15,6 +15,7 @@ module Admin
         end
         @log = Hashie::Mash.new @qs_results&.first&.question_sequence_log&.log
       end
+      @options = get_filter_options
     end
 
     def index
@@ -35,13 +36,14 @@ module Admin
         query = query
           .left_outer_joins(:task)
           .select('MAX(results.id) as id', 'MAX(results.created_at) as created_at', 'count(*) as num_results',
-        'tasks.mturk_worker_id as mturk_worker_id', :res_type, :project_id, :tweet_id, :user_id)
-          .group(:res_type, :project_id, :tweet_id, :user_id, 'tasks.mturk_worker_id')
+        'tasks.mturk_worker_id as mturk_worker_id', :res_type, :project_id, :tweet_id, :user_id, 'tasks.mturk_batch_job_id as mturk_batch_job_id')
+          .group(:res_type, :project_id, :tweet_id, :user_id, 'tasks.mturk_worker_id', 'tasks.mturk_batch_job_id')
           .order(Arel.sql('max(results.created_at) DESC'))
       else
         query = query.order(created_at: :desc)
       end
       @results = query.page params[:page]
+      @options = get_filter_options
     end
 
     def destroy
@@ -67,9 +69,18 @@ module Admin
 
     private
 
+    def get_filter_options
+      {
+        project_id_filter: params[:project_id_filter],
+        res_type_filter: params[:res_type_id_filter],
+        group_by_qs: params[:group_by_qs]
+      }
+    end
+
     def get_qs
       if params[:res_type] == 'mturk'
-        query = Result.joins(:task).where(tweet_id: params[:tweet_id], user_id: params[:user_id], project_id: params[:project_id], 'tasks.mturk_worker_id': params[:mturk_worker_id])
+        query = Result.joins(:task).where(tweet_id: params[:tweet_id], user_id: params[:user_id], project_id: params[:project_id],
+                                          'tasks.mturk_worker_id': params[:mturk_worker_id], 'tasks.mturk_batch_job_id': params[:mturk_batch_job_id])
       else
         query = Result.where(tweet_id: params[:tweet_id], user_id: params[:user_id], project_id: params[:project_id])
       end
