@@ -19,10 +19,10 @@ function toggleReviewable() {
     toggleParam('reviewable', toBeChecked);
   });
 }
-function toggleIncludeReviewed() {
-  $('.include-reviewed-checkbox').change(function() {
+function toggleShowReviewed() {
+  $('.show-reviewed-checkbox').change(function() {
     let toBeChecked = $(this).is(':checked');
-    toggleParam('include_reviewed', toBeChecked);
+    toggleParam('show_reviewed', toBeChecked);
   });
 }
 // Admin/Result/index
@@ -43,6 +43,15 @@ function selectResTypeResults() {
     let res_type = $(this).find(":selected").val()
     changeSelectParam('res_type_filter', res_type)
   })
+}
+
+
+// Select all checkbox (looks for checkboxes with class multi-checkable)
+function toggleCheckAll() {
+  $('#check-all').change(function() {
+    let checkboxes = $('.multi-checkable')
+    checkboxes.prop('checked', $(this).is(':checked'));
+  });
 }
 
 // helpers
@@ -69,8 +78,10 @@ $(document).on('turbolinks:load', function() {
   toggleSandbox();
   toggleFiltered();
   toggleReviewable();
-  toggleIncludeReviewed();
+  toggleShowReviewed();
 
   selectProjectResults();
   selectResTypeResults();
+
+  toggleCheckAll();
 })

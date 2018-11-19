@@ -5,10 +5,10 @@ module Manage
 
     def index
       @hit_type_id = mturk_reviewable_hit_params[:hit_type_id]
-      @include_reviewed = param_bool_val(params[:include_reviewed])
+      @show_reviewed = param_bool_val(params[:show_reviewed])
       @show_all = false
       @results_per_page = 30   # max 100
-      status = @include_reviewed ? 'Reviewing' : 'Reviewable'
+      status = @show_reviewed ? 'Reviewing' : 'Reviewable'
       if not @hit_type_id.present?
         @show_all = true
         hits_list = @mturk.list_reviewable_hits(next_token: params[:next_token], max_results: @results_per_page, status: status)
@@ -45,7 +45,7 @@ module Manage
     end
 
     def multi_review
-      accepted = multi_review_params[:accepted]
+      accepted = multi_review_params[:accepted_ids]
       if accepted.nil? or accepted.empty?
         redirect_to(mturk_reviewable_hits_path, alert: "No HITs selected for accepting.") and return
       end
@@ -74,7 +74,7 @@ module Manage
     end
 
     def multi_review_params
-      params.permit(:accepted => [])
+      params.permit(:accepted_ids => [])
     end
 
     def review_params
