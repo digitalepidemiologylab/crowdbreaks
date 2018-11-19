@@ -53,7 +53,7 @@ export class LocalBatchQSContainer extends React.Component {
         answerId: answerId,
         questionId: this.state.currentQuestion.id,
         userId: this.props.userId,
-        tweetId: this.props.tweetId,
+        tweetId: this.state.tweetId,
         projectId: this.props.projectId
       }
     });
