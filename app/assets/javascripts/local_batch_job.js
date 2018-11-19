@@ -1,6 +1,6 @@
 function toggleMturkMode() {
   $('#mturk-checkbox').change(function() {
-    var url = new URL(window.location.href);
+    let url = new URL(window.location.href);
     url.searchParams.delete('mturk_mode')
     if($(this).is(':checked')) {
       url.searchParams.append('mturk_mode', true)

@@ -5,7 +5,7 @@ import React from 'react';
 import { LeadlineItem } from './LeadlineItem';
 
 // Other
-var moment = require('moment');
+let moment = require('moment');
 
 
 export class Leadline extends React.Component {
@@ -20,7 +20,7 @@ export class Leadline extends React.Component {
   }
 
   componentWillMount() {
-    var postData = {
+    let postData = {
       'leadline': {
         'num_new_entries': '3',
         'exclude_usernames': [],
@@ -53,7 +53,7 @@ export class Leadline extends React.Component {
       return false;
     }
 
-    var prevThis = this
+    let prevThis = this
     return(
       <div className="text-center">
         {this.state.queue_items.map(function(item) {

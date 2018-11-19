@@ -1,12 +1,12 @@
 // websocket update functions (see channels/job_notification.js)
 // Running
 function onUpdateMturkHitsRunning(hits_loaded) {
-  var text = 'Refreshing Mturk HITs. This may take a while... (loaded ' + hits_loaded + ' HITs)';
+  const text = 'Refreshing Mturk HITs. This may take a while... (loaded ' + hits_loaded + ' HITs)';
   setSpinnerInfoText(text, false);
 }
 // Failed
 function onUpdateMturkHitsFailed(hits_loaded) {
-  var text = 'Refreshing Mturk HITs is already running. Try again later.';
+  const text = 'Refreshing Mturk HITs is already running. Try again later.';
   setSpinnerInfoText(text, true);
 }
 
@@ -24,11 +24,11 @@ function onRefreshMturkHits() {
   $('#refresh-mturk-hits').bind('ajax:beforeSend', function() {
     $('#refresh-mturk-hits-group').hide()
     $('#refresh-mturk-hits-group-running').show()
-    var text = 'Refreshing Mturk HITs. This may take a while...'
+    const text = 'Refreshing Mturk HITs. This may take a while...'
     setSpinnerInfoText(text, false);
   })
   $('#refresh-mturk-hits').on('ajax:error', function(e) {
-    var text = 'Refreshing Mturk HITs failed.';
+    const text = 'Refreshing Mturk HITs failed.';
     setSpinnerInfoText(text, true);
   })
 }

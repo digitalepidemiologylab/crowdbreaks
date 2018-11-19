@@ -3,8 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Bar, defaults } from 'react-chartjs-2';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-var moment = require('moment');
-
+let moment = require('moment');
 
 export class MonitorStream extends React.Component {
   constructor(props) {

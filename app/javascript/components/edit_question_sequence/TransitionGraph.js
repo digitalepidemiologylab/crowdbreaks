@@ -13,8 +13,8 @@ export class TransitionGraph extends React.Component {
   }
 
   generateGraph() {
-    var transitions = {};
-    var nodes_arr = []
+    let transitions = {};
+    let nodes_arr = []
     for (let id in this.props.transitions) {
       let from_question = this.props.transitions[id].from_question;
       let to_question = this.props.transitions[id].transition.to_question;
@@ -34,7 +34,7 @@ export class TransitionGraph extends React.Component {
     }
 
     // collect nodes
-    var nodes = [{id: 'end'}];
+    let nodes = [{id: 'end'}];
     for (let i in nodes_arr) {
       nodes.push({id: nodes_arr[i].toString()})
       if (!(nodes_arr[i] in transitions)) {
@@ -43,7 +43,7 @@ export class TransitionGraph extends React.Component {
     }
     
     // collect links
-    var links = [];
+    let links = [];
     for (let i in transitions) {
       for (let j in transitions[i]) {
         links.push({source: i, target: transitions[i][j].toString()})
@@ -53,7 +53,7 @@ export class TransitionGraph extends React.Component {
   }
 
   render() {
-    var data = this.generateGraph();
+    let data = this.generateGraph();
     const color = '#212529';
     const highlightColor = '#db4457';
     const fontSize = 14;

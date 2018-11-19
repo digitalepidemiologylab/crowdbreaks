@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types';
 
 export const Answer = (props) => {
-  var buttonStyle = {};
-  var btnClassName = 'btn btn-lg';
+  let buttonStyle = {};
+  let btnClassName = 'btn btn-lg';
   const predefinedBtnTypes = ['btn-primary', 'btn-secondary', 'btn-positive', 'btn-negative'];
   if (predefinedBtnTypes.includes(props.color)) {
     btnClassName += ' '+props.color;

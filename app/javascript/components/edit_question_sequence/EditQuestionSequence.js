@@ -61,7 +61,7 @@ export class EditQuestionSequence extends React.Component {
   }
 
   onUpdateQuestion(e) {
-    var dummyQuestion = this.state.questions;
+    let dummyQuestion = this.state.questions;
     dummyQuestion[e.id].question = e.question;
     dummyQuestion[e.id].instructions = e.instructions;
     this.setState({
@@ -70,7 +70,7 @@ export class EditQuestionSequence extends React.Component {
   }
 
   onUpdateAnswers(e) {
-    var dummyQuestions = this.state.questions;
+    let dummyQuestions = this.state.questions;
     dummyQuestions[e.questionId].answers = e.answers;
     this.setState({
       questions: dummyQuestions,
@@ -78,7 +78,7 @@ export class EditQuestionSequence extends React.Component {
   }
 
   onUpdateTransition(e) {
-    var dummyTransition = this.state.transitions;
+    let dummyTransition = this.state.transitions;
     dummyTransition[e.id].from_question = e.from_question;
     dummyTransition[e.id].transition.to_question = e.transition.to_question;
     dummyTransition[e.id].transition.answer = e.transition.answer;
@@ -127,7 +127,7 @@ export class EditQuestionSequence extends React.Component {
   }
 
   addNewAnswer(questionId) {
-    var dummyQuestions = this.state.questions;
+    let dummyQuestions = this.state.questions;
     dummyQuestions[questionId].answers.push({'id': this.state.newAnswerIdCounter, 'answer': '', 'color': 'btn-primary', 'label': '', original_id: null})
     this.setState({
       questions: dummyQuestions,
@@ -170,9 +170,9 @@ export class EditQuestionSequence extends React.Component {
 
   onDeleteAnswer(answerId, questionId, e) {
     // Delete answers from questions
-    var newAnswers = [];
-    var oldAnswers = this.state.questions[questionId].answers;
-    var newQuestions = this.state.questions;
+    let newAnswers = [];
+    let oldAnswers = this.state.questions[questionId].answers;
+    let newQuestions = this.state.questions;
     for (let answerPos in oldAnswers) {
       if (answerId != oldAnswers[answerPos].id) {
         newAnswers.push(oldAnswers[answerPos])
@@ -224,7 +224,7 @@ export class EditQuestionSequence extends React.Component {
   }
 
   saveQuestionSequence() {
-    var data = {
+    let data = {
       questions: this.state.questions,
       transitions: this.state.transitions
     };
@@ -250,7 +250,7 @@ export class EditQuestionSequence extends React.Component {
   }
 
   render() {
-    var prevThis = this;
+    let prevThis = this;
     let questionLabel = this.getLabel(this.state.showQuestions, 'Questions')
     let answersLabel = this.getLabel(this.state.showAnswers, 'Answers')
     let transitionsLabel = this.getLabel(this.state.showTransitions, 'Transitions')
@@ -283,7 +283,7 @@ export class EditQuestionSequence extends React.Component {
               </thead>
               <tbody>
                 {Object.keys(this.state.questions).map( (questionId, id) => {
-                  var q = prevThis.state.questions[questionId]
+                  let q = prevThis.state.questions[questionId]
                   return <EditQuestion 
                     key={q.id} 
                     questionId={questionId} 
@@ -325,7 +325,7 @@ export class EditQuestionSequence extends React.Component {
           </thead>
           <tbody>
             {Object.keys(this.state.questions).map( (questionId, id) => {
-              var q = prevThis.state.questions[questionId]
+              let q = prevThis.state.questions[questionId]
               return <EditAnswers
                 key={q.id} 
                 questionId={questionId} 

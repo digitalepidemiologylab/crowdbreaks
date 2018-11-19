@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 export class EditQuestion extends React.Component {
   constructor(props) {
     super(props);
-    var editMode = false;
-    var editModeInstructions = false;
+    let editMode = false;
+    let editModeInstructions = false;
     if (props.question == '') {
       editMode = true;
       if (props.instructions != '') {
