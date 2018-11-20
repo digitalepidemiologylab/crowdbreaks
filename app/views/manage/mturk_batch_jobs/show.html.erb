@@ -6,8 +6,25 @@
 <% end %>
 
 <div class="row justify-content-center mb-4">
-  <div class="col-12 col-md-8">
+  <div class="col-md-8">
     <h2>Mturk Batch Job details</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-md-6 mb-5">
+    <div class="card">
+      <div class="card-body">
+        <table class="table vertical-align borderless-table">
+          <% if not @mturk_batch_job.sandbox? %>
+            <%= table_row('Approximate cost', '$&nbsp;'.html_safe + num(@mturk_batch_job.reward * @mturk_batch_job.tasks.count)) %>
+          <% end %>
+          <%= table_row('Auto-approval (days)', @mturk_batch_job.auto_approval_delay_in_seconds/(3600.0 * 24)) %>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
   </div>
 </div>
 
