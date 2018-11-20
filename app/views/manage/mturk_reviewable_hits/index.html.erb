@@ -93,11 +93,16 @@
                 <% end %>
               </td>
               <td>
-                <% if hit[:assignment_id].present? %>
-                  <span>
+                <div class='icon-spacing'>
+                  <% if hit[:assignment_id].present? %>
                     <%= link_to fa_icon("eye"), mturk_reviewable_hit_path(hit[:assignment_id], sandbox: @sandbox, show_reviewed: @show_reviewed), title: 'Review individual HIT' %>
-                  </span>
+                  <% end %>
+                  <% if task_and_results_exist_for_hit?(hit[:hit_id]) %>
+                    <%= link_to mturk_reviewable_hit_link_to_results_path(hit[:assignment_id], hit_id: hit[:hit_id]), title: 'Link to results' do %>
+                      Result <%= fa_icon('angle-double-right') %>
+                  <% end %>
                 <% end %>
+                </div>
               </td>
             </tr>
           <% end %>

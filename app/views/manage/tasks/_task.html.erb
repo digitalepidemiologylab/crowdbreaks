@@ -8,9 +8,24 @@
   <td><%= task.lifecycle_status %></td>
 
   <td>
-    <% if task.hit_id.present? and can? :read, :mturk_hit %>
-      <%= link_to 'HIT details', mturk_cached_hit_path(task.hit_id, sandbox: task.mturk_batch_job.sandbox, come_from: task.mturk_batch_job.id) %>
+    <% if task.hit_id.present? and can? :read, :mturk_hit and mturk_cached_hit_exists?(task)%>
+      <div class="no-wrap"> 
+        <%= link_to mturk_cached_hit_path(get_mturk_cached_hit_id(task), sandbox: task.mturk_batch_job.sandbox, come_from: task.mturk_batch_job.id) do %>
+          HIT <%= fa_icon('angle-double-right') %>
+      <% end %>
+      </div>
     <% end %>
+    <% if results_exist_for_task?(task) %>
+      <div class="no-wrap"> 
+        <%= link_to admin_result_path(
+          task.results.first.id, project_id: task.results.first.project_id, user_id: task.results.first.user_id,
+          tweet_id: task.results.first.tweet_id, mturk_worker_id: task.mturk_worker.id,
+          mturk_batch_job_id: task.mturk_batch_job.id,
+          res_type: task.results.first.res_type, group_by_qs: true) do %>
+          Result <%= fa_icon('angle-double-right') %>
+        <% end %>
+      </div>
+  <% end %>
   </td>
   <td>
     <div>

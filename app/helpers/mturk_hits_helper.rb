@@ -17,6 +17,12 @@ module MturkHitsHelper
     Task.exists?(hit_id: hit_id)
   end
 
+  def task_and_results_exist_for_hit?(hit_id)
+    task = Task.find_by(hit_id: hit_id)
+    return false if task.nil?
+    return task.results.count > 0
+  end
+
   def batch_job_exists_for_hit?(hit_id)
     mturk_batch_job = Task.find_by(hit_id: hit_id)&.mturk_batch_job
     mturk_batch_job.nil? ? false : true
