@@ -55,6 +55,18 @@ module Manage
       redirect_to(mturk_reviewable_hits_path, notice: "Successfully accepted #{accepted.length} HIT(s).") and return
     end
 
+    def link_to_results
+      task = Task.find_by(hit_id: params[:hit_id])
+      if task.nil? or task.results.count == 0 or task.mturk_worker.nil? or task.mturk_batch_job.nil?
+        redirect_back(fallback_location: root_path, notice: 'No results found for this HIT.') and return
+      end
+      result = task.results.first
+      redirect_to(admin_result_path(result.id, project_id: result.project_id, user_id: result.user_id,
+                                    tweet_id: result.tweet_id, mturk_worker_id: task.mturk_worker.id,
+                                    mturk_batch_job_id: task.mturk_batch_job.id,
+                                    res_type: result.res_type, group_by_qs: true))
+    end
+
     def accept
       # note: params[:mturk_reviewable_hit_id] is the HIT assignment Id!
       @mturk.approve_assignment(params[:mturk_reviewable_hit_id], message: review_params[:message])

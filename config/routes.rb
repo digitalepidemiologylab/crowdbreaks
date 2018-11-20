@@ -71,6 +71,7 @@ Rails.application.routes.draw do
         get 'update_cached_hits', on: :collection
       end
       resources :mturk_reviewable_hits, only: [:index, :show] do
+        get 'link_to_results'
         post 'multi_review', on: :collection
         post 'accept'
         post 'reject'
