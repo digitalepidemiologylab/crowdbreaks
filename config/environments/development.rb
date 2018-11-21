@@ -17,24 +17,33 @@ Rails.application.configure do
   config.cache_store = :redis_cache_store, { url: ENV['REDISTOGO_URL'] }
 
   # Action mailer
-  config.action_mailer.default_url_options = { :host => ENV['HOST']  }
+  config.action_mailer.default_url_options = { :host => ENV['MANDRILL_DOMAIN']  }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default :charset => "utf-8"
   config.action_mailer.perform_caching = false
   config.action_mailer.default_options = {from: 'no-reply@crowdbreaks.org'}
   config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   address:              ENV['EMAIL_ADDRESS'],
+  #   port:                 587,
+  #   domain:               ENV['EMAIL_DOMAIN'],
+  #   user_name:            ENV['EMAIL_USERNAME'],
+  #   password:             ENV['EMAIL_PASSWORD'],
+  #   authentication:       'plain',
+  #   enable_starttls_auto: true  
+  # }
+  
   config.action_mailer.smtp_settings = {
-    address:              ENV['EMAIL_ADDRESS'],
-    port:                 587,
-    domain:               ENV['EMAIL_DOMAIN'],
-    user_name:            ENV['EMAIL_USERNAME'],
-    password:             ENV['EMAIL_PASSWORD'],
+    address:              ENV['MANDRILL_ADDRESS'],
+    port:                 ENV['MANDRILL_PORT'],
+    domain:               ENV['MANDRILL_DOMAIN'],
+    user_name:            ENV['MANDRILL_USERNAME'],
+    password:             ENV['MANDRILL_PASSWORD'],
     authentication:       'plain',
     enable_starttls_auto: true  
   }
 
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
@@ -50,7 +59,7 @@ Rails.application.configure do
   config.assets.quiet = true
 
   # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true
+  config.action_view.raise_on_missing_translations = true
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
