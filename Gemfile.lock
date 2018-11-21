@@ -128,6 +128,7 @@ GEM
     equalizer (0.0.11)
     erubi (1.7.1)
     eventmachine (1.2.7)
+    excon (0.62.0)
     execjs (2.7.0)
     factory_bot (4.11.1)
       activesupport (>= 3.0.0)
@@ -217,6 +218,9 @@ GEM
     lumberjack (1.0.13)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
+    mandrill-api (1.0.53)
+      excon (>= 0.16.0, < 1.0)
+      json (>= 1.7.7, < 2.0)
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     memoizable (0.4.2)
@@ -229,7 +233,6 @@ GEM
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mustermann (1.0.3)
     naught (1.1.0)
     nenv (0.3.0)
     nio4r (2.3.1)
@@ -337,7 +340,6 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.10.0)
-    ruby_http_client (3.3.0)
     rubyzip (1.2.2)
     safe_yaml (1.0.4)
     sass (3.7.0)
@@ -354,9 +356,6 @@ GEM
     selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2, >= 1.2.2)
-    sendgrid-ruby (5.3.0)
-      ruby_http_client (~> 3.3.0)
-      sinatra (>= 1.4.7, < 3)
     shellany (0.0.1)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
@@ -373,11 +372,6 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    sinatra (2.0.4)
-      mustermann (~> 1.0)
-      rack (~> 2.0)
-      rack-protection (= 2.0.4)
-      tilt (~> 2.0)
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-watcher-listen (2.0.1)
@@ -473,6 +467,7 @@ DEPENDENCIES
   json_translate
   kaminari (~> 1.0.1)
   listen (~> 3.0.5)
+  mandrill-api
   pg (~> 0.18)
   puma (~> 3.0)
   rails (~> 5.2.1)
@@ -485,7 +480,6 @@ DEPENDENCIES
   rspec-rails
   rubocop
   sass-rails (~> 5.0, >= 5.0.4)
-  sendgrid-ruby
   shoulda-matchers
   sidekiq
   simple_form
