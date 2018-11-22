@@ -69,7 +69,16 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    I18n.locale = params[:locale] || I18n.default_locale
+    if user_signed_in?
+      if params[:locale].present? and Crowdbreaks::Locales.include?(params[:locale])
+        I18n.locale = params[:locale]
+        current_user.update_attribute(:locale, I18n.locale)
+      else
+        I18n.locale = current_user.locale.to_sym ||  I18n.default_locale
+      end
+    else
+      I18n.locale = params[:locale] || I18n.default_locale
+    end
   end
 
   def default_url_options(options = {})

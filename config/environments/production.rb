@@ -62,19 +62,9 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
   config.action_mailer.default_options = {from: 'no-reply@crowdbreaks.org'}
   config.action_mailer.delivery_method = :smtp
-  # config.action_mailer.smtp_settings = {
-  #   :user_name => ENV['EMAIL_USERNAME'],
-  #   :password => ENV['EMAIL_PASSWORD'],
-  #   :domain => ENV['EMAIL_DOMAIN'],
-  #   :address => ENV['EMAIL_ADDRESS'],
-  #   :port => 587,
-  #   :authentication => :plain,
-  #   :enable_starttls_auto => true
-  # }
   config.action_mailer.smtp_settings = {
     address:              ENV['MANDRILL_ADDRESS'],
     port:                 ENV['MANDRILL_PORT'],
-    domain:               ENV['MANDRILL_DOMAIN'],
     user_name:            ENV['MANDRILL_USERNAME'],
     password:             ENV['MANDRILL_PASSWORD'],
     authentication:       'plain',

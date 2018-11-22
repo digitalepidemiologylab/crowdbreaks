@@ -1,0 +1,22 @@
+de:
+  email_wrong_recipient: 'Falls Sie diese Anfrage nicht gemacht haben bitten wir Sie mit uns Kontakt aufzunehmen: info@crowdbreaks.org.'
+  default_signature_html: 'Beste Grüsse,<br> Das Crowdbreaks team'
+  default_greeting: 'Hallo %{username},'
+  confirmation_instructions:
+    subject: 'Bestätige dein Konto'
+    body_html: 'Willkommen bei Crowdbreaks! Du kannst dein Konto bestätigen indem du den folgenden Knopf drückst:'
+    button_text: 'Mein Konto bestätigen'
+  unlock_instructions:
+    subject: 'Mein Konto entsperren'
+    body_html: 'Ihr Konto wurde aufgrund einer großen Anzahl von fehlgeschlagenen Anmeldeversuchen gesperrt.<br><br>Folgen Sie dem untenstehenden Link, um Ihr Konto zu entsperren:'
+    button_text: 'Mein Konto entsperren'
+  reset_password_instructions:
+    subject: 'Anleitung für das Zurücksetzen Ihres Passworts'
+    body_html: "Jemand hat einen Link angefordert, um Ihr Passwort zu ändern. Klicken Sie auf den unten aufgeführten Link um das Passwort zu ändern."
+    button_text: 'Passwort ändern'
+  password_change:
+    subject: 'Passwort geändert'
+    body_html: "Wir kontaktieren Sie, um Ihnen mitzuteilen, dass Ihr Passwort geändert wurde."
+  password_change:
+    subject: 'E-mail geändert'
+    body_html: "Wir kontaktieren Sie, um Ihnen mitzuteilen, dass Ihre E-mail geändert wurde."
