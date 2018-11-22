@@ -1,0 +1,22 @@
+en:
+  email_wrong_recipient: 'If you did not make this request, please contact us at info@crowdbreaks.org.'
+  default_signature: 'Best regards,\n The Crowdbreaks team'
+  default_greeting: 'Dear %{username},'
+  confirmation_instructions:
+    subject: 'Confirm your account'
+    body_html: 'Welcome to Crowdbreaks! You can confirm your account email by clicking the button below:'
+    button_text: 'Confirm my account'
+  unlock_instructions:
+    subject: 'Unlock account'
+    body_html: 'Your account has been locked due to an excessive number of unsuccessful sign in attempts.<br><br>Click the link below to unlock your account:'
+    button_text: 'Unlock my account'
+  reset_password_instructions:
+    subject: 'Password reset instructions'
+    body_html: "Someone has requested a link to change your password. You can do this through the link below. If you didn't request this, please ignore this email. Your password won't change until you access the link above and create a new one."
+    button_text: 'Change my password'
+  password_change:
+    subject: 'Password change'
+    body_html: "We're contacting you to notify you that your password has been changed."
+  password_change:
+    subject: 'Email change'
+    body_html: "We're contacting you to notify you that your email has been changed."
