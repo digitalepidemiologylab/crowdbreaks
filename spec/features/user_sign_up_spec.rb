@@ -16,9 +16,7 @@ RSpec.feature "UserSignUp", type: :feature, js: true do
       expect(user.confirmation_token).not_to be(nil)
 
       # confirm user
-      last_email = ActionMailer::Base.deliveries.last.body.to_s
-      token = /confirmation_token=(.{20})/.match(last_email)[1]
-      visit("/en/users/confirmation?confirmation_token=#{token}")
+      visit("/en/users/confirmation?confirmation_token=#{user.confirmation_token}")
       expect(page).to have_content('Your email address has been successfully confirmed.')
 
       # Sign in

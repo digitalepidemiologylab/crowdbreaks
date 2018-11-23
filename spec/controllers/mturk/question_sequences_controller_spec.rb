@@ -238,14 +238,8 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         assignmentId: '123'
       }
       expect(assigns(:tweet_id)).to eq(mturk_tweet6.tweet_id.to_s).or eq(mturk_tweet7.tweet_id.to_s)
-
-      # max_tasks_per_worker (=1) reached!
-      get :show, params: {
-        hitId: task_submitted8.hit_id,
-        workerId: mturk_worker8.worker_id,
-        assignmentId: '123'
-      }
-      expect(assigns(:tweet_id)).to eq("")
+      assert_requested :post, /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/,
+        body: {QualificationTypeId: mturk_batch_job4.qualification_type_id, WorkerId: mturk_worker8.worker_id}.to_json
     end
 
     it "detects wrongly assigned availability with before_and_after check availability option" do
