@@ -59,7 +59,7 @@
             data: {confirm: "Delete batch, tasks, and all associated results?"} %>
         <% end %>
       <% end %>
-      <% if mturk_batch_job.status == 'unsubmitted' and can? :update, mturk_batch_job %>
+      <% if ['unsubmitted', 'empty'].include?(mturk_batch_job.status) and can? :update, mturk_batch_job %>
         <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id), title: 'Edit' %>
       <% end %>
       <% if can? :create, MturkBatchJob  %>
