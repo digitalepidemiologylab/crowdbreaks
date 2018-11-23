@@ -51,7 +51,6 @@ gem 'friendly_id', '~> 5.1'
 # mturk client
 gem 'aws-sdk-mturk'
 # email
-# gem 'sendgrid-ruby'
 gem 'mandrill-api'
 # JS build
 gem 'webpacker', '~> 3.0'
