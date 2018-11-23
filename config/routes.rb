@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   end
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
-    devise_for :users, controllers: { registrations: 'users/registrations' }
+    devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
     get 'about', to: 'pages#about'
     get 'privacy', to: 'pages#privacy'
     get 'terms_of_use', to: 'pages#terms_of_use'
