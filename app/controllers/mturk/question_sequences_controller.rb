@@ -20,11 +20,12 @@ class Mturk::QuestionSequencesController < ApplicationController
     @sandbox = task.mturk_batch_job.sandbox
 
     if not @preview_mode
+      worker = find_or_create_worker(@worker_id)
       # worker has accepted the HIT
-      @tweet_id, @tweet_text = get_tweet_for_worker(@worker_id, task)
+      @tweet_id, @tweet_text = get_tweet_for_worker(worker, task)
       if @tweet_id.blank?
         # All work for worker has been done, exclude from qualification 
-        Mturk.new(sandbox: @sandbox).exclude_worker_from_qualification(@worker_id, task.mturk_batch_job.qualification_type_id)
+        worker.exclude_worker(task)
         @no_work_available = true # used for rendering information to the worker that he has finished all work
       end
     end
@@ -87,14 +88,18 @@ class Mturk::QuestionSequencesController < ApplicationController
     true
   end
 
-  def get_tweet_for_worker(worker_id, task)
-    ##
-    # Returns tweet_id (str), tweet_text (str) pair for a specific worker_id and task pair. If no available task for worker can be found it returns empty strings.
-    Rails.logger.debug "Assigning task for worker #{worker_id}..."
+  def find_or_create_worker(worker_id)
     w = MturkWorker.find_by(worker_id: worker_id)
     w = MturkWorker.create(worker_id: worker_id) if w.nil?
+    w
+  end
+
+  def get_tweet_for_worker(worker, task)
+    ##
+    # Returns tweet_id (str), tweet_text (str) pair for a specific worker-task pair. If no available task for the worker can be found it returns empty strings.
+    Rails.logger.debug "Assigning task for worker #{worker.worker_id}..."
     # find a new tweet for worker and assign it through the task
-    w.assign_task(task)
+    worker.assign_task(task)
     # retrieve assigned tweet
     tweet_id = task.mturk_tweet.try(:tweet_id)
     if tweet_id.nil?

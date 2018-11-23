@@ -6,9 +6,9 @@ class MturkWorker < ApplicationRecord
     # case worker has reached max_tasks_per_worker
     max_tasks_per_worker = task.mturk_batch_job.max_tasks_per_worker
     if not max_tasks_per_worker.nil?
-      if task.mturk_batch_job.mturk_tweets.assigned_to_worker(worker_id).count >= max_tasks_per_worker
+      if task.mturk_batch_job.mturk_tweets.assigned_to_worker(worker_id).count >= max_tasks_per_worker - 1
         Rails.logger.debug "Max number of tasks has been reached for this worker" 
-        return
+        exclude_worker(task)
       end
     end
 
@@ -51,6 +51,11 @@ class MturkWorker < ApplicationRecord
       mturk_tweet_id: mturk_tweet.id
     })
     task.update_after_hit_assignment
+  end
+
+  def exclude_worker(task)
+    mturk = Mturk.new(sandbox: task.mturk_batch_job.sandbox)
+    mturk.exclude_worker_from_qualification(worker_id, task.mturk_batch_job.qualification_type_id)
   end
 
 
