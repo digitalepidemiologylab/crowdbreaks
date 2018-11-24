@@ -40,6 +40,15 @@ class Task < ApplicationRecord
     })
   end
 
+  def unassign
+    self.update_attributes({
+      mturk_tweet_id: nil,
+      mturk_worker_id: nil,
+      time_assigned: nil,
+      lifecycle_status: :submitted,
+    })
+  end
+
   def hit
     if hit_id.present?
       Mturk.new(sandbox: mturk_batch_job.sandbox).get_hit(hit_id)
