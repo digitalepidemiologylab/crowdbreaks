@@ -64,6 +64,8 @@ gem 'twitter'
 # Job scheduling
 gem 'sidekiq'
 gem 'redis'
+# Monitoring
+gem 'rollbar'
 
 group :development, :test do
   gem 'rspec-rails'
