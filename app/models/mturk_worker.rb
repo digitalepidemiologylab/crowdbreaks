@@ -12,13 +12,19 @@ class MturkWorker < ApplicationRecord
       end
     end
 
+    if task.assigned?
+      # Task was previously assigned to someone else (who didn't complete task). Unlink previous worker
+      Rails.logger.info "Task has been previously assigned to someone else."
+      task.unassign
+    end
+
     # retrieve potential new tweet for worker
     mturk_tweet = retrieve_mturk_tweet_for_task(task)
     
     # case all tasks have been completed
     if mturk_tweet.nil?
       Rails.logger.info "All tasks have beeen completed."
-      return
+      return nil
     end
 
     if task.mturk_batch_job.check_availability_after? or task.mturk_batch_job.check_availability_before_and_after?
@@ -33,7 +39,7 @@ class MturkWorker < ApplicationRecord
         mturk_tweet = retrieve_mturk_tweet_for_task(task)
         if mturk_tweet.nil?
           Rails.logger.info "All tasks have beeen completed."
-          return
+          return nil
         end
         c += 1
         if c == max_trials
@@ -51,6 +57,7 @@ class MturkWorker < ApplicationRecord
       mturk_tweet_id: mturk_tweet.id
     })
     task.update_after_hit_assignment
+    mturk_tweet
   end
 
   def exclude_worker(task)

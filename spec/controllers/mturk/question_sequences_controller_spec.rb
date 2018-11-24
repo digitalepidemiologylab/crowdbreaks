@@ -62,6 +62,16 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:mturk_tweet10) { FactoryBot.create(:mturk_tweet, :available, tweet_id: '1050562002664468480', mturk_batch_job: mturk_batch_job6) }
   let!(:task_submitted11) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job6) }
 
+  # Reassign tweet after worker didn't do it
+  let!(:mturk_batch_job7) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1) }
+  let!(:mturk_tweet11) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job7) }
+  let!(:task_submitted12) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job7) }
+
+  # # Stor
+  # let!(:mturk_batch_job7) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1) }
+  # let!(:mturk_tweet11) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job7) }
+  # let!(:task_submitted12) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job7) }
+
   # SHOW ACTION
   describe "GET show" do
     it "throws an error if HIT id is missing in params" do
@@ -251,7 +261,6 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         assignmentId: '123'
       }
       expect(assigns(:tweet_id)).to eq(mturk_tweet8.tweet_id.to_s)
-
       get :show, params: {
         hitId: task_submitted10.hit_id,
         workerId: mturk_worker8.worker_id,
@@ -259,6 +268,33 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       expect(assigns(:tweet_id)).to eq("")
     end
+
+    it "re-assign tweet after worker didn't do it" do
+      # worker 8 is assigned new tweet
+      Timecop.freeze(5.minutes.ago)
+      task = Task.find(task_submitted12.id)
+      get :show, params: {
+        hitId: task_submitted12.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      expect(assigns(:tweet_id)).to eq(mturk_tweet11.tweet_id.to_s)
+      task.reload
+      expect(task.mturk_worker_id).to eq(mturk_worker8.id)
+      expect(task.time_assigned).to eq(Time.current)
+      # worker 8 didn't finish work and returns it. Hit is then re-assigned to worker 6
+      Timecop.freeze(Time.current + 5.minutes)
+      get :show, params: {
+        hitId: task_submitted12.hit_id,
+        workerId: mturk_worker6.worker_id,
+        assignmentId: '123'
+      }
+      task.reload
+      expect(assigns(:tweet_id)).to eq(mturk_tweet11.tweet_id.to_s)
+      expect(task.mturk_worker_id).to eq(mturk_worker6.id)
+      expect(task.time_assigned).to eq(Time.current)
+    end
+
 
     # FINAL ACTION
     it "creates new records properly on final action" do
