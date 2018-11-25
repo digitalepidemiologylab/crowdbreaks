@@ -20,7 +20,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     @sandbox = task.mturk_batch_job.sandbox
 
     if not @preview_mode
-      worker = find_or_create_worker(@worker_id)
+      worker = MturkWorker.find_or_create(@worker_id)
       # worker has accepted the HIT
       @tweet_id, @tweet_text = get_tweet_for_worker(worker, task)
       if @tweet_id.blank?
@@ -86,12 +86,6 @@ class Mturk::QuestionSequencesController < ApplicationController
       end
     end
     true
-  end
-
-  def find_or_create_worker(worker_id)
-    w = MturkWorker.find_by(worker_id: worker_id)
-    w = MturkWorker.create(worker_id: worker_id) if w.nil?
-    w
   end
 
   def get_tweet_for_worker(worker, task)

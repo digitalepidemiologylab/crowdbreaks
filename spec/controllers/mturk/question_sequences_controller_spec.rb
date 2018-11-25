@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Mturk::QuestionSequencesController, type: :controller do
 
+  # shared 
+  let!(:qs_log_mturk) { FactoryBot.create(:question_sequence_log, :mturk) }
+  let!(:qs_log_public) { FactoryBot.create(:question_sequence_log, :public) }
+
   # simplest question sequence
   let!(:project) { FactoryBot.create(:project) }
   let!(:question) { FactoryBot.create(:question, project: project) }
@@ -67,10 +71,10 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:mturk_tweet11) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job7) }
   let!(:task_submitted12) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job7) }
 
-  # # Stor
-  # let!(:mturk_batch_job7) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1) }
-  # let!(:mturk_tweet11) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job7) }
-  # let!(:task_submitted12) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job7) }
+  # Store result regardless of whether task could be found
+  let!(:mturk_batch_job8) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1) }
+  let!(:mturk_tweet12) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job8) }
+  let!(:task_submitted13) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job8) }
 
   # SHOW ACTION
   describe "GET show" do
@@ -269,34 +273,48 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(assigns(:tweet_id)).to eq("")
     end
 
+    # FINAL ACTION
     it "re-assign tweet after worker didn't do it" do
       # worker 8 is assigned new tweet
       Timecop.freeze(5.minutes.ago)
-      task = Task.find(task_submitted12.id)
+      task = Task.find(task_submitted13.id)
+      tweet = MturkTweet.find(mturk_tweet12.id)
       get :show, params: {
-        hitId: task_submitted12.hit_id,
+        hitId: task.hit_id,
         workerId: mturk_worker8.worker_id,
         assignmentId: '123'
       }
-      expect(assigns(:tweet_id)).to eq(mturk_tweet11.tweet_id.to_s)
+      expect(assigns(:tweet_id)).to eq(tweet.tweet_id.to_s)
       task.reload
       expect(task.mturk_worker_id).to eq(mturk_worker8.id)
-      expect(task.time_assigned).to eq(Time.current)
-      # worker 8 didn't finish work and returns it. Hit is then re-assigned to worker 6
-      Timecop.freeze(Time.current + 5.minutes)
-      get :show, params: {
-        hitId: task_submitted12.hit_id,
-        workerId: mturk_worker6.worker_id,
-        assignmentId: '123'
+      # worker 8 didn't finish work and returns it. Task is then not properly re-assigned and worker 6 submit his result. 
+      # In this case we want to store the results anyway in order not to lose anything
+      expect(Result.count).to eq(0)
+      expect(Rails.logger).to receive(:error).with(/was assigned to worker/)
+      post :final, params: {
+        task: {
+          hit_id: task.hit_id,
+          worker_id: mturk_worker6.worker_id,
+          assignment_id: '123',
+          tweet_id: tweet.tweet_id,
+          logs: qs_log_mturk.log,
+          results: [
+            result: {
+              answer_id: answer1.id,
+              question_id: question.id,
+              tweet_id: tweet.tweet_id,
+              project_id: project.id
+            }
+          ]
+        }
       }
+      expect(response).to be_successful
       task.reload
-      expect(assigns(:tweet_id)).to eq(mturk_tweet11.tweet_id.to_s)
+      expect(Result.count).to eq(1)
+      # task has been successfully re-assigned
       expect(task.mturk_worker_id).to eq(mturk_worker6.id)
-      expect(task.time_assigned).to eq(Time.current)
     end
 
-
-    # FINAL ACTION
     it "creates new records properly on final action" do
       Timecop.freeze(5.minutes.ago)
       # worker 5 is assigned new tweet
@@ -318,6 +336,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           worker_id: mturk_worker5.worker_id,
           assignment_id: '123',
           tweet_id: mturk_tweet3.tweet_id,
+          logs: qs_log_mturk.log,
           results: [
             result: {
               answer_id: answer1.id,
@@ -358,6 +377,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           worker_id: mturk_worker8.worker_id,
           assignment_id: '123',
           tweet_id: task.mturk_tweet.tweet_id,
+          logs: qs_log_mturk.log,
           results: [
             result: {
               answer_id: answer1.id,
@@ -371,6 +391,42 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(response).to be_successful
       task.reload
       expect(task.mturk_tweet.tweet_id).to eq(task.results.last.tweet_id)
+    end
+
+    it "stores mturk results regardless of whether task could be found" do
+      # worker 8 is assigned new tweet
+      task = Task.find(task_submitted12.id)
+      expect(task.mturk_tweet_id).to eq(nil)
+      get :show, params: {
+        hitId: task.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      task.reload
+      expect(task.mturk_tweet_id).to eq(mturk_tweet11.id)
+      expect(task.mturk_tweet.tweet_id).to eq(mturk_tweet11.tweet_id)
+      expect(Result.count).to eq(0)
+      # worker 8 submits his solution with wrong HIT id
+      expect(Rails.logger).to receive(:error).with('Task for invalid-hit-id could not be found')
+      post :final, params: {
+        task: {
+          hit_id: 'invalid-hit-id',
+          worker_id: mturk_worker8.worker_id,
+          assignment_id: '123',
+          tweet_id: task.mturk_tweet.tweet_id,
+          logs: qs_log_mturk.log,
+          results: [
+            result: {
+              answer_id: answer1.id,
+              question_id: question.id,
+              tweet_id: task.mturk_tweet.tweet_id,
+              project_id: project.id
+            }
+          ]
+        }
+      }
+      expect(Result.count).to eq(1)
+      expect(Result.last.task).to eq(nil)
     end
 
 

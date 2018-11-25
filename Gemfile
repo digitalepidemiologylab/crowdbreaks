@@ -35,7 +35,6 @@ gem 'font-awesome-rails', '~> 4.7.0.1'
 gem 'kaminari', '~> 1.0.1'
 # Forms
 gem 'simple_form'
-# gem 'simple_form', github: 'elsurudo/simple_form', branch: 'rails-5.1.0'
 # Bootstrap
 gem 'bootstrap', '~> 4.0.0'
 # Use autoprefixes for CSS
@@ -72,7 +71,7 @@ group :development, :test do
   gem 'rspec-its'
   gem 'rspec-activemodel-mocks'
   # gem 'quiet_assets' # don't show asset pipeline log
-  gem 'guard', git: "https://github.com/guard/guard.git"
+  gem 'guard'
   gem 'guard-rspec'
   gem 'guard-bundler'
   gem 'guard-sidekiq'
