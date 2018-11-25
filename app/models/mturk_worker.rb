@@ -2,6 +2,12 @@ class MturkWorker < ApplicationRecord
   has_many :tasks
   has_many :mturk_tweets, through: :tasks
 
+  def self.find_or_create(worker_id)
+    w = find_by(worker_id: worker_id)
+    w = create(worker_id: worker_id) if w.nil?
+    w
+  end
+
   def assign_task(task)
     # case worker has reached max_tasks_per_worker
     max_tasks_per_worker = task.mturk_batch_job.max_tasks_per_worker
