@@ -91,6 +91,7 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'rubocop', require: false
   # gem 'rails_real_favicon'
+  gem 'letter_opener'
 end
 
 group :test do
