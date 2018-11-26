@@ -20,9 +20,15 @@ class ApplicationMailer < ActionMailer::Base
     }
 
     # send template
-    Crowdbreaks::Mandrill.messages.send_template(options[:template], [], message) unless Rails.env.test?
+    if Rails.env.development?
+      # Use letter opener to display email in development
+      mail(convert_mandrill_template(message)).deliver
+    else
+      Rails.logger.info('Sending email through Mandrill templates')
+      Crowdbreaks::Mandrill.messages.send_template(options[:template], [], message) unless Rails.env.test?
+    end
   rescue Mandrill::Error => e
-    Rails.logger.debug(e)
+    Rails.logger.error(e)
     raise e
   end
 
@@ -38,5 +44,15 @@ class ApplicationMailer < ActionMailer::Base
         raise "Key #{key.to_s} has to be present in options in order to send email!"
       end
     end
+  end
+
+
+  def convert_mandrill_template(message)
+    {
+      from: message[:from_email],
+      to: message[:to].map{|m| m[:email]}.join(', '),
+      subject: message[:subject],
+      body: JSON.pretty_generate(message)
+    }
   end
 end

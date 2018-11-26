@@ -85,7 +85,6 @@ Rails.application.routes.draw do
     end
   end
 
-
   # errors
   %w( 404 422 500 ).each do |status_code|
     match status_code, :to => "errors#show", :via => :all, :status_code => status_code
