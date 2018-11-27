@@ -7,12 +7,24 @@ module Manage
 
     def index
       @mturk_batch_jobs = MturkBatchJob.all.order('created_at DESC').page(params[:page]).per(10)
+      if params[:requested_download_complete].present?
+        flash[:success] = 'The requested file is now ready to download'
+      end
     end
 
     def show
       respond_to do |format|
         format.html
-        format.csv { send_data @mturk_batch_job.to_csv, filename: "#{@mturk_batch_job.name}-#{Time.current.strftime("%d-%m-%Y")}-v#{@mturk_batch_job.results.maximum(:updated_at).to_i}.csv"}
+        format.csv { 
+          flash.clear
+          s3 = AwsS3.new
+          if s3.exists?(@mturk_batch_job.csv_file_path)
+            redirect_to @mturk_batch_job.signed_csv_file_path
+          else
+            MturkBatchJobS3UploadJob.perform_later(@mturk_batch_job.id, current_user.id)
+            redirect_to mturk_batch_jobs_path(requested_download: @mturk_batch_job.id)
+          end
+        }
       end
     end
 

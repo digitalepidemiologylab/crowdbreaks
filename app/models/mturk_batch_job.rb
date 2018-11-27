@@ -86,6 +86,15 @@ class MturkBatchJob < ApplicationRecord
     self.keywords += ', ' + SecureRandom.hex[0..6]
   end
 
+  def signed_csv_file_path
+    s3 = AwsS3.new
+    s3.get_signed_url(csv_file_path, filename: csv_file_path.split('/')[-1])
+  end
+
+  def csv_file_path
+    "other/csv/mturk_batch_jobs/#{name}-v#{results.maximum(:updated_at).to_i}.csv"
+  end
+
   def to_csv
     model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'project_id', 'task_id', 'created_at']
     added_cols = ['log', 'worker_id', 'tweet_text']

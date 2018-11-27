@@ -67,7 +67,11 @@
       <% end %>
       <% if can? :read, mturk_batch_job %>
         <% if mturk_batch_job.results.count > 0 %>
-          <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
+          <% if params[:requested_download].present? and params[:requested_download] == mturk_batch_job.id.to_s %>
+            <%= tag.div class: "spinner-small", id: "mturk-batch-job-#{mturk_batch_job.id}-spinner", style: 'display:inline-block;'  %>
+          <% else %>
+            <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
+          <% end %>
         <% end %>
         <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job), title: 'Expand' %>
       <% end %>
