@@ -9,6 +9,15 @@ function convertUnitsBeforeSubmit() {
   });
 }
 
+function onMturkBatchJobS3UploadComplete() {
+  if (window.location.pathname.endsWith('mturk_batch_jobs')) {
+    let url = new URL(window.location.href);
+    url.searchParams.delete('requested_download');
+    url.searchParams.append('requested_download_complete', '1');
+    window.location.href = url.href;
+  }
+}
+
 $(document).on('turbolinks:load', function() {
   convertUnitsBeforeSubmit();
 })

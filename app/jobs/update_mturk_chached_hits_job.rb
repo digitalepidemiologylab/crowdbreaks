@@ -12,7 +12,7 @@ class UpdateMturkChachedHitsJob < ApplicationJob
     end
 
     # lock
-    Rails.cache.write(cache_key, 1, expires_in: 1.hour)
+    Rails.cache.write(cache_key, 1, expires_in: 3.minutes)
 
     # Delete previous hits
     MturkCachedHit.where(sandbox: sandbox).delete_all

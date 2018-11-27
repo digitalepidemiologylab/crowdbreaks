@@ -27,6 +27,11 @@ $(document).on("turbolinks:load", function() {
             onRefreshAvailabilityComplete();
           }
         }
+        if (data['job_type'] = 'mturk_batch_job_s3_upload') {
+          if (data['job_status'] == 'completed') {
+            onMturkBatchJobS3UploadComplete();
+          }
+        }
       }
     });
   }

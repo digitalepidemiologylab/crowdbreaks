@@ -263,9 +263,9 @@ class Mturk
 
   def get_client(sandbox)
     if sandbox
-      Aws::MTurk::Client.new(endpoint: 'https://mturk-requester-sandbox.us-east-1.amazonaws.com')
+      Aws::MTurk::Client.new(endpoint: 'https://mturk-requester-sandbox.us-east-1.amazonaws.com', region: 'us-east-1')
     else
-      Aws::MTurk::Client.new(endpoint: 'https://mturk-requester.us-east-1.amazonaws.com')
+      Aws::MTurk::Client.new(endpoint: 'https://mturk-requester.us-east-1.amazonaws.com', region: 'us-east-1')
     end
   end
 
