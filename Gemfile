@@ -47,8 +47,9 @@ gem 'json_translate'
 gem 'jquery-turbolinks'
 # slug creation
 gem 'friendly_id', '~> 5.1'
-# mturk client
+# AWS
 gem 'aws-sdk-mturk'
+gem 'aws-sdk-s3'
 # email
 gem 'mandrill-api'
 # JS build
