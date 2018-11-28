@@ -104,6 +104,13 @@ module ApplicationHelper
   end
 
   def time_ago(time_at)
-    time_ago_in_words(time_at) + ' ago'
+    case I18n.locale
+    when :de
+      'vor ' + time_ago_in_words(time_at)
+    else
+      # default to english
+      time_ago_in_words(time_at) + ' ago'
+    end
+
   end
 end
