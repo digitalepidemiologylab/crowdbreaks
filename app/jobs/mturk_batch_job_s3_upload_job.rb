@@ -18,6 +18,6 @@ class MturkBatchJobS3UploadJob < ApplicationJob
 
     # Ger rid of key
     Rails.cache.delete(cache_key)
-    ActionCable.server.broadcast("job_notification:#{user_id}", job_status: 'completed', job_type: 'mturk_batch_job_s3_upload', message: 'Upload finished.')
+    ActionCable.server.broadcast("job_notification:#{user_id}", mturk_batch_job_id: mturk_batch_job_id, job_status: 'completed', job_type: 'mturk_batch_job_s3_upload', message: 'Upload finished.')
   end
 end
