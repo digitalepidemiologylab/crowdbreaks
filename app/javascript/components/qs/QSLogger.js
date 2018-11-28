@@ -20,35 +20,32 @@ export class QSLogger {
     this.initializeLog();
   }
 
-  logResult(questionId) {
-    const now = this.getTime()
+  logResult(questionId, time) {
     this.log['results'].push({
-      'submitTime': now,
-      'timeSinceLastAnswer': now - this.timeLastAnswer,
+      'submitTime': time,
+      'timeSinceLastAnswer': time - this.timeLastAnswer,
       'questionId': questionId,
     });
-    this.timeLastAnswer = now;
+    this.timeLastAnswer = time;
   }
 
-  logFinal() {
-    const now = this.getTime()
-    this.log['totalDurationQuestionSequence'] = now - this.log['timeMounted'];
-    this.log['timeQuestionSequenceEnd'] = now;
+  logFinal(time) {
+    this.log['totalDurationQuestionSequence'] = time - this.log['timeMounted'];
+    this.log['timeQuestionSequenceEnd'] = time;
   }
 
-  logMturkSubmit() {
-    const now = this.getTime();
-    this.log['totalDurationUntilMturkSubmit'] = now - this.log['timeMounted'];
-    this.log['timeMturkSubmit'] = now;
+  logMturkSubmit(time) {
+    this.log['totalDurationUntilMturkSubmit'] = time - this.log['timeMounted'];
+    this.log['timeMturkSubmit'] = time;
   }
 
-  initializeLog(answerDelay) {
+  initializeLog() {
     this.log = {
       'timeInitialized': this.getTime(),
       'userTimeInitialized': moment().format(),
       'results': [],
       'resets': [],
-      'answerDelay': answerDelay,
+      'answerDelay': this.answerDelay,
       'timeMounted': this.timeMounted,
     }
   }

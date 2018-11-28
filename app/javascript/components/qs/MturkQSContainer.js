@@ -29,9 +29,9 @@ export class MturkQSContainer extends React.Component {
     this.log.logMounted()
   }
 
-  onAnswerSubmit(answerId) {
+  onAnswerSubmit(answerId, time) {
     // logging
-    this.log.logResult(this.state.currentQuestion.id);
+    this.log.logResult(this.state.currentQuestion.id, time);
     // collect result data
     let resultData = humps.decamelizeKeys({
       result: {
@@ -49,9 +49,9 @@ export class MturkQSContainer extends React.Component {
     this.results.push(resultData);
   }
 
-  onQuestionSequenceEnd() {
+  onQuestionSequenceEnd(time) {
     // logging
-    this.log.logFinal()
+    this.log.logFinal(time)
     // Set final state which gets submitted in onMturkSubmit()
     this.setState({
       'questionSequenceHasEnded': true,
@@ -65,8 +65,11 @@ export class MturkQSContainer extends React.Component {
     });
   }
 
-  onMturkSubmit(event) {
+  onMturkSubmit(event, time) {
     event.preventDefault();
+    // Add final submit log
+    this.log.logMturkSubmit(time);
+    // Exit if in test mode
     if (this.props.testMode) {
       alert('No submit possible, since you are running in test mode.')
       return true;
@@ -80,8 +83,6 @@ export class MturkQSContainer extends React.Component {
         'results': this.results,
       }
     });
-    // Add final submit log
-    this.log.logMturkSubmit();
     taskUpdate['task']['logs'] = this.log.getLog();
     $.ajax({
       type: "POST",
@@ -188,8 +189,8 @@ export class MturkQSContainer extends React.Component {
         tweetId={this.props.tweetId}
         tweetText={this.props.tweetText}
         onTweetLoadError={() => this.onTweetLoadError()}
-        onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
-        onAnswerSubmit={(answerId) => this.onAnswerSubmit(answerId)}
+        onQuestionSequenceEnd={(time) => this.onQuestionSequenceEnd(time)}
+        onAnswerSubmit={(answerId, time) => this.onAnswerSubmit(answerId, time)}
         gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
         numTransitions={0}
         captchaVerified={true}
@@ -199,7 +200,7 @@ export class MturkQSContainer extends React.Component {
       /> 
     } else {
       return <MturkFinal 
-        onMturkSubmit={(event) => this.onMturkSubmit(event)}
+        onMturkSubmit={(event) => this.onMturkSubmit(event, new Date().getTime())}
         submitUrl={this.getSubmitUrl()}
         assignmentId={this.props.assignmentId}
         hitId={this.props.hitId}
