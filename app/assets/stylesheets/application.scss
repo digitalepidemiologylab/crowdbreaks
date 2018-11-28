@@ -22,6 +22,11 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700|Arimo');
 @import "font-awesome";
 
+// notifications
+@import "toastr/toastr";
+@import 'toastr_overwrite';
+
+// project stylehseets
 @import "alert";
 @import 'badge';
 @import 'buttons';

@@ -1,5 +1,6 @@
 module ApplicationHelper
   def flash_messages
+    # Bootstrap notifications
     flash.each do |msg_type, message|
       msg_type = "success" if msg_type == "notice"
       msg_type = "danger" if msg_type == "alert"
@@ -9,6 +10,18 @@ module ApplicationHelper
       end)
     end
     nil
+  end
+
+  def toastr_flash_class(type)
+    # Mapping for toastr notifications
+    case type
+    when "alert"
+      "toastr.error"
+    when "notice"
+      "toastr.success"
+    else
+      "toastr.info"
+    end
   end
 
   def title(page_title)
