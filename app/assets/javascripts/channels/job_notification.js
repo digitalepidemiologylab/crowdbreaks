@@ -28,8 +28,10 @@ $(document).on("turbolinks:load", function() {
           }
         }
         if (data['job_type'] = 'mturk_batch_job_s3_upload') {
-          if (data['job_status'] == 'completed') {
-            onMturkBatchJobS3UploadComplete();
+          if (data['job_status'] == 'running') {
+            onMturkBatchJobS3UploadRunning(data['mturk_batch_job_id']);
+          } else if (data['job_status'] == 'completed') {
+            onMturkBatchJobS3UploadComplete(data['mturk_batch_job_id']);
           }
         }
       }

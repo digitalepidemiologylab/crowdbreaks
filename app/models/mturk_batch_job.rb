@@ -86,6 +86,11 @@ class MturkBatchJob < ApplicationRecord
     self.keywords += ', ' + SecureRandom.hex[0..6]
   end
 
+  def csv_file_is_up_to_date
+    s3 = AwsS3.new
+    s3.exists?(csv_file_path)
+  end
+
   def signed_csv_file_path
     s3 = AwsS3.new
     s3.get_signed_url(csv_file_path, filename: csv_file_path.split('/')[-1])

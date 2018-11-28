@@ -16,14 +16,12 @@ module Manage
       respond_to do |format|
         format.html
         format.csv { 
-          flash.clear
-          s3 = AwsS3.new
-          if s3.exists?(@mturk_batch_job.csv_file_path)
-            redirect_to @mturk_batch_job.signed_csv_file_path
-          else
-            MturkBatchJobS3UploadJob.perform_later(@mturk_batch_job.id, current_user.id)
-            redirect_to mturk_batch_jobs_path(requested_download: @mturk_batch_job.id)
-          end
+          redirect_to @mturk_batch_job.signed_csv_file_path
+        }
+        format.js {
+          ActionCable.server.broadcast("job_notification:#{current_user.id}", job_status: 'running', mturk_batch_job_id: @mturk_batch_job.id, job_type: 'mturk_batch_job_s3_upload', message: 'Upload started.')
+          MturkBatchJobS3UploadJob.perform_later(@mturk_batch_job.id, current_user.id)
+          head :ok
         }
       end
     end
