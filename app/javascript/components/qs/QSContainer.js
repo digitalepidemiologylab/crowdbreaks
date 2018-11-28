@@ -44,13 +44,13 @@ export class QSContainer extends React.Component {
     this.log.logMounted()
   }
 
-  onAnswerSubmit(answerId) {
+  onAnswerSubmit(answerId, time) {
     // Increment answer counter
     this.setState({
       numQuestionsAnswered: this.state.numQuestionsAnswered + 1
     })
     // Log result
-    this.log.logResult(this.state.currentQuestion.id);
+    this.log.logResult(this.state.currentQuestion.id, time);
     // Exit in case of test mode
     if (this.testMode) {
       return true;
@@ -95,8 +95,8 @@ export class QSContainer extends React.Component {
     });
   }
 
-  onQuestionSequenceEnd() {
-    this.log.logFinal();
+  onQuestionSequenceEnd(time) {
+    this.log.logFinal(time);
     let data = humps.decamelizeKeys({
       qs: {
         tweetId: this.state.tweetId,
@@ -202,8 +202,8 @@ export class QSContainer extends React.Component {
           userId={this.props.userId}
           projectId={this.props.projectId}
           onTweetLoadError={() => this.onTweetLoadError()}
-          onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
-          onAnswerSubmit={(answerId) => this.onAnswerSubmit(answerId)}
+          onQuestionSequenceEnd={(time) => this.onQuestionSequenceEnd(time)}
+          onAnswerSubmit={(answerId, time) => this.onAnswerSubmit(answerId, time)}
           gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
           numTransitions={this.props.numTransitions}
           captchaSiteKey={this.props.captchaSiteKey}

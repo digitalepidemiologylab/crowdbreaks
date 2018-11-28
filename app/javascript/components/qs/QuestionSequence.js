@@ -15,8 +15,8 @@ import { TweetTextEmbedding } from './TweetTextEmbedding';
 
 /*
 This component exposes the following callbacks (results and current question state are handled by parent)
-- onAnswerSubmit(answerId): User clicked on answer button
-- onQuestionSequenceEnd: Question sequence has ended
+- onAnswerSubmit(answerId, time): User clicked on answer button with time
+- onQuestionSequenceEnd(time): Question sequence has ended
 - gotoNextQuestion: Question sequence has not ended, go to next question
 - onTweetLoadError
 - onCaptchaVerify: Executed once Captcha has been verified
@@ -73,9 +73,9 @@ export class QuestionSequence extends React.Component {
     return null;
   }
 
-  onAnswerSubmitQS(answerId) {
+  onAnswerSubmitQS(answerId, time) {
     // update state in parent
-    this.props.onAnswerSubmit(answerId)
+    this.props.onAnswerSubmit(answerId, time)
     // find next question
     let nextQuestion = this.nextQuestion(this.props.currentQuestion.id, answerId);
     if (nextQuestion === null) {
@@ -83,7 +83,7 @@ export class QuestionSequence extends React.Component {
       this.setState({
         'tweetHasLoaded': false,
       })
-      this.props.onQuestionSequenceEnd();
+      this.props.onQuestionSequenceEnd(time);
     } else {
       this.props.gotoNextQuestion(nextQuestion)
     }
@@ -185,7 +185,7 @@ export class QuestionSequence extends React.Component {
                     key={answer.id} 
                     answer={answer.answer} 
                     disabled={parentThis.state.answersDisabled}
-                    submit={() => parentThis.onAnswerSubmitQS(answer.id)}
+                    submit={() => parentThis.onAnswerSubmitQS(answer.id, new Date().getTime())}
                     color={answer.color}
                   />
                 })}

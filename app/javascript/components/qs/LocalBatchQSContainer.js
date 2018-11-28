@@ -44,9 +44,9 @@ export class LocalBatchQSContainer extends React.Component {
     this.log.logMounted()
   }
 
-  onAnswerSubmit(answerId) {
+  onAnswerSubmit(answerId, time) {
     // Log result
-    this.log.logResult(this.state.currentQuestion.id);
+    this.log.logResult(this.state.currentQuestion.id, time);
     // collect result data
     let resultData = humps.decamelizeKeys({
       result: {
@@ -64,9 +64,9 @@ export class LocalBatchQSContainer extends React.Component {
     this.results.push(resultData);
   }
 
-  onQuestionSequenceEnd() {
+  onQuestionSequenceEnd(time) {
     // Save final time
-    this.log.logFinal();
+    this.log.logFinal(time);
 
     let data = humps.decamelizeKeys({
       qs: {
@@ -173,8 +173,8 @@ export class LocalBatchQSContainer extends React.Component {
           userId={this.props.userId}
           projectId={this.props.projectId}
           onTweetLoadError={() => this.onTweetLoadError()}
-          onAnswerSubmit={(answerId) => this.onAnswerSubmit(answerId)}
-          onQuestionSequenceEnd={() => this.onQuestionSequenceEnd()}
+          onAnswerSubmit={(answerId, time) => this.onAnswerSubmit(answerId, time)}
+          onQuestionSequenceEnd={(time) => this.onQuestionSequenceEnd(time)}
           gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
           numTransitions={this.props.numTransitions}
           captchaSiteKey={""}
