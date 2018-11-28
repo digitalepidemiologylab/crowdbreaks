@@ -38,4 +38,3 @@ WebpackerReact.setup({
 
 // this is needed for components to properly unmount and not being cached
 $(document).on('turbolinks:before-cache', () => WebpackerReact.unmountComponents())
-

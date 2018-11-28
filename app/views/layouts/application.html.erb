@@ -23,7 +23,7 @@
 
   <body class="<%= content_for :body_class %>" <%= content_for :disable_turbolinks %>>
     <%= render 'layouts/shared/navbar' %>
-    <%= flash_messages %>
+    <%= render 'layouts/shared/toastr_notifications' %>
     <div class="content">
       <div class="container">
         <%= yield %>

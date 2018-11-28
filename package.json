@@ -20,6 +20,7 @@
     "react-tweet-embed": "^1.1.0",
     "react-vega": "^3.1.2",
     "reactstrap": "^5.0.0-alpha.4",
+    "toastr": "^2.1.4",
     "vega": "^4.0.0-rc.3",
     "webpacker-react": "^0.3.2"
   },

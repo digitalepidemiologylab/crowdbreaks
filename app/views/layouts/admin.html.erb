@@ -9,7 +9,7 @@
     <meta property="og:type" content="website">
     <meta property="og:description" content="">
     <title><%= content_for(:title) || 'Crowdbreaks' %></title>
-    <%#= render 'application/favicon' %>
+    <%= render 'application/favicon' %>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
@@ -18,7 +18,7 @@
 
   <body class="<%= content_for :body_class %>" <%= content_for :disable_turbolinks %>>
     <%= render 'layouts/shared/navbar' %>
-    <%= flash_messages %>
+    <%= render 'layouts/shared/toastr_notifications' %>
     <div class="admin-wrapper">
       <div class="container-fluid">
         <div class="row">
