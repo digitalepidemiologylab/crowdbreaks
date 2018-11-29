@@ -42,12 +42,16 @@ class Mturk::QuestionSequencesController < ApplicationController
     results = tasks_params.fetch(:results, []) 
     logs = tasks_params.fetch(:logs, {}) 
 
-    # TODO: CHECK IF TASK ALREADY EXISTS BEFORE STORING
+    # return if same HIT was already submitted before
+    if task.present? and task.results.count > 0
+      Rails.logger.error("Mturk hit was already submitted before")
+      head :ok and return
+    end
 
     # try to store results even if task couldn't be found
     if results.present?
       if not create_results_for_task(results, task.try(:id), logs)
-        head :bad_request
+        head :bad_request and return
       end
     else
       Rails.logger.error("Submitted Mturk task contains no results")

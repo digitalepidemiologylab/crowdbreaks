@@ -429,6 +429,58 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(Result.last.task).to eq(nil)
     end
 
+    it "avoids storing same result twice" do
+      # worker 8 is assigned new tweet
+      task = Task.find(task_submitted12.id)
+      expect(task.mturk_tweet_id).to eq(nil)
+      get :show, params: {
+        hitId: task.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      task.reload
+      expect(task.mturk_tweet_id).to eq(mturk_tweet11.id)
+      expect(task.mturk_tweet.tweet_id).to eq(mturk_tweet11.tweet_id)
+      expect(Result.count).to eq(0)
+      # worker 8 submits his solution with wrong HIT id
+      post :final, params: {
+        task: {
+          hit_id: task.hit_id,
+          worker_id: mturk_worker8.worker_id,
+          assignment_id: '123',
+          tweet_id: task.mturk_tweet.tweet_id,
+          logs: qs_log_mturk.log,
+          results: [
+            result: {
+              answer_id: answer1.id,
+              question_id: question.id,
+              tweet_id: task.mturk_tweet.tweet_id,
+              project_id: project.id
+            }
+          ]
+        }
+      }
+      # second identical submit, interface accidentially fires request twice
+      post :final, params: {
+        task: {
+          hit_id: task.hit_id,
+          worker_id: mturk_worker8.worker_id,
+          assignment_id: '123',
+          tweet_id: task.mturk_tweet.tweet_id,
+          logs: qs_log_mturk.log,
+          results: [
+            result: {
+              answer_id: answer1.id,
+              question_id: question.id,
+              tweet_id: task.mturk_tweet.tweet_id,
+              project_id: project.id
+            }
+          ]
+        }
+      }
+      expect(Result.count).to eq(1)
+    end
+
 
     # CREATE ACTION
     it "creates single results" do
