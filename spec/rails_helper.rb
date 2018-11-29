@@ -126,3 +126,4 @@ RSpec.configure do |config|
       .to_return(status: 400, body: {id: '0'}.to_json, :headers => {"Content-Type"=> "application/json"})
   end
 end
+

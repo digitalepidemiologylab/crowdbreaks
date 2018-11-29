@@ -10,14 +10,12 @@ RSpec.feature "UserSignUp", type: :feature, js: true do
       fill_in 'Password', with: '123456', match: :prefer_exact
       fill_in 'Password confirmation', with: '123456', match: :prefer_exact
       find('input[name="commit"]').click
-      expect(page).to have_content('A message with a confirmation link has been sent to your email address.')
       user = User.find_by(email: "#{username}@example.com")
       expect(user).not_to be(nil)
       expect(user.confirmation_token).not_to be(nil)
 
       # confirm user
       visit("/en/users/confirmation?confirmation_token=#{user.confirmation_token}")
-      expect(page).to have_content('Your email address has been successfully confirmed.')
 
       # Sign in
       visit(new_user_session_path)
