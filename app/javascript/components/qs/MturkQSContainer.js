@@ -65,8 +65,7 @@ export class MturkQSContainer extends React.Component {
     });
   }
 
-  onMturkSubmit(event, time) {
-    event.preventDefault();
+  onMturkSubmit(time) {
     // Add final submit log
     this.log.logMturkSubmit(time);
     // Exit if in test mode
