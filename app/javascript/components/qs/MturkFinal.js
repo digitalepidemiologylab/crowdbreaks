@@ -24,7 +24,6 @@ export class MturkFinal extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     return (
       <div className='row justify-content-center'> 
         <div className="col-12">
