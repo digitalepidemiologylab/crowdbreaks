@@ -1,6 +1,7 @@
 class MturkWorker < ApplicationRecord
   has_many :tasks
   has_many :mturk_tweets, through: :tasks
+  has_many :results, through: :tasks
 
   def self.find_or_create(worker_id)
     w = find_by(worker_id: worker_id)

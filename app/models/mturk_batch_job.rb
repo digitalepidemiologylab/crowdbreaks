@@ -18,6 +18,10 @@ class MturkBatchJob < ApplicationRecord
 
   attr_accessor :job_file, :cloned_name
 
+  def workers
+    MturkWorker.where(id: tasks&.select(:mturk_worker_id))
+  end
+
   def num_tasks
     tasks.count
   end
@@ -97,7 +101,7 @@ class MturkBatchJob < ApplicationRecord
   end
 
   def csv_file_path
-    "other/csv/mturk_batch_jobs/#{name}-v#{results.maximum(:updated_at).to_i}.csv"
+    "other/csv/mturk_batch_jobs/#{name}-v#{results.maximum(:updated_at).to_i}-#{results.count}.csv"
   end
 
   def to_csv
