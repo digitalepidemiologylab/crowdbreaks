@@ -105,27 +105,28 @@ namespace :results do
     qs = QuestionSequenceLog.where(id: results&.select(:question_sequence_log_id)).order(Arel.sql("log->'totalDurationQuestionSequence'"))
     durations =  qs.pluck(Arel.sql("log->'totalDurationQuestionSequence'"))
 
-    min_cutoff = 0 * 1000 # 10 seconds
-    max_cutoff = 20 * 60 * 1000 # 20 minutes
+    min_cutoff = ENV['min_cutoff'].present? ? ENV['min_cutoff'].to_i * 1000 : 0*1000 # 0 seconds
+    max_cutoff = ENV['max_cutoff'].present? ? ENV['max_cutoff'].to_i * 60*1000 : 20*60*1000 # 20 minutes
 
     outliers_min = durations.each_index.select { |i| durations[i] < min_cutoff }
     outliers_max = durations.each_index.select { |i| durations[i] > max_cutoff }
-    Rails.logger.info("Found #{outliers_max.length} above threshold of #{max_cutoff/60.0/1000.0} minutes")
 
     to_delete = []
 
     if outliers_min.length > 0
-      Rails.logger.info("Found #{outliers_min.length} below min_cutoff.")
+      Rails.logger.info("Found #{outliers_min.length} below min_cutoff with the following times (ms):")
+      Rails.logger.info(outliers_min.map{|i| durations[i]}.join(' '))
       outliers_min.each do |i|
-        qs_outlier = qs.limit(1).last(i + 1).first
+        qs_outlier = qs.limit(1).offset(i).first
         to_delete.push(*Result.where(question_sequence_log_id: qs_outlier.id))
         to_delete.push(qs_outlier)
       end
     end
     if outliers_max.length > 0
-      Rails.logger.info("Found #{outliers_max.length} above max_cutoff.")
+      Rails.logger.info("Found #{outliers_max.length} above max_cutoff with the following times (ms):")
+      Rails.logger.info(outliers_max.map{|i| durations[i]}.join(' '))
       outliers_max.each do |i|
-        qs_outlier = qs.limit(1).last(i + 1).first
+        qs_outlier = qs.limit(1).offset(i).first
         to_delete.push(*Result.where(question_sequence_log_id: qs_outlier.id))
         to_delete.push(qs_outlier)
       end
