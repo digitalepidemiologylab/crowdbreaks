@@ -19,6 +19,7 @@ export class MturkQSContainer extends React.Component {
       'displayInstructions': false,
       'numQuestionsAnswered': 0,
       'currentQuestion': props.questions[props.initialQuestionId],
+      'showErrorNotfication': props.notification['status_code'] != 'success'
     };
 
     this.log = new QSLogger(props.answersDelay);
@@ -121,7 +122,7 @@ export class MturkQSContainer extends React.Component {
       return
     }
     if (confirm('Are you sure you want to restart the task? All previous answers given will be deleted.')) {
-      if (!this.props.noWorkAvailable) {
+      if (!this.state.showErrorNotfication) {
         this.log.logReset(this.state.currentQuestion.id);
         this.setState({
           currentQuestion: this.props.questions[this.props.initialQuestionId],
@@ -166,18 +167,20 @@ export class MturkQSContainer extends React.Component {
       <p>Please accept the HIT to start working on it.</p>
     </div>
   }
-  getNoWorkAvailableText() {
-    return <div>
-      <h3>You have completed all work in this HIT group.</h3>
-      <p style={{color: "red"}}>This HIT and future HITs in this group can not be completed. We kindly ask you to return the HIT.</p>
+  renderErrorNotification() {
+    return <div className='row justify-content-center'>
+      <div className='col-12 col-md-8 col-lg-6'>
+        <h3>{this.props.notification.title_message}</h3>
+        <p style={{color: "red"}}>{this.props.notification.message}</p>
+      </div>
     </div>
   }
   getQuestionSequence() {
     if (this.props.previewMode) {
       return this.getPreviewText()
     }
-    if (this.props.noWorkAvailable) {
-      return this.getNoWorkAvailableText()
+    if (this.state.showErrorNotfication) {
+      return this.renderErrorNotification()
     }
     if (!this.state.questionSequenceHasEnded) {
       return <QuestionSequence 

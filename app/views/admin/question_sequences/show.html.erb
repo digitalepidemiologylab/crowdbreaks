@@ -21,11 +21,6 @@
           <%= hidden_field_tag 'preview_mode', 'false' %>
           <%= check_box_tag 'preview_mode', 'true', @preview_mode %>
         </div>
-        <div class='mb-3'>
-          <%= label_tag 'no_work_available', 'No work available' %>
-          <%= hidden_field_tag 'no_work_available', 'false' %>
-          <%= check_box_tag 'no_work_available', 'true', @no_work_available %>
-        </div>
         <div class="form-actions">
           <%= submit_tag 'Refresh', class: 'btn btn-secondary', name: nil %>
         </div>
@@ -61,7 +56,7 @@
         hitId: @hit_id,
         assignmentId: @assignment_id,
         workerId: @worker_id,
-        noWorkAvailable: @no_work_available
+        notification: @notification
       }) %>
     <% elsif @mode == 'public' %>
       <%= react_component('QSContainer', {

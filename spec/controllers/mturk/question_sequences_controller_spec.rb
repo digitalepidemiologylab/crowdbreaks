@@ -218,13 +218,15 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       # worker 5 is given only tweet
       expect(assigns(:tweet_id)).to eq(mturk_tweet3.tweet_id.to_s)
+      # Worker 6 requests same tweet, gets it but warning is raised
+      expect(Rails.logger).to receive(:error).with(/requested new tweet but all available tweets in this batch have already been annotated/)
       get :show, params: {
         hitId: task_submitted4.hit_id,
         workerId: mturk_worker6.worker_id,
         assignmentId: '123'
       }
-      # worker 6 wants to do task but max assignment was reached
-      expect(assigns(:tweet_id)).to eq("")
+      # worker 6 also receives tweet, but warning is raised
+      expect(assigns(:tweet_id)).to eq(mturk_tweet3.tweet_id.to_s)
     end
 
     it "only shows available tweets" do
@@ -251,8 +253,14 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         workerId: mturk_worker8.worker_id,
         assignmentId: '123'
       }
-      # receive tweet but exclude from future tasks
-      expect(assigns(:tweet_id)).to eq(mturk_tweet6.tweet_id.to_s).or eq(mturk_tweet7.tweet_id.to_s)
+      expect(assigns(:tweet_id)).to eq(mturk_tweet7.tweet_id.to_s).or eq(mturk_tweet8.tweet_id.to_s)
+      # worker with max_tasks=1 requests another tweet
+      get :show, params: {
+        hitId: task_submitted8.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      expect(assigns(:tweet_id)).to eq("")
       assert_requested :post, /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/,
         body: {QualificationTypeId: mturk_batch_job4.qualification_type_id, WorkerId: mturk_worker8.worker_id}.to_json
     end

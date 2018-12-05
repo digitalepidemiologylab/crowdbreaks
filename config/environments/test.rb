@@ -40,4 +40,9 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  
+  # Temporarily activate logging ouptut to console
+  # config.logger = Logger.new(STDOUT)
+  # config.logger.level = Logger::DEBUG
+  # config.active_record.logger = nil
 end
