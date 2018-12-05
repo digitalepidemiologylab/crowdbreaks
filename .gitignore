@@ -44,6 +44,9 @@ coverage/*
 # Redis 
 dump.rdb
 
+# Heroku backup
+latest.dump*
+
 # other
 **/*.DS_Store
 
