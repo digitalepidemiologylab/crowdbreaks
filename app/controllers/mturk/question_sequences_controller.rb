@@ -7,8 +7,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     @hit_id = params[:hitId]
     task = get_task(@hit_id)
     if task.nil?
-      head :bad_request
-      return
+      head :bad_request and return
     end
     
     # Mturk info
@@ -22,12 +21,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     if not @preview_mode
       worker = MturkWorker.find_or_create(@worker_id)
       # worker has accepted the HIT
-      @tweet_id, @tweet_text = get_tweet_for_worker(worker, task)
-      if @tweet_id.blank?
-        # All work for worker has been done, exclude from qualification 
-        worker.exclude_worker(task)
-        @no_work_available = true # used for rendering information to the worker that he has finished all work
-      end
+      @tweet_id, @tweet_text, @notification = get_tweet_for_worker(worker, task)
     end
 
     # Collect question sequence info
@@ -101,14 +95,8 @@ class Mturk::QuestionSequencesController < ApplicationController
     # Returns tweet_id (str), tweet_text (str) pair for a specific worker-task pair. If no available task for the worker can be found it returns empty strings.
     Rails.logger.debug "Assigning task for worker #{worker.worker_id}..."
     # find a new tweet for worker and assign it through the task
-    mturk_tweet = worker.assign_task(task)
-    if mturk_tweet.nil?
-      Rails.logger.info "No tweet ID could be set"
-      return "", ""
-    else
-      Rails.logger.info "Tweet found successfully to be #{mturk_tweet.tweet_id}"
-      return mturk_tweet.tweet_id.to_s, mturk_tweet.tweet_text.to_s
-    end
+    mturk_tweet, notification = worker.assign_task(task)
+    return mturk_tweet&.tweet_id.to_s, mturk_tweet&.tweet_text.to_s, notification
   end
 
   def tasks_params

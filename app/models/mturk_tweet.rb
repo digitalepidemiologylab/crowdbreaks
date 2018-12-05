@@ -14,4 +14,5 @@ class MturkTweet < ApplicationRecord
   scope :is_available, -> { where(availability: :available) }
   scope :is_unavailable, -> { where(availability: :unavailable) }
   scope :may_be_available, -> { where(availability: [:available, :unknown]) }
+  scope :order_by_num_assignments, -> { left_joins(:tasks).group('mturk_tweets.id').order(Arel.sql('count(tasks.id) ASC')) }
 end

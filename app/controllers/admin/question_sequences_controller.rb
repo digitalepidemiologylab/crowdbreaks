@@ -22,7 +22,7 @@ module Admin
           @assignment_id = show_params[:assignmentId]
           @worker_id = show_params[:workerId]
           @preview_mode = show_params[:preview_mode] == 'true' ? true : false
-          @no_work_available = show_params[:no_work_available] == 'true' ? true : false
+          @notification = MturkNotification.new.max_tasks_by_worker_reached
         }
         format.csv {
           send_data @project.to_csv, filename: "#{@project.title}-#{Time.current.strftime("%d-%m-%Y")}.csv"
