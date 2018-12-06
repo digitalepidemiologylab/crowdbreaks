@@ -34,6 +34,13 @@ $(document).on("turbolinks:load", function() {
             onMturkBatchJobS3UploadComplete(data['mturk_batch_job_id']);
           }
         }
+        if (data['job_type'] = 'mturk_tweets_s3_upload') {
+          if (data['job_status'] == 'running') {
+            onMturkTweetsS3UploadRunning(data['mturk_batch_job_id']);
+          } else if (data['job_status'] == 'completed') {
+            onMturkTweetsS3UploadComplete(data['mturk_batch_job_id']);
+          }
+        }
       }
     });
   }

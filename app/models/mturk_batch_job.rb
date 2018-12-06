@@ -90,21 +90,27 @@ class MturkBatchJob < ApplicationRecord
     self.keywords += ', ' + SecureRandom.hex[0..6]
   end
 
-  def csv_file_is_up_to_date
+  def csv_file_is_up_to_date(subfolder)
     s3 = AwsS3.new
-    s3.exists?(csv_file_path)
+    csv_file = subfolder == 'results' ? results_csv_path : tweets_csv_path
+    s3.exists?(csv_file)
   end
 
-  def signed_csv_file_path
+  def signed_csv_file_path(subfolder)
     s3 = AwsS3.new
-    s3.get_signed_url(csv_file_path, filename: csv_file_path.split('/')[-1])
+    csv_file = subfolder == 'results' ? results_csv_path : tweets_csv_path
+    s3.get_signed_url(csv_file, filename: csv_file.split('/')[-1])
   end
 
-  def csv_file_path
-    "other/csv/mturk_batch_jobs/#{name}-v#{results.maximum(:updated_at).to_i}-#{results.count}.csv"
+  def results_csv_path
+    "other/csv/mturk_batch_jobs/results/#{name}-v#{results.maximum(:updated_at).to_i}-#{results.count}.csv"
   end
 
-  def to_csv
+  def tweets_csv_path
+    "other/csv/mturk_batch_jobs/tweets/tweets-#{name}-v#{mturk_tweets.maximum(:updated_at).to_i}-#{mturk_tweets.count}.csv"
+  end
+
+  def results_to_csv
     model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'project_id', 'task_id', 'created_at']
     added_cols = ['log', 'worker_id', 'tweet_text']
     CSV.generate do |csv|
@@ -115,6 +121,16 @@ class MturkBatchJob < ApplicationRecord
                 result.task&.mturk_worker&.worker_id,
                 result.task&.mturk_tweet&.tweet_text]
         csv << row
+      end
+    end
+  end
+
+  def tweets_to_csv
+    model_cols=['tweet_id', 'tweet_text', 'availability']
+    CSV.generate do |csv|
+      csv << model_cols
+      mturk_tweets.each do |tweet|
+        csv << tweet.attributes.values_at(*model_cols)
       end
     end
   end
