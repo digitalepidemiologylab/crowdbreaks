@@ -16,7 +16,7 @@ module Manage
       respond_to do |format|
         format.html
         format.csv { 
-          redirect_to @mturk_batch_job.signed_csv_file_path
+          redirect_to @mturk_batch_job.signed_csv_file_path('results')
         }
         format.js {
           ActionCable.server.broadcast("job_notification:#{current_user.id}", job_status: 'running', mturk_batch_job_id: @mturk_batch_job.id, job_type: 'mturk_batch_job_s3_upload', message: 'Upload started.')

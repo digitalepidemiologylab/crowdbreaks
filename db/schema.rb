@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_22_212959) do
+ActiveRecord::Schema.define(version: 2018_12_06_112302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,11 +124,15 @@ ActiveRecord::Schema.define(version: 2018_11_22_212959) do
     t.bigint "mturk_batch_job_id"
     t.text "tweet_text", default: ""
     t.integer "availability", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["mturk_batch_job_id"], name: "index_mturk_tweets_on_mturk_batch_job_id"
   end
 
   create_table "mturk_workers", force: :cascade do |t|
     t.string "worker_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "projects", id: :serial, force: :cascade do |t|

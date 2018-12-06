@@ -13,8 +13,8 @@ class MturkBatchJobS3UploadJob < ApplicationJob
 
     mturk_batch_job = MturkBatchJob.find(mturk_batch_job_id)
     s3 = AwsS3.new
-    csv_data = mturk_batch_job.to_csv
-    s3.put(csv_data, mturk_batch_job.csv_file_path)
+    csv_data = mturk_batch_job.results_to_csv
+    s3.put(csv_data, mturk_batch_job.results_csv_path)
 
     # Ger rid of key
     Rails.cache.delete(cache_key)

@@ -5,4 +5,6 @@ toastr.options = ({
   "escapeHtml": false,
   // "timeOut": 100000,
   // "extendedTimeOut": 100000,
+  "preventDuplicates": true,
+  "preventOpenDuplicates": true,
 })
