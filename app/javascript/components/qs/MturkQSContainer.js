@@ -13,13 +13,17 @@ import { Instructions } from './Instructions';
 export class MturkQSContainer extends React.Component {
   constructor(props) {
     super(props);
+    let showErrorNotification = false;
+    if (props.notification) {
+      showErrorNotfication = props.notification['status_code'] != 'success';
+    }
     this.state = {
       'questionSequenceHasEnded': false,
       'errors': [],
       'displayInstructions': false,
       'numQuestionsAnswered': 0,
       'currentQuestion': props.questions[props.initialQuestionId],
-      'showErrorNotfication': props.notification['status_code'] != 'success'
+      'showErrorNotfication': showErrorNotification,
     };
 
     this.log = new QSLogger(props.answersDelay);
