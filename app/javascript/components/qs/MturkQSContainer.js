@@ -15,7 +15,7 @@ export class MturkQSContainer extends React.Component {
     super(props);
     let showErrorNotification = false;
     if (props.notification) {
-      showErrorNotfication = props.notification['status_code'] != 'success';
+      showErrorNotification = props.notification['status_code'] != 'success';
     }
     this.state = {
       'questionSequenceHasEnded': false,
@@ -23,7 +23,7 @@ export class MturkQSContainer extends React.Component {
       'displayInstructions': false,
       'numQuestionsAnswered': 0,
       'currentQuestion': props.questions[props.initialQuestionId],
-      'showErrorNotfication': showErrorNotification,
+      'showErrorNotification': showErrorNotification,
     };
 
     this.log = new QSLogger(props.answersDelay);
@@ -126,7 +126,7 @@ export class MturkQSContainer extends React.Component {
       return
     }
     if (confirm('Are you sure you want to restart the task? All previous answers given will be deleted.')) {
-      if (!this.state.showErrorNotfication) {
+      if (!this.state.showErrorNotification) {
         this.log.logReset(this.state.currentQuestion.id);
         this.setState({
           currentQuestion: this.props.questions[this.props.initialQuestionId],
@@ -183,7 +183,7 @@ export class MturkQSContainer extends React.Component {
     if (this.props.previewMode) {
       return this.getPreviewText()
     }
-    if (this.state.showErrorNotfication) {
+    if (this.state.showErrorNotification) {
       return this.renderErrorNotification()
     }
     if (!this.state.questionSequenceHasEnded) {
