@@ -19,11 +19,9 @@ class Mturk::QuestionSequencesController < ApplicationController
     @sandbox = task.mturk_batch_job.sandbox
 
     if not @preview_mode
-      worker = MturkWorker.find_or_create(@worker_id)
       # worker has accepted the HIT
-      @tweet_id, @tweet_text, @notification = get_tweet_for_worker(worker, task)
+      @tweet_id, @tweet_text, @notification = get_tweet_for_worker(@worker_id, task)
     end
-
     # Collect question sequence info
     @project = task.mturk_batch_job.project
     @mturk_instructions = task.mturk_batch_job.instructions
@@ -90,10 +88,11 @@ class Mturk::QuestionSequencesController < ApplicationController
     true
   end
 
-  def get_tweet_for_worker(worker, task)
+  def get_tweet_for_worker(worker_id, task)
     ##
     # Returns tweet_id (str), tweet_text (str) pair for a specific worker-task pair. If no available task for the worker can be found it returns empty strings.
-    Rails.logger.debug "Assigning task for worker #{worker.worker_id}..."
+    Rails.logger.debug "Assigning task for worker #{worker_id}..."
+    worker = MturkWorker.find_or_create(worker_id)
     # find a new tweet for worker and assign it through the task
     mturk_tweet, notification = worker.assign_task(task)
     return mturk_tweet&.tweet_id.to_s, mturk_tweet&.tweet_text.to_s, notification
