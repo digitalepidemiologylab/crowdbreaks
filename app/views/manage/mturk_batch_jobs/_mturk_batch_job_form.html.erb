@@ -130,7 +130,7 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :sandbox, input_html: {class: "mr-2", checked: f.object.sandbox || true}, label_html: {class: 'checkbox-inline'} %>
+    <%= f.input :sandbox, input_html: {class: "mr-2", checked: f.object.sandbox.nil? ? true : f.object.sandbox == 'true'}, label_html: {class: 'checkbox-inline'} %>
   </div>
 
   <div class="form-actions" style="margin-top:25px;">

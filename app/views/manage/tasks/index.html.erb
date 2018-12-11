@@ -7,6 +7,21 @@
       Tasks for batch '<%= @mturk_batch_job.name %>'
     </h2>
   </div>
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <table class="table vertical-align borderless-table">
+          <%= table_row('Total', @mturk_batch_job.tasks.count) %>
+          <%= table_row('Unsubmitted', @mturk_batch_job.tasks.unsubmitted.count) %>
+          <%= table_row('Submitted', @mturk_batch_job.tasks.submitted.count) %>
+          <%= table_row('Assigned', @mturk_batch_job.tasks.assigned.count) %>
+          <%= table_row('Completed', @mturk_batch_job.tasks.completed.count) %>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+  </div>
 </div>
 
 <div class="row justify-content-center mb-4">
