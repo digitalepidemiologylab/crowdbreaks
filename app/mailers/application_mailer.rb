@@ -28,7 +28,7 @@ class ApplicationMailer < ActionMailer::Base
       Crowdbreaks::Mandrill.messages.send_template(options[:template], [], message) unless Rails.env.test?
     end
   rescue Mandrill::Error => e
-    Rails.logger.error(e)
+    ErrorLogger.error(e)
     raise e
   end
 

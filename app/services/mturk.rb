@@ -12,7 +12,7 @@ class Mturk
     # create a qualification type of this batch (used for dynamic exclusions of workers)
     qual_type_id = generate_exclude_worker_qualification(batch_job.name)
     if qual_type_id.nil?
-      Rails.logger.error "Something went wrong when generating the qualification type. Aborting."
+      ErrorLogger.error "Something went wrong when generating the qualification type. Aborting."
       return
     end
     Rails.logger.info "Generated new qualifaction type ID: #{qual_type_id}"
@@ -82,7 +82,7 @@ class Mturk
         @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
         Rails.logger.info "Attempt to delete hit #{hit_id}..."
       else
-        Rails.logger.error "Cannot delete hit #{hit_id}. HIT needs to be either Assignable, Reviewable or Reviewing."
+        ErrorLogger.error "Cannot delete hit #{hit_id}. HIT needs to be either Assignable, Reviewable or Reviewing."
         return
       end
     end
@@ -99,7 +99,7 @@ class Mturk
   def approve_assignment(assignment_id, message: '')
     assignment = get_assignment(assignment_id)
     if assignment.nil?
-      Rails.logger.error "Could not find assignment for assignment Id #{assignment_id}"
+      ErrorLogger.error "Could not find assignment for assignment Id #{assignment_id}"
       return
     end
     if message.empty?
@@ -128,12 +128,12 @@ class Mturk
 
   def reject_assignment(assignment_id, message: '')
     if message.empty?
-      Rails.logger.error 'Needs a non-empty rejection message' if message.empty?
+      ErrorLogger.error 'Needs a non-empty rejection message' if message.empty?
       return
     end
     assignment = get_assignment(assignment_id)
     if assignment.nil?
-      Rails.logger.error "Could not find assignment for assignment Id #{assignment_id}"
+      ErrorLogger.error "Could not find assignment for assignment Id #{assignment_id}"
       return
     end
     handle_error do

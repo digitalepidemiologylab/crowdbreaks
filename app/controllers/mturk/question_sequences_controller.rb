@@ -36,7 +36,7 @@ class Mturk::QuestionSequencesController < ApplicationController
 
     # return if same HIT was already submitted before
     if task.present? and task.results.count > 0
-      Rails.logger.error("Mturk hit was already submitted before")
+      ErrorLogger.error("Mturk hit was already submitted before")
       head :ok and return
     end
 
@@ -46,13 +46,13 @@ class Mturk::QuestionSequencesController < ApplicationController
         head :bad_request and return
       end
     else
-      Rails.logger.error("Submitted Mturk task contains no results")
+      ErrorLogger.error("Submitted Mturk task contains no results")
     end
 
     if task.present?
       task.update_on_final(tasks_params)
     else
-      Rails.logger.error("Task for #{tasks_params[:hit_id]} could not be found")
+      ErrorLogger.error("Task for #{tasks_params[:hit_id]} could not be found")
     end
 
     head :ok
@@ -63,7 +63,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     result = Result.new(results_params)
 
     if result.task_id.nil?
-      Rails.logger.error("Task for #{params[:hit_id]} could not be found")
+      ErrorLogger.error("Task for #{params[:hit_id]} could not be found")
     end
 
     if result.save

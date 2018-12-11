@@ -59,7 +59,7 @@ class MturkWorker < ApplicationRecord
       end
       if mturk_tweet.nil?
         # Unexpected behaviour
-        Rails.logger.error "Search for available tweet was stopped in order to avoid infinite loop."
+        ErrorLogger.error "Search for available tweet was stopped in order to avoid infinite loop."
         return nil, mturk_notification.all_tasks_finished
       end
       # setting tweet to available
@@ -105,7 +105,7 @@ class MturkWorker < ApplicationRecord
         available_in_batch = task.mturk_batch_job.mturk_tweets
       end
       if available_in_batch.count == 0
-        Rails.logger.error "Could not find any available tweets in this batch. This will only occur if tasks for unavailable tweets have been generated or some tweets end up not being available at the time of turking and were before. In this case the worker will excluded and be asked to return the HIT."
+        ErrorLogger.error "Could not find any available tweets in this batch. This will only occur if tasks for unavailable tweets have been generated or some tweets end up not being available at the time of turking and were before. In this case the worker will excluded and be asked to return the HIT."
         return nil
       end
       mturk_tweet = available_in_batch.unassigned.first
@@ -114,7 +114,7 @@ class MturkWorker < ApplicationRecord
       tweets_unassigned_to_worker = available_in_batch.not_assigned_to_worker(worker_id)
       if tweets_unassigned_to_worker.count == 0
         # Worker has done all tweets for this batch, hence should be excluded
-        Rails.logger.warn "Worker #{worker_id} has done all tweets in this batch. This should normally not happen unless max_tasks_per_worker is higher than the number of tweets in batch." 
+        ErrorLogger.warn "Worker #{worker_id} has done all tweets in this batch. This should normally not happen unless max_tasks_per_worker is higher than the number of tweets in batch." 
         return nil
       end
       # among unassigned to worker select one which is below assignment threshold
@@ -122,7 +122,7 @@ class MturkWorker < ApplicationRecord
       mturk_tweet = tweets_unassigned_to_worker.num_assignments_below(threshold).first
       return mturk_tweet unless mturk_tweet.nil?
       # All of them are below assignment threshold, this should normally not occur since the number of tasks and HITs should be equal. In this case return the unseen HIT with lowest number of assignments
-      Rails.logger.error "Worker #{worker_id} requested new tweet but all available tweets in this batch have already been annotated number_of_assignments (#{threshold}) times. This should normally not occur. Worker will receive unseen tweet with lowest number of annotations." 
+      ErrorLogger.error "Worker #{worker_id} requested new tweet but all available tweets in this batch have already been annotated number_of_assignments (#{threshold}) times. This should normally not occur. Worker will receive unseen tweet with lowest number of annotations." 
       tweets_unassigned_to_worker.order_by_num_assignments.first
     end
   end
