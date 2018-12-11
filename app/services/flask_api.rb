@@ -176,7 +176,7 @@ class FlaskApi
 
   def get_random_tweet
     # API is down, get random tweet from Results table instead
-    Rails.logger.error "API is down, fetching random old tweet"
+    ErrorLogger.error "API is down, fetching random old tweet"
     return '20' if Result.count == 0
     trials = 0
     tweet_id = Result.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s

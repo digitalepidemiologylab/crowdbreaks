@@ -75,7 +75,7 @@ class QuestionSequencesController < ApplicationController
       # associated all previous results with logs
       num_changed = project.results.where({user_id: user_id, tweet_id: tweet_id, question_sequence_log_id: nil, created_at: 1.day.ago..Time.current}).update_all(question_sequence_log_id: qs_log.id)
       if num_changed == 0
-        Rails.logger.error("Could not find any previous results to Question Sequence Log #{qs_log.id}")
+        ErrorLogger.error("Could not find any previous results to Question Sequence Log #{qs_log.id}")
       end
     end
     # simply return new tweet ID

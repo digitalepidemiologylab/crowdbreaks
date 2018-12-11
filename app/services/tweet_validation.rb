@@ -20,13 +20,13 @@ class TweetValidation
     begin
       Crowdbreaks::TwitterClient.status(tweet_id)
     rescue Twitter::Error::TooManyRequests => e
-      Rails.logger.error "Too many requests on Twitter API"
+      ErrorLogger.error "Too many requests on Twitter API"
       return tweet_is_valid_front_end?(tweet_id)
     rescue Twitter::Error::ClientError
       # Tweet is not available anymore
       return false
     rescue Twitter::Error => e
-      Rails.logger.error e
+      ErrorLogger.error e
       return tweet_is_valid_front_end?(tweet_id)
     else
       return true
@@ -42,7 +42,7 @@ class TweetValidation
       url = 'https://twitter.com/statuses/' + tweet_id
       return self.class.head(url).response.code == '200' ? true : false
     rescue StandardError => e
-      Rails.logger.error e
+      ErrorLogger.error e
     end
   end
 end
