@@ -9,7 +9,6 @@ class Mturk::QuestionSequencesController < ApplicationController
     if task.nil?
       head :bad_request and return
     end
-    
     # Mturk info
     @assignment_id = params[:assignmentId]
     @preview_mode = ((@assignment_id == "ASSIGNMENT_ID_NOT_AVAILABLE") or (not @assignment_id.present?))
@@ -17,12 +16,9 @@ class Mturk::QuestionSequencesController < ApplicationController
     @tweet_id = nil
     @no_work_available = false
     @sandbox = task.mturk_batch_job.sandbox
-
     if not @preview_mode
       # worker has accepted the HIT
-      task.with_lock do
-        @tweet_id, @tweet_text, @notification = get_tweet_for_worker(@worker_id, task)
-      end
+      @tweet_id, @tweet_text, @notification = get_tweet_for_worker(@worker_id, task)
     end
     # Collect question sequence info
     @project = task.mturk_batch_job.project
@@ -37,25 +33,25 @@ class Mturk::QuestionSequencesController < ApplicationController
       ErrorLogger.error("Task for #{tasks_params[:hit_id]} could not be found")
       head :bad_request and return
     end
-
+    # Avoid double submit by locking task
     task.with_lock do
       results = tasks_params.fetch(:results, []) 
       logs = tasks_params.fetch(:logs, {}) 
       # return if same HIT was already submitted before
       if task.results.count > 0
-        ErrorLogger.error("Mturk hit was already submitted before")
-        head :ok and return
+        ErrorLogger.error("Worker #{tasks_params[:worker_id]} tried to submit work for task #{task.id}. 
+                          For this task worker #{task.mturk_worker&.worker_id} has already submitted work.")
+        head :bad_request and return
       end
       if results.present?
         if not create_results_for_task(results, task.id, logs)
           head :bad_request and return
         end
       else
-        ErrorLogger.error("Submitted Mturk task contains no results")
+        ErrorLogger.error("Submitted work for task #{task.id} contains no results")
       end
       task.update_on_final(tasks_params)
     end
-
     head :ok
   end
 
@@ -94,8 +90,11 @@ class Mturk::QuestionSequencesController < ApplicationController
     # Returns tweet_id (str), tweet_text (str) pair for a specific worker-task pair. If no available task for the worker can be found it returns empty strings.
     Rails.logger.debug "Assigning task for worker #{worker_id}..."
     worker = MturkWorker.find_or_create_by(worker_id: worker_id)
-    # find a new tweet for worker and assign it through the task
-    mturk_tweet, notification = worker.assign_task(task)
+    # Lock Task table
+    Task.with_advisory_lock('mturk-assign-task') do
+      # find a new tweet for worker and assign it through the task
+      mturk_tweet, notification = worker.assign_task(task)
+    end
     return mturk_tweet&.tweet_id.to_s, mturk_tweet&.tweet_text.to_s, notification
   end
 

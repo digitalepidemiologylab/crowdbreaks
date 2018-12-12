@@ -89,9 +89,11 @@ export class MturkQSContainer extends React.Component {
     });
     taskUpdate['task']['logs'] = this.log.getLog();
     $.ajax({
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       type: "POST",
       url: this.props.finalSubmitPath,
       data: JSON.stringify(taskUpdate),
+      crossDomain: true,
       contentType: "application/json",
       success: (response) => {
         console.log('success')
