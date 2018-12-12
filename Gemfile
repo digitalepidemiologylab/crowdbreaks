@@ -66,6 +66,8 @@ gem 'sidekiq'
 gem 'redis'
 # Monitoring
 gem 'rollbar'
+# Advisory lock
+gem 'with_advisory_lock'
 
 group :development, :test do
   gem 'rspec-rails'
