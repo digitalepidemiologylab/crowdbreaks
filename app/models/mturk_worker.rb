@@ -3,12 +3,6 @@ class MturkWorker < ApplicationRecord
   has_many :mturk_tweets, through: :tasks
   has_many :results, through: :tasks
 
-  def self.find_or_create(worker_id)
-    w = find_by(worker_id: worker_id)
-    w = create(worker_id: worker_id) if w.nil?
-    w
-  end
-
   def assign_task(task)
     # Find a suitable tweet to match to a worker-task pair. There are the following possible cases which need to be handled:
     # a) Worker has reached max_tasks_per_worker --> exclude worker

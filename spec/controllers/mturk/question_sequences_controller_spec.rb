@@ -71,7 +71,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:mturk_tweet11) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job7) }
   let!(:task_submitted12) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job7) }
 
-  # Store result regardless of whether task could be found
+  # Do not store results if task could be found
   let!(:mturk_batch_job8) { FactoryBot.create(:mturk_batch_job, :submitted, project: project, number_of_assignments: 1) }
   let!(:mturk_tweet12) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job8) }
   let!(:task_submitted13) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job8) }
@@ -401,7 +401,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(task.mturk_tweet.tweet_id).to eq(task.results.last.tweet_id)
     end
 
-    it "stores mturk results regardless of whether task could be found" do
+    it "does not store mturk results if task could be found" do
       # worker 8 is assigned new tweet
       task = Task.find(task_submitted12.id)
       expect(task.mturk_tweet_id).to eq(nil)
@@ -433,8 +433,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           ]
         }
       }
-      expect(Result.count).to eq(1)
-      expect(Result.last.task).to eq(nil)
+      expect(Result.count).to eq(0)
     end
 
     it "avoids storing same result twice" do
