@@ -30,6 +30,15 @@ class MturkNotification
     }
   end
 
+  def error
+    @notification = {
+      status_code: :error,
+      code: 'error',
+      title_message: 'Error',
+      message: 'When trying to retrieve the task an error has occurred. We apologize and will try to fix this issue as soon as possible.',
+    }
+  end
+
   def success?
     return false if @notification.empty?
     @notification[:status_code] == :success
