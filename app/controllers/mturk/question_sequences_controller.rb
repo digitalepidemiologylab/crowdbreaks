@@ -91,11 +91,17 @@ class Mturk::QuestionSequencesController < ApplicationController
     Rails.logger.debug "Assigning task for worker #{worker_id}..."
     worker = MturkWorker.find_or_create_by(worker_id: worker_id)
     # Lock Task table
-    Task.with_advisory_lock('mturk-assign-task') do
+    lock_result = Task.with_advisory_lock_result('mturk-assign-task') do
       # find a new tweet for worker and assign it through the task
-      mturk_tweet, notification = worker.assign_task(task)
+      worker.assign_task(task)
     end
-    return mturk_tweet&.tweet_id.to_s, mturk_tweet&.tweet_text.to_s, notification
+    if lock_result.lock_was_acquired?
+      mturk_tweet, notification = lock_result.result
+      return mturk_tweet&.tweet_id.to_s, mturk_tweet&.tweet_text.to_s, notification
+    else
+      ErrorLogger.error "Something went wrong when trying to acquire lock for task #{task.id}"
+      return "", "", MturkNotification.new.error
+    end
   end
 
   def tasks_params
