@@ -20,7 +20,10 @@ class Mturk::QuestionSequencesController < ApplicationController
 
     if not @preview_mode
       # worker has accepted the HIT
-      @tweet_id, @tweet_text, @notification = get_tweet_for_worker(@worker_id, task)
+      Task.transaction do
+        task.lock!
+        @tweet_id, @tweet_text, @notification = get_tweet_for_worker(@worker_id, task)
+      end
     end
     # Collect question sequence info
     @project = task.mturk_batch_job.project

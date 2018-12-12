@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :mturk_tweet do
     association :mturk_batch_job
-    # Tweet ID of 20 is returned as valid by stubbed API, 0 invalid.
-    tweet_id { '20' }
+    # All Tweet IDs are returned as valid by stubbed API, except for 0
+    tweet_id { '1012627301358620672' }
 
     trait :available do
       availability { :available }

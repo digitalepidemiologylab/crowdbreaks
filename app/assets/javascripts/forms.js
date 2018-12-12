@@ -2,7 +2,7 @@
 
 // File input (Show filename on file select)
 $(document).on('turbolinks:load', function() {
-  let inputs = document.querySelectorAll('.input-file');
+  let inputs = Array.from(document.querySelectorAll('.input-file'));
   inputs.forEach((input) => {
     let uploadButton = input.parentNode.parentNode.previousSibling.previousSibling.querySelector('div')
     let filename = ''
