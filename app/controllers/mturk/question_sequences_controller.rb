@@ -20,8 +20,7 @@ class Mturk::QuestionSequencesController < ApplicationController
 
     if not @preview_mode
       # worker has accepted the HIT
-      Task.transaction do
-        task.lock!
+      task.with_lock do
         @tweet_id, @tweet_text, @notification = get_tweet_for_worker(@worker_id, task)
       end
     end
@@ -34,28 +33,27 @@ class Mturk::QuestionSequencesController < ApplicationController
   def final
     # fetch associated task
     task = get_task(tasks_params[:hit_id])
-    results = tasks_params.fetch(:results, []) 
-    logs = tasks_params.fetch(:logs, {}) 
-
-    # return if same HIT was already submitted before
-    if task.present? and task.results.count > 0
-      ErrorLogger.error("Mturk hit was already submitted before")
-      head :ok and return
-    end
-
-    # try to store results even if task couldn't be found
-    if results.present?
-      if not create_results_for_task(results, task.try(:id), logs)
-        head :bad_request and return
-      end
-    else
-      ErrorLogger.error("Submitted Mturk task contains no results")
-    end
-
-    if task.present?
-      task.update_on_final(tasks_params)
-    else
+    if task.nil?
       ErrorLogger.error("Task for #{tasks_params[:hit_id]} could not be found")
+      head :bad_request and return
+    end
+
+    task.with_lock do
+      results = tasks_params.fetch(:results, []) 
+      logs = tasks_params.fetch(:logs, {}) 
+      # return if same HIT was already submitted before
+      if task.results.count > 0
+        ErrorLogger.error("Mturk hit was already submitted before")
+        head :ok and return
+      end
+      if results.present?
+        if not create_results_for_task(results, task.id, logs)
+          head :bad_request and return
+        end
+      else
+        ErrorLogger.error("Submitted Mturk task contains no results")
+      end
+      task.update_on_final(tasks_params)
     end
 
     head :ok
@@ -95,7 +93,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     ##
     # Returns tweet_id (str), tweet_text (str) pair for a specific worker-task pair. If no available task for the worker can be found it returns empty strings.
     Rails.logger.debug "Assigning task for worker #{worker_id}..."
-    worker = MturkWorker.find_or_create(worker_id)
+    worker = MturkWorker.find_or_create_by(worker_id: worker_id)
     # find a new tweet for worker and assign it through the task
     mturk_tweet, notification = worker.assign_task(task)
     return mturk_tweet&.tweet_id.to_s, mturk_tweet&.tweet_text.to_s, notification
