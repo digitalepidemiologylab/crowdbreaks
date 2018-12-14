@@ -1,4 +1,11 @@
 <tr>
   <td><%= mturk_worker.worker_id %></td>
   <td><%= mturk_worker.mturk_tweets.count %></td>
+  <td><%= status_yes_no(mturk_worker.blacklisted?) %></td>
+  <td><%= time_ago(mturk_worker.last_task_created) %></td>
+  <td>
+    <%= link_to mturk_worker_blacklist_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted), title: 'Blacklist worker', method: :post, data: {confirm: "Are you sure?"} do %>
+      <%= fa_icon 'times-circle' %>
+    <% end %>
+  </td>
 </tr>

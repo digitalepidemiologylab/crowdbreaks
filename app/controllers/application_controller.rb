@@ -37,6 +37,14 @@ class ApplicationController < ActionController::Base
     redirect_to root_url
   end
 
+  def param_is_truthy?(param, default: false)
+    if params[param].present?
+      params[param] == 'true' ? true : false
+    else
+      default
+    end
+  end
+
   protected
 
   def configure_permitted_parameters

@@ -66,7 +66,9 @@ Rails.application.routes.draw do
         get 'submit'
         get 'clone', on: :collection
       end
-      resources :mturk_workers, only: [:index]
+      resources :mturk_workers, only: [:index] do
+        post 'blacklist'
+      end
       resources :mturk_cached_hits, path: 'mturk_hits' do
         get 'update_cached_hits', on: :collection
       end

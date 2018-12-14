@@ -1,5 +1,12 @@
 // Toggle switches (auto reload on toggle)
 // ---------------------
+// Manage/MturkWorker/index
+function toggleBlacklisted() {
+  $('#mturk-worker-blacklisted-checkbox').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('show_blacklisted', toBeChecked);
+  });
+}
 // Manage/MturkCachedHit/index
 function toggleSandbox() {
   $('.production-checkbox').change(function() {
@@ -74,6 +81,8 @@ function changeSelectParam(param, value) {
 }
 
 $(document).on('turbolinks:load', function() {
+  toggleBlacklisted();
+
   toggleGroupByQs();
   toggleSandbox();
   toggleFiltered();
