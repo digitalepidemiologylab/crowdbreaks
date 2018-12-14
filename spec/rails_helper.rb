@@ -115,14 +115,31 @@ WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
   config.before(:each) do
-    # mturk
-    stub_request(:any, /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/)
+    # --------------------
+    # Twitter API
     # any valid tweet id
     stub_request(:get, /api.twitter.com\/1.1\/statuses\/show\/[1-9]\d*.json/)
       .to_return(status: 200, body: {id: '20'}.to_json, :headers => {"Content-Type"=> "application/json"})
     # invalid tweet id 0
     stub_request(:get, /api.twitter.com\/1.1\/statuses\/show\/0.json/)
       .to_return(status: 400, body: {id: '0'}.to_json, :headers => {"Content-Type"=> "application/json"})
+    # --------------------
+    # mturk
+    mturk_base_url = /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/
+    stub_request(:any, mturk_base_url)
+      .to_return(status: 200, body: "", headers: {})
+    # create qualification
+    stub_request(:post, mturk_base_url)
+      .with(body: /{\"Name\":\"(.*)\",\"Description\":\"(.*)\",\"QualificationTypeStatus\":\"Active\",\"AutoGranted\":true}/)
+      .to_return(status: 200, body: {'QualificationType': {'QualificationTypeId': SecureRandom.hex}}.to_json)
+    # create hit type
+    stub_request(:post, mturk_base_url)
+      .with(body: /{\"Title\":\"(.*)\",\"Description\":\"(.*)\",\"Reward\":\"\d+.\d+\",\"Keywords\":\"(.*)\",\"AutoApprovalDelayInSeconds\":\d+,\"AssignmentDurationInSeconds\":\d+,\"QualificationRequirements\":\[{\"QualificationTypeId\":\"(.*)\",\"Comparator\":\"DoesNotExist\",\"ActionsGuarded\":\"Accept\"}\]}/)
+      .to_return(status: 200, body: {'HITTypeId': SecureRandom.hex}.to_json, headers: {})
+    # create hit from hit type
+    stub_request(:post, mturk_base_url)
+      .with(body: /{\"HITTypeId\":\"(.*)\",\"MaxAssignments\":\d+,\"LifetimeInSeconds\":\d+,\"Question\":\"(.*)\",\"RequesterAnnotation\":\"\d+\"}/)
+      .to_return(status: 200, body: {HIT: {HITId: SecureRandom.hex}}.to_json, headers: {})
   end
 end
 

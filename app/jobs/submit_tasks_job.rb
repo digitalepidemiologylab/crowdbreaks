@@ -17,7 +17,6 @@ class SubmitTasksJob < ApplicationJob
 
   def perform(mturk_batch_job_id)
     mturk_batch_job = MturkBatchJob.find(mturk_batch_job_id)
-
     mturk = Mturk.new(sandbox: mturk_batch_job.sandbox)
 
     # create new HIT type for this batch
@@ -31,6 +30,11 @@ class SubmitTasksJob < ApplicationJob
       hittype_id: hittype_id,
       qualification_type_id: qualification_type_id
     })
+
+    # exclude blacklisted workers
+    if mturk_batch_job.exclude_blacklisted?
+      mturk_batch_job.exclude_blacklisted_workers
+    end
 
     # number of HITs to be generated
     if mturk_batch_job.check_availability_before? or mturk_batch_job.check_availability_before_and_after?

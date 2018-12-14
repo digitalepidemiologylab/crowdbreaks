@@ -6,7 +6,7 @@ module Manage
       @show_blacklisted = param_is_truthy?(:show_blacklisted)
       query = MturkWorker.joins(:tasks).select('MAX(tasks.created_at) as last_task_created', :id, :worker_id, :status, :created_at).group('mturk_workers.id')
       if @show_blacklisted
-        query = query.blacklisted
+        query = query.blacklisted_status
       end
 
       if params[:search_worker].present?
@@ -20,11 +20,11 @@ module Manage
     def blacklist
       mturk_worker = MturkWorker.find_by(id: params[:mturk_worker_id])
       if mturk_worker.present?
-        if not mturk_worker.blacklisted?
-          mturk_worker.blacklisted!
+        if not mturk_worker.blacklisted_status?
+          mturk_worker.blacklisted_status!
           redirect_after_blacklist(notice: 'Successfully blacklisted worker!')
         else
-          mturk_worker.default!
+          mturk_worker.default_status!
           redirect_after_blacklist(notice: 'Successfully un-blacklisted worker!')
         end
       else

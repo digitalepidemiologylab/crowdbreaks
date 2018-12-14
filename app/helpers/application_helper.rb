@@ -50,6 +50,16 @@ module ApplicationHelper
     end
   end
 
+  def mturk_worker_status(status)
+    if status == 'default'
+      tag.span('Default', class: 'badge badge-light')
+    elsif status == 'blacklisted'
+      tag.span('Blacklisted', class: 'badge badge-danger')
+    else
+      tag.span(status, class: 'badge badge-danger')
+    end
+  end
+
   def status_badge(label, type)
     tag.span(label, class: "badge badge-#{type}")
   end
