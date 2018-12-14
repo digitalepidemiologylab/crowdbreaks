@@ -72,6 +72,13 @@ class MturkBatchJob < ApplicationRecord
     end
   end
 
+  def exclude_blacklisted_workers
+    # Exclude all blacklisted workers from this batch job 
+    MturkWorker.blacklisted_status.each do |mturk_worker|
+      mturk_worker.exclude_worker(self)
+    end
+  end
+
   def remove_qualification
     if self.qualification_type_id.present?
       Rails.logger.info "Remove qualification type #{self.qualification_type_id}..."

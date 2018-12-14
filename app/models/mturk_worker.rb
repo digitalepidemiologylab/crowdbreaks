@@ -3,7 +3,7 @@ class MturkWorker < ApplicationRecord
   has_many :mturk_tweets, through: :tasks
   has_many :results, through: :tasks
 
-  enum status: [:default, :blacklisted]
+  enum status: [:default, :blacklisted], _suffix: true
 
   def assign_task(task)
     # Find a suitable tweet to match to a worker-task pair. There are the following possible cases which need to be handled:
@@ -20,7 +20,7 @@ class MturkWorker < ApplicationRecord
     if not max_tasks_per_worker.nil?
       if task.mturk_batch_job.mturk_tweets.assigned_to_worker(worker_id).count >= max_tasks_per_worker
         Rails.logger.info "Max number of tasks has been reached for worker #{worker_id}" 
-        exclude_worker(task)
+        exclude_worker(task.mturk_batch_job)
         return nil, mturk_notification.max_tasks_by_worker_reached
       end
     end
@@ -34,7 +34,7 @@ class MturkWorker < ApplicationRecord
     # retrieve potential new tweet for worker
     mturk_tweet = retrieve_mturk_tweet_for_task(task)
     if mturk_tweet.nil?
-      exclude_worker(task)
+      exclude_worker(task.mturk_batch_job)
       return nil, mturk_notification.all_tasks_finished
     end
 
@@ -48,7 +48,7 @@ class MturkWorker < ApplicationRecord
         mturk_tweet.unavailable!
         mturk_tweet = retrieve_mturk_tweet_for_task(task)
         if mturk_tweet.nil?
-          exclude_worker(task)
+          exclude_worker(task.mturk_batch_job)
           return nil, mturk_notification.all_tasks_finished
         end
         c += 1
@@ -72,10 +72,10 @@ class MturkWorker < ApplicationRecord
     return mturk_tweet, mturk_notification.success
   end
 
-  def exclude_worker(task)
-    Rails.logger.info "Excluding worker #{worker_id} from batch." 
-    mturk = Mturk.new(sandbox: task.mturk_batch_job.sandbox)
-    mturk.exclude_worker_from_qualification(worker_id, task.mturk_batch_job.qualification_type_id)
+  def exclude_worker(mturk_batch_job)
+    Rails.logger.info "Excluding worker #{worker_id} from batch #{mturk_batch_job.name}." 
+    mturk = Mturk.new(sandbox: mturk_batch_job.sandbox)
+    mturk.exclude_worker_from_qualification(worker_id, mturk_batch_job.qualification_type_id)
   end
 
 
