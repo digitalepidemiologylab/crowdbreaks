@@ -61,13 +61,5 @@ module Manage
     def mturk_init
       @mturk = Mturk.new(sandbox: param_is_truthy?(:sandbox, default: true))
     end
-
-    def param_is_truthy?(param, default: false)
-      if params[param].present?
-        params[param] == 'true' ? true : false
-      else
-        default
-      end
-    end
   end
 end
