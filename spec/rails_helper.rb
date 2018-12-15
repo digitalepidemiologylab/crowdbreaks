@@ -3,6 +3,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
+require 'question_sequence'
 require 'rspec/rails'
 require 'spec_helper'
 require 'ffaker'
@@ -140,6 +141,11 @@ RSpec.configure do |config|
     stub_request(:post, mturk_base_url)
       .with(body: /{\"HITTypeId\":\"(.*)\",\"MaxAssignments\":\d+,\"LifetimeInSeconds\":\d+,\"Question\":\"(.*)\",\"RequesterAnnotation\":\"\d+\"}/)
       .to_return(status: 200, body: {HIT: {HITId: SecureRandom.hex}}.to_json, headers: {})
+    # --------------------
+    # aws s3
+    aws_s3_url = /https:\/\/crowdbreaks-dev.s3.eu-central-1.amazonaws.com(.*)/
+    stub_request(:any, aws_s3_url)
+      .to_return(status: 200, body: "", headers: {})
   end
 end
 
