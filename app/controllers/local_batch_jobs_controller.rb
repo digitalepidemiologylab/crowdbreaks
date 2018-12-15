@@ -10,7 +10,7 @@ class LocalBatchJobsController < ApplicationController
     # calculate counts
     @user_count = @local_batch_job.results.counts_by_user(@user_id)
     @total_count = @local_batch_job.local_tweets.may_be_available.count
-    @total_count_unavailable = @local_batch_job.local_tweets.is_unavailable.count
+    @total_count_unavailable = @local_batch_job.local_tweets.unavailable.count
     # Get inital tweet
     local_tweet = @local_batch_job.local_tweets.not_assigned_to_user(@user_id, @local_batch_job.id).may_be_available.first 
     @tweet_id = local_tweet&.tweet_id
@@ -77,7 +77,7 @@ class LocalBatchJobsController < ApplicationController
     # calculate counts
     total_count = local_batch_job.local_tweets.may_be_available.count
     user_count = local_batch_job.results.counts_by_user(user_id)
-    total_count_unavailable = local_batch_job.local_tweets.is_unavailable.count
+    total_count_unavailable = local_batch_job.local_tweets.unavailable.count
 
     # send info back
     render json: {

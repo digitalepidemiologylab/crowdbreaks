@@ -5,8 +5,6 @@ class LocalTweet < ApplicationRecord
   enum availability: [:unknown, :available, :unavailable]
 
   scope :not_assigned_to_user, -> (user_id, batch_id) { where.not(tweet_id: Result.where({local_batch_job_id: batch_id, user_id: user_id}).select(:tweet_id))}
-  scope :is_available, -> { where(availability: [:available]) }
-  scope :is_unavailable, -> { where(availability: [:unavailable]) }
   scope :may_be_available, -> { where(availability: [:available, :unknown]) }
 
   def done_by
