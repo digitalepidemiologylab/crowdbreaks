@@ -1,7 +1,5 @@
 <img src="app/assets/images/logo-crowdbreaks.svg" alt="Crowdbreaks logo" width="400px"/>
 
-# Crowdbreaks
-
 This is the Rails application of Crowdbreaks.
 
 # Install
