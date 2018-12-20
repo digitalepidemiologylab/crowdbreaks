@@ -8,4 +8,11 @@
       <%= fa_icon 'times-circle' %>
     <% end %>
   </td>
+  <td>
+    <% if mturk_worker.results.count > 0 %>
+      <%= link_to mturk_worker_review_path(mturk_worker), title: 'Review results' do %>
+        Review&nbsp;<%= fa_icon 'angle-double-right' %>
+    <% end %>
+  <% end %>
+  </td>
 </tr>

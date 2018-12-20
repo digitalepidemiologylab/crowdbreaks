@@ -7,6 +7,15 @@ function toggleBlacklisted() {
     toggleParam('show_blacklisted', toBeChecked);
   });
 }
+// Manage/MturkWorker/review
+function selectWorkerReviewBatchJob() {
+  $('#worker-review-mturk_batch_job-filter').change(function() {
+    console.log('hello')
+    let batch_name = $(this).find(":selected").val()
+    changeSelectParam('batch_name_filter', batch_name)
+  })
+}
+
 // Manage/MturkCachedHit/index
 function toggleSandbox() {
   $('.production-checkbox').change(function() {
@@ -91,6 +100,7 @@ $(document).on('turbolinks:load', function() {
 
   selectProjectResults();
   selectResTypeResults();
+  selectWorkerReviewBatchJob();
 
   toggleCheckAll();
 })

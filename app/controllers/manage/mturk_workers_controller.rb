@@ -17,6 +17,43 @@ module Manage
       @mturk_workers = query.order('last_task_created DESC')
     end
 
+    def review
+      @mturk_worker = MturkWorker.find_by(id: params[:mturk_worker_id])
+      @selected_batch_job = params[:batch_name_filter]
+      qs = @mturk_worker.results
+      qs = qs
+        .left_outer_joins(:task)
+        .select('MAX(results.id) as id', 'MAX(results.created_at) as created_at', 'count(*) as num_results', :project_id, :tweet_id, :task_id, 'tasks.mturk_batch_job_id as mturk_batch_job_id')
+        .group(:project_id, :tweet_id, 'tasks.mturk_batch_job_id', :task_id)
+        .order(Arel.sql('max(results.created_at) DESC'))
+      @mturk_batch_jobs_by_worker = MturkBatchJob.where(id: qs.pluck('tasks.mturk_batch_job_id').uniq).pluck(:name)
+      if @selected_batch_job.present?
+        mturk_batch_job = MturkBatchJob.find_by(name: @selected_batch_job)
+        qs = qs.where('tasks.mturk_batch_job_id': mturk_batch_job.id)
+      end
+      @num_qs = qs.length
+      @qs = qs.page params[:page]
+      tt = MturkTweet.where(tweet_id: @qs.pluck(:tweet_id)).pluck(:tweet_id, :tweet_text)
+      @tweet_texts = {}
+      tt.each do |tweet| 
+        @tweet_texts[tweet[0]] = tweet[1]
+      end
+      @tasks = {}
+      @qs_results = {}
+      @logs = {}
+      @mturk_cached_hit = {}
+      @qs.each do |question_sequence|
+        res = Result.find_by(id: question_sequence.id)
+        if res.present?
+          @tasks[res.id] = res.task
+          results = Result.where(task_id: question_sequence.task_id).order(created_at: :asc)
+          @qs_results[res.id] = results
+          @logs[res.id] = Hashie::Mash.new results&.first&.question_sequence_log&.log
+          @mturk_cached_hit[res.id] = MturkCachedHit.find_by(hit_id: res.task&.hit_id)
+        end
+      end
+    end
+
     def blacklist
       mturk_worker = MturkWorker.find_by(id: params[:mturk_worker_id])
       if mturk_worker.present?
@@ -45,6 +82,9 @@ module Manage
       else
         redirect_to mturk_workers_path(**pass_params)
       end
+    end
+
+    def get_qs(tweet_id, project_id, task_id)
     end
   end
 end
