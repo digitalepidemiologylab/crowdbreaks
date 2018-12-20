@@ -68,6 +68,7 @@ Rails.application.routes.draw do
       end
       resources :mturk_workers, only: [:index] do
         post 'blacklist'
+        get 'review'
       end
       resources :mturk_cached_hits, path: 'mturk_hits' do
         get 'update_cached_hits', on: :collection

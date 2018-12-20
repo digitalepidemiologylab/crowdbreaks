@@ -1,0 +1,112 @@
+<% @title ||= 'Mturk workers'; title @title %>
+<%= go_back_btn mturk_workers_path %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>Review work for worker <%= @mturk_worker.worker_id %></h2>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Filters</h4>
+        <div class='mb-3'>
+          <label>Batch name</label>
+          <%= select('batch_name_filter', 'batch_name_filter', @mturk_batch_jobs_by_worker, {selected: @selected_batch_job, include_blank: true}, 
+                     {id: 'worker-review-mturk_batch_job-filter', class: 'select form-control'}) %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb-2">
+    <div class="card">
+      <div class="card-body">
+          <table class="table vertical-align borderless-table">
+            <%= table_row('Num results', num(@mturk_worker.results.count)) %>
+            <%= table_row('Num question sequences', num(@num_qs)) %>
+          </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-5">
+  <div class="col-12">
+    <%= paginate @qs %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <% @qs.each_with_index do |question_sequence, ix| %>
+      <div class="card mb-6 text-center">
+        <div class="card-header">
+          <h4>
+            Task <%= @tasks[question_sequence.id].id %>
+          </h4>
+          <div>
+            <h4>
+              <%= @tasks[question_sequence.id]&.mturk_batch_job.name %>
+            </h4>
+          </div>
+          <div class="text-muted">
+            Submitted&nbsp;<%= time_ago(question_sequence.created_at) %>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mb-5" style="max-width:500px;margin:auto;">
+            <% if @tweet_texts[question_sequence.tweet_id].present? %>
+              <div class="card text-center">
+                <div class="card-body">
+                  <%= @tweet_texts[question_sequence.tweet_id] %>
+                </div>
+              </div>
+            <% else %>
+              <div>
+                <%= react_component('TweetEmbed', {
+                  id: question_sequence.tweet_id.to_s,
+                  options: {cards: 'hidden', conversation: 'none'}
+                }) %>
+              </div>
+            <% end %>
+          </div>
+          <div class="mb-5" style="max-width:500px;margin:auto;">
+            <% @qs_results[question_sequence.id].each_with_index do |result, ix| %>
+              <div class="mb-4">
+                <% if @logs[question_sequence.id]&.results&.length.to_i > 0 %>
+                  <h4>Question <%= ix + 1 %> <%= "(#{@logs[question_sequence.id].results[ix].timeSinceLastAnswer.to_i/1000.0} s)" %></h4>
+                <% else %>
+                  <h4>Question <%= ix + 1 %></h4>
+                <% end %>
+                <p><%= result.question.question %></p>
+                <p><%= answer_btn(result.answer.answer, result.answer.color) %></p>
+              </div>
+            <% end %>
+          </div>
+          <div>
+            <div class="card mb-3" style="max-width:500px;margin:auto;">
+              <div class="card-body">
+                <% if @mturk_cached_hit[question_sequence.id].present? %>
+                  <table class="table vertical-align borderless-table">
+                    <%= table_row('HIT Id', @mturk_cached_hit[question_sequence.id].hit_id) %>
+                    <%= table_row('HIT status', @mturk_cached_hit[question_sequence.id].hit_status) %>
+                    <%= table_row('HIT review status', @mturk_cached_hit[question_sequence.id].hit_review_status) %>
+                  </table>
+                  <% if can? :update, @mturk_cached_hit[question_sequence.id] %>
+                    <%= link_to mturk_reviewable_hit_path(@mturk_cached_hit[question_sequence.id].hit_id, sandbox: false), class: 'btn btn-secondary btn-lg mt-3' do %>
+                      Review HIT&nbsp;<%= fa_icon 'angle-double-right' %>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <div class="text-muted">
+                    Corresponding HIT could not be found. Try refreshing HITs under List HITs tab.
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
