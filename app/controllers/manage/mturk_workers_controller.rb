@@ -70,6 +70,22 @@ module Manage
     end
 
 
+    def flag_result
+      res = Result.find_by(id: params[:result_id])
+      if res.present?
+        case params[:modify_action]
+        when 'incorrect'
+          res.flag_incorrect!
+        when 'correct'
+          res.flag_correct!
+        when 'default'
+          res.flag_default!
+        else
+          Rails.logger.error 'no modify action specified'
+        end
+      end
+    end
+
     private
 
     def redirect_after_blacklist(notice: '', alert: '')

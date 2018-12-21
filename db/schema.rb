@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_14_182426) do
+ActiveRecord::Schema.define(version: 2018_12_21_125309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -197,6 +197,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_182426) do
     t.bigint "local_batch_job_id"
     t.bigint "question_sequence_log_id"
     t.integer "res_type", default: 0, null: false
+    t.integer "flag", default: 0, null: false
     t.index ["answer_id"], name: "index_results_on_answer_id"
     t.index ["local_batch_job_id"], name: "index_results_on_local_batch_job_id"
     t.index ["project_id"], name: "index_results_on_project_id"
