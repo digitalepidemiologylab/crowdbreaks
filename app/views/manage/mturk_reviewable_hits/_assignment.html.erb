@@ -26,7 +26,7 @@
 <% if assignment.assignment_status == 'Submitted' %>
   <div class="row justify-content-center mb-5">
     <div class="col-12 col-md-10 col-lg-8">
-      <%= simple_form_for(:hit, url: mturk_reviewable_hit_accept_path(assignment.assignment_id)) do |f| %>
+      <%= simple_form_for(:hit, url: accept_mturk_reviewable_hit_path(assignment.assignment_id)) do |f| %>
         <div class="form-group">
           <%= f.input :message, label: 'Acceptance message', as: :text, hint: 'Write a acceptance message to the worker', input_html: {value: @default_accept_message, rows: 3} %>
         </div>
@@ -38,7 +38,7 @@
   </div>
   <div class="row justify-content-center mb-5">
     <div class="col-12 col-md-10 col-lg-8">
-      <%= simple_form_for(:hit, url: mturk_reviewable_hit_reject_path(assignment.assignment_id)) do |f| %>
+      <%= simple_form_for(:hit, url: reject_mturk_reviewable_hit_path(assignment.assignment_id)) do |f| %>
         <div class="form-group">
           <%= f.input :message, label: 'Rejection message', as: :text, hint: 'Write a rejection message to the worker', input_html: {value: @default_reject_message, rows: 3} %>
         </div>

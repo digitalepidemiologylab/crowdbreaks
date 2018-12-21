@@ -10,7 +10,9 @@ Rails.application.routes.draw do
     resources :projects, except: [:show]
     resources :question_sequences, except: [:create]
     resources :users
-    resources :results, except: [:update]
+    resources :results, except: [:update] do
+      post 'flag', on: :member
+    end
   end
 
   scope :api do
@@ -63,13 +65,12 @@ Rails.application.routes.draw do
         resources :mturk_tweets, only: [:index] do
           get 'update_availability', on: :collection
         end
-        get 'submit'
+        get 'submit', on: :member
         get 'clone', on: :collection
       end
       resources :mturk_workers, only: [:index] do
-        post 'blacklist'
-        get 'review'
-        post 'flag_result'
+        post 'blacklist', on: :member
+        get 'review', on: :member
       end
       resources :mturk_cached_hits, path: 'mturk_hits' do
         get 'update_cached_hits', on: :collection
@@ -77,8 +78,8 @@ Rails.application.routes.draw do
       resources :mturk_reviewable_hits, only: [:index, :show] do
         get 'link_to_results'
         post 'multi_review', on: :collection
-        post 'accept'
-        post 'reject'
+        post 'accept', on: :member
+        post 'reject', on: :member
       end
 
       # elasticsearch

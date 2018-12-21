@@ -65,13 +65,12 @@ module Manage
     end
 
     def submit
-      mturk_batch_job = MturkBatchJob.find(params[:mturk_batch_job_id])
-      if mturk_batch_job.status != 'unsubmitted'
+      if @mturk_batch_job.status != 'unsubmitted'
         redirect_to(mturk_batch_jobs_path, alert: "Batch must be in 'unsubmitted' stated in order to be submitted.") and return
       end
 
-      SubmitTasksJob.perform_later(mturk_batch_job.id)
-      redirect_to(mturk_batch_jobs_path, notice: "HITs for batch #{mturk_batch_job.name} are being submitted...")
+      SubmitTasksJob.perform_later(@mturk_batch_job.id)
+      redirect_to(mturk_batch_jobs_path, notice: "HITs for batch #{@mturk_batch_job.name} are being submitted...")
     end
 
     def clone

@@ -66,6 +66,18 @@ module Admin
       redirect_to(admin_results_path(project_id_filter: params[:project_id_filter], res_type_filter: params[:res_type_filter], group_by_qs: params[:group_by_qs]), **message)
     end
 
+    def flag
+      case params[:modify_action]
+      when 'incorrect'
+        @result.flag_incorrect!
+      when 'correct'
+        @result.flag_correct!
+      when 'default'
+        @result.flag_default!
+      else
+        Rails.logger.error 'no modify action specified'
+      end
+    end
 
     private
 
