@@ -83,26 +83,28 @@
                   <%= answer_btn(result.answer.answer, result.answer.color) %>
                 </div>
                 <div class='mt-2'>
-                  <%= link_to mturk_worker_flag_result_path(modify_action: 'incorrect', result_id: result.id),
-                    class: 'btn btn-link default-mturk-worker-result',
-                    style: "#{result.flag_default? ? '' : 'display:none;'}",
-                    remote: true,
-                    method: :post do %>
-                    Incorrect?
-                  <% end %>
-                  <%= link_to mturk_worker_flag_result_path(modify_action: 'correct', result_id: result.id),
-                    class: 'btn btn-link incorrect-mturk-worker-result',
-                    style: "#{result.flag_incorrect? ? '' : 'display:none;'}",
-                    remote: true,
-                    method: :post do %>
-                    <span class='badge badge-danger'>incorrect</span>
-                  <% end %>
-                  <%= link_to mturk_worker_flag_result_path(modify_action: 'default', result_id: result.id),
-                    class: 'btn btn-link correct-mturk-worker-result',
-                    style: "#{result.flag_correct? ? '' : 'display:none;'}",
-                    remote: true,
-                    method: :post do %>
-                    <span class='badge badge-success'>correct</span>
+                  <% if can? :update, result %>
+                    <%= link_to flag_admin_result_path(result, modify_action: 'incorrect'),
+                      class: 'btn btn-link default-mturk-worker-result',
+                      style: "#{result.flag_default? ? '' : 'display:none;'}",
+                      remote: true,
+                      method: :post do %>
+                      Incorrect?
+                    <% end %>
+                    <%= link_to flag_admin_result_path(result, modify_action: 'correct'),
+                      class: 'btn btn-link incorrect-mturk-worker-result',
+                      style: "#{result.flag_incorrect? ? '' : 'display:none;'}",
+                      remote: true,
+                      method: :post do %>
+                      <span class='badge badge-danger'>incorrect</span>
+                    <% end %>
+                    <%= link_to flag_admin_result_path(result, modify_action: 'default'),
+                      class: 'btn btn-link correct-mturk-worker-result',
+                      style: "#{result.flag_correct? ? '' : 'display:none;'}",
+                      remote: true,
+                      method: :post do %>
+                      <span class='badge badge-success'>correct</span>
+                    <% end %>
                   <% end %>
                 </div>
               </div>
@@ -120,7 +122,7 @@
                     </table>
                     <% if can? :update, @mturk_cached_hit[question_sequence.id] %>
                       <%= link_to mturk_reviewable_hit_path(@mturk_cached_hit[question_sequence.id].hit_id, sandbox: false), class: 'btn btn-secondary btn-lg mt-3' do %>
-                        Review HIT&nbsp;<%= fa_icon 'angle-double-right' %>
+                        Check review status&nbsp;<%= fa_icon 'refresh' %>
                     <% end %>
                   <% end %>
                 <% else %>

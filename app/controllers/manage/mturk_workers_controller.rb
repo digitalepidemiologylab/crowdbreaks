@@ -18,7 +18,6 @@ module Manage
     end
 
     def review
-      @mturk_worker = MturkWorker.find_by(id: params[:mturk_worker_id])
       @selected_batch_job = params[:batch_name_filter]
       qs = @mturk_worker.results
       qs = qs
@@ -55,13 +54,12 @@ module Manage
     end
 
     def blacklist
-      mturk_worker = MturkWorker.find_by(id: params[:mturk_worker_id])
-      if mturk_worker.present?
-        if not mturk_worker.blacklisted_status?
-          mturk_worker.blacklisted_status!
+      if @mturk_worker.present?
+        if not @mturk_worker.blacklisted_status?
+          @mturk_worker.blacklisted_status!
           redirect_after_blacklist(notice: 'Successfully blacklisted worker!')
         else
-          mturk_worker.default_status!
+          @mturk_worker.default_status!
           redirect_after_blacklist(notice: 'Successfully un-blacklisted worker!')
         end
       else
@@ -69,22 +67,6 @@ module Manage
       end
     end
 
-
-    def flag_result
-      res = Result.find_by(id: params[:result_id])
-      if res.present?
-        case params[:modify_action]
-        when 'incorrect'
-          res.flag_incorrect!
-        when 'correct'
-          res.flag_correct!
-        when 'default'
-          res.flag_default!
-        else
-          Rails.logger.error 'no modify action specified'
-        end
-      end
-    end
 
     private
 

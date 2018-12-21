@@ -4,13 +4,15 @@
   <td><%= mturk_worker_status(mturk_worker.status) %></td>
   <td><%= time_ago(mturk_worker.last_task_created) %></td>
   <td>
-    <%= link_to mturk_worker_blacklist_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted), title: 'Blacklist worker', method: :post, data: {confirm: "Are you sure?"} do %>
-      <%= fa_icon 'times-circle' %>
+    <% if can? :update, mturk_worker %>
+      <%= link_to blacklist_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted), title: 'Blacklist worker', method: :post do %>
+        <%= toggle_switch(mturk_worker.blacklisted_status?, '', '') %>
+      <% end %>
     <% end %>
   </td>
   <td>
     <% if mturk_worker.results.count > 0 %>
-      <%= link_to mturk_worker_review_path(mturk_worker), title: 'Review results' do %>
+      <%= link_to review_mturk_worker_path(mturk_worker), title: 'Review results' do %>
         Review&nbsp;<%= fa_icon 'angle-double-right' %>
     <% end %>
   <% end %>
