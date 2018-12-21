@@ -12,6 +12,7 @@ class Result < ApplicationRecord
   scope :by_batch, -> (batch_name) { where(id: MturkBatchJob.find_by(name: batch_name)&.results&.select(:id)) }
 
   enum res_type: [:public, :local, :mturk], _suffix: true
+  enum flag: [:default, :incorrect, :correct], _prefix: true
 
   private
 
