@@ -13,33 +13,50 @@ $(document).on("turbolinks:load", function() {
 
       received: function(data) {
         // Called when there's incoming data on the websocket for this channel
-        if (data['job_type'] = 'update_mturk_hits') {
-          if (data['job_status'] == 'completed') {
-            onUpdateMturkHitsComplete(data['message']);
-          } else if (data['job_status'] == 'running') {
-            onUpdateMturkHitsRunning(data['hits_loaded']);
-          } else if (data['job_status'] == 'failed') {
-            onUpdateMturkHitsFailed();
-          }
-        }
-        if (data['job_type'] = 'refresh_mturk_tweets') {
-          if (data['job_status'] == 'completed') {
-            onRefreshAvailabilityComplete();
-          }
-        }
-        if (data['job_type'] = 'mturk_batch_job_s3_upload') {
-          if (data['job_status'] == 'running') {
-            onMturkBatchJobS3UploadRunning(data['mturk_batch_job_id']);
-          } else if (data['job_status'] == 'completed') {
-            onMturkBatchJobS3UploadComplete(data['mturk_batch_job_id']);
-          }
-        }
-        if (data['job_type'] = 'mturk_tweets_s3_upload') {
-          if (data['job_status'] == 'running') {
-            onMturkTweetsS3UploadRunning(data['mturk_batch_job_id']);
-          } else if (data['job_status'] == 'completed') {
-            onMturkTweetsS3UploadComplete(data['mturk_batch_job_id']);
-          }
+        switch(data['job_type']) {
+          case 'update_mturk_hits':
+            switch(data['job_status']) {
+              case 'running':
+                onUpdateMturkHitsRunning(data['hits_loaded']);
+                break;
+              case 'completed':
+                onUpdateMturkHitsComplete(data['message']);
+                break;
+              case 'failed':
+                onUpdateMturkHitsFailed();
+                break;
+            }
+            break;
+          case 'refresh_mturk_tweets':
+            if (data['job_status'] == 'completed') {
+              onRefreshAvailabilityComplete();
+            }
+            break;
+          case 'mturk_batch_job_s3_upload':
+            switch(data['job_status']) {
+              case 'running':
+                onMturkBatchJobS3UploadRunning(data['mturk_batch_job_id']);
+                break;
+              case 'completed':
+                onMturkBatchJobS3UploadComplete(data['mturk_batch_job_id']);
+                break;
+            }
+            break;
+          case 'mturk_tweets_s3_upload':
+            switch(data['job_status']) {
+              case 'running':
+                onMturkTweetsS3UploadRunning(data['mturk_batch_job_id']);
+                break;
+              case 'completed':
+                onMturkTweetsS3UploadComplete(data['mturk_batch_job_id']);
+                break;
+            }
+            break;
+          case 'mturk_worker_refresh_review_status':
+            if (data['job_status'] == 'completed') {
+              onRefreshReviewStatusComplete(data['assignment']);
+            }
+            break;
         }
       }
     });

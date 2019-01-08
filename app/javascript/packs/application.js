@@ -18,6 +18,7 @@ import { MonitorStream } from './../components/monitor_stream/MonitorStream';
 import { Leadline } from './../components/frontpage/Leadline';
 import { UserActivity } from './../components/user_activity/UserActivity';
 import { EditQuestionSequence } from './../components/edit_question_sequence/EditQuestionSequence';
+import { Assignment } from './../components/mturk_worker/Assignment';
 import TweetEmbed from 'react-tweet-embed'
 
 // Register components using Webpacker-react 
@@ -34,6 +35,7 @@ WebpackerReact.setup({
   EditQuestionSequence,
   LocalBatchQSContainer,
   TweetEmbed,
+  Assignment,
 })
 
 // this is needed for components to properly unmount and not being cached

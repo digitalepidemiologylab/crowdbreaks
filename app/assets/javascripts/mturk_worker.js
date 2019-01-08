@@ -28,6 +28,11 @@ function onCorrectingMturkWorkerClick() {
   });
 }
 
+// websocket update functions (see channels/job_notification.js)
+// Update Review status
+function onRefreshReviewStatusComplete(assignment) {
+  console.log(assignment)
+}
 
 
 $(document).on('turbolinks:load', function() {

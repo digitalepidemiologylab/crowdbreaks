@@ -111,28 +111,26 @@
             <% end %>
           </div>
           <div>
-            <div class="card mb-3" style="max-width:500px;margin:auto;">
-              <div class="card-body">
-                <div class="mb-3">
+            <% if can? :update, @mturk_cached_hit[question_sequence.id] %>
+              <div class="card mb-3" style="max-width:500px;margin:auto;">
+                <div class="card-body">
                   <% if @mturk_cached_hit[question_sequence.id].present? %>
-                    <table class="table vertical-align borderless-table">
-                      <%= table_row('HIT Id', @mturk_cached_hit[question_sequence.id].hit_id) %>
-                      <%= table_row('HIT status', @mturk_cached_hit[question_sequence.id].hit_status) %>
-                      <%= table_row('HIT review status', @mturk_cached_hit[question_sequence.id].hit_review_status) %>
-                    </table>
-                    <% if can? :update, @mturk_cached_hit[question_sequence.id] %>
-                      <%= link_to mturk_reviewable_hit_path(@mturk_cached_hit[question_sequence.id].hit_id, sandbox: false), class: 'btn btn-secondary btn-lg mt-3' do %>
-                        Check review status&nbsp;<%= fa_icon 'refresh' %>
-                    <% end %>
+                    <%= react_component('Assignment', {
+                      hit_id: @mturk_cached_hit[question_sequence.id].hit_id,
+                      refresh_path: refresh_review_status_mturk_workers_path,
+                      review_path: review_assignment_mturk_workers_path,
+                      default_approve_message: @default_approve_message,
+                      default_reject_message: @default_reject_message,
+                    })%>
+                  <% else %>
+                    <h4 class="card-title">HIT Assignment</h4>
+                    <div class="text-muted">
+                      Corresponding HIT could not be found. Try refreshing HITs under List HITs tab.
+                    </div>
                   <% end %>
-                <% else %>
-                  <div class="text-muted">
-                    Corresponding HIT could not be found. Try refreshing HITs under List HITs tab.
-                  </div>
-                <% end %>
                 </div>
               </div>
-            </div>
+            <% end %>
           </div>
         </div>
       </div>
