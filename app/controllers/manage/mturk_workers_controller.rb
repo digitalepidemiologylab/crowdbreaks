@@ -4,7 +4,7 @@ module Manage
 
     def index
       @show_blacklisted = param_is_truthy?(:show_blacklisted)
-      query = MturkWorker.joins(:tasks).select('MAX(tasks.created_at) as last_task_created', :id, :worker_id, :status, :created_at).group('mturk_workers.id')
+      query = @mturk_workers.joins(:tasks).select('MAX(tasks.created_at) as last_task_created', :id, :worker_id, :status, :created_at).group('mturk_workers.id')
       if @show_blacklisted
         query = query.blacklisted_status
       end
@@ -51,6 +51,8 @@ module Manage
           @mturk_cached_hit[res.id] = MturkCachedHit.find_by(hit_id: res.task&.hit_id)
         end
       end
+      @default_approve_message = Mturk::DEFAULT_ACCEPT_MESSAGE
+      @default_reject_message = Mturk::DEFAULT_REJECT_MESSAGE
     end
 
     def blacklist
@@ -65,6 +67,24 @@ module Manage
       else
         redirect_after_blacklist(alert: 'Could not find worker.')
       end
+    end
+
+    def review_assignment
+      mturk = Mturk.new(sandbox: false)
+      if review_params[:accept]
+        mturk.approve_assignment(review_params[:assignment_id], message: review_params[:message])
+      else
+        mturk.reject_assignment(review_params[:assignment_id], message: review_params[:message])
+      end
+    end
+
+    def refresh_review_status
+      if params[:hit_id].empty?
+        render nothing: true, status: :bad_request and return
+      end
+      mturk = Mturk.new(sandbox: false)
+      assignment = mturk.list_assignments_for_hit(params[:hit_id])&.assignments&.first&.to_h
+      render json: assignment.to_json, status: 200
     end
 
 
@@ -83,6 +103,10 @@ module Manage
     end
 
     def get_qs(tweet_id, project_id, task_id)
+    end
+
+    def review_params
+      params.require(:review).permit(:message, :assignment_id, :accept)  
     end
   end
 end
