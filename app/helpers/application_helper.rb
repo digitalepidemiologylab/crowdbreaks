@@ -72,11 +72,11 @@ module ApplicationHelper
     number_with_delimiter(num, delimiter: '&#x202f;'.html_safe)
   end
 
-  def toggle_switch(instance_var, label, name)
+  def toggle_switch(instance_var, label, name, color: nil)
     content_tag :div do
       content_tag :label, class: 'switch' do
         concat check_box_tag(name, 'checkbox', instance_var, class: name) 
-        concat tag.span(class: 'slider round')
+        concat tag.span(class: "slider round#{color.nil? ? '' : " slider-#{color}"}")
         concat tag.span(label, class: 'switch-label')
       end
     end

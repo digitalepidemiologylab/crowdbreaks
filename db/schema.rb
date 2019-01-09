@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_21_125309) do
+ActiveRecord::Schema.define(version: 2019_01_09_104121) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(version: 2018_12_21_125309) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "status", default: 0, null: false
+    t.boolean "manually_reviewed", default: false, null: false
   end
 
   create_table "projects", id: :serial, force: :cascade do |t|
@@ -198,6 +199,7 @@ ActiveRecord::Schema.define(version: 2018_12_21_125309) do
     t.bigint "question_sequence_log_id"
     t.integer "res_type", default: 0, null: false
     t.integer "flag", default: 0, null: false
+    t.integer "manual_review_status", default: 0, null: false
     t.index ["answer_id"], name: "index_results_on_answer_id"
     t.index ["local_batch_job_id"], name: "index_results_on_local_batch_job_id"
     t.index ["project_id"], name: "index_results_on_project_id"
