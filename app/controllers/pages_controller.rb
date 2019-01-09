@@ -2,7 +2,7 @@ class PagesController < ApplicationController
   authorize_resource :class => false
 
   def index
-    @num_tweets_classified = Project.where(public: true).pluck(:question_sequences_count).sum
+    @num_tweets_classified = Result.distinct.count(:tweet_id)
     if user_signed_in?
       # Project vaccine sentiment
       counts = current_user.results.joins(:project).where(projects: {es_index_name: 'project_vaccine_sentiment'}).joins(:answer).group('answers.label').count

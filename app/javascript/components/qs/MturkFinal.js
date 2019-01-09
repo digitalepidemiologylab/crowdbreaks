@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import { ClipLoader } from 'react-spinners';
 
 export class MturkFinal extends React.Component {
   constructor(props) {
@@ -34,11 +33,7 @@ export class MturkFinal extends React.Component {
           { 
             this.state.submitting &&
               <div>
-                <div className="clip-loader">
-                  <ClipLoader
-                    color={'#444'} 
-                  />
-                </div>
+                <div className="spinner mb-3" style={{margin: 'auto'}}></div>
                 <div>
                   Submitting... Please wait
                 </div>
