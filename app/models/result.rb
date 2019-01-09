@@ -6,6 +6,7 @@ class Result < ApplicationRecord
   belongs_to :task, optional: true
   belongs_to :local_batch_job, optional: true
   belongs_to :question_sequence_log, optional: true
+  after_create :update_worker_manual_review_status
 
   scope :counts_by_user, -> (user_id) {where(user_id: user_id).distinct.count(:tweet_id)}
   scope :by_worker, -> (worker_id) { where(id: MturkWorker.find_by(worker_id: worker_id)&.results&.select(:id)) }
@@ -17,4 +18,8 @@ class Result < ApplicationRecord
 
   private
 
+  def update_worker_manual_review_status
+    # as worker completes more work his review status is set back to false
+    task&.mturk_worker&.update_attribute(:manually_reviewed, false)
+  end
 end

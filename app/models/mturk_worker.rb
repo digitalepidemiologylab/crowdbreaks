@@ -1,7 +1,7 @@
 class MturkWorker < ApplicationRecord
   has_many :tasks
   has_many :mturk_tweets, through: :tasks
-  has_many :results, through: :tasks, :after_add => :update_manually_reviewed
+  has_many :results, through: :tasks
 
   enum status: [:default, :blacklisted], _suffix: true
 
@@ -78,13 +78,6 @@ class MturkWorker < ApplicationRecord
     mturk.exclude_worker_from_qualification(worker_id, mturk_batch_job.qualification_type_id)
   end
 
-
-  protected
-
-  def update_manually_reviewed(obj)
-    # as worker creates new results, set manual review status to false
-    update_attribute(:manually_reviewed, false)
-  end
 
   private
 
