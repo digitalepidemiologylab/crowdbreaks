@@ -121,6 +121,5 @@ module ApplicationHelper
       # default to english
       time_ago_in_words(time_at) + ' ago'
     end
-
   end
 end

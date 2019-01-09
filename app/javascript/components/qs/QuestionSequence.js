@@ -1,7 +1,6 @@
 // React
 import React from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { ClipLoader } from 'react-spinners';
 
 // Other 
 let humps = require('humps');
@@ -156,13 +155,9 @@ export class QuestionSequence extends React.Component {
       </div>
       {/* Loading clip */}
       { this.state.tweetIsLoading &&
-          <div className="row">
+          <div className='row justify-content-center'>
             <div className="col-12">
-              <div className="clip-loader">
-                <ClipLoader
-                  color={'#444'} 
-                />
-              </div>
+              <div className="spinner" style={{margin: 'auto'}}></div>
             </div>
           </div>
       } 

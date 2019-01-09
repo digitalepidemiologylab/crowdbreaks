@@ -7,9 +7,6 @@ import { EditAnswers } from './EditAnswers';
 import { EditTransition } from './EditTransition';
 import { TransitionGraph } from './TransitionGraph';
 
-// Other
-import { ClipLoader } from 'react-spinners';
-
 export class EditQuestionSequence extends React.Component {
   constructor(props) {
     super(props);
@@ -227,6 +224,7 @@ export class EditQuestionSequence extends React.Component {
       transitions: this.state.transitions
     };
     this.setState({isLoading: true});
+    this.forceUpdate();
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       type: 'PATCH',
@@ -235,7 +233,6 @@ export class EditQuestionSequence extends React.Component {
       data: JSON.stringify(data),
       contentType: "application/json",
       success: (response) => {
-        this.setState({isLoading: false})
         window.location = this.props.redirectPath
       },
       error: (response) => {
@@ -389,11 +386,7 @@ export class EditQuestionSequence extends React.Component {
         { errors }
         { this.state.isLoading && <div className="row">
           <div className="col-12">
-            <div className="clip-loader">
-              <ClipLoader
-                color={'#444'} 
-              />
-            </div>
+            <div className="spinner"></div>
           </div>
         </div>
         } 
