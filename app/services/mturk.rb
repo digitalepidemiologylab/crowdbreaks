@@ -2,7 +2,7 @@ class Mturk
   attr_reader :client
 
   DEFAULT_ACCEPT_MESSAGE = 'Thank you for your work!'
-  DEFAULT_REJECT_MESSAGE = ''
+  DEFAULT_REJECT_MESSAGE = 'Your work has been rejected because the majority of questions answered in this task are wrong.'
 
   def initialize(sandbox: true)
     @client = get_client(sandbox)

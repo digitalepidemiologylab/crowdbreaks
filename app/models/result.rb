@@ -13,6 +13,7 @@ class Result < ApplicationRecord
 
   enum res_type: [:public, :local, :mturk], _suffix: true
   enum flag: [:default, :incorrect, :correct], _prefix: true
+  enum manual_review_status: [:unreviewed, :reviewed], _suffix: true
 
   private
 

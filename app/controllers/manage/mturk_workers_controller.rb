@@ -4,11 +4,14 @@ module Manage
 
     def index
       @show_blacklisted = param_is_truthy?(:show_blacklisted)
-      query = @mturk_workers.joins(:tasks).select('MAX(tasks.created_at) as last_task_created', :id, :worker_id, :status, :created_at).group('mturk_workers.id')
+      @show_reviewed = param_is_truthy?(:show_reviewed)
+      query = @mturk_workers.joins(:tasks).select('MAX(tasks.created_at) as last_task_created', :id, :worker_id, :status, :created_at, :manually_reviewed).group('mturk_workers.id')
       if @show_blacklisted
         query = query.blacklisted_status
       end
-
+      if @show_reviewed
+        query = query.where(manually_reviewed: true)
+      end
       if params[:search_worker].present?
         query = query.where('worker_id LIKE ?', "%#{params[:search_worker]}%").page params[:page]
       else
@@ -46,7 +49,8 @@ module Manage
         if res.present?
           @tasks[res.id] = res.task
           results = Result.where(task_id: question_sequence.task_id).order(created_at: :asc)
-          @qs_results[res.id] = results
+          all_reviewed = results.pluck(:manual_review_status).uniq == ['reviewed']
+          @qs_results[res.id] = {'results': results, 'all_reviewed': all_reviewed}
           @logs[res.id] = Hashie::Mash.new results&.first&.question_sequence_log&.log
           @mturk_cached_hit[res.id] = MturkCachedHit.find_by(hit_id: res.task&.hit_id)
         end
@@ -59,13 +63,33 @@ module Manage
       if @mturk_worker.present?
         if not @mturk_worker.blacklisted_status?
           @mturk_worker.blacklisted_status!
-          redirect_after_blacklist(notice: 'Successfully blacklisted worker!')
+          redirect_after_toggle(notice: 'Successfully blacklisted worker!')
         else
           @mturk_worker.default_status!
-          redirect_after_blacklist(notice: 'Successfully un-blacklisted worker!')
+          redirect_after_toggle(notice: 'Successfully un-blacklisted worker!')
         end
       else
-        redirect_after_blacklist(alert: 'Could not find worker.')
+        redirect_after_toggle(alert: 'Could not find worker.')
+      end
+    end
+
+    def manual_review_status
+      if @mturk_worker.present?
+        if not @mturk_worker.manually_reviewed?
+          @mturk_worker.results.each do |result|
+            result.reviewed_manual_review_status!
+          end
+          @mturk_worker.update_attribute(:manually_reviewed, true)
+          redirect_after_toggle(notice: 'Successfully set results by this worker to reviewed')
+        else
+          @mturk_worker.results.each do |result|
+            result.unreviewed_manual_review_status!
+          end
+          @mturk_worker.update_attribute(:manually_reviewed, false)
+          redirect_after_toggle(notice: 'Successfully set results by this worker to unreviewed')
+        end
+      else
+        redirect_after_toggle(alert: 'Could not find worker.')
       end
     end
 
@@ -90,7 +114,7 @@ module Manage
 
     private
 
-    def redirect_after_blacklist(notice: '', alert: '')
+    def redirect_after_toggle(notice: '', alert: '')
       @show_blacklisted = param_is_truthy?(:show_blacklisted)
       pass_params = {search_worker: params[:search_worker], show_blacklisted: @show_blacklisted}
       if notice.present?

@@ -13,6 +13,7 @@
       <div class="card-body">
         <h4 class="card-title">Filters</h4>
         <%= toggle_switch(@show_blacklisted, 'Blacklisted', 'mturk-worker-blacklisted-checkbox') %>
+        <%= toggle_switch(@show_reviewed, 'Reviewed', 'mturk-worker-reviewed-checkbox') %>
       </div>
     </div>
   </div>
@@ -46,6 +47,7 @@
           <th>Status</th>
           <th>Last task submitted</th>
           <th>Blacklist</th>
+          <th>Reviewed?</th>
           <th>Links</th>
         </tr>
       </thead>

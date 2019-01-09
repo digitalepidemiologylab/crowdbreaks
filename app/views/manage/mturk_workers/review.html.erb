@@ -1,5 +1,5 @@
 <% @title ||= 'Mturk workers'; title @title %>
-<%= go_back_btn mturk_workers_path %>
+<%= go_back_btn mturk_workers_path(search_worker: params[:search_worker], show_blacklisted: params[:show_blacklisted], show_reviewed: params[:show_reviewed]) %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
@@ -41,17 +41,15 @@
     <% @qs.each_with_index do |question_sequence, ix| %>
       <div class="card mb-6 text-center">
         <div class="card-header">
-          <h4>
-            Task <%= @tasks[question_sequence.id].id %>
+          <h4>Task <%= @tasks[question_sequence.id].id %>
+          <% if @qs_results[question_sequence.id][:all_reviewed] %>
+            <%= fa_icon 'check-circle', class: 'fa-blue', title: 'This task has been manually reviewed' %>
+          <% end %>
         </h4>
-        <div>
-          <h4>
-            <%= @tasks[question_sequence.id]&.mturk_batch_job.name %>
-          </h4>
-        </div>
-        <div class="text-muted">
-          Submitted&nbsp;<%= time_ago(question_sequence.created_at) %>
-      </div>
+          <h4><%= @tasks[question_sequence.id]&.mturk_batch_job.name %></h4>
+          <div class="text-muted">
+            Submitted&nbsp;<%= time_ago(question_sequence.created_at) %>
+          </div>
         </div>
         <div class="card-body">
           <div class="mb-5" style="max-width:500px;margin:auto;">
@@ -71,10 +69,12 @@
           <% end %>
           </div>
           <div class="mb-5" style="max-width:500px;margin:auto;">
-            <% @qs_results[question_sequence.id].each_with_index do |result, ix| %>
+            <% @qs_results[question_sequence.id][:results].each_with_index do |result, ix| %>
               <div class="mb-4">
                 <% if @logs[question_sequence.id]&.results&.length.to_i > 0 %>
-                  <h4>Question <%= ix + 1 %> <%= "(#{@logs[question_sequence.id].results[ix].timeSinceLastAnswer.to_i/1000.0} s)" %></h4>
+                  <h4>
+                    Question <%= ix + 1 %> <%= "(#{@logs[question_sequence.id].results[ix].timeSinceLastAnswer.to_i/1000.0} s)" %>
+                  </h4>
                 <% else %>
                   <h4>Question <%= ix + 1 %></h4>
                 <% end %>

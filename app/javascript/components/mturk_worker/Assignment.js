@@ -71,8 +71,8 @@ export class Assignment extends React.Component {
 
   wasAutoApproved(autoApprovalTime, approvalTime) {
     let timeDiff = Math.abs(moment(autoApprovalTime) - moment(approvalTime));
-    if (timeDiff < 10000) {
-      // auto approval and approval happened within 10 seconds
+    if (timeDiff < 100*1000) {
+      // auto approval and approval happened within 100sec
       return true
     } else {
       return false

@@ -118,7 +118,7 @@ class MturkBatchJob < ApplicationRecord
   end
 
   def results_to_csv
-    model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'project_id', 'task_id', 'created_at']
+    model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'project_id', 'task_id', 'flag', 'created_at']
     added_cols = ['log', 'worker_id', 'tweet_text']
     CSV.generate do |csv|
       csv << model_cols + added_cols

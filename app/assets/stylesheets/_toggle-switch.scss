@@ -66,6 +66,11 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+/* Different color sliders */
+input:checked + .slider-red {
+  background-color: $red;
+}
+
 
 
 /* Large Switch */
