@@ -3,15 +3,9 @@
   <td><%= project.es_index_name %></td>
   <td><%= truncate(project.keywords.join(', ')) %></td>
   <td><%= project.lang.join(', ') %></td>
+  <td><%= project.locales.join(', ') %> </td>
   <td><%= status_yes_no(project.public?) %></td>
   <td><%= status_yes_no(project.active_stream?) %></td>
-  <td>
-    <span> 
-      <% if can? :update, :question_sequence %>
-        <%= link_to fa_icon("pencil") + ' Edit question sequence', edit_admin_question_sequence_path(project)  %>
-      <% end %>
-    </span>
-  </td>
   <td>
     <span class="no-wrap"> 
       <% if can? :destroy, project %>

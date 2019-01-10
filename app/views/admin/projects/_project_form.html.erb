@@ -26,8 +26,8 @@
     <div id="twitter-streaming-options" data-active-stream=<%=  @project.active_stream? %>>
       <div class="form-group">
         <%= f.input :keywords, hint: 'Comma-separated list of keywords for the Twitter streaming API to filter for' , 
-          input_html: {value: @project.keywords&.join(',') || ""} %>
-        <%= f.input :lang, label: "Languages", hint: 'Languages of tweets to collect through Twitter API (2-letter language code, e.g. "en")', :input_html => { value: @project.lang&.join(',') || '' } %>
+          input_html: {value: @project.keywords&.join(', ') || ""} %>
+        <%= f.input :lang, label: "Languages", hint: 'Languages of tweets to collect through Twitter API (2-letter language code, e.g. "en")', :input_html => { value: @project.lang&.join(', ') || '' } %>
       </div>
       <div class="form-group">
         <%= f.input :es_index_name, hint: 'Name of ElasticSearch index to store tweets into, make sure to name the index project_*', input_html: {value: @project.es_index_name || ""} %>
@@ -45,6 +45,9 @@
     <h4>Other</h4>
     <div class="form-group">
       <%= f.input :public, label: "Make public", input_html: {class: "mr-2", value: @project.public || false}, hint: 'List project under /projects publicly', label_html: {class: 'label-inline'} %>
+    </div>
+    <div class="form-group">
+      <%= f.input :locales, label: "Locales", hint: "List of locales (any of [#{Crowdbreaks::Locales.join(', ')}]) for which this project should be publicly displayed (under /projects)", :input_html => { value: @project.locales&.join(', ') || '' } %>
     </div>
   </div>
 

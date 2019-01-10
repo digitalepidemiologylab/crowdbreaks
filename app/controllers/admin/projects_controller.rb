@@ -3,15 +3,12 @@ module Admin
     load_and_authorize_resource param_method: :sanitized_projects_params, find_by: :slug
 
     def new
-      @project = Project.new
     end
 
     def index
-      @projects = Project.all
     end
 
     def create
-      @project = Project.new(sanitized_projects_params)
       if @project.save
         respond_to do |format|
           format.html { redirect_to(admin_projects_path, notice: 'Project successfully created')}
@@ -29,7 +26,7 @@ module Admin
     def update
       if @project.update_attributes(sanitized_projects_params)
         flash[:notice] = 'Project successfully updated!'
-        redirect_to streaming_path
+        redirect_to admin_projects_path
       else
         flash[:alert] = 'Editing project was unsuccessful'
         render :edit
@@ -52,13 +49,14 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode)
+      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :locales)
     end
 
     def sanitized_projects_params
       sanitized_params = project_params
       sanitized_params[:keywords] = array_from_string(project_params[:keywords])
       sanitized_params[:lang] = array_from_string(project_params[:lang])
+      sanitized_params[:locales] = array_from_string(project_params[:locales])
       sanitized_params[:storage_mode] = sanitized_params[:storage_mode].to_i
       sanitized_params
     end
