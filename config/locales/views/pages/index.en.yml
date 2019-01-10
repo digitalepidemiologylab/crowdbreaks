@@ -1,27 +1,24 @@
+---
 en:
   pages:
     index:
-      goal:
-        "Help us track health trends in real time."
-      num_tweets:
-        "%{num} tweets labelled so far"
-      contribute:
-        "Contribute"
-      find_out_more:
-        "Find out more"
-      hello: "Hello %{username}."
-      classified_so_far: 
-        one: "You've labelled 1 tweet. Thank you."
-        other: "You've labelled %{count} tweets. Thank you."
-      total: "Total labels"
-      pro_vaccine: 'Labelled as pro-vaccine'
-      anti_vaccine: 'Labelled as anti-vaccine'
-      neutral_vaccine: 'Labelled as neutral'
-      contribute_again: 'Contribute again'
-      no_contributions: "You've not contributed yet."
-      no_contributions_button: 'View projects'
+      anti_vaccine: Labelled as anti-vaccine
+      classified_so_far:
+        one: You've labelled 1 tweet. Thank you.
+        other: You've labelled %{count} tweets. Thank you.
+      contribute: Contribute
+      contribute_again: Contribute again
+      find_out_more: Find out more
+      goal: Help us track health trends in real time.
+      hello: Hello %{username}.
       leadline:
-        classified_as: "Labelled as" 
-        classified: "Annontated" 
-        by: "by"
-        in_project: "in project"
+        by: by
+        classified: Annontated
+        classified_as: Labelled as
+        in_project: in project
+      neutral_vaccine: Labelled as neutral
+      no_contributions: You've not contributed yet.
+      no_contributions_button: View projects
+      num_tweets: "%{num} tweets labelled so far"
+      pro_vaccine: Labelled as pro-vaccine
+      total: Total labels

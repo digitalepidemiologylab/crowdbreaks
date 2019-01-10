@@ -1,10 +1,11 @@
+---
 en:
   navbar:
-    buttons:
-      projects: "Projects"
-      about: "About"
     account:
-      login: "Log in"
-      edit: "Account settings"
-      logout_label: "Logout"
-      sign_up_label: "Sign up"
+      edit: Account settings
+      login: Log in
+      logout_label: Logout
+      sign_up_label: Sign up
+    buttons:
+      about: About
+      projects: Projects

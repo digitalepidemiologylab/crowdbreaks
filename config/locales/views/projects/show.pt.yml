@@ -1,12 +1,13 @@
+---
 pt:
   projects:
     show:
-      go_back: "De volta aos projetos"
-      breakdown: "Decompor"
-      total: "total de rótulos"
-      pro_vaccine: 'Rotulado como pró-vacina'
-      anti_vaccine: 'Rotulado como anti-vacina'
-      neutral_vaccine: 'Rotulado como neutro'
-      get_involved: 'Se envolver'
-      every_tweet: 'Cada tweet que você classifica ajuda a melhorar o algoritmo'
-      contribute: 'Contribuir'
+      anti_vaccine: Rotulado como anti-vacina
+      breakdown: Decompor
+      contribute: Contribuir
+      every_tweet: Cada tweet que você classifica ajuda a melhorar o algoritmo
+      get_involved: Se envolver
+      go_back: De volta aos projetos
+      neutral_vaccine: Rotulado como neutro
+      pro_vaccine: Rotulado como pró-vacina
+      total: total de rótulos

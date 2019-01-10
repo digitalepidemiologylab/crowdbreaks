@@ -1,12 +1,13 @@
+---
 en:
   projects:
     show:
-      go_back: "Back to projects"
-      breakdown: "Breakdown"
-      total: "Total labels"
-      pro_vaccine: 'Labelled as pro-vaccine'
-      anti_vaccine: 'Labelled as anti-vaccine'
-      neutral_vaccine: 'Labelled as neutral'
-      get_involved: 'Get involved'
-      every_tweet: 'Every tweet you classify helps improve the algorithm'
-      contribute: 'Contribute'
+      anti_vaccine: Labelled as anti-vaccine
+      breakdown: Breakdown
+      contribute: Contribute
+      every_tweet: Every tweet you classify helps improve the algorithm
+      get_involved: Get involved
+      go_back: Back to projects
+      neutral_vaccine: Labelled as neutral
+      pro_vaccine: Labelled as pro-vaccine
+      total: Total labels

@@ -1,22 +1,20 @@
+---
 pt:
-  email_wrong_recipient: 'Se não fez este pedido, por favor contacte-nos em info@crowdbreaks.org.'
-  default_signature: 'Cumprimentos,\n a equipa Crowdbreaks'
-  default_greeting: 'Prezado %{username},'
   confirmation_instructions:
-    subject: 'Confirme a sua conta'
     body_html: 'Bem-vindo ao Crowdbreaks! Você pode confirmar o e-mail da sua conta clicando no botão abaixo:'
-    button_text: 'Confirmar a minha conta'
-  unlock_instructions:
-    subject: 'Desbloquear conta'
-    body_html: 'Sua conta foi bloqueada devido a um número excessivo de tentativas de login sem sucesso.<br><br>>Clique no link abaixo para desbloquear sua conta:'
-    button_text: 'Desbloquear minha conta'
+    button_text: Confirmar a minha conta
+    subject: Confirme a sua conta
+  default_greeting: Prezado %{username},
+  default_signature: Cumprimentos,\n a equipa Crowdbreaks
+  email_wrong_recipient: Se não fez este pedido, por favor contacte-nos em info@crowdbreaks.org.
+  password_change:
+    body_html: Estamos a contactá-lo para o notificar de que o seu e-mail foi alterado.
+    subject: Mudança de e-mail
   reset_password_instructions:
-    subject: 'Instruções de redefinição de senha'
-    body_html: "Alguém solicitou um link para alterar sua senha. Você pode fazer isso através do link abaixo. Se você não solicitou isso, por favor ignore este e-mail. Sua senha não mudará até que você acesse o link acima e crie um novo."
-    button_text: 'Alterar minha senha'
-  password_change:
-    subject: 'Mudança de senha'
-    body_html: "Estamos a contactá-lo para o notificar de que a sua palavra-passe foi alterada."
-  password_change:
-    subject: 'Mudança de e-mail'
-    body_html: "Estamos a contactá-lo para o notificar de que o seu e-mail foi alterado."
+    body_html: Alguém solicitou um link para alterar sua senha. Você pode fazer isso através do link abaixo. Se você não solicitou isso, por favor ignore este e-mail. Sua senha não mudará até que você acesse o link acima e crie um novo.
+    button_text: Alterar minha senha
+    subject: Instruções de redefinição de senha
+  unlock_instructions:
+    body_html: 'Sua conta foi bloqueada devido a um número excessivo de tentativas de login sem sucesso.<br><br>>Clique no link abaixo para desbloquear sua conta:'
+    button_text: Desbloquear minha conta
+    subject: Desbloquear conta

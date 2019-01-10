@@ -1,7 +1,6 @@
+---
 en:
   activerecord:
-    models:
-      user: User
     attributes:
       user:
         confirmation_sent_at: Confirmation sent at
@@ -29,16 +28,18 @@ en:
         updated_at: Updated at
     errors:
       messages:
-        required: "must exist"
-        taken: "has already been taken"
+        required: must exist
+        taken: has already been taken
       models:
         user:
           attributes:
-            username:
-              taken: 'This username has already been taken.'
             email:
-              taken: 'This Email has already been taken.'
+              taken: This Email has already been taken.
             password:
-              too_short: 'The password needs to be at least 6 characters.'
+              too_short: The password needs to be at least 6 characters.
             password_confirmation:
-              confirmation: "Doesn't match password."
+              confirmation: Doesn't match password.
+            username:
+              taken: This username has already been taken.
+    models:
+      user: User
