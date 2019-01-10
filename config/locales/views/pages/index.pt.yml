@@ -1,0 +1,26 @@
+pt:
+  pages:
+    index:
+      goal:
+        "Ajude-nos a acompanhar as tendências de saúde em tempo real."
+      num_tweets:
+        "%{num} tweets rotulados até agora"
+      contribute:
+        "Contribuir"
+      find_out_more:
+        "Descubra mais"
+      hello: "Olá %{username}."
+      classified_so_far: 
+        one: "Você rotulou 1 tweet. Obrigado."
+        other: "Você rotulou %{count} tweets. Obrigado."
+      total: "Total de etiquetas."
+      pro_vaccine: 'Rotulado como pró-vacina'
+      anti_vaccine: 'Rotulado como anti-vacina'
+      neutral_vaccine: 'Rotulado como neutro'
+      contribute_again: 'Contribua novamente'
+      no_contributions: "Você não contribuiu ainda."
+      no_contributions_button: 'Visualizar projetos'
+      leadline:
+        classified_as: "Rotulado como" 
+        by: "por"
+        in_project: "no projeto"

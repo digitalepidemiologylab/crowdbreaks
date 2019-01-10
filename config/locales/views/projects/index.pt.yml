@@ -1,0 +1,7 @@
+pt:
+  projects:
+    index:
+      title: Projetos atuais
+      contribute: Contribuir
+      explore: Explorar
+      num_classified_html: "%{num} tweets classificado"
