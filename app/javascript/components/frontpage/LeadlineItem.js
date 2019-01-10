@@ -50,7 +50,7 @@ export class LeadlineItem extends React.Component {
         <div className="classification-info">
           <p className="small text-light">
 
-            {this.props.translations.classified}&nbsp;{this.props.classified_at}<br/>
+            {this.props.translations.by}&nbsp;{this.props.classified_by}&nbsp;{this.props.translations.classified}&nbsp;·&nbsp;{this.props.classified_at}<br/>
             {this.props.translations.in_project}&nbsp;<a href={this.props.projectsPath}>{this.props.project}</a>
             {/* {this.props.translations.classified_as}&nbsp;<span className="badge badge-sentiment"><img src={this.imageDict[this.props.classified_as]} />&nbsp;{this.props.classified_as}&nbsp;</span>&nbsp;{this.props.translations.by}&nbsp;{this.props.classified_by}&nbsp;·&nbsp;{this.props.classified_at}<br/> */}
             {/* {this.props.translations.in_project}&nbsp;<a href={this.props.projectsPath}>{this.props.project}</a> */}
