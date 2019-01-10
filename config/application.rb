@@ -23,8 +23,8 @@ Bundler.require(*Rails.groups)
 
 module Crowdbreaks
 
-  Locales = ['en', 'de']
-  LocalesTranslations = {'en': 'English', 'de': 'Deutsch'}
+  Locales = ['en', 'de', 'pt']
+  LocalesTranslations = {'en': 'English', 'de': 'Deutsch', 'pt': 'Português'}
 
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

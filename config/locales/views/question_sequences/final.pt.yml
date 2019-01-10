@@ -1,0 +1,11 @@
+pt:
+  question_sequences:
+    final:
+      thank_you:
+        "Obrigado pela ajuda!"
+      text:
+        "Cada tweet que você classifica ajuda a melhorar o algoritmo. Tem tempo para classificar outro?"
+      continue_button:
+        "Sim"
+      back_to_projects_button:
+        "Agora não"

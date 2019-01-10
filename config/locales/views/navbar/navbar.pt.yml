@@ -1,0 +1,10 @@
+pt:
+  navbar:
+    buttons:
+      projects: "Projetos"
+      about: "Sobre"
+    account:
+      login: "Entrar"
+      edit: "Configurações da conta"
+      logout_label: "Sair"
+      sign_up_label: "Inscrever-se"
