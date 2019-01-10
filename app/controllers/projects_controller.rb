@@ -1,13 +1,15 @@
 class ProjectsController < ApplicationController
-  authorize_resource
+  load_and_authorize_resource find_by: :slug
 
   def index
-    @projects = Project.all.where('public': true)
+    # only select projects which are public and have to correct locale setting
+    @projects = @projects.where(public: true).where("'#{I18n.locale.to_s}' = ANY (locales)")
   end
 
   def show
-    @project = Project.friendly.find(params[:id])
-    raise 'This project has nothing to show' unless @project.es_index_name == 'project_vaccine_sentiment' 
+    if not @project.locales.include?(I18n.locale.to_s) or @project.es_index_name != 'project_vaccine_sentiment' 
+      redirect_to projects_path
+    end
 
     counts = @project.results.joins(:answer).group('answers.label').count
     if not counts.empty?
