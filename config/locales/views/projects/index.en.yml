@@ -1,7 +1,8 @@
+---
 en:
   projects:
     index:
-      title: Current projects
       contribute: Contribute
       explore: Explore
       num_classified_html: "%{num} tweets classified"
+      title: Current projects

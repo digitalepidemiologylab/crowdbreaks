@@ -1,7 +1,6 @@
+---
 pt:
   activerecord:
-    models:
-      user: Usuário
     attributes:
       user:
         confirmation_sent_at: Confirmação enviada em
@@ -14,8 +13,8 @@ pt:
         email: Email
         encrypted_password: Senha criptografada
         failed_attempts: Tentativas sem sucesso
-        last_sign_in_at: "Último acesso em"
-        last_sign_in_ip: "Último IP de acesso"
+        last_sign_in_at: Último acesso em
+        last_sign_in_ip: Último IP de acesso
         locked_at: Bloqueado em
         password: Senha
         password_confirmation: Confirme sua senha
@@ -27,3 +26,5 @@ pt:
         unconfirmed_email: E-mail não confirmado
         unlock_token: Token de desbloqueio
         updated_at: Atualizado em
+    models:
+      user: Usuário

@@ -1,11 +1,8 @@
+---
 en:
   question_sequences:
     final:
-      thank_you:
-        "Thanks for your help!"
-      text:
-        "Every tweet you classify helps improve the algorithm. Got time to classify another one?"
-      continue_button:
-        "Yes"
-      back_to_projects_button:
-        "Not now"
+      back_to_projects_button: Not now
+      continue_button: 'Yes'
+      text: Every tweet you classify helps improve the algorithm. Got time to classify another one?
+      thank_you: Thanks for your help!

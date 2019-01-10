@@ -1,11 +1,12 @@
+---
 en:
   devise:
     confirmations:
       confirmed: Your email address has been successfully confirmed.
       new:
+        resend_button: Continue
         resend_confirmation_instructions: Didn't receive confirmation instructions?
         resend_confirmation_instructions_subtitle: Enter your email address and we'll resend your confirmation instructions.
-        resend_button: Continue
       send_instructions: You will receive an email with instructions for how to confirm your email address in a few minutes.
       send_paranoid_instructions: If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes.
     failure:
@@ -52,9 +53,9 @@ en:
         new_password: New password
       new:
         forgot_your_password: Forgot your password?
+        resend_button: Continue
         send_me_reset_password_instructions: Send me reset password instructions
         subtitle: Enter your email address and we'll send you instructions on how to reset your password.
-        resend_button: Continue
       no_token: You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided.
       send_instructions: You will receive an email with instructions on how to reset your password in a few minutes.
       send_paranoid_instructions: If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes.
@@ -73,8 +74,8 @@ en:
         we_need_your_current_password_to_confirm_your_changes: we need your current password to confirm your changes
       new:
         sign_up: Sign up
-        title: Create an account
         sub_title: Sign up to view your past contributions to projects and for new features coming soon.
+        title: Create an account
       signed_up: Welcome! You have signed up successfully.
       signed_up_but_inactive: You have signed up successfully. However, we could not sign you in because your account is not yet activated.
       signed_up_but_locked: You have signed up successfully. However, we could not sign you in because your account is locked.
@@ -90,20 +91,20 @@ en:
       signed_out: Signed out successfully.
     shared:
       links:
-        problems: Problems logging-in?
         back: Back
         didn_t_receive_confirmation_instructions: Didn't receive confirmation instructions?
         didn_t_receive_unlock_instructions: Didn't receive unlock instructions?
         forgot_your_password: Forgot your password?
+        problems: Problems logging-in?
         sign_in: Sign in
         sign_in_with_provider: Sign in with %{provider}
         sign_up: Sign up
     unlocks:
       new:
-        title: Account locked?
-        subtitle: Enter your email address and we'll send you instructions on how to unlock your account.
-        resend_unlock_instructions: Resend unlock instructions
         resend_button: Continue
+        resend_unlock_instructions: Resend unlock instructions
+        subtitle: Enter your email address and we'll send you instructions on how to unlock your account.
+        title: Account locked?
       send_instructions: You will receive an email with instructions for how to unlock your account in a few minutes.
       send_paranoid_instructions: If your account exists, you will receive an email with instructions for how to unlock it in a few minutes.
       unlocked: Your account has been unlocked successfully. Please sign in to continue.
