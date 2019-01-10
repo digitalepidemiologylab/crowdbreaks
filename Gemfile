@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.5.0'
+ruby '2.5.3'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
@@ -83,6 +83,8 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'ffaker'
   gem 'foreman'
+  # allows failing tests if translations are missing
+  gem "i18n-tasks"
 end
 
 group :development do
