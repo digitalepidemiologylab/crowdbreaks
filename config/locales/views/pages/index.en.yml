@@ -13,8 +13,8 @@ en:
       hello: Hello %{username}.
       leadline:
         by: by
-        classified: Annontated
-        classified_as: Labelled as
+        classified: annontated
+        classified_as: labelled as
         in_project: in project
       neutral_vaccine: Labelled as neutral
       no_contributions: You've not contributed yet.
