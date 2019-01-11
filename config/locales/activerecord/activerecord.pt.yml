@@ -26,5 +26,24 @@ pt:
         unconfirmed_email: E-mail não confirmado
         unlock_token: Token de desbloqueio
         updated_at: Atualizado em
+    errors:
+      messages:
+        record_invalid: 'A validação falhou: %{errors}'
+        required: deve existir
+        restrict_dependent_destroy:
+          has_many: Não é possível excluir o registro pois existem %{record} dependentes
+          has_one: Não é possível excluir o registro pois existe um %{record} dependente
+        taken: já foi tomada
+      models:
+        user:
+          attributes:
+            email:
+              taken: Este e-mail já foi recebido.
+            password:
+              too_short: A senha deve ter pelo menos 6 caracteres.
+            password_confirmation:
+              confirmation: Não corresponde à senha.
+            username:
+              taken: Este nome de utilizador já foi retirado.
     models:
       user: Usuário

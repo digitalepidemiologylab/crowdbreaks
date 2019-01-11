@@ -11,6 +11,7 @@ class MandrillDeviseMailer < Devise::Mailer
          { name: 'BODY_TEXT', content: I18n.t('confirmation_instructions.body_html')},
          { name: 'BUTTON_TEXT', content: I18n.t('confirmation_instructions.button_text')},
          { name: 'WRONG_RECIPIENT', content: I18n.t('email_wrong_recipient')},
+         { name: 'SIGNATURE', content: I18n.t('default_signature')},
        ],
        template: 'crowdbreaks-devise'
      }
@@ -27,6 +28,7 @@ class MandrillDeviseMailer < Devise::Mailer
          { name: 'BODY_TEXT', content: I18n.t('unlock_instructions.body_html')},
          { name: 'BUTTON_TEXT', content: I18n.t('unlock_instructions.button_text')},
          { name: 'WRONG_RECIPIENT', content: I18n.t('email_wrong_recipient')},
+         { name: 'SIGNATURE', content: I18n.t('default_signature')},
        ],
        template: 'crowdbreaks-devise'
      }
@@ -43,6 +45,7 @@ class MandrillDeviseMailer < Devise::Mailer
          { name: 'BODY_TEXT', content: I18n.t('reset_password_instructions.body_html')},
          { name: 'BUTTON_TEXT', content: I18n.t('reset_password_instructions.button_text')},
          { name: 'WRONG_RECIPIENT', content: I18n.t('email_wrong_recipient')},
+         { name: 'SIGNATURE', content: I18n.t('default_signature')},
        ],
        template: 'crowdbreaks-devise'
      }
@@ -57,6 +60,7 @@ class MandrillDeviseMailer < Devise::Mailer
          { name: 'GREETING', content: I18n.t('default_greeting', username: record.username)},
          { name: 'BODY_TEXT', content: I18n.t('password_change.body_html')},
          { name: 'WRONG_RECIPIENT', content: I18n.t('email_wrong_recipient')},
+         { name: 'SIGNATURE', content: I18n.t('default_signature')},
        ],
        template: 'crowdbreaks-devise-text-only'
      }
@@ -65,12 +69,13 @@ class MandrillDeviseMailer < Devise::Mailer
 
    def email_change(record, _ = {})
      options = {
-       subject: I18n.t('email_change.subject'),
+       subject: I18n.t('email_changed.subject'),
        email: record.email,
        global_merge_vars:  [
          { name: 'GREETING', content: I18n.t('default_greeting', username: record.username)},
-         { name: 'BODY_TEXT', content: I18n.t('email_change.body_html')},
+         { name: 'BODY_TEXT', content: I18n.t('email_changed.body_html')},
          { name: 'WRONG_RECIPIENT', content: I18n.t('email_wrong_recipient')},
+         { name: 'SIGNATURE', content: I18n.t('default_signature')},
        ],
        template: 'crowdbreaks-devise-text-only'
      }

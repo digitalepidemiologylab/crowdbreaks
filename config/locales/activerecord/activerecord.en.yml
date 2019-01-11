@@ -28,7 +28,11 @@ en:
         updated_at: Updated at
     errors:
       messages:
+        record_invalid: 'Validation failed: %{errors}'
         required: must exist
+        restrict_dependent_destroy:
+          has_many: Cannot delete record because dependent %{record} exist
+          has_one: Cannot delete record because a dependent %{record} exists
         taken: has already been taken
       models:
         user:
