@@ -25,6 +25,10 @@ en:
         greeting: Welcome %{recipient}!
         instruction: 'You can confirm your account email through the link below:'
         subject: Confirmation instructions
+      email_changed:
+        greeting: Hello %{recipient}!
+        message: We are contacting you to notify you that your email is being changed to %{email}.
+        subject: E-mail changed
       password_change:
         greeting: Hello %{recipient}!
         message: We're contacting you to notify you that your password has been changed.
@@ -99,6 +103,9 @@ en:
         sign_in: Sign in
         sign_in_with_provider: Sign in with %{provider}
         sign_up: Sign up
+      minimum_password_length:
+        one: "(Minimum of %{count} character)"
+        other: "(Minimum of %{count} characters)"
     unlocks:
       new:
         resend_button: Continue

@@ -6,6 +6,9 @@ pt:
     subject: Confirme a sua conta
   default_greeting: Prezado %{username},
   default_signature: Cumprimentos,\n a equipa Crowdbreaks
+  email_changed:
+    body_html: Estamos entrando em contato para notificá-lo de que seu e-mail está sendo alterado para %{email}.
+    subject: E-mail alterado
   email_wrong_recipient: Se não fez este pedido, por favor contacte-nos em info@crowdbreaks.org.
   password_change:
     body_html: Estamos a contactá-lo para o notificar de que o seu e-mail foi alterado.

@@ -1,12 +1,4 @@
 de:
-  activerecord:
-    errors:
-      messages:
-        record_invalid: 'Gültigkeitsprüfung ist fehlgeschlagen: %{errors}'
-        restrict_dependent_destroy:
-          has_one: Datensatz kann nicht gelöscht werden, da ein abhängiger %{record}-Datensatz
-            existiert.
-          has_many: Datensatz kann nicht gelöscht werden, da abhängige %{record} existieren.
   date:
     abbr_day_names:
     - So

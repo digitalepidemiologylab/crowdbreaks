@@ -13,6 +13,7 @@ pt:
       hello: Olá %{username}.
       leadline:
         by: por
+        classified: Rotulado
         classified_as: Rotulado como
         in_project: no projeto
       neutral_vaccine: Rotulado como neutro
