@@ -4,13 +4,18 @@ class PagesController < ApplicationController
   def index
     @num_tweets_classified = Result.distinct.count(:tweet_id)
     if user_signed_in?
-      # Project vaccine sentiment
-      counts = current_user.results.joins(:project).where(projects: {es_index_name: 'project_vaccine_sentiment'}).joins(:answer).group('answers.label').count
-      @pro_vaccine_count = counts['pro-vaccine'] || 0
-      @anti_vaccine_count = counts['anti-vaccine'] || 0
-      @neutral_vaccine_count = counts['neutral'] || 0
-      @total_count_vaccine_sentiment = @pro_vaccine_count + @anti_vaccine_count + @neutral_vaccine_count
-      @vaccine_sentiment_project = Project.find_by(es_index_name: 'project_vaccine_sentiment')
+      @projects = Project.where(id: current_user.results.select('project_id').group('project_id').pluck(:project_id)).where(public: true).for_current_locale
+      @counts = {}
+      @projects.each do |project|
+        label_counts = current_user.results.where(project_id: project.id).joins(:answer).group('answers.label').count
+        @counts[project.id] = {
+          'pro-vaccine': label_counts['pro-vaccine'] || 0,
+          'anti-vaccine': label_counts['anti-vaccine'] || 0,
+          'neutral': label_counts['pro-vaccine'] || 0,
+          'pro-vaccine': label_counts['neutral'] || 0,
+        }
+        @counts[project.id][:total] = @counts[project.id][:'pro-vaccine'] + @counts[project.id][:'anti-vaccine'] + @counts[project.id][:neutral] 
+      end
       @total_count = current_user.results.distinct.count(:tweet_id)
     end
   end
