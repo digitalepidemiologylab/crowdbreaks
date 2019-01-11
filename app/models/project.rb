@@ -12,6 +12,7 @@ class Project < ApplicationRecord
   validates_presence_of :title, :description
 
   default_scope { order(created_at: :asc)  }
+  scope :for_current_locale, -> {where("'#{I18n.locale.to_s}' = ANY (locales)")}
 
   enum storage_mode: [:'s3-es', :'s3-es-no-retweets', :s3, :test_mode]
 
