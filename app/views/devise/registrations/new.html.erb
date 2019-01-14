@@ -23,6 +23,7 @@
       <div class="form-group">
         <%= f.input :password_confirmation, required: true, label_html: {class: 'no-star'} %>
       </div>
+      <%= f.hidden_field :locale, {value: I18n.locale} %>
 
       <div class="form-group">
         <%= f.button :submit, t('.sign_up'), class: 'btn btn-primary btn-lg btn-block' %>
