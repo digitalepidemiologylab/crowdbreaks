@@ -16,6 +16,7 @@ class PagesController < ApplicationController
         }
         @counts[project.id][:total] = @counts[project.id][:'pro-vaccine'] + @counts[project.id][:'anti-vaccine'] + @counts[project.id][:neutral] 
       end
+      @local_batch_jobs = current_user.local_batch_jobs
       @total_count = current_user.results.distinct.count(:tweet_id)
     end
   end

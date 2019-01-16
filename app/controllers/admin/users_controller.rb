@@ -11,7 +11,7 @@ module Admin
     end
 
     def index
-      @users = User.where.not("email ~* ?", "@example.com").order(role: :desc).page params[:page]
+      @users = @users.exclude_guests.order(role: :desc).page params[:page]
     end
 
     def create

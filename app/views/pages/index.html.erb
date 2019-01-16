@@ -18,6 +18,18 @@
         <% end %>
       </div>
     </div>
+    <% if @local_batch_jobs.present? %>
+      <div class="row justify-content-center mb-5">
+        <div class="col-12 text-center">
+          <h4><%= t('.private_projects') %></h4>
+          <% @local_batch_jobs.each do |local_batch_job| %>
+            <%= link_to local_batch_job_path(local_batch_job), class: 'btn btn-primary btn-lg m-3' do %>
+              <%= local_batch_job.name %>&nbsp;<%= fa_icon 'angle-double-right', style: 'color:white;' %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
   <% @projects.each do |project| %>
     <% if @total_count > 0 and @counts[project.id][:total] > 0 %>

@@ -13,6 +13,8 @@ class User < ApplicationRecord
   @skip = false
   attr_accessor :mark_as_confirmed
 
+  scope :exclude_guests, -> {where('email !~ ?', 'guest_\d+@example.com')}
+
 
   def user_email
     "#{username} (#{email})"
