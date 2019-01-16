@@ -1,0 +1,23 @@
+---
+en:
+  question_sequences:
+    final:
+      back_to_projects_button: Not now
+      continue_button: 'Yes'
+      text: Every tweet you classify helps improve the algorithm. Got time to classify another one?
+      thank_you: Thanks for your help!
+    general:
+      error: Error
+    instructions:
+      hide_instructions: Hide instructions
+      show_instructions: Show instructions
+    local_batch_job:
+      counts:
+        keep_going: Keep going! You have finished
+        test_mode: You are running in test mode. No results are recorded. Tweets shown are randomly selected from your batch.
+        total_in_batch: Total in this batch
+        total_unavailable: Total unavailable
+        tweet_one: tweet
+        tweet_other: tweets
+        welcome_header: You haven't completed any work in this batch yet.
+        welcome_user: Welcome

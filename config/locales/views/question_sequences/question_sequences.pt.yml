@@ -1,0 +1,23 @@
+---
+pt:
+  question_sequences:
+    final:
+      back_to_projects_button: Agora não
+      continue_button: Sim
+      text: Cada tweet que você classifica ajuda a melhorar o algoritmo. Tem tempo para classificar outro?
+      thank_you: Obrigado pela ajuda!
+    general:
+      error: Erro
+    instructions:
+      hide_instructions: Ocultar instruções
+      show_instructions: Mostrar instruções
+    local_batch_job:
+      counts:
+        keep_going: Continua! Você terminou
+        test_mode: Você está executando no modo de teste. Nenhum resultado é gravado. Os tweets exibidos são selecionados aleatoriamente do seu lote.
+        total_in_batch: Total neste lote
+        total_unavailable: Total indisponível
+        tweet_one: tweet
+        tweet_other: tweets
+        welcome_header: Você ainda não completou nenhum trabalho neste lote.
+        welcome_user: Bem-vindo

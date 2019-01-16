@@ -5,22 +5,22 @@ import PropTypes from 'prop-types';
 export const LocalBatchCounts = (props) => {
   let content = null;
   if (props.testMode) {
-    content = <p className='alert alert-info'>You are running in test mode. No results are recorded. Tweets shown are randomly selected from your batch.</p> 
+    content = <p className='alert alert-info'>{props.translations.test_mode}</p> 
       return wrapContent(content)
   }
   if (!props.noWorkAvailable) {
     let headerContent;
     if (props.userCount == 0) {
-      headerContent= <p className='text-light'>Welcome {props.userName}! You haven't completed any work in this batch yet.</p>;
+      headerContent= <p className='text-light'>{props.translations.welcome_user} {props.userName}! </p>;
     } else if (props.userCount == 1) {
-      headerContent = <p className='text-light'>Keep going! You have finished {props.userCount} tweet.</p>;
+      headerContent = <p className='text-light'>{props.translations.keep_going} {props.userCount.toLocaleString()} {props.translations.tweet_one}</p>;
     } else {
-      headerContent = <p className='text-light'>Keep going! You have finished {props.userCount} tweets.</p>;
+      headerContent = <p className='text-light'>{props.translations.keep_going} {props.userCount.toLocaleString()} {props.translations.tweet_other}</p>;
     }
-    let totalText = "Total in this batch: " + props.totalCount
+    let totalText = props.translations.total_in_batch + ': ' + props.totalCount.toLocaleString()
     let statsUnavailableText = ""
     if (!props.tweetTextAvailable) {
-      statsUnavailableText = "Total unavailable: " + props.totalCountUnavailable;
+      statsUnavailableText = props.translations.total_unavailable + ': ' + props.totalCountUnavailable.toLocaleString();
     }
     content = <div>
       {headerContent}

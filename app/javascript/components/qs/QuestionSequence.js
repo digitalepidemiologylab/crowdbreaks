@@ -170,7 +170,7 @@ export class QuestionSequence extends React.Component {
               {/* Question */}
               <Question 
                 question={this.props.currentQuestion.question}
-                hasInstructions={this.props.displayQuestionInstructions && this.props.currentQuestion.instructions != ""}
+                hasInstructions={this.props.displayQuestionInstructions && this.props.currentQuestion.instructions}
                 toggleQuestionInstructions={() => this.toggleQuestionInstructions()}
               />
               {/* Answers */}

@@ -11,12 +11,12 @@
           </li>
           <% if can? :view, :manage_dashboard %>
             <li class="nav-item">
-              <%= link_to 'Manage', dashboard_path, class: current_namespace?('manage')? 'nav-link active' : 'nav-link' %>
+              <%= link_to t('navbar.buttons.manage'), dashboard_path, class: current_namespace?('manage')? 'nav-link active' : 'nav-link' %>
             </li>
           <% end %>
           <% if can? :view, :admin_dashboard %>
             <li class="nav-item">
-              <%= link_to 'Admin', admin_dashboard_path, class: current_namespace?('admin')? 'nav-link active' : 'nav-link' %>
+              <%= link_to t('navbar.buttons.admin'), admin_dashboard_path, class: current_namespace?('admin')? 'nav-link active' : 'nav-link' %>
             </li>
           <% end %>
         </ul>
