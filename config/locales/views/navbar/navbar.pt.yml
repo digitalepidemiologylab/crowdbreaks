@@ -8,4 +8,6 @@ pt:
       sign_up_label: Inscrever-se
     buttons:
       about: Sobre
+      admin: Admin
+      manage: Gerir
       projects: Projetos

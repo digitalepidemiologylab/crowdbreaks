@@ -138,6 +138,7 @@ pt:
         one: 'Não foi possível gravar %{model}: 1 erro'
         other: 'Não foi possível gravar %{model}: %{count} erros'
   helpers:
+    go_back: Voltar atrás
     select:
       prompt: Por favor selecione
     submit:

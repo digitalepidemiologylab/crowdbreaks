@@ -93,7 +93,7 @@ module ApplicationHelper
     content_tag :div, class: "row #{center ? 'justify-content-center' : ''} #{mb}" do
       content_tag :div, class: col do
         link_to path, class: 'btn btn-secondary btn-lg' do 
-          'Go back'
+          t 'helpers.go_back'
         end
       end
     end
@@ -117,6 +117,8 @@ module ApplicationHelper
     case I18n.locale
     when :de
       'vor ' + time_ago_in_words(time_at)
+    when :pt
+      time_ago_in_words(time_at) + ' atrás'
     else
       # default to english
       time_ago_in_words(time_at) + ' ago'

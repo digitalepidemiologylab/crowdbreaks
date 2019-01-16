@@ -17,6 +17,7 @@ import { Instructions } from './Instructions';
 export class LocalBatchQSContainer extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props.translations)
 
     this.state = {
       'questionSequenceHasEnded': false,
@@ -93,14 +94,14 @@ export class LocalBatchQSContainer extends React.Component {
           });
         } else {
           this.setState({
-            'nextTweetId': tweetId,
-            'nextTweetIsAvailable': response['tweet_is_available'],
-            'tweetText': response['tweet_text'],
-            'questionSequenceHasEnded': true,
-            'userCount': response['user_count'],
-            'totalCount': response['total_count'],
-            'totalCountUnavailable': response['total_count_unavailable'],
-            'noWorkAvailable': response['no_work_available'],
+            nextTweetId: tweetId,
+            nextTweetIsAvailable: response['tweet_is_available'],
+            tweetText: response['tweet_text'],
+            questionSequenceHasEnded: true,
+            userCount: response['user_count'],
+            totalCount: response['total_count'],
+            totalCountUnavailable: response['total_count_unavailable'],
+            noWorkAvailable: response['no_work_available'],
           });
         }
       }
@@ -203,6 +204,7 @@ export class LocalBatchQSContainer extends React.Component {
         totalCountUnavailable={this.state.totalCountUnavailable}
         userName={this.props.userName}
         tweetTextAvailable={(this.state.tweetText == "" || this.state.tweetText === undefined) ? false : true}
+        translations={this.props.translations.local_batch_job.counts}
       />
     </div>;
     let title = this.props.projectTitle && <h4 className="mb-4">
@@ -213,10 +215,11 @@ export class LocalBatchQSContainer extends React.Component {
         display={this.state.displayInstructions}
         instructions={this.props.instructions}
         onToggleDisplay={() => this.onToggleInstructionDisplay()}
+        translations={this.props.translations.instructions}
       />
     </div>;
     let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
-      <li>Error:</li>
+      <li>{this.props.translations.general.error}</li>
       {this.state.errors.map(function(error, i) {
         return <li key={i}>{error}</li>
       })}

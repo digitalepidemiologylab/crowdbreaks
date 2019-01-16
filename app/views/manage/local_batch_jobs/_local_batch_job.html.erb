@@ -4,8 +4,8 @@
   <td><%= time_ago(local_batch_job.created_at) %></td>
   <td><span class='badge badge-sentiment'><%= local_batch_job_status(local_batch_job.status)%></span></td>
   <td><%= local_batch_job.completed_by.join(' ') %></td>
-  <td><%= number_with_delimiter(local_batch_job.local_tweets.count, delimiter: ' ') %></td>
-  <td><%= number_with_delimiter(local_batch_job.local_tweets.is_unavailable.count, delimiter: ' ') %></td>
+  <td><%= num(local_batch_job.local_tweets.count) %></td>
+  <td><%= num(local_batch_job.local_tweets.unavailable.count) %></td>
   <td><%= local_batch_job.processing_mode %></td>
   <td>
     <% if local_batch_job.local_tweets.count > 0 %>

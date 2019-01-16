@@ -100,7 +100,7 @@ search:
 ## Consider these keys used:
 ignore_unused:
 - '{number,time,date,datetime,activerecord,devise,errors,helpers,simple_form,support}.*'
-- 'question_sequences.final.*'
+- 'question_sequences.*'
 - 'pages.index.leadline.*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'

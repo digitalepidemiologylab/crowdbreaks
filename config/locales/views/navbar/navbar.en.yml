@@ -8,4 +8,6 @@ en:
       sign_up_label: Sign up
     buttons:
       about: About
+      admin: Admin
+      manage: Manage
       projects: Projects
