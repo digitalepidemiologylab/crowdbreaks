@@ -4,7 +4,7 @@
   <td><%= role_badge(user.role) %></td>
   <td><%= user.locale %></td>
   <td>
-    <%= user.confirmed? ? 'Yes' : 'No' %>
+    <%= status_yes_no(user.confirmed?) %>
   <td>
     <span> 
       <% if can? :destroy, user %>

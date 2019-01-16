@@ -22,3 +22,4 @@ pt:
       num_tweets: "%{num} tweets rotulados até agora"
       pro_vaccine: Rotulado como pró-vacina
       total: Total de etiquetas.
+      private_projects: Projetos privados

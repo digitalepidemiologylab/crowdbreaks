@@ -22,3 +22,4 @@ en:
       num_tweets: "%{num} tweets labelled so far"
       pro_vaccine: Labelled as pro-vaccine
       total: Total labels
+      private_projects: Private projects
