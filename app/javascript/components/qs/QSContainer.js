@@ -212,13 +212,14 @@ export class QSContainer extends React.Component {
           answersDelay={this.props.answersDelay}
           displayQuestionInstructions={false}
           numQuestionsAnswered={this.state.numQuestionsAnswered}
+          translations={this.props.translations}
         /> 
       </div>
     } else {
       body = <Final 
         onNextQuestionSequence={() => this.onNextQuestionSequence()}
         projectsPath={this.props.projectsPath}
-        translations={this.props.translations}
+        translations={this.props.translations.final}
       /> 
     }
     let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>

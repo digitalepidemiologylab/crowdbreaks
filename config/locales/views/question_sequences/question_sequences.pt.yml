@@ -7,7 +7,9 @@ pt:
       text: Cada tweet que você classifica ajuda a melhorar o algoritmo. Tem tempo para classificar outro?
       thank_you: Obrigado pela ajuda!
     general:
+      ask_for_help: Pedir ajuda
       error: Erro
+      restart: Reiniciar
     instructions:
       hide_instructions: Ocultar instruções
       show_instructions: Mostrar instruções
@@ -21,3 +23,6 @@ pt:
         tweet_other: tweets
         welcome_header: Você ainda não completou nenhum trabalho neste lote.
         welcome_user: Bem-vindo
+    question_instructions:
+      ok: OK
+      title: Ajuda para a pergunta atual

@@ -20,6 +20,6 @@ en:
       no_contributions: You've not contributed yet.
       no_contributions_button: View projects
       num_tweets: "%{num} tweets labelled so far"
+      private_projects: Private projects
       pro_vaccine: Labelled as pro-vaccine
       total: Total labels
-      private_projects: Private projects

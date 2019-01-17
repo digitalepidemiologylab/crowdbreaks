@@ -7,7 +7,9 @@ en:
       text: Every tweet you classify helps improve the algorithm. Got time to classify another one?
       thank_you: Thanks for your help!
     general:
+      ask_for_help: Ask for help
       error: Error
+      restart: Restart
     instructions:
       hide_instructions: Hide instructions
       show_instructions: Show instructions
@@ -21,3 +23,6 @@ en:
         tweet_other: tweets
         welcome_header: You haven't completed any work in this batch yet.
         welcome_user: Welcome
+    question_instructions:
+      ok: OK
+      title: Help for current question
