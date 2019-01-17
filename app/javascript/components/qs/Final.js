@@ -6,8 +6,8 @@ export const Final = (props) => {
     <div>
       <div className="row justify-content-center">
         <div className="col-12 col-sm-10 col-lg-6 text-center">
-          <h1 className="mb-4">{props.translations.final.thank_you}</h1>
-          <p className='large text-light mb-4'>{props.translations.final.text}</p>
+          <h1 className="mb-4">{props.translations.thank_you}</h1>
+          <p className='large text-light mb-4'>{props.translations.text}</p>
         </div>
       </div>
 
@@ -15,10 +15,10 @@ export const Final = (props) => {
         <div className="col-12 col-sm-10 col-lg-5 text-center">
           <div className="buttons-fluid">
             <button onClick={ props.onNextQuestionSequence } className='btn btn-primary btn-lg' style={{marginRight: '12px'}}>
-              {props.translations.final.continue_button}
+              {props.translations.continue_button}
             </button>
             <a href={props.projectsPath} className='btn btn-secondary btn-lg'>
-              {props.translations.final.back_to_projects_button}
+              {props.translations.back_to_projects_button}
             </a>
           </div>
         </div>

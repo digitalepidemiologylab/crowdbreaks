@@ -204,6 +204,7 @@ export class QuestionSequence extends React.Component {
       let questionInstructions = this.state.showQuestionInstruction && <QuestionInstructions 
         instructions={this.props.currentQuestion.instructions} 
         toggleQuestionInstructions={() => this.toggleQuestionInstructions()}
+        translations={this.props.translations.question_instructions}
       /> 
     return (
       <div>

@@ -159,12 +159,12 @@ export class MturkQSContainer extends React.Component {
       {this.props.allowReset && <button 
           onClick={() => this.onRestart()}
           className='btn btn-secondary'>
-          <i className='fa fa-refresh' style={{color: '#212529'}}></i>&emsp;Restart
+          <i className='fa fa-refresh' style={{color: '#212529'}}></i>&emsp;{this.props.translations.general.restart}
         </button>}
       <button 
         onClick={() => this.onHelp()}
         className='btn btn-secondary'>
-        <i className='fa fa-question-circle' style={{color: '#212529'}}></i>&emsp;Ask for help
+        <i className='fa fa-question-circle' style={{color: '#212529'}}></i>&emsp;{this.props.translations.general.ask_for_help}
       </button>
     </div>
   }
@@ -205,6 +205,7 @@ export class MturkQSContainer extends React.Component {
         answersDelay={this.props.answersDelay}
         displayQuestionInstructions={true}
         numQuestionsAnswered={this.state.numQuestionsAnswered}
+        translations={this.props.translations}
       /> 
     } else {
       return <MturkFinal 
@@ -223,6 +224,7 @@ export class MturkQSContainer extends React.Component {
     let mturkInstructions = <Instructions 
       display={this.state.displayInstructions || this.props.previewMode}
       instructions={this.props.instructions}
+      translations={this.props.translations.instructions}
       onToggleDisplay={() => this.onToggleInstructionDisplay()}
     />;
     let body = this.getQuestionSequence()

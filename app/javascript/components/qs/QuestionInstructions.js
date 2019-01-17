@@ -74,7 +74,7 @@ export class QuestionInstructions extends React.Component {
         style={modalStyle} >
         <div className="row mb-4">
           <div className="col-12">
-            <h3 className="mb-4">Help for current question</h3>
+            <h3 className="mb-4">{this.props.translations.title}</h3>
             <div style={markdownStyle}>
               <Markdown source={this.props.instructions} />
             </div>
@@ -82,7 +82,7 @@ export class QuestionInstructions extends React.Component {
         </div>
         <div className="row mb-4">
           <div className="col-12 text-center">
-            <button className="btn btn-primary btn-lg" onClick={() => this.onModalClose()}>OK</button>
+            <button className="btn btn-primary btn-lg" onClick={() => this.onModalClose()}>{this.props.translations.ok}</button>
           </div>
         </div>
       </Modal>

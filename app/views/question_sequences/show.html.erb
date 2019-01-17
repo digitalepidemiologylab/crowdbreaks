@@ -12,7 +12,6 @@
       projectsPath: projects_path,
       resultsPath: project_question_sequence_path,
       endQuestionSequencePath: final_project_question_sequence_path(@project.id),
-      translations: t('question_sequences'),
       userId: @user_id,
       projectId: @project.id,
       numTransitions: @question_sequence[:num_transitions],
@@ -20,7 +19,8 @@
       enableCaptcha: false,
       userSignedIn: user_signed_in?,
       answersDelay: 2000,
-      testMode: false
+      testMode: false,
+      translations: t('question_sequences'),
     }) %>
   </div>
 </div>

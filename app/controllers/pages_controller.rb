@@ -11,8 +11,7 @@ class PagesController < ApplicationController
         @counts[project.id] = {
           'pro-vaccine': label_counts['pro-vaccine'] || 0,
           'anti-vaccine': label_counts['anti-vaccine'] || 0,
-          'neutral': label_counts['pro-vaccine'] || 0,
-          'pro-vaccine': label_counts['neutral'] || 0,
+          'neutral': label_counts['neutral'] || 0,
         }
         @counts[project.id][:total] = @counts[project.id][:'pro-vaccine'] + @counts[project.id][:'anti-vaccine'] + @counts[project.id][:neutral] 
       end
