@@ -191,6 +191,7 @@ export class QSContainer extends React.Component {
         <InstructionModal 
           openModal={this.state.openModal}
           projectsPath={this.props.projectsPath}
+          translations={this.props.translations.instruction_modal}
         />
         <QuestionSequence 
           ref={qs => {this.questionSequence = qs;}}

@@ -26,3 +26,12 @@ en:
     question_instructions:
       ok: OK
       title: Help for current question
+    instruction_modal:
+      welcome: Welcome!
+      header: In this project we will ask you a series of questions about a tweet in order to better understand vaccine sentiments. Please answer these questions as best as you can from the tweet text alone (without following links). Your help is much appreciated!
+      agree_header: "By continuing you agree to the following:"
+      agree_header_1: You are at least 18 years old.
+      agree_header_2: You understand that this is a research project and the answers you provide will be used for research purposes only.
+      lets_go: Let's go!
+      go_back: Go back
+
