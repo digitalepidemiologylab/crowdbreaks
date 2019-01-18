@@ -77,31 +77,30 @@ export class InstructionModal extends React.Component {
         style={modalStyle} >
         <div className="row mb-4">
           <div className="col-12">
-            <h3 className="text-center mb-4">Welcome!</h3>
+            <h3 className="text-center mb-4">{this.props.translations.welcome}</h3>
             <p>
-              In this project we will ask you a series of questions about a tweet in order to better understand vaccine sentiments. Please answer these questions as best as you can from the tweet text alone (without following links). Your help is much appreciated!
+              {this.props.translations.header}
             </p>
             <p>
-              By continuing you agree to the following:
+              {this.props.translations.agree_header}
             </p>
               <ul>
-                <li>You are at least 18 years old.</li>
-                <li>You understand that this is a research project and the answers you provide will be used for research purposes only.</li>
+                <li>{this.props.translations.agree_header_1}</li>
+                <li>{this.props.translations.agree_header_2}</li>
               </ul>
           </div>
         </div>
         <div className="row mb-4">
           <div className="col-12 text-center">
-            <button className="btn btn-primary btn-lg" onClick={() => this.onModalClose()}>Let's go!</button>
+            <button className="btn btn-primary btn-lg" onClick={() => this.onModalClose()}>{this.props.translations.lets_go}</button>
           </div>
         </div>
         <div className="row">
           <div className="col-12">
-            <button className="btn btn-link" onClick={() => this.handleRequestCloseFunc()}>Go back</button>
+            <button className="btn btn-link" onClick={() => this.handleRequestCloseFunc()}>{this.props.translations.go_back}</button>
           </div>
         </div>
       </Modal>
     );
-
   }
 };
