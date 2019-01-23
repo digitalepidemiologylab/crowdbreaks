@@ -4,10 +4,10 @@ namespace :scheduler do
     if defined?(Rails) && (Rails.env == 'development')
       Rails.logger = Logger.new(STDOUT)
     end
-    if ENV['ENV'] == 'prd'
+    if ENV['ENV'] == 'prd' and ENV['WATCH_STREAM'] == 'true'
       Rails.logger.info "Running watch stream task to check up on stream"
     else
-      Rails.logger.debug "The Watch stream task is only executed in production environments" and next
+      Rails.logger.debug "The Watch stream task is only executed in production environments and with watch stream enabled" and next
     end
     cache_key = "watch_stream_error_report_sent"
     if Rails.cache.exist?(cache_key)
