@@ -7,7 +7,7 @@ namespace :scheduler do
     if ENV['ENV'] == 'prd' and ENV['WATCH_STREAM'] == 'true'
       Rails.logger.info "Running watch stream task to check up on stream"
     else
-      Rails.logger.debug "The Watch stream task is only executed in production environments and with watch stream enabled" and next
+      Rails.logger.debug "The watch stream task is only executed in production environments and with the env variable WATCH_STREAM set to 'true'" and next
     end
     cache_key = "watch_stream_error_report_sent"
     if Rails.cache.exist?(cache_key)
@@ -25,6 +25,10 @@ namespace :scheduler do
     end
     activity_options = {es_activity_threshold_min: 10, redis_counts_threshold_hours: 2}
     activity = api.stream_activity(activity_options)
+    if activity.empty?
+      msg = "The stream seems to be running but no activity measures could be retrieved."
+      send_report(msg) and next
+    end
     if activity['es_count'] == 0 or activity['redis_count'] == 0
       msg = "The stream seems to be running but with very low activity.\n
           Documents indexed on Elasticsearch: #{num(activity['es_count'])} (last #{activity_options[:es_activity_threshold_min]} min)
