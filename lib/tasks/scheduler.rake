@@ -40,6 +40,7 @@ namespace :scheduler do
       msg = "Elasticsearch is currently in #{es_health} state."
       send_report(msg) and next
     end
+    Rails.logger.info "The stream is up and running. Nothing to report."
   end
 end
 
