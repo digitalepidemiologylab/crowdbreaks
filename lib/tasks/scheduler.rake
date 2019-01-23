@@ -42,6 +42,18 @@ namespace :scheduler do
     end
     Rails.logger.info "The stream is up and running. Nothing to report."
   end
+  task :reactivate_watch_stream => :environment do
+    if defined?(Rails) && (Rails.env == 'development')
+      Rails.logger = Logger.new(STDOUT)
+    end
+    cache_key = "watch_stream_error_report_sent"
+    if Rails.cache.exist?(cache_key)
+      Rails.cache.delete(cache_key)
+      Rails.logger.info "Successfully reactivated stream watch task." and next
+    else
+      Rails.logger.error "Could not reactivate stream watch task." and next
+    end
+  end
 end
 
 def num(larger_number)
