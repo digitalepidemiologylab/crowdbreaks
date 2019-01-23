@@ -8,7 +8,7 @@ module Manage
 
     def index
       stats = @api.es_stats
-      @health = @api.health
+      @health = @api.es_health
       @indexes = []
       stats.each_pair do |k, v|
         unless k.starts_with?('.')
