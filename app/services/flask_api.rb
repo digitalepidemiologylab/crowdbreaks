@@ -42,7 +42,6 @@ class FlaskApi
   def get_config
     handle_error(error_return_value: []) do
       resp = self.class.get('/pipeline/config')
-      p resp.parsed_response
       resp.parsed_response
     end
   end
@@ -57,6 +56,15 @@ class FlaskApi
     handle_error(error_return_value: 'error') do
       resp = self.class.get('/pipeline/status/stream')
       return resp.length > 20 ? 'error' : resp.strip
+    end
+  end
+
+  def stream_activity(**options)
+    options = {es_activity_threshold_min: options.fetch(:es_activity_threshold_min, 3000),
+               redis_counts_threshold_hours: options.fetch(:redis_counts_threshold_hours, 2)}
+    handle_error(error_return_value: {}) do
+      resp = self.class.get('/pipeline/status/stream_activity', query: options)
+      resp.parsed_response
     end
   end
 
@@ -121,7 +129,7 @@ class FlaskApi
     end
   end
 
-  def health
+  def es_health
     handle_error(error_return_value: 'error') do
       resp = self.class.get('/elasticsearch/health')
       resp.parsed_response['status']

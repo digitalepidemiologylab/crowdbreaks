@@ -22,7 +22,7 @@ class ApplicationMailer < ActionMailer::Base
     # send template
     if Rails.env.development?
       # Use letter opener to display email in development
-      mail(convert_mandrill_template(message)).deliver
+      mail(convert_mandrill_message(message)).deliver
     else
       Rails.logger.info('Sending email through Mandrill templates')
       Crowdbreaks::Mandrill.messages.send_template(options[:template], [], message) unless Rails.env.test?
@@ -30,6 +30,29 @@ class ApplicationMailer < ActionMailer::Base
   rescue Mandrill::Error => e
     ErrorLogger.error(e)
     raise e
+  end
+
+  def send_raw(options = {})
+    message = {
+      subject: full_subject(options[:subject]),
+      from_name: options.fetch(:from_name, 'Crowdbreaks'),
+      from_email: options.fetch(:from_email, 'no-reply@crowdbreaks.org'),
+      to: [
+        {
+          email: options.fetch(:email, 'email@example.com'),
+          type: 'to'
+        }
+      ],
+      html: options.fetch(:html, ''),
+      text: options.fetch(:text, ''),
+    }
+    if Rails.env.development?
+      # Use letter opener to display email in development
+      mail(convert_mandrill_message(message)).deliver
+    else
+      Rails.logger.info('Sending raw Mandrill email')
+      Crowdbreaks::Mandrill.messages.send(message) unless Rails.env.test?
+    end
   end
 
   private
@@ -47,7 +70,7 @@ class ApplicationMailer < ActionMailer::Base
   end
 
 
-  def convert_mandrill_template(message)
+  def convert_mandrill_message(message)
     {
       from: message[:from_email],
       to: message[:to].map{|m| m[:email]}.join(', '),
