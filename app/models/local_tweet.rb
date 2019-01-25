@@ -12,4 +12,8 @@ class LocalTweet < ApplicationRecord
     user_ids = local_batch_job.results.where(tweet_id: tweet_id).pluck(:user_id).uniq
     User.where(id: user_ids).pluck(:username)
   end
+
+  def results
+    local_batch_job.results.where(tweet_id: tweet_id)
+  end
 end

@@ -24,6 +24,7 @@ class ManageAbility
       can :view, :sentiment_analysis
       cannot :view, :user_activity
       can :manage, LocalBatchJob
+      can :manage, LocalTweet
     elsif user.contributor?
       # to be specified
     end
