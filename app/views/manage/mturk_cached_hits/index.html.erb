@@ -49,8 +49,10 @@
       <div class="spinner mr-3" id="refresh-mturk-hits-spinner" style='display:inline-block;'></div>
       <div id="refresh-mturk-hits-spinner-info" class='mt-1' style='display:inline-block;margin:auto;position:absolute;'></div>
     </div>
-    <%= link_to clear_all_mturk_cached_hits_path(sandbox: @sandbox), class: 'btn btn-secondary', style: 'position:absolute;right:20px;bottom:0px' do %>
-      Clear cache&nbsp;&nbsp;<%= fa_icon 'times-circle' %>
+    <% if @mturk_cached_hits.present? %>
+      <%= link_to clear_all_mturk_cached_hits_path(sandbox: @sandbox), class: 'btn btn-secondary', style: 'position:absolute;right:20px;bottom:0px' do %>
+        Clear cache&nbsp;&nbsp;<%= fa_icon 'times-circle' %>
+      <% end %>
     <% end %>
   </div>
 </div>
