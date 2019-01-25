@@ -3,7 +3,7 @@ module Manage
     load_and_authorize_resource param_method: :sanitized_local_batch_job_params, :find_by => :slug 
 
     def index
-      @local_batch_jobs = LocalBatchJob.all.order('created_at DESC').page(params[:page]).per(10)
+      @local_batch_jobs = @local_batch_jobs.order('created_at DESC').page(params[:page]).per(10)
     end
 
     def new
