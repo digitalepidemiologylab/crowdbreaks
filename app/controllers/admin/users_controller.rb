@@ -11,6 +11,10 @@ module Admin
     end
 
     def index
+      search_user = params[:search_user]
+      if search_user.present?
+        @users = @users.where('username LIKE ? OR email LIKE ?', "%#{search_user}%", "%#{search_user}%")
+      end
       @users = @users.exclude_guests.order(role: :desc).page params[:page]
     end
 
