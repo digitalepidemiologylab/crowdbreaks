@@ -10,6 +10,14 @@ pt:
       ask_for_help: Pedir ajuda
       error: Erro
       restart: Reiniciar
+    instruction_modal:
+      agree_header: 'Ao continuar, você concorda com o seguinte:'
+      agree_header_1: Tens pelo menos 18 anos.
+      agree_header_2: Você entende que este é um projeto de pesquisa e as respostas que você fornecer serão usadas apenas para fins de pesquisa.
+      go_back: Voltar atrás
+      header: Neste projeto, faremos uma série de perguntas sobre um tweet para entender melhor os sentimentos da vacina. Por favor, responda a estas perguntas o melhor que puder a partir do texto do tweet sozinho (sem os seguintes links). Sua ajuda é muito apreciada!
+      lets_go: Vamos lá!
+      welcome: Boas-vindas!
     instructions:
       hide_instructions: Ocultar instruções
       show_instructions: Mostrar instruções
@@ -26,12 +34,3 @@ pt:
     question_instructions:
       ok: OK
       title: Ajuda para a pergunta atual
-    instruction_modal:
-      welcome: Boas-vindas!
-      header: Neste projeto, faremos uma série de perguntas sobre um tweet para entender melhor os sentimentos da vacina. Por favor, responda a estas perguntas o melhor que puder a partir do texto do tweet sozinho (sem os seguintes links). Sua ajuda é muito apreciada!
-      agree_header: "Ao continuar, você concorda com o seguinte:"
-      agree_header_1: Tens pelo menos 18 anos.
-      agree_header_2: Você entende que este é um projeto de pesquisa e as respostas que você fornecer serão usadas apenas para fins de pesquisa.
-      lets_go: Vamos lá!
-      go_back: Voltar atrás
-
