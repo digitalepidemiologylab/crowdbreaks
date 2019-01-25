@@ -73,5 +73,5 @@ def send_report(msg)
   }
   mailer.send_raw(options)
   cache_key = "watch_stream_error_report_sent"
-  Rails.cache.write(cache_key, 1, expires_in: 12.hours)
+  Rails.cache.write(cache_key, 1, expires_in: 6.hours)
 end
