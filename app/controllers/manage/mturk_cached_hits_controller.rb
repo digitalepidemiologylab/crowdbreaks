@@ -39,6 +39,17 @@ module Manage
       end
     end
 
+    def clear_all
+      @sandbox = param_is_truthy?(:sandbox, default: true)
+      # probably better to move this to a background job, but it should be relatively fast
+      MturkCachedHit.where(sandbox: @sandbox).delete_all
+      if MturkCachedHit.where(sandbox: @sandbox).count == 0
+        redirect_to(mturk_cached_hits_path(sandbox: @sandbox), notice: 'Successfully cleared cached HITs')
+      else
+        redirect_to(mturk_cached_hits_path(sandbox: @sandbox), alert: 'Something went wrong when clearing cached HITs')
+      end
+    end
+
     def update_cached_hits
       if current_user
         UpdateMturkChachedHitsJob.perform_later(current_user.id, param_is_truthy?(:sandbox, default: true))

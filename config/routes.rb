@@ -77,6 +77,7 @@ Rails.application.routes.draw do
       end
       resources :mturk_cached_hits, path: 'mturk_hits' do
         get 'update_cached_hits', on: :collection
+        get 'clear_all', on: :collection
       end
       resources :mturk_reviewable_hits, only: [:index, :show] do
         get 'link_to_results'
