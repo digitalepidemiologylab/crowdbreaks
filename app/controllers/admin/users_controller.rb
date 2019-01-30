@@ -15,7 +15,7 @@ module Admin
       if search_user.present?
         @users = @users.where('username LIKE ? OR email LIKE ?', "%#{search_user}%", "%#{search_user}%")
       end
-      @users = @users.exclude_guests.order(role: :desc).page params[:page]
+      @users = @users.exclude_guests.order(role: :desc, created_at: :desc).page params[:page]
     end
 
     def create
@@ -38,8 +38,12 @@ module Admin
 
     def update
       @user.skip_notifications!
+      if sanitized_user_params[:mark_as_confirmed] == '1' and not @user.confirmed?
+        if not @user.confirm
+          render :edit and return
+        end
+      end
       if @user.update_attributes(sanitized_user_params)
-        @user.confirm if @user.mark_as_confirmed == '1'
         redirect_to(admin_users_path, notice: 'User successfully updated')
       else
         render :edit and return

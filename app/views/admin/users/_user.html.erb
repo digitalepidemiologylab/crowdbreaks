@@ -3,8 +3,9 @@
   <td><%= user.email %></td>
   <td><%= role_badge(user.role) %></td>
   <td><%= user.locale %></td>
-  <td>
-    <%= status_yes_no(user.confirmed?) %>
+  <td><%= status_yes_no(user.confirmed?) %></td>
+  <td><%= time_ago(user.created_at) %></td>
+  <td><%= time_ago(user.last_sign_in_at) %></td>
   <td>
     <span> 
       <% if can? :destroy, user %>
