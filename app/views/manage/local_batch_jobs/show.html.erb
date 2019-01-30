@@ -1,0 +1,37 @@
+<% @title ||= LocalBatchJob.model_name.human; title @title %>
+<%= go_back_btn manage_local_batch_jobs_path %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-md-8">
+    <h2>Local Batch Job details</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-md-6 mb-5">
+    <div class="card">
+      <div class="card-body">
+        <table class="table vertical-align borderless-table mb-3">
+          <%= table_row('Total tweets', num(@num_tweets)) %>
+        </table>
+        <h4>Participant progress</h4>
+        <table class="table vertical-align borderless-table">
+          <% @counts.each do |stat| %>
+            <%= table_row(stat[:username], "#{num(stat[:count])} (#{"%.1f" % (100*stat[:count]/@num_tweets.to_f).to_f} %)", h4_tag: false) %>
+          <% end %>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+  </div>
+</div>
+
+
+
+<div class="row justify-content-center mb-4">
+  <div class="col-md-8">
+    <h4>Attributes</h4>
+  </div>
+</div>
+<%= attributes_table(@local_batch_job) %>
