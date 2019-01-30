@@ -22,10 +22,9 @@ class SubmitTasksJob < ApplicationJob
     # create new HIT type for this batch
     hittype_id, qualification_type_id = mturk.create_hit_type(mturk_batch_job)
     if hittype_id.nil? or qualification_type_id.nil?
-      logger.error "Something went wrong when creating HIT type. Aborting"
-      return
+      Rails.logger.error "Something went wrong when creating HIT type. Aborting" and return
     end
-    logger.info "HIT type: #{hittype_id}, qualification type: #{qualification_type_id}"
+    Rails.logger.info "HIT type: #{hittype_id}, qualification type: #{qualification_type_id}"
     mturk_batch_job.update_attributes!({
       hittype_id: hittype_id,
       qualification_type_id: qualification_type_id
