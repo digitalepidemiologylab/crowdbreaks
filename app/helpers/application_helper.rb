@@ -114,6 +114,7 @@ module ApplicationHelper
   end
 
   def time_ago(time_at)
+    return '' if not time_at.respond_to?(:strftime)
     case I18n.locale
     when :de
       'vor ' + time_ago_in_words(time_at)

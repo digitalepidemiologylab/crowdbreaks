@@ -8,10 +8,15 @@
     <span class='no-wrap'>
       <%= num(local_batch_job.results.count) %>
       /
-      <%= num(local_batch_job.local_tweets.count) %>
+      <% if local_batch_job.local_tweets.unavailable.count > 0 %>
+        <%= num(local_batch_job.local_tweets.count - local_batch_job.local_tweets.unavailable.count) %>
+      <% else %>
+        <%= num(local_batch_job.local_tweets.count) %>
+      <% end %>
     </span>
   </td>
   <td><%= num(local_batch_job.local_tweets.unavailable.count) %></td>
+  <td><%= local_batch_job.users.count %></td>
   <td><%= local_batch_job.processing_mode %></td>
   <td>
     <% if local_batch_job.local_tweets.count > 0 %>

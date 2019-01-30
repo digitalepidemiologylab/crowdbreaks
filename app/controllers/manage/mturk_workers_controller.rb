@@ -23,11 +23,7 @@ module Manage
     def review
       @selected_batch_job = params[:batch_name_filter]
       qs = @mturk_worker.results
-      qs = qs
-        .left_outer_joins(:task)
-        .select('MAX(results.id) as id', 'MAX(results.created_at) as created_at', 'count(*) as num_results', :project_id, :tweet_id, :task_id, 'tasks.mturk_batch_job_id as mturk_batch_job_id')
-        .group(:project_id, :tweet_id, 'tasks.mturk_batch_job_id', :task_id)
-        .order(Arel.sql('max(results.created_at) DESC'))
+      qs = qs.group_by_qs_mturk.order(Arel.sql('max(results.created_at) DESC'))
       @mturk_batch_jobs_by_worker = MturkBatchJob.where(id: qs.pluck('tasks.mturk_batch_job_id').uniq).pluck(:name)
       if @selected_batch_job.present?
         mturk_batch_job = MturkBatchJob.find_by(name: @selected_batch_job)
