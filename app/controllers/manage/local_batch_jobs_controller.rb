@@ -9,6 +9,17 @@ module Manage
     def new
     end
 
+    def show
+      @counts = []
+      @local_batch_job.users.each do |user|
+        @counts.push({
+          'count': @local_batch_job.results.group_by_qs.where(user_id: user.id).length,
+          'username': user.username,
+        })
+      end
+      @num_tweets = @local_batch_job.local_tweets.count
+    end
+
     def edit
     end
 

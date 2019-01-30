@@ -88,7 +88,7 @@ Rails.application.routes.draw do
 
       # elasticsearch
       resources :elasticsearch_indexes
-      resources :local_batch_jobs, except: :show, as: 'manage_local_batch_jobs' do
+      resources :local_batch_jobs, as: 'manage_local_batch_jobs' do
         resources :local_tweets, only: [:index]
       end
     end

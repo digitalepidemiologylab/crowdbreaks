@@ -4,19 +4,8 @@
   <td><%= time_ago(local_batch_job.created_at) %></td>
   <td><span class='badge badge-sentiment'><%= local_batch_job_status(local_batch_job.status)%></span></td>
   <td><%= local_batch_job.completed_by.join(' ') %></td>
-  <td>
-    <span class='no-wrap'>
-      <%= num(local_batch_job.results.count) %>
-      /
-      <% if local_batch_job.local_tweets.unavailable.count > 0 %>
-        <%= num(local_batch_job.local_tweets.count - local_batch_job.local_tweets.unavailable.count) %>
-      <% else %>
-        <%= num(local_batch_job.local_tweets.count) %>
-      <% end %>
-    </span>
-  </td>
-  <td><%= num(local_batch_job.local_tweets.unavailable.count) %></td>
   <td><%= local_batch_job.users.count %></td>
+  <td><%= num(local_batch_job.local_tweets.count) %></td>
   <td><%= local_batch_job.processing_mode %></td>
   <td>
     <% if local_batch_job.local_tweets.count > 0 %>
@@ -34,6 +23,9 @@
   </td>
   <td>
     <div>
+      <% if can? :read, local_batch_job %>
+        <%= link_to fa_icon('eye'), manage_local_batch_job_path(local_batch_job) %>
+      <% end %>
       <% if can? :destroy, local_batch_job %>
         <%= link_to fa_icon('trash'),
           manage_local_batch_job_path(local_batch_job),

@@ -82,9 +82,13 @@ module ApplicationHelper
     end
   end
 
-  def table_row(label, value)
+  def table_row(label, value, h4_tag: true)
     content_tag :tr do
-      concat tag.td tag.h4 label
+      if h4_tag
+        concat tag.td tag.h4 label
+      else
+        concat tag.td tag.div label
+      end
       concat content_tag :td, value, {align: 'right'}
     end
   end
