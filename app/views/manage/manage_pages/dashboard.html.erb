@@ -17,7 +17,7 @@
       <%= link_to 'Elasticsearch', elasticsearch_indexes_path, class: 'btn btn-primary btn-lg btn-block' %>
     <% end %>
   </div>
-  <div class="col-lg-6 text-center">
+  <div class="col-lg-6 text-center mt-4 mt-lg-0">
     <h4 class="and-divider mb-4"><span>Other</span></h4>
     <% if can? :view, :sentiment_analysis %>
       <%= link_to 'Sentiment analysis', sentiment_analysis_path, class: 'btn btn-primary btn-lg btn-block'%>
