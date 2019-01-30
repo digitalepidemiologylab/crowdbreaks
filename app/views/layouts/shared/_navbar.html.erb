@@ -63,6 +63,12 @@
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
               <%= link_to t('navbar.buttons.projects'), projects_path, class: 'dropdown-item' %>
               <%= link_to t('navbar.buttons.about'), about_path, class: 'dropdown-item' %>
+              <% if can? :view, :manage_dashboard %>
+                <%= link_to t('navbar.buttons.manage'), dashboard_path, class: 'dropdown-item'%>
+              <% end %>
+              <% if can? :view, :admin_dashboard %>
+                <%= link_to t('navbar.buttons.admin'), admin_dashboard_path, class: 'dropdown-item' %>
+              <% end %>
               <div class="dropdown-divider"></div>
               <% if user_signed_in? %>
                  <%= link_to t('navbar.account.edit'), edit_user_registration_path, class: 'dropdown-item' %> 
