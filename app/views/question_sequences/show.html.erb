@@ -18,7 +18,8 @@
       captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
       enableCaptcha: false,
       userSignedIn: user_signed_in?,
-      answersDelay: 2000,
+      delayStart: 2000,
+      delayNextQuestion: 0,
       testMode: false,
       translations: t('question_sequences'),
     }) %>

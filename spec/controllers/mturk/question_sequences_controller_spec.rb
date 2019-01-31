@@ -262,7 +262,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       expect(assigns(:tweet_id)).to eq("")
       assert_requested :post, /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/,
-        body: {QualificationTypeId: mturk_batch_job4.qualification_type_id, WorkerId: mturk_worker8.worker_id}.to_json
+        body: {QualificationTypeId: mturk_batch_job4.qualification_type_id, WorkerId: mturk_worker8.worker_id, SendNotification: false}.to_json
     end
 
     it "detects wrongly assigned availability with before_and_after check availability option" do

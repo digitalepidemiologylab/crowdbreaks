@@ -86,7 +86,7 @@ module Manage
     private
 
     def mturk_batch_job_params
-      params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions, :minimal_approval_rate, :max_tasks_per_worker, :check_availability, :exclude_blacklisted, :min_num_hits_approved)
+      params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions, :minimal_approval_rate, :max_tasks_per_worker, :check_availability, :exclude_blacklisted, :min_num_hits_approved, :delay_start, :delay_next_question)
     end
 
     def retrieve_tweet_rows_from_job_file

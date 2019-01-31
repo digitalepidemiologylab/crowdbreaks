@@ -16,14 +16,13 @@ class Mturk::QuestionSequencesController < ApplicationController
     @worker_id = params[:workerId]
     @tweet_id = nil
     @no_work_available = false
-    @sandbox = task.mturk_batch_job.sandbox
+    @mturk_batch_job = task.mturk_batch_job
     if not @preview_mode
       # worker has accepted the HIT
       @tweet_id, @tweet_text, @notification = get_tweet_for_worker(@worker_id, task)
     end
     # Collect question sequence info
-    @project = task.mturk_batch_job.project
-    @mturk_instructions = task.mturk_batch_job.instructions
+    @project = @mturk_batch_job.project
     @question_sequence = QuestionSequence.new(@project).load
   end
 
@@ -110,7 +109,7 @@ class Mturk::QuestionSequencesController < ApplicationController
   def tasks_params
     params.require(:task).permit(:hit_id, :tweet_id, :worker_id, :assignment_id,
                                  results: [result: [:answer_id, :question_id, :tweet_id, :user_id, :project_id]],
-                                 logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized, :totalDurationQuestionSequence, :timeQuestionSequenceEnd, :totalDurationUntilMturkSubmit, :timeMturkSubmit,
+                                 logs: [:timeInitialized, :delayStart, :delayNextQuestion, :timeMounted, :userTimeInitialized, :totalDurationQuestionSequence, :timeQuestionSequenceEnd, :totalDurationUntilMturkSubmit, :timeMturkSubmit,
                                         results: [:submitTime, :timeSinceLastAnswer, :questionId],
                                         resets: [:resetTime, :resetAtQuestionId, previousResultLog: [:submitTime, :timeSinceLastAnswer, :questionId]]])
   end

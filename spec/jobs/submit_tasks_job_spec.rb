@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe SubmitTasksJob, type: :job do
   # Single tweet/single task batch
-  let!(:mturk_batch_job) { FactoryBot.create(:mturk_batch_job, number_of_assignments: 1) }
+  let!(:mturk_batch_job) { FactoryBot.create(:mturk_batch_job, number_of_assignments: 1, sandbox: false) }
   let!(:mturk_worker) { FactoryBot.create(:mturk_worker, :blacklisted) }
   let!(:mturk_tweet) { FactoryBot.create(:mturk_tweet, :available, mturk_batch_job: mturk_batch_job) }
   let!(:task) { FactoryBot.create(:task, :unsubmitted, mturk_batch_job: mturk_batch_job, mturk_tweet: mturk_tweet) }
@@ -30,8 +30,8 @@ RSpec.describe SubmitTasksJob, type: :job do
     it "blacklists worker by default" do
       SubmitTasksJob.perform_now(mturk_batch_job.id)
       mturk_batch_job.reload
-      assert_requested :post, /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/,
-        body: {QualificationTypeId: mturk_batch_job.qualification_type_id, WorkerId: mturk_worker.worker_id}.to_json
+      assert_requested :post, /mturk-requester.us-east-1.amazonaws.com/,
+        body: {QualificationTypeId: mturk_batch_job.qualification_type_id, WorkerId: mturk_worker.worker_id, SendNotification: false}.to_json
     end
   end
 end

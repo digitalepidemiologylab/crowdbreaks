@@ -88,7 +88,7 @@ class QuestionSequencesController < ApplicationController
 
   def final_params
     params.require(:qs).permit(:tweet_id, :user_id, :project_id, :test_mode,
-                               logs: [:timeInitialized, :answerDelay, :timeMounted, :userTimeInitialized, :totalDurationQuestionSequence, :timeQuestionSequenceEnd,
+                               logs: [:timeInitialized, :delayStart, :delayNextQuestion, :timeMounted, :userTimeInitialized, :totalDurationQuestionSequence, :timeQuestionSequenceEnd,
                                       results: [:submitTime, :timeSinceLastAnswer, :questionId],
                                       resets: [:resetTime, :resetAtQuestionId, previousResultLog: [:submitTime, :timeSinceLastAnswer, :questionId]]])
   end

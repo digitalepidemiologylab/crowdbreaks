@@ -72,6 +72,32 @@
   </div>
 
   <div class="form-group">
+    <%= f.input 'Answer delay start', hint: "Delay until answer buttoms become clickable in the beginning of the question sequence." do %>
+      <div class="input-group">
+        <%= f.input_field :delay_start,
+          class: 'form-control border-right-0',
+          value: f.object.delay_start
+        %>
+        <span class="input-group-text">ms</span>
+      </div>
+    <% end %>
+    <%= f.error :delay_start %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input 'Answer delay subsequent questions', hint: "Delay until answer buttoms become clickable for all subsequent questions after the first one." do %>
+      <div class="input-group">
+        <%= f.input_field :delay_next_question,
+          class: 'form-control border-right-0',
+          value: f.object.delay_next_question
+        %>
+        <span class="input-group-text">ms</span>
+      </div>
+    <% end %>
+    <%= f.error :delay_start %>
+  </div>
+
+  <div class="form-group">
     <%= f.input 'Lifetime', hint: "Time after which a HIT is no longer available for users." do %>
       <div class="input-group">
         <%= f.input_field :lifetime_in_seconds,

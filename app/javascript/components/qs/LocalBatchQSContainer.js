@@ -37,7 +37,7 @@ export class LocalBatchQSContainer extends React.Component {
       'numQuestionsAnswered': 0,
     };
 
-    this.log = new QSLogger(props.answersDelay);
+    this.log = new QSLogger(props.delayStart, props.delayNextQuestion);
     this.results = [];
   }
 
@@ -181,7 +181,8 @@ export class LocalBatchQSContainer extends React.Component {
           captchaSiteKey={""}
           userSignedIn={true}
           captchaVerified={true}
-          answersDelay={this.props.answersDelay}
+          delayStart={this.props.delayStart}
+          delayNextQuestion={this.props.delayNextQuestion}
           displayQuestionInstructions={true}
           numQuestionsAnswered={this.state.numQuestionsAnswered}
           translations={this.props.translations}
