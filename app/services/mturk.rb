@@ -254,6 +254,7 @@ class Mturk
       @client.associate_qualification_with_worker({
         qualification_type_id: qualification_type_id,
         worker_id: worker_id,
+        integer_value: 1,
         send_notification: false
       })
     end
