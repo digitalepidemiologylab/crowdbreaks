@@ -70,6 +70,8 @@ Rails.application.routes.draw do
       end
       resources :mturk_workers, only: [:index] do
         post 'blacklist', on: :member
+        post 'block', on: :member
+        get 'submit_block', on: :member
         post 'manual_review_status', on: :member
         get 'review', on: :member
         post 'review_assignment', on: :collection

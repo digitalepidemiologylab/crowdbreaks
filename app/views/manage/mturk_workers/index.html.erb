@@ -14,6 +14,7 @@
         <h4 class="card-title">Filters</h4>
         <%= toggle_switch(@show_blacklisted, 'Blacklisted', 'mturk-worker-blacklisted-checkbox') %>
         <%= toggle_switch(@show_reviewed, 'Reviewed', 'mturk-worker-reviewed-checkbox') %>
+        <%= toggle_switch(@show_blocked, 'Blocked', 'mturk-worker-blocked-checkbox') %>
       </div>
     </div>
   </div>
@@ -25,6 +26,7 @@
   <div class="col-12">
     <%= form_tag mturk_workers_path, enforce_utf8: false, method: :get, class: 'mb-4' do %>
       <%= hidden_field_tag :show_blacklisted , @show_blacklisted %>
+      <%= hidden_field_tag :show_reviewed , @show_reviewed %>
       <%= text_field_tag :search_worker, params[:search_worker], class: 'form-control', style: 'width:20%;display:inline;' %>
       <%= submit_tag 'Search', class: 'btn btn-primary' %>
     <% end %>

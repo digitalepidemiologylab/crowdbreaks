@@ -1,0 +1,22 @@
+<%= go_back_btn mturk_workers_path %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-8 col-lg-8">
+    <h2 class='mb-4'>Block worker '<%= @mturk_worker.worker_id %>'</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-8 col-lg-8">
+    <%= simple_form_for(:block, url: block_mturk_worker_path(@mturk_worker)) do |f| %>
+      <div class="form-group">
+        <%= f.input :reason, label: 'Reason', as: :text, hint: 'Reason to block the worker.', input_html: {value: @default_reason, rows: 3} %>
+      </div>
+      <%= hidden_field_tag :show_blacklisted, @show_blacklisted %>
+      <%= hidden_field_tag :show_reviewed, @show_reviewed %>
+      <div class="form-actions">
+        <%= f.submit 'Block', class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -4,7 +4,7 @@
   <td><%= mturk_worker_status(mturk_worker.status) %></td>
   <td><%= time_ago(mturk_worker.last_task_created) %></td>
   <td>
-    <% if can? :update, mturk_worker %>
+    <% if can? :update, mturk_worker and not mturk_worker.blocked_status? %>
       <%= link_to blacklist_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Blacklist worker', method: :post do %>
         <%= toggle_switch(mturk_worker.blacklisted_status?, '', '', color: 'red') %>
       <% end %>
@@ -18,10 +18,25 @@
     <% end %>
   </td>
   <td>
-    <% if mturk_worker.results.count > 0 %>
-      <%= link_to review_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Review results' do %>
-        Review&nbsp;<%= fa_icon 'angle-double-right' %>
-    <% end %>
-  <% end %>
+    <div>
+      <% if mturk_worker.results.count > 0 %>
+        <%= link_to review_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Review results' do %>
+          Review&nbsp;<%= fa_icon 'angle-double-right' %>
+        <% end %>
+      <% end %>
+    </div>
+    <div>
+      <% if can? :update, mturk_worker %>
+        <% if mturk_worker.blocked_status? %>
+          <%= link_to block_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Unblock worker', method: :post do %>
+            Unblock&nbsp;<%= fa_icon 'angle-double-right' %>
+          <% end %>
+        <% else %>
+          <%= link_to submit_block_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Block worker' do %>
+            Block&nbsp;<%= fa_icon 'angle-double-right' %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
   </td>
 </tr>
