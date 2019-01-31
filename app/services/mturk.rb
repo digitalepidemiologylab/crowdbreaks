@@ -253,7 +253,8 @@ class Mturk
     handle_error do
       @client.associate_qualification_with_worker({
         qualification_type_id: qualification_type_id,
-        worker_id: worker_id
+        worker_id: worker_id,
+        send_notification: false
       })
     end
   end
