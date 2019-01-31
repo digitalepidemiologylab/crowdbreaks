@@ -78,6 +78,26 @@ class MturkWorker < ApplicationRecord
     mturk.exclude_worker_from_qualification(worker_id, mturk_batch_job.qualification_type_id)
   end
 
+  def block(reason, sandbox: false)
+    mturk = Mturk.new(sandbox: sandbox)
+    resp = mturk.block_worker(worker_id, reason)
+    begin
+      resp.successful?
+    rescue NoMethodError
+      false
+    end
+  end
+
+  def unblock(sandbox: false)
+    mturk = Mturk.new(sandbox: sandbox)
+    resp = mturk.unblock_worker(worker_id)
+    begin
+      resp.successful?
+    rescue NoMethodError
+      false
+    end
+  end
+
 
   private
 

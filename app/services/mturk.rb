@@ -3,6 +3,7 @@ class Mturk
 
   DEFAULT_ACCEPT_MESSAGE = 'Thank you for your work!'
   DEFAULT_REJECT_MESSAGE = 'Your work has been rejected because the majority of questions answered in this task are wrong.'
+  DEFAULT_BLOCK_REASON = 'Poor quality'
 
   def initialize(sandbox: true)
     @client = get_client(sandbox)
@@ -184,6 +185,18 @@ class Mturk
     handle_error(error_return_value: {'assignments': [], num_results: 0}) do
       # By default max_assignments is set to 1, therefore we only expect 1 result
       @client.list_assignments_for_hit(hit_id: hit_id)
+    end
+  end
+
+  def block_worker(worker_id, reason)
+    handle_error do
+      @client.create_worker_block(worker_id: worker_id, reason: reason)
+    end
+  end
+
+  def unblock_worker(worker_id)
+    handle_error do
+      @client.delete_worker_block(worker_id: worker_id)
     end
   end
 

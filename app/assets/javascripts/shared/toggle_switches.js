@@ -13,6 +13,12 @@ function toggleReviewed() {
     toggleParam('show_reviewed', toBeChecked);
   });
 }
+function toggleBlocked() {
+  $('#mturk-worker-blocked-checkbox').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('show_blocked', toBeChecked);
+  });
+}
 // Manage/MturkWorker/review
 function selectWorkerReviewBatchJob() {
   $('#worker-review-mturk_batch_job-filter').change(function() {
@@ -98,6 +104,7 @@ function changeSelectParam(param, value) {
 $(document).on('turbolinks:load', function() {
   toggleBlacklisted();
   toggleReviewed();
+  toggleBlocked();
 
   toggleGroupByQs();
   toggleSandbox();
