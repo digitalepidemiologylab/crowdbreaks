@@ -7,7 +7,7 @@ module Manage
     end
 
     def index
-      @tasks = @mturk_batch_job.tasks.page params[:page]
+      @tasks = @tasks.order(:lifecycle_status, :updated_at).page params[:page]
     end
 
     def show
