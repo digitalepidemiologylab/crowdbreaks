@@ -11,6 +11,7 @@ class Mturk
   def create_hit_type(batch_job)
     # create a qualification type of this batch (used for dynamic exclusions of workers)
     qual_type_id = generate_exclude_worker_qualification(batch_job.name)
+    actions_guarded = batch_job.sandbox? ? 'Accept' : 'DiscoverPreviewAndAccept'
     if qual_type_id.nil?
       ErrorLogger.error "Something went wrong when generating the qualification type. Aborting."
       return
@@ -32,13 +33,23 @@ class Mturk
         }
       ]
     }
-    # system qualfifications (minimum approval rate)
+    # system qualfification: minimum approval rate
     unless batch_job.minimal_approval_rate.nil?
       qual_props = {
         qualification_type_id: '000000000000000000L0',
         comparator: 'GreaterThanOrEqualTo',
         integer_values: [batch_job.minimal_approval_rate],
-        actions_guarded: "Accept"
+        actions_guarded: actions_guarded
+      }
+      props[:qualification_requirements].push(qual_props)
+    end
+    # system qualfification: minimum number of HITS
+    unless batch_job.min_num_hits_approved.nil?
+      qual_props = {
+        qualification_type_id: '00000000000000000040',
+        comparator: 'GreaterThan',
+        integer_values: [batch_job.min_num_hits_approved],
+        actions_guarded: actions_guarded
       }
       props[:qualification_requirements].push(qual_props)
     end

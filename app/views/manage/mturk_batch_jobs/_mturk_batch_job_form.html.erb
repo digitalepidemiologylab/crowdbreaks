@@ -124,6 +124,15 @@
   </div>
 
   <div class="form-group">
+    <%= f.input :min_num_hits_approved,
+      label: 'Minimal number of HITs qualification',
+      as: :integer, 
+      input_html: { value: f.object.min_num_hits_approved },
+      hint: "The minimum number of HITs a worker needs to have in order to qualify for the tasks. Reasonable numbers are >5000. Leave empty for not having this qualification."
+    %>
+  </div>
+
+  <div class="form-group">
     <%= f.input :exclude_blacklisted, input_html: {class: "mr-2", checked: f.object.exclude_blacklisted}, label_html: {class: 'checkbox-inline'} %>
   </div>
 
