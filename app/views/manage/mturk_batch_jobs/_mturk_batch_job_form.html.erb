@@ -133,7 +133,7 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :exclude_blacklisted, input_html: {class: "mr-2", checked: f.object.exclude_blacklisted}, label_html: {class: 'checkbox-inline'} %>
+    <%= f.input :exclude_blacklisted, hint: 'Exclude blacklisted workers. This setting will only work in production and ignored in sandbox.', input_html: {class: "mr-2", checked: f.object.exclude_blacklisted}, label_html: {class: 'checkbox-inline mb-0'} %>
   </div>
 
   <div class="form-group">

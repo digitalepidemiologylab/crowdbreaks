@@ -31,7 +31,7 @@ class SubmitTasksJob < ApplicationJob
     })
 
     # exclude blacklisted workers
-    if mturk_batch_job.exclude_blacklisted?
+    if mturk_batch_job.exclude_blacklisted? and not mturk_batch_job.sandbox?
       Rails.logger.info "Excluding blacklisted workers from qualification"
       sleep 10  # small wait for the qualification type to be created on Amazon properly
       mturk_batch_job.exclude_blacklisted_workers
