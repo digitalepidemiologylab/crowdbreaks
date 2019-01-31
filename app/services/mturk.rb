@@ -234,6 +234,15 @@ class Mturk
     end
   end
 
+  def get_qualification_type(qualification_type_id)
+    handle_error do
+      resp = @client.get_qualification_type({
+        qualification_type_id: qualification_type_id,
+      })
+      resp.qualification_type
+    end
+  end
+
 
   private
 
@@ -253,6 +262,7 @@ class Mturk
     begin
       yield
     rescue StandardError => e
+      ErrorLogger.error(e)
       if error_return_value.is_a?(Hash)
         # convert to Hashie Mash to behave similar to a response object
         return Hashie::Mash.new(error_return_value)
