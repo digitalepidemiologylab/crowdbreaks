@@ -5,7 +5,8 @@ FactoryBot.define do
         {
           'timeInitialized': 10.minutes.ago,
           'userTimeInitialized': 10.minutes.ago,
-          'answerDelay': 2000,
+          'delayStart': 2000,
+          'delayNextQuestion': 0,
           'timeMounted': 9.minutes.ago,
           'totalDurationQuestionSequence': 20,
           'timeQuestionSequenceEnd': 1542657158357,
@@ -19,7 +20,8 @@ FactoryBot.define do
         {
           'timeInitialized': 10.minutes.ago,
           'userTimeInitialized': 10.minutes.ago,
-          'answerDelay': 2000,
+          'delayStart': 2000,
+          'delayNextQuestion': 0,
           'timeMounted': 9.minutes.ago,
           'totalDurationQuestionSequence': 20,
           'timeQuestionSequenceEnd': 1542657158357,
@@ -33,7 +35,8 @@ FactoryBot.define do
         {
           'timeInitialized': 10.minutes.ago,
           'userTimeInitialized': 10.minutes.ago,
-          'answerDelay': 2000,
+          'delayStart': 2000,
+          'delayNextQuestion': 0,
           'timeMounted': 9.minutes.ago,
           'timeMturkSubmit': 1542657160126,
           'totalDurationQuestionSequence': 20,

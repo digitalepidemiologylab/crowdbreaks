@@ -1,6 +1,5 @@
 // React
 import React from 'react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 // Other 
 let humps = require('humps');
@@ -41,7 +40,7 @@ export class QuestionSequence extends React.Component {
   componentDidMount() {
     // Enable Answer delay at this moment in case of showing tweet text
     if (this.state.showTweetText) {
-      this.delayEnableAnswers();
+      this.delayEnableAnswers(this.props.delayStart);
     }
   }
 
@@ -85,6 +84,8 @@ export class QuestionSequence extends React.Component {
       this.props.onQuestionSequenceEnd(time);
     } else {
       this.props.gotoNextQuestion(nextQuestion)
+      this.disableAnswerButtons()
+      this.delayEnableAnswers(this.props.delayNextQuestion)
     }
   }
   
@@ -92,9 +93,13 @@ export class QuestionSequence extends React.Component {
     this.setState({answersDisabled: false});
   }
 
-  delayEnableAnswers() {
+  disableAnswerButtons() {
+    this.setState({answersDisabled: true});
+  }
+
+  delayEnableAnswers(delay) {
     // Make answer buttons clickable after delay
-    setTimeout(() => this.enableAnswerButtons(), this.props.answersDelay);
+    setTimeout(() => this.enableAnswerButtons(), delay);
   }
 
   onTweetLoad() {
@@ -117,7 +122,7 @@ export class QuestionSequence extends React.Component {
     this.setState({
       'tweetIsLoading': false
     });
-    this.delayEnableAnswers();
+    this.delayEnableAnswers(this.props.delayStart);
   }
 
   toggleQuestionInstructions() {

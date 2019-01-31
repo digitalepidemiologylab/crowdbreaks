@@ -46,7 +46,8 @@
         resultsPath: mturk_question_sequence_url,
         finalSubmitPath: final_mturk_question_sequence_url,
         projectId: @project.id,
-        answersDelay: 2000,
+        delayStart: 2000,
+        delayNextQuestion: 2000,
         testMode: true,
         previewMode: @preview_mode,
         sandbox: @sandbox,
@@ -76,7 +77,8 @@
         captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
         enableCaptcha: false,
         userSignedIn: user_signed_in?,
-        answersDelay: 2000,
+        delayStart: 2000,
+        delayNextQuestion: 0,
         testMode: true
       }) %>
   <% end %>

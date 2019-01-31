@@ -26,7 +26,7 @@ export class MturkQSContainer extends React.Component {
       'showErrorNotification': showErrorNotification,
     };
 
-    this.log = new QSLogger(props.answersDelay);
+    this.log = new QSLogger(props.delayStart, props.delayNextQuestion);
     this.results = [];
   }
 
@@ -202,7 +202,8 @@ export class MturkQSContainer extends React.Component {
         gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
         numTransitions={0}
         captchaVerified={true}
-        answersDelay={this.props.answersDelay}
+        delayStart={this.props.delayStart}
+        delayNextQuestion={this.props.delayNextQuestion}
         displayQuestionInstructions={true}
         numQuestionsAnswered={this.state.numQuestionsAnswered}
         translations={this.props.translations}

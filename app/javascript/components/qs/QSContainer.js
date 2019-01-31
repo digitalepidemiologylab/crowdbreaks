@@ -37,7 +37,7 @@ export class QSContainer extends React.Component {
       'numQuestionsAnswered': 0,
     };
 
-    this.log = new QSLogger(props.answersDelay);
+    this.log = new QSLogger(props.delayStart, props.delayNextQuestion);
   }
 
   componentDidMount() {
@@ -102,7 +102,7 @@ export class QSContainer extends React.Component {
         tweetId: this.state.tweetId,
         userId: this.props.userId,
         projectId: this.props.projectId,
-        testMode: this.state.testMode,
+        testMode: this.testMode,
       }
     });
     data['qs']['logs'] = this.log.getLog();
@@ -210,7 +210,8 @@ export class QSContainer extends React.Component {
           captchaSiteKey={this.props.captchaSiteKey}
           userSignedIn={this.props.userSignedIn}
           captchaVerified={this.state.captchaVerified}
-          answersDelay={this.props.answersDelay}
+          delayStart={this.props.delayStart}
+          delayNextQuestion={this.props.delayNextQuestion}
           displayQuestionInstructions={false}
           numQuestionsAnswered={this.state.numQuestionsAnswered}
           translations={this.props.translations}

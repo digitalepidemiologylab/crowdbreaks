@@ -1,9 +1,10 @@
 import moment from 'moment';
 
 export class QSLogger {
-  constructor(answerDelay) {
+  constructor(delayStart = 0, delayNextQuestion = 0) {
     this.timeLastAnswer = null;
-    this.answerDelay = answerDelay;
+    this.delayStart = delayStart;
+    this.delayNextQuestion = delayNextQuestion;
     this.timeMounted = null;
     this.initializeLog();
   }
@@ -45,7 +46,8 @@ export class QSLogger {
       'userTimeInitialized': moment().format(),
       'results': [],
       'resets': [],
-      'answerDelay': this.answerDelay,
+      'delayStart': this.delayStart,
+      'delayNextQuestion': this.delayNextQuestion,
       'timeMounted': this.timeMounted,
     }
   }
