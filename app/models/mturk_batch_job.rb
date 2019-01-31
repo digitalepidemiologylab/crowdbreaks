@@ -79,6 +79,15 @@ class MturkBatchJob < ApplicationRecord
     end
   end
 
+  def get_qualification
+    if qualification_type_id.present?
+      Rails.logger.info "Retrieving qualification type #{qualification_type_id}..."
+      Mturk.new.get_qualification_type(qualification_type_id)
+    else
+      nil
+    end
+  end
+
   def remove_qualification
     if self.qualification_type_id.present?
       Rails.logger.info "Remove qualification type #{self.qualification_type_id}..."

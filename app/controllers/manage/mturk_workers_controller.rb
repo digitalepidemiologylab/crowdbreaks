@@ -5,7 +5,7 @@ module Manage
     def index
       @show_blacklisted = param_is_truthy?(:show_blacklisted)
       @show_reviewed = param_is_truthy?(:show_reviewed)
-      query = @mturk_workers.joins(:tasks).select('MAX(tasks.created_at) as last_task_created', :id, :worker_id, :status, :created_at, :manually_reviewed).group('mturk_workers.id')
+      query = @mturk_workers.joins(:tasks).select('MAX(tasks.updated_at) as last_task_created', :id, :worker_id, :status, :created_at, :manually_reviewed).group('mturk_workers.id')
       if @show_blacklisted
         query = query.blacklisted_status
       end

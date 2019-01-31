@@ -2,7 +2,7 @@ class SubmitTasksJob < ApplicationJob
   queue_as :default
 
   rescue_from(StandardError) do |exception|
-    Rails.logger.error "[#{self.class.name}] #{exception.to_s}"   
+    ErrorLogger.error "[#{self.class.name}] #{exception.to_s}"   
   end
 
   after_enqueue do |job|
@@ -22,7 +22,7 @@ class SubmitTasksJob < ApplicationJob
     # create new HIT type for this batch
     hittype_id, qualification_type_id = mturk.create_hit_type(mturk_batch_job)
     if hittype_id.nil? or qualification_type_id.nil?
-      Rails.logger.error "Something went wrong when creating HIT type. Aborting" and return
+      ErrorLogger.error "Something went wrong when creating HIT type. Aborting" and return
     end
     Rails.logger.info "HIT type: #{hittype_id}, qualification type: #{qualification_type_id}"
     mturk_batch_job.update_attributes!({
@@ -32,6 +32,8 @@ class SubmitTasksJob < ApplicationJob
 
     # exclude blacklisted workers
     if mturk_batch_job.exclude_blacklisted?
+      Rails.logger.info "Excluding blacklisted workers from qualification"
+      sleep 10  # small wait for the qualification type to be created on Amazon properly
       mturk_batch_job.exclude_blacklisted_workers
     end
 
