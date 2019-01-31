@@ -44,41 +44,43 @@
   </td>
   <td>
     <div class="icon-spacing">
-      <% if can? :destroy, mturk_batch_job %>
-        <%= link_to fa_icon('trash'),
-          mturk_batch_job_path(mturk_batch_job.id, destroy_results: false),
-          method: :delete,
-          title: "Delete batch, without results",
-          data: {confirm: "Delete batch, tasks, but without associated results?"} %>
-        <% if mturk_batch_job.results.count > 0 %>
-          <%= link_to fa_icon('times-circle'),
-            mturk_batch_job_path(mturk_batch_job.id, destroy_results: true),
+      <% unless mturk_batch_job.marked_for_deletion? %>
+        <% if can? :destroy, mturk_batch_job %>
+          <%= link_to fa_icon('trash'),
+            mturk_batch_job_path(mturk_batch_job.id, destroy_results: false),
             method: :delete,
-            style: "color:red;",
-            title: "Delete batch, with results",
-            data: {confirm: "Delete batch, tasks, and all associated results?"} %>
-        <% end %>
-      <% end %>
-      <% if ['unsubmitted', 'empty'].include?(mturk_batch_job.status) and can? :update, mturk_batch_job %>
-        <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id), title: 'Edit' %>
-      <% end %>
-      <% if can? :create, MturkBatchJob  %>
-        <%= link_to fa_icon('clone'), clone_mturk_batch_jobs_path(clone_id: mturk_batch_job.id), title: 'Clone and create new batch job' %>
-      <% end %>
-      <% if can? :read, mturk_batch_job %>
-        <% if mturk_batch_job.results.count > 0 %>
-          <%= tag.span id: "mturk-batch-job-#{mturk_batch_job.id}-spinner", class: 'mr-4', style: 'display:none;' do %>
-            <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
+            title: "Delete batch, without results",
+            data: {confirm: "Delete batch, tasks, but without associated results?"} %>
+          <% if mturk_batch_job.results.count > 0 %>
+            <%= link_to fa_icon('times-circle'),
+              mturk_batch_job_path(mturk_batch_job.id, destroy_results: true),
+              method: :delete,
+              style: "color:red;",
+              title: "Delete batch, with results",
+              data: {confirm: "Delete batch, tasks, and all associated results?"} %>
           <% end %>
-          <%= tag.span id: "mturk-batch-job-#{mturk_batch_job.id}-icon" do %>
-            <% if mturk_batch_job.csv_file_is_up_to_date('results') %>
-              <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
-            <% else %>
-              <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job), title: 'Download CSV', remote: true %>
+        <% end %>
+        <% if ['unsubmitted', 'empty'].include?(mturk_batch_job.status) and can? :update, mturk_batch_job %>
+          <%= link_to fa_icon('pencil'), edit_mturk_batch_job_path(mturk_batch_job.id), title: 'Edit' %>
+        <% end %>
+        <% if can? :create, MturkBatchJob  %>
+          <%= link_to fa_icon('clone'), clone_mturk_batch_jobs_path(clone_id: mturk_batch_job.id), title: 'Clone and create new batch job' %>
+        <% end %>
+        <% if can? :read, mturk_batch_job %>
+          <% if mturk_batch_job.results.count > 0 %>
+            <%= tag.span id: "mturk-batch-job-#{mturk_batch_job.id}-spinner", class: 'mr-4', style: 'display:none;' do %>
+              <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
+            <% end %>
+            <%= tag.span id: "mturk-batch-job-#{mturk_batch_job.id}-icon" do %>
+              <% if mturk_batch_job.csv_file_is_up_to_date('results') %>
+                <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
+              <% else %>
+                <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job), title: 'Download CSV', remote: true %>
+              <% end %>
             <% end %>
           <% end %>
+          <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job), title: 'Expand' %>
         <% end %>
-        <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job), title: 'Expand' %>
       <% end %>
     </div>
   </td>
