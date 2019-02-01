@@ -31,7 +31,7 @@ RSpec.describe SubmitTasksJob, type: :job do
       SubmitTasksJob.perform_now(mturk_batch_job.id)
       mturk_batch_job.reload
       assert_requested :post, /mturk-requester.us-east-1.amazonaws.com/,
-        body: {QualificationTypeId: mturk_batch_job.qualification_type_id, WorkerId: mturk_worker.worker_id, SendNotification: false}.to_json
+        body: {QualificationTypeId: mturk_batch_job.qualification_type_id, WorkerId: mturk_worker.worker_id, IntegerValue: 1, SendNotification: false}.to_json
     end
   end
 end
