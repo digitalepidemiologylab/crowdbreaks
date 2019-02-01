@@ -93,9 +93,13 @@ class Mturk::QuestionSequencesController < ApplicationController
     worker = MturkWorker.find_or_create_by(worker_id: worker_id)
     # Lock Task table
     lock_result = Task.with_advisory_lock_result('mturk-task') do
-      task.reload
-      # find a new tweet for worker and assign it through the task
-      worker.assign_task(task)
+      MturkTweet.with_advisory_lock('mturk-tweet') do
+        MturkWorker.with_advisory_lock('mturk-worker') do
+          task.reload
+          # find a new tweet for worker and assign it through the task
+          worker.assign_task(task)
+        end
+      end
     end
     if lock_result.lock_was_acquired?
       mturk_tweet, notification = lock_result.result
