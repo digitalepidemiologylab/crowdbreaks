@@ -118,11 +118,9 @@ class Mturk
       message = DEFAULT_ACCEPT_MESSAGE
     end
     handle_error do
-      resp = @client.approve_assignment(assignment_id: assignment_id, requester_feedback: message)
-      if resp.successful?
-        # Put HIT into reviewing state, so it doesn't show up anymore
-        update_hit_review_status(assignment.hit.hit_id)
-      end
+      @client.approve_assignment(assignment_id: assignment_id, requester_feedback: message)
+      # Put HIT into reviewing state, so it doesn't show up anymore
+      update_hit_review_status(assignment.hit.hit_id)
     end
   end
 
@@ -149,9 +147,7 @@ class Mturk
       return
     end
     handle_error do
-      resp = @client.reject_assignment(assignment_id: assignment_id, requester_feedback: message)
-    end
-    if resp.successful?
+      @client.reject_assignment(assignment_id: assignment_id, requester_feedback: message)
       update_hit_review_status(assignment.hit.hit_id)
     end
   end
