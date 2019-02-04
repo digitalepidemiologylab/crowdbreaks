@@ -72,6 +72,31 @@ function selectResTypeResults() {
     changeSelectParam('res_type_filter', res_type)
   })
 }
+// Manage/MturkBatchJob/Task/index
+function toggleTaskUnsubmited() {
+  $('.tasks-unsubmitted').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('show_unsubmitted', toBeChecked);
+  });
+}
+function toggleTaskSubmited() {
+  $('.tasks-submitted').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('show_submitted', toBeChecked);
+  });
+}
+function toggleTaskAssigned() {
+  $('.tasks-assigned').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('show_assigned', toBeChecked);
+  });
+}
+function toggleTaskCompleted() {
+  $('.tasks-completed').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('show_completed', toBeChecked);
+  });
+}
 
 
 // Select all checkbox (looks for checkboxes with class multi-checkable)
@@ -111,6 +136,11 @@ $(document).on('turbolinks:load', function() {
   toggleFiltered();
   toggleReviewable();
   toggleShowReviewed();
+
+  toggleTaskUnsubmited();
+  toggleTaskSubmited();
+  toggleTaskAssigned();
+  toggleTaskCompleted();
 
   selectProjectResults();
   selectResTypeResults();
