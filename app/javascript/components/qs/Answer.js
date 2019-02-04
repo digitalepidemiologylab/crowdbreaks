@@ -5,7 +5,7 @@ export const Answer = (props) => {
   let buttonStyle = {};
   let btnClassName = 'btn btn-lg';
   const predefinedBtnTypes = ['btn-primary', 'btn-secondary', 'btn-positive', 'btn-negative'];
-  if (predefinedBtnTypes.includes(props.color)) {
+  if (predefinedBtnTypes.indexOf(props.color) >= 0) {  // IE 11 compatibility 
     btnClassName += ' '+props.color;
   } else {
     buttonStyle.backgroundColor = props.color;

@@ -26,12 +26,13 @@ class MturkWorker < ApplicationRecord
     end
 
     if task.assigned?
-      # Task was previously assigned to someone else (who didn't complete task). Unlink previous worker
       Rails.logger.info "Task has been previously assigned to someone else."
       if task.results.count > 0
         ErrorLogger.error "Task #{task.id} already has associated results and can not be given to #{worker_id}. The previous results were done by worker #{task.mturk_worker.worker_id}."
+        task.completed!
         return nil, mturk_notification.error
       end
+      # Task was previously assigned to someone else (who didn't complete task). Unlink previous worker
       task.unassign
     end
 
