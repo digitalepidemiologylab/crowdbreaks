@@ -38,7 +38,7 @@ class Task < ApplicationRecord
         mturk_tweet_id: MturkTweet.find_by(tweet_id: tasks_params[:tweet_id]).id,
       })
     end
-    update_attributes({
+    self.update_attributes!({
       time_completed: Time.current,
       lifecycle_status: :completed
     })

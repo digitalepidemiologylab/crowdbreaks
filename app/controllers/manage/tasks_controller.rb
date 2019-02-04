@@ -7,7 +7,7 @@ module Manage
     end
 
     def index
-      @tasks = @tasks.order(:lifecycle_status, :updated_at).page params[:page]
+      @tasks = @tasks.order({lifecycle_status: :asc, updated_at: :desc}).page params[:page]
     end
 
     def show
