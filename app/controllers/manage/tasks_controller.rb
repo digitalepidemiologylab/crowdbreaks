@@ -7,7 +7,16 @@ module Manage
     end
 
     def index
-      @tasks = @tasks.order({lifecycle_status: :asc, updated_at: :desc}).page params[:page]
+      @show_unsubmitted = param_is_truthy?(:show_unsubmitted, default: true)
+      @show_submitted = param_is_truthy?(:show_submitted, default: true)
+      @show_assigned = param_is_truthy?(:show_assigned, default: true)
+      @show_completed = param_is_truthy?(:show_completed, default: true)
+      statuses = []
+      statuses.push(:unsubmitted) if @show_unsubmitted
+      statuses.push(:submitted) if @show_submitted
+      statuses.push(:assigned) if @show_assigned
+      statuses.push(:completed) if @show_completed
+      @tasks = @tasks.where(lifecycle_status: statuses).order({lifecycle_status: :asc, updated_at: :desc}).page params[:page]
     end
 
     def show

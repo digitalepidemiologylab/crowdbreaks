@@ -21,6 +21,15 @@
     </div>
   </div>
   <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Filters</h4>
+        <%= toggle_switch(@show_unsubmitted, 'Unsubmitted', 'tasks-unsubmitted') %>
+        <%= toggle_switch(@show_submitted, 'Submitted', 'tasks-submitted') %>
+        <%= toggle_switch(@show_assigned, 'Assigned', 'tasks-assigned') %>
+        <%= toggle_switch(@show_completed, 'Completed', 'tasks-completed') %>
+      </div>
+    </div>
   </div>
 </div>
 
