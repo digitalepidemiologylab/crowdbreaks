@@ -34,6 +34,7 @@ class MturkWorker < ApplicationRecord
       end
       # Task was previously assigned to someone else (who didn't complete task). Unlink previous worker
       task.unassign
+      task.reload
     end
 
     # retrieve potential new tweet for worker
@@ -69,7 +70,7 @@ class MturkWorker < ApplicationRecord
 
     # assign the task
     Rails.logger.info "Found valid tweet to be #{mturk_tweet.tweet_id}"
-    task.update_attributes({
+    task.update_attributes!({
       mturk_worker_id: id,
       mturk_tweet_id: mturk_tweet.id
     })
