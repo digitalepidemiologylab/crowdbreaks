@@ -30,30 +30,32 @@ class Mturk::QuestionSequencesController < ApplicationController
     # Lock task table during creation of results and update of task
     Task.with_advisory_lock('mturk-task', timeout_seconds: 5) do
       MturkTweet.with_advisory_lock('mturk-tweet', timeout_seconds: 5) do
-        MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 5) do
-          # fetch associated task
-          task = get_task(tasks_params[:hit_id])
-          if task.nil?
-            ErrorLogger.error("Task for #{tasks_params[:hit_id]} could not be found")
-            head :bad_request and return
-          end
-          results = tasks_params.fetch(:results, []) 
-          logs = tasks_params.fetch(:logs, {}) 
-          # return if same HIT was already submitted before
-          if task.results.count > 0
-            ErrorLogger.error("Worker #{tasks_params[:worker_id]} tried to submit work for task #{task.id}. " \
-                              "For this task worker #{task.mturk_worker&.worker_id} has already submitted work.")
-            head :bad_request and return
-          end
-          if results.present?
-            if not create_results_for_task(results, task.id, logs)
+        Result.with_advisory_lock('mturk-result', timeout_seconds: 5) do
+          MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 5) do
+            # fetch associated task
+            task = get_task(tasks_params[:hit_id])
+            if task.nil?
+              ErrorLogger.error("Task for #{tasks_params[:hit_id]} could not be found")
               head :bad_request and return
             end
-          else
-            ErrorLogger.error("Submitted work for task #{task.id} contains no results")
-            head :bad_request and return
+            results = tasks_params.fetch(:results, []) 
+            logs = tasks_params.fetch(:logs, {}) 
+            # return if same HIT was already submitted before
+            if task.results.count > 0
+              ErrorLogger.error("Worker #{tasks_params[:worker_id]} tried to submit work for task #{task.id}. " \
+                                "For this task worker #{task.mturk_worker&.worker_id} has already submitted work.")
+              head :bad_request and return
+            end
+            if results.present?
+              if not create_results_for_task(results, task.id, logs)
+                head :bad_request and return
+              end
+            else
+              ErrorLogger.error("Submitted work for task #{task.id} contains no results")
+              head :bad_request and return
+            end
+            task.update_on_final(tasks_params)
           end
-          task.update_on_final(tasks_params)
         end
       end
     end
@@ -98,10 +100,13 @@ class Mturk::QuestionSequencesController < ApplicationController
     # Lock Task table
     lock_result = Task.with_advisory_lock_result('mturk-task', timeout_seconds: 5) do
       MturkTweet.with_advisory_lock('mturk-tweet', timeout_seconds: 5) do
-        MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 5) do
-          task.reload
-          # find a new tweet for worker and assign it through the task
-          worker.assign_task(task)
+        Result.with_advisory_lock('mturk-result', timeout_seconds: 5) do
+          MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 5) do
+            task.reload
+            worker.reload
+            # find a new tweet for worker and assign it through the task
+            worker.assign_task(task)
+          end
         end
       end
     end

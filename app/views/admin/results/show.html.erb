@@ -50,7 +50,7 @@
   <div class="row justify-content-center mb-5">
       <% @qs_results.each_with_index do |result, ix| %>
         <div class="col-xl-10 mb-4">
-          <% if @log&.results&.length.to_i > 0 and not @log&.results[ix].timeSinceLastAnswer.nil? %>
+          <% if @log&.results&.length.to_i > 0 and not @log&.results[ix]&.timeSinceLastAnswer.nil? %>
             <h4>Question <%= ix + 1 %> <%= "(#{@log.results[ix].timeSinceLastAnswer.to_i/1000.0} s)" %></h4>
           <% else %>
             <h4>Question <%= ix + 1 %></h4>
