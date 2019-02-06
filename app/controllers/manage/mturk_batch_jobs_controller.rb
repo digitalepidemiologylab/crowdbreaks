@@ -75,7 +75,11 @@ module Manage
 
     def clone
       mturk_batch_job_clone = MturkBatchJob.find(params[:clone_id])
-      cloned_attributes = mturk_batch_job_clone.attributes.select{ |a| ['name', 'project_id', 'description', 'title', 'keywords', 'reward', 'lifetime_in_seconds', 'auto_approval_delay_in_seconds', 'assignment_duration_in_seconds', 'instructions', 'number_of_assignments', 'minimal_approval_rate', 'max_tasks_per_worker', 'check_availability'].include?(a)}
+      cloned_attributes = mturk_batch_job_clone.attributes.select{ |a| 
+        ['name', 'project_id', 'description', 'title', 'keywords', 'reward', 'lifetime_in_seconds', 'auto_approval_delay_in_seconds',
+         'assignment_duration_in_seconds', 'instructions', 'number_of_assignments', 'minimal_approval_rate', 'max_tasks_per_worker',
+         'exclude_blacklisted', 'check_availability', 'min_num_hits_approved', 'delay_start', 'delay_next_question', 'sandbox'].include?(a)
+      }
       @mturk_batch_job = MturkBatchJob.new(cloned_attributes)
       @mturk_batch_job.cloned_name = @mturk_batch_job.name
       @mturk_batch_job.name = @mturk_batch_job.name + '-copy'
