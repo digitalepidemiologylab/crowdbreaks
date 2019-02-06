@@ -28,35 +28,32 @@ class Mturk::QuestionSequencesController < ApplicationController
 
   def final
     # Lock task table during creation of results and update of task
-    Task.with_advisory_lock('mturk-task', timeout_seconds: 10, transaction: true) do
-      MturkTweet.with_advisory_lock('mturk-tweet', timeout_seconds: 10, transaction: true) do
-        Result.with_advisory_lock('mturk-result', timeout_seconds: 10, transaction: true) do
-          MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 10, transaction: true) do
-            # fetch associated task
-            task = get_task(tasks_params[:hit_id])
-            if task.nil?
-              ErrorLogger.error("Task for #{tasks_params[:hit_id]} could not be found")
-              head :bad_request and return
-            end
-            results = tasks_params.fetch(:results, []) 
-            logs = tasks_params.fetch(:logs, {}) 
-            # return if same HIT was already submitted before
-            if task.results.count > 0
-              Rails.logger.error("Worker #{tasks_params[:worker_id]} tried to submit work for task #{task.id}. " \
-                                "For this task worker #{task.mturk_worker&.worker_id} has already submitted work.")
-              head :bad_request and return
-            end
-            if results.present?
-              if not create_results_for_task(results, task.id, logs)
-                head :bad_request and return
-              end
-            else
-              ErrorLogger.error("Submitted work for task #{task.id} contains no results")
-              head :bad_request and return
-            end
-            task.update_on_final(tasks_params)
-          end
+    lock_tables do
+      # fetch associated task
+      task = get_task(tasks_params[:hit_id])
+      if task.nil?
+        ErrorLogger.error("Task for #{tasks_params[:hit_id]} could not be found")
+        head :bad_request and return
+      end
+      results = tasks_params.fetch(:results, []) 
+      logs = tasks_params.fetch(:logs, {}) 
+      # return if same HIT was already submitted before
+      if task.results.count > 0
+        Rails.logger.error("Worker #{tasks_params[:worker_id]} tried to submit work for task #{task.id}. " \
+                           "For this task worker #{task.mturk_worker&.worker_id} has already submitted work.")
+        head :bad_request and return
+      end
+      if results.present?
+        begin
+          create_results_for_task(results, task, logs)
+        rescue
+          head :bad_request and return
+        else
+          task.update_on_final(tasks_params)
         end
+      else
+        ErrorLogger.error("Submitted work for task #{task.id} contains no results")
+        head :bad_request and return
       end
     end
     head :ok
@@ -65,11 +62,9 @@ class Mturk::QuestionSequencesController < ApplicationController
   def create
     # Store result
     result = Result.new(results_params)
-
     if result.task_id.nil?
       ErrorLogger.error("Task for #{params[:hit_id]} could not be found")
     end
-
     if result.save
       head :ok, content_type: "text/html"
     else
@@ -80,16 +75,35 @@ class Mturk::QuestionSequencesController < ApplicationController
 
   private
 
-  def create_results_for_task(results, task_id, logs)
-    qs_log = QuestionSequenceLog.create(log: logs)
-    results.each do |r|
-      results_params = r[:result].merge({task_id: task_id, res_type: :mturk, question_sequence_log_id: qs_log.id})
-      result = Result.new(results_params)
-      if not result.save
-        return false
+  def create_results_for_task(results, task, logs)
+    ActiveRecord::Base.transaction do  
+      results = sanitize_results(results, task)
+      qs_log = QuestionSequenceLog.create(log: logs)
+      additional_params = {task_id: task.id, res_type: :mturk, question_sequence_log_id: qs_log.id}
+      results.each do |r|
+        results_params = r[:result].merge(additional_params)
+        Result.create(results_params)
       end
     end
-    true
+  end
+
+
+  def sanitize_results(results, task)
+    sanitized_results = []
+    question_ids = []
+    results.each do |result|
+      q_id = result[:result][:quetion_id]
+      t_id = result[:result][:tweet_id]
+      # make sure questions are unique
+      if not question_ids.include?(q_id)
+        question_ids.push(q_id)
+      else
+        ErrorLogger.error "Results committed for task #{task.id} contain the same question multiple times."
+        next
+      end
+      sanitized_results.push(result)
+    end
+    sanitized_results
   end
 
   def get_tweet_for_worker(worker_id, task)
@@ -98,17 +112,11 @@ class Mturk::QuestionSequencesController < ApplicationController
     Rails.logger.debug "Assigning task for worker #{worker_id}..."
     worker = MturkWorker.find_or_create_by(worker_id: worker_id)
     # Lock Task table
-    lock_result = Task.with_advisory_lock_result('mturk-task', timeout_seconds: 10, transaction: true) do
-      MturkTweet.with_advisory_lock('mturk-tweet', timeout_seconds: 10, transaction: true) do
-        Result.with_advisory_lock('mturk-result', timeout_seconds: 10, transaction: true) do
-          MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 10, transaction: true) do
-            task.reload
-            worker.reload
-            # find a new tweet for worker and assign it through the task
-            worker.assign_task(task)
-          end
-        end
-      end
+    lock_result = lock_tables do
+      task.reload
+      worker.reload
+      # find a new tweet for worker and assign it through the task
+      worker.assign_task(task)
     end
     if lock_result.lock_was_acquired?
       mturk_tweet, notification = lock_result.result
@@ -116,6 +124,19 @@ class Mturk::QuestionSequencesController < ApplicationController
     else
       ErrorLogger.error "Something went wrong when trying to acquire lock for task #{task.id}"
       return "", "", MturkNotification.new.error
+    end
+  end
+
+  def lock_tables(options: {timeout_seconds: 10, transaction: true})
+    # slightly paranoid locking of all tables involved
+    Task.with_advisory_lock_result('mturk-task', options) do
+      MturkTweet.with_advisory_lock('mturk-tweet', options) do
+        Result.with_advisory_lock('mturk-result', options) do
+          MturkWorker.with_advisory_lock('mturk-worker', options) do
+            yield
+          end
+        end
+      end
     end
   end
 
