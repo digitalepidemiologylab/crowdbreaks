@@ -28,10 +28,10 @@ class Mturk::QuestionSequencesController < ApplicationController
 
   def final
     # Lock task table during creation of results and update of task
-    Task.with_advisory_lock('mturk-task', timeout_seconds: 5) do
-      MturkTweet.with_advisory_lock('mturk-tweet', timeout_seconds: 5) do
-        Result.with_advisory_lock('mturk-result', timeout_seconds: 5) do
-          MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 5) do
+    Task.with_advisory_lock('mturk-task', timeout_seconds: 10, transaction: true) do
+      MturkTweet.with_advisory_lock('mturk-tweet', timeout_seconds: 10, transaction: true) do
+        Result.with_advisory_lock('mturk-result', timeout_seconds: 10, transaction: true) do
+          MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 10, transaction: true) do
             # fetch associated task
             task = get_task(tasks_params[:hit_id])
             if task.nil?
@@ -98,10 +98,10 @@ class Mturk::QuestionSequencesController < ApplicationController
     Rails.logger.debug "Assigning task for worker #{worker_id}..."
     worker = MturkWorker.find_or_create_by(worker_id: worker_id)
     # Lock Task table
-    lock_result = Task.with_advisory_lock_result('mturk-task', timeout_seconds: 5) do
-      MturkTweet.with_advisory_lock('mturk-tweet', timeout_seconds: 5) do
-        Result.with_advisory_lock('mturk-result', timeout_seconds: 5) do
-          MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 5) do
+    lock_result = Task.with_advisory_lock_result('mturk-task', timeout_seconds: 10, transaction: true) do
+      MturkTweet.with_advisory_lock('mturk-tweet', timeout_seconds: 10, transaction: true) do
+        Result.with_advisory_lock('mturk-result', timeout_seconds: 10, transaction: true) do
+          MturkWorker.with_advisory_lock('mturk-worker', timeout_seconds: 10, transaction: true) do
             task.reload
             worker.reload
             # find a new tweet for worker and assign it through the task
