@@ -2,6 +2,7 @@ require 'httparty'
 
 class TweetValidation
   include HTTParty
+  CACHE_KEY = "twitter_too_many_requests"
 
   # Two main ways to check presence of a tweet
   # 1) Use Twitter API to check tweet. Note: This is under rate limits.
@@ -18,9 +19,14 @@ class TweetValidation
   def tweet_is_valid?(tweet_id)
     return false if tweet_id.nil?
     begin
-      Crowdbreaks::TwitterClient.status(tweet_id)
+      if Rails.cache.exist?(CACHE_KEY)
+        return tweet_is_valid_front_end?(tweet_id)
+      else
+        Crowdbreaks::TwitterClient.status(tweet_id)
+      end
     rescue Twitter::Error::TooManyRequests => e
       ErrorLogger.error "Too many requests on Twitter API"
+      Rails.cache.write(CACHE_KEY, 1, expires_in: 1.hour)
       return tweet_is_valid_front_end?(tweet_id)
     rescue Twitter::Error::ClientError
       # Tweet is not available anymore
