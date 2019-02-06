@@ -42,7 +42,7 @@ class Mturk::QuestionSequencesController < ApplicationController
             logs = tasks_params.fetch(:logs, {}) 
             # return if same HIT was already submitted before
             if task.results.count > 0
-              ErrorLogger.error("Worker #{tasks_params[:worker_id]} tried to submit work for task #{task.id}. " \
+              Rails.logger.error("Worker #{tasks_params[:worker_id]} tried to submit work for task #{task.id}. " \
                                 "For this task worker #{task.mturk_worker&.worker_id} has already submitted work.")
               head :bad_request and return
             end
