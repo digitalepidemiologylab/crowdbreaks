@@ -35,6 +35,19 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12">
+    <%= form_tag mturk_batch_job_tasks_path(@mturk_batch_job), enforce_utf8: false, method: :get, class: 'mb-4' do %>
+      <%= hidden_field_tag :show_unsubmitted , @show_unsubmitted %>
+      <%= hidden_field_tag :show_submitted , @show_submitted %>
+      <%= hidden_field_tag :show_assigned , @show_assigned %>
+      <%= hidden_field_tag :show_completed , @show_completed %>
+      <%= text_field_tag :search_task, params[:search_task], class: 'form-control', style: 'width:20%;display:inline;' %>
+      <%= submit_tag 'Search task Id', class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
     <%= paginate @tasks %>
   </div>
 </div>

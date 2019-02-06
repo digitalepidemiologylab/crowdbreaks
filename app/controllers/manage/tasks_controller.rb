@@ -11,12 +11,16 @@ module Manage
       @show_submitted = param_is_truthy?(:show_submitted, default: true)
       @show_assigned = param_is_truthy?(:show_assigned, default: true)
       @show_completed = param_is_truthy?(:show_completed, default: true)
-      statuses = []
-      statuses.push(:unsubmitted) if @show_unsubmitted
-      statuses.push(:submitted) if @show_submitted
-      statuses.push(:assigned) if @show_assigned
-      statuses.push(:completed) if @show_completed
-      @tasks = @tasks.where(lifecycle_status: statuses).order({lifecycle_status: :asc, updated_at: :desc}).page params[:page]
+      if params[:search_task].present?
+        @tasks = @tasks.where(id: params[:search_task]).page params[:page]
+      else
+        statuses = []
+        statuses.push(:unsubmitted) if @show_unsubmitted
+        statuses.push(:submitted) if @show_submitted
+        statuses.push(:assigned) if @show_assigned
+        statuses.push(:completed) if @show_completed
+        @tasks = @tasks.where(lifecycle_status: statuses).order({lifecycle_status: :asc, updated_at: :desc}).page params[:page]
+      end
     end
 
     def show
