@@ -27,13 +27,13 @@ class Task < ApplicationRecord
 
   def update_on_final(tasks_params)
     if mturk_worker.worker_id != tasks_params[:worker_id]
-      ErrorLogger.error("Task for #{tasks_params[:hit_id]} was assigned to worker #{mturk_worker.worker_id} and is now re-assigned to worker #{tasks_params[:worker_id]}.")
+      ErrorLogger.error("Task #{id} for #{tasks_params[:hit_id]} was assigned to worker #{mturk_worker.worker_id} and is now re-assigned to worker #{tasks_params[:worker_id]}.")
       self.update_attributes({
         mturk_worker_id: MturkWorker.find_or_create_by(worker_id: tasks_params[:worker_id]).id
       })
     end
     if mturk_tweet.tweet_id.to_s != tasks_params[:tweet_id]
-      ErrorLogger.error("Task for #{tasks_params[:hit_id]} was for tweet #{mturk_tweet.tweet_id} and is now re-assigned to tweet #{tasks_params[:tweet_id]}.")
+      ErrorLogger.error("Task #{id} done by worker #{tasks_params[:worker_id]} was for tweet #{mturk_tweet.tweet_id} and is now re-assigned to tweet #{tasks_params[:tweet_id]}.")
       self.update_attributes({
         mturk_tweet_id: MturkTweet.find_by(tweet_id: tasks_params[:tweet_id]).id,
       })
