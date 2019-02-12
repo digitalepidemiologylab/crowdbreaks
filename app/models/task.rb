@@ -34,7 +34,7 @@ class Task < ApplicationRecord
     end
     if mturk_tweet.tweet_id.to_s != tasks_params[:tweet_id]
       new_hit_id = Task.find_by(hit_id: tasks_params[:hit_id])&.hit_id
-      ErrorLogger.error("Task #{id} done by worker #{tasks_params[:worker_id]} was for tweet #{mturk_tweet.tweet_id} and is now re-assigned to tweet #{tasks_params[:tweet_id]}. HIT id: In params: #{tasks_params[:hit_id]} in Task: #{hit_id}, newly loaded: #{new_hit_id}, Batch: #{task.mturk_batch_job.name}")
+      ErrorLogger.error("Task #{id} done by worker #{tasks_params[:worker_id]} was for tweet #{mturk_tweet.tweet_id} and is now re-assigned to tweet #{tasks_params[:tweet_id]}. HIT id: In params: #{tasks_params[:hit_id]} in Task: #{hit_id}, newly loaded: #{new_hit_id}, Batch: #{mturk_batch_job.name}")
       self.update_attributes!({
         mturk_tweet_id: MturkTweet.find_by(tweet_id: tasks_params[:tweet_id]).id,
       })
