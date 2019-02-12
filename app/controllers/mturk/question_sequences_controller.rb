@@ -98,6 +98,7 @@ class Mturk::QuestionSequencesController < ApplicationController
         t_id_previous = t_id
       else
         if t_id_previous != t_id
+          ErrorLogger.error "Result validation failed. Tweet IDs are not consistent within results."
           raise "Results of task #{task.id} contain different tweet IDs (#{t_id_previous} vs. #{t_id})"
         end
       end
@@ -105,7 +106,14 @@ class Mturk::QuestionSequencesController < ApplicationController
       if not question_ids.include?(q_id)
         question_ids.push(q_id)
       else
+        ErrorLogger.error "Result validation failed (question IDs are not unique)."
         raise "Results committed for task #{task.id} contain the same question multiple times."
+      end
+    end
+    if not t_id_previous.nil?
+      if t_id_previous != tasks_params[:tweet_id]
+        ErrorLogger.error "Result validation failed. Tweet IDs are not consistent."
+        raise "Result validation failed. Task #{task.id} contains different tweet IDs."
       end
     end
   end
