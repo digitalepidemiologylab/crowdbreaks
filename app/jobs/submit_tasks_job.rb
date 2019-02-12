@@ -50,7 +50,7 @@ class SubmitTasksJob < ApplicationJob
       end
       # create hit given that HIT type
       hit = mturk.create_hit_with_hit_type(t.id, hittype_id, mturk_batch_job)
-      t.update_attributes({
+      t.update_attributes!({
         hit_id: hit.hit_id
       })
       t.update_after_hit_submit(hit.creation_time)
