@@ -77,7 +77,7 @@ class Mturk::QuestionSequencesController < ApplicationController
 
   def create_results_for_task(results, task, logs)
     ActiveRecord::Base.transaction do  
-      results = sanitize_results(results, task)
+      validate_results(results, task)
       qs_log = QuestionSequenceLog.create(log: logs)
       additional_params = {task_id: task.id, res_type: :mturk, question_sequence_log_id: qs_log.id}
       results.each do |r|
@@ -88,22 +88,26 @@ class Mturk::QuestionSequencesController < ApplicationController
   end
 
 
-  def sanitize_results(results, task)
-    sanitized_results = []
+  def validate_results(results, task)
     question_ids = []
+    t_id_previous = nil
     results.each do |result|
-      q_id = result[:result][:quetion_id]
+      q_id = result[:result][:question_id]
       t_id = result[:result][:tweet_id]
+      if t_id_previous.nil?
+        t_id_previous = t_id
+      else
+        if t_id_previous != t_id
+          raise "Results of task #{task.id} contain different tweet IDs (#{t_id_previous} vs. #{t_id})"
+        end
+      end
       # make sure questions are unique
       if not question_ids.include?(q_id)
         question_ids.push(q_id)
       else
-        ErrorLogger.error "Results committed for task #{task.id} contain the same question multiple times."
-        next
+        raise "Results committed for task #{task.id} contain the same question multiple times."
       end
-      sanitized_results.push(result)
     end
-    sanitized_results
   end
 
   def get_tweet_for_worker(worker_id, task)

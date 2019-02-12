@@ -346,11 +346,13 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           tweet_id: mturk_tweet3.tweet_id,
           logs: qs_log_mturk.log,
           results: [
-            result: {
-              answer_id: answer1.id,
-              question_id: question.id,
-              tweet_id: mturk_tweet3.tweet_id,
-              project_id: project.id
+            {
+              result: {
+                answer_id: answer1.id,
+                question_id: question.id,
+                tweet_id: mturk_tweet3.tweet_id,
+                project_id: project.id
+              }
             }
           ]
         }
@@ -387,11 +389,13 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           tweet_id: task.mturk_tweet.tweet_id,
           logs: qs_log_mturk.log,
           results: [
-            result: {
-              answer_id: answer1.id,
-              question_id: question.id,
-              tweet_id: task.mturk_tweet.tweet_id,
-              project_id: project.id
+            {
+              result: {
+                answer_id: answer1.id,
+                question_id: question.id,
+                tweet_id: task.mturk_tweet.tweet_id,
+                project_id: project.id
+              }
             }
           ]
         }
@@ -424,11 +428,13 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           tweet_id: task.mturk_tweet.tweet_id,
           logs: qs_log_mturk.log,
           results: [
-            result: {
-              answer_id: answer1.id,
-              question_id: question.id,
-              tweet_id: task.mturk_tweet.tweet_id,
-              project_id: project.id
+            {
+              result: {
+                answer_id: answer1.id,
+                question_id: question.id,
+                tweet_id: task.mturk_tweet.tweet_id,
+                project_id: project.id
+              }
             }
           ]
         }
@@ -476,16 +482,59 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
           tweet_id: task.mturk_tweet.tweet_id,
           logs: qs_log_mturk.log,
           results: [
-            result: {
-              answer_id: answer1.id,
-              question_id: question.id,
-              tweet_id: task.mturk_tweet.tweet_id,
-              project_id: project.id
+            {
+              result: {
+                answer_id: answer1.id,
+                question_id: question.id,
+                tweet_id: task.mturk_tweet.tweet_id,
+                project_id: project.id
+              }
             }
           ]
         }
       }
       expect(Result.count).to eq(1)
+    end
+
+    it "avoids creating sequence with multiple questions" do
+      # worker 8 is assigned new tweet
+      task = Task.find(task_submitted11.id)
+      get :show, params: {
+        hitId: task_submitted11.hit_id,
+        workerId: mturk_worker8.worker_id,
+        assignmentId: '123'
+      }
+      task.reload
+      # worker 8 submits his solution
+      post :final, params: {
+        task: {
+          hit_id: task.hit_id,
+          worker_id: mturk_worker8.worker_id,
+          assignment_id: '123',
+          tweet_id: task.mturk_tweet.tweet_id,
+          logs: qs_log_mturk.log,
+          results: [
+            {
+              result: {
+                answer_id: answer1.id,
+                question_id: question.id,
+                tweet_id: task.mturk_tweet.tweet_id,
+                project_id: project.id
+              }
+            }, {
+              result: {
+                answer_id: answer2.id,
+                question_id: question.id, # same question
+                tweet_id: task.mturk_tweet.tweet_id,
+                project_id: project.id
+              }
+            }
+          ]
+        }
+      }
+      expect(response).not_to be_successful
+      task.reload
+      expect(task.results.count).to eq(0)
     end
 
 
