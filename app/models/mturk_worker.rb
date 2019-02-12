@@ -38,6 +38,11 @@ class MturkWorker < ApplicationRecord
       task.reload
     end
 
+    if task.completed?
+      ErrorLogger.error "Task #{task.id} has already been completed."
+      return nil, mturk_notification.error
+    end
+
     # retrieve potential new tweet for worker
     mturk_tweet = retrieve_mturk_tweet_for_task(task)
     if mturk_tweet.nil?

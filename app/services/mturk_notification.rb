@@ -35,7 +35,7 @@ class MturkNotification
       status_code: :error,
       code: 'error',
       title_message: 'Error',
-      message: 'When trying to retrieve the task an error has occurred. We apologize and will try to fix this issue as soon as possible.',
+      message: 'When trying to retrieve the task an error has occurred. We apologize and will try to fix this issue as soon as possible. Make sure not to accept many HITs at the same time.',
     }
   end
 
