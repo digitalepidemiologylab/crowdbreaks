@@ -81,8 +81,8 @@ class Mturk::QuestionSequencesController < ApplicationController
       qs_log = QuestionSequenceLog.create(log: logs)
       additional_params = {task_id: task.id, res_type: :mturk, question_sequence_log_id: qs_log.id}
       results.each do |r|
-        results_params = r[:result].merge(additional_params)
-        Result.create(results_params)
+        result = r[:result].merge(additional_params)
+        Result.create(result)
       end
     end
   end
