@@ -29,7 +29,7 @@ bundle exec sidekiq -q default -q mailers
 ```
 7. Run tests using `rspec` or `bundle exec guard`.
 
-You may need to run the [crowdbreaks-api](https://github.com/salathegroup/crowdbreaks-api) for full functionality, but in principle, the Rails application should run without errors on its own.
+You may need to run the [crowdbreaks-streamer](https://github.com/crowdbreaks/crowdbreaks-streamer) for full functionality, but in principle, the Rails application should run without errors on its own.
 
 
 # Contact
