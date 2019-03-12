@@ -69,7 +69,7 @@ module ApplicationHelper
   end
 
   def num(num)
-    number_with_delimiter(num, delimiter: '&#x202f;'.html_safe)
+    number_with_delimiter(num, delimiter: "\u202F").html_safe
   end
 
   def toggle_switch(instance_var, label, name, color: nil)
