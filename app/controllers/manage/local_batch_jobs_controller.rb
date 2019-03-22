@@ -10,14 +10,27 @@ module Manage
     end
 
     def show
-      @counts = []
-      @local_batch_job.users.each do |user|
-        @counts.push({
-          'count': @local_batch_job.results.group_by_qs.where(user_id: user.id).length,
-          'username': user.username,
-        })
+      type = 'local-batch-job-results'
+      respond_to do |format|
+        format.html {
+          @counts = []
+          @local_batch_job.users.each do |user|
+            @counts.push({
+              'count': @local_batch_job.results.group_by_qs.where(user_id: user.id).length,
+              'username': user.username,
+            })
+          end
+          @num_tweets = @local_batch_job.local_tweets.count
+        }
+        format.csv { 
+          redirect_to @local_batch_job.signed_csv_file_path(type, @local_batch_job.results)
+        }
+        format.js {
+          ActionCable.server.broadcast("job_notification:#{current_user.id}", job_status: 'running', record_id: @local_batch_job.id, job_type: "#{type}_s3_upload", message: 'Upload started.')
+          S3UploadJob.perform_later(type, @local_batch_job.id, current_user.id)
+          head :ok
+        }
       end
-      @num_tweets = @local_batch_job.local_tweets.count
     end
 
     def edit

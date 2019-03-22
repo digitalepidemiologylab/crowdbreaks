@@ -15,11 +15,20 @@ class AwsS3
 
   def put(data, filepath, overwrite=false)
     if exists?(filepath) and not overwrite
-      Rails.logger.info("File #{filepath} exists already.")
+      Rails.logger.info("File #{filepath} exists already on S3.")
       return
     end
     obj = @bucket.object(filepath)
     obj.put(body: data)
+  end
+
+  def upload_file(source_path, target_key, overwrite=false)
+    if exists?(target_key) and not overwrite
+      Rails.logger.info("File #{target_key} exists already on S3.")
+      return
+    end
+    obj = @bucket.object(target_key)
+    obj.upload_file(source_path)
   end
 
   def get_signed_url(filepath, filename: 'data.csv', expires_in: 600)

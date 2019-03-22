@@ -68,11 +68,11 @@
         <% end %>
         <% if can? :read, mturk_batch_job %>
           <% if mturk_batch_job.results.count > 0 %>
-            <%= tag.span id: "mturk-batch-job-#{mturk_batch_job.id}-spinner", class: 'mr-4', style: 'display:none;' do %>
+            <%= tag.span id: "mturk-batch-job-results-#{mturk_batch_job.id}-spinner", class: 'mr-4', style: 'display:none;' do %>
               <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
             <% end %>
-            <%= tag.span id: "mturk-batch-job-#{mturk_batch_job.id}-icon" do %>
-              <% if mturk_batch_job.csv_file_is_up_to_date('results') %>
+            <%= tag.span id: "mturk-batch-job-results-#{mturk_batch_job.id}-icon" do %>
+              <% if mturk_batch_job.csv_file_is_up_to_date('mtruk-batch-job-results', mturk_batch_job.results) %>
                 <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
               <% else %>
                 <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job), title: 'Download CSV', remote: true %>

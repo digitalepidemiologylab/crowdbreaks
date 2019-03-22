@@ -1,5 +1,6 @@
 class LocalBatchJob < ApplicationRecord
   include ActiveModel::Validations
+  include S3Uploadable
 
   extend FriendlyId
   friendly_id :name, use: :slugged
@@ -47,5 +48,22 @@ class LocalBatchJob < ApplicationRecord
 
   def default_instructions
     "# Instructions for this task"
+  end
+
+  def results_to_csv
+    model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'user_id', 'project_id', 'flag', 'created_at']
+    added_cols = ['log', 'text', 'user_name']
+    tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
+    CSV.open(tmp_file_path, 'w') do |csv|
+      csv << model_cols + added_cols
+      results.each do |result|
+        row = result.attributes.values_at(*model_cols)
+        row += [result.question_sequence_log&.log&.to_json,
+                result.task&.local_tweet&.tweet_text,
+                result.user.username]
+        csv << row
+      end
+    end
+    return tmp_file_path
   end
 end

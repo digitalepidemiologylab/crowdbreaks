@@ -22,7 +22,7 @@
     <% end %>
   </td>
   <td>
-    <div>
+    <div class='icon-spacing'>
       <% if can? :read, local_batch_job %>
         <%= link_to fa_icon('eye'), manage_local_batch_job_path(local_batch_job) %>
       <% end %>
@@ -34,6 +34,20 @@
       <% end %>
       <% if can? :update, local_batch_job %>
         <%= link_to fa_icon('pencil'), edit_manage_local_batch_job_path(local_batch_job) %>
+      <% end %>
+      <% if can? :read, local_batch_job %>
+        <% if local_batch_job.results.count > 0 %>
+          <%= tag.span id: "local-batch-job-results-#{local_batch_job.id}-spinner", class: 'mr-4', style: 'display:none;' do %>
+            <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
+          <% end %>
+          <%= tag.span id: "local-batch-job-results-#{local_batch_job.id}-icon" do %>
+            <% if local_batch_job.csv_file_is_up_to_date('local-batch-job-results', local_batch_job.results) %>
+              <%= link_to fa_icon('download'), manage_local_batch_job_path(local_batch_job, format: 'csv'), title: 'Download CSV' %>
+            <% else %>
+              <%= link_to fa_icon('download'), manage_local_batch_job_path(local_batch_job), title: 'Download CSV', remote: true %>
+            <% end %>
+          <% end %>
+        <% end %>
       <% end %>
     </div>
   </td>

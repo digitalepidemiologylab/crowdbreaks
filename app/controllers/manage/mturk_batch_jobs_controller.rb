@@ -13,14 +13,15 @@ module Manage
     end
 
     def show
+      type = 'mturk-batch-job-results'
       respond_to do |format|
         format.html
         format.csv { 
-          redirect_to @mturk_batch_job.signed_csv_file_path('results')
+          redirect_to @mturk_batch_job.signed_csv_file_path(type, @mturk_batch_job.results)
         }
         format.js {
-          ActionCable.server.broadcast("job_notification:#{current_user.id}", job_status: 'running', mturk_batch_job_id: @mturk_batch_job.id, job_type: 'mturk_batch_job_s3_upload', message: 'Upload started.')
-          MturkBatchJobS3UploadJob.perform_later(@mturk_batch_job.id, current_user.id)
+          ActionCable.server.broadcast("job_notification:#{current_user.id}", job_status: 'running', record_id: @mturk_batch_job.id, job_type: "#{type}_s3_upload", message: 'Upload started.')
+          S3UploadJob.perform_later(type, @mturk_batch_job.id, current_user.id)
           head :ok
         }
       end

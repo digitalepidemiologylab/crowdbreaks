@@ -25,12 +25,12 @@
 
 <div class="row justify-content-center mb-5">
   <div class="col-12">
-    <% if @mturk_batch_job.csv_file_is_up_to_date('tweets') %>
+    <% if @mturk_batch_job.csv_file_is_up_to_date(@type, @mturk_batch_job.mturk_tweets) %>
       <%= link_to mturk_batch_job_mturk_tweets_path(@mturk_batch_job, format: :csv), class: 'btn btn-secondary btn-lg' do %>
-        <%= tag.span id: "mturk-tweets-#{@mturk_batch_job.id}-icon" do %>
+        <%= tag.span id: "mturk-batch-job-tweets-#{@mturk_batch_job.id}-icon" do %>
           <%= fa_icon('download') %>&emsp;Download tweets
         <% end %>
-        <%= tag.span id: "mturk-tweets-#{@mturk_batch_job.id}-spinner", style:'display:none;' do %>
+        <%= tag.span id: "mturk-batch-job-tweets-#{@mturk_batch_job.id}-spinner", style:'display:none;' do %>
           <%= tag.span class: "spinner-small", style: 'position:absolute;'  %>
           <%= tag.span class: 'ml-4' do %>
             &emsp;Download tweets
@@ -39,10 +39,10 @@
       <% end %>
     <% else %>
       <%= link_to mturk_batch_job_mturk_tweets_path(@mturk_batch_job), remote: true, class: 'btn btn-secondary btn-lg' do %>
-        <%= tag.span id: "mturk-tweets-#{@mturk_batch_job.id}-icon" do %>
+        <%= tag.span id: "mturk-batch-job-tweets-#{@mturk_batch_job.id}-icon" do %>
           <%= fa_icon('download') %>&emsp;Download tweets
         <% end %>
-        <%= tag.span id: "mturk-tweets-#{@mturk_batch_job.id}-spinner", style:'display:none;' do %>
+        <%= tag.span id: "mturk-batch-job-tweets-#{@mturk_batch_job.id}-spinner", style:'display:none;' do %>
           <%= tag.span class: "spinner-small", style: 'position:absolute;'  %>
           <%= tag.span class: 'ml-4' do %>
             &emsp;Download tweets

@@ -12,6 +12,11 @@ $(document).on("turbolinks:load", function() {
       },
 
       received: function(data) {
+        if (data['job_type'].endsWith('_s3_upload')) {
+          data['job_type'] = data['job_type'].split('_s3_upload')[0]
+          handle_s3_upload(data);
+          return
+        }
         // Called when there's incoming data on the websocket for this channel
         switch(data['job_type']) {
           case 'update_mturk_hits':
@@ -32,26 +37,6 @@ $(document).on("turbolinks:load", function() {
               onRefreshAvailabilityComplete();
             }
             break;
-          case 'mturk_batch_job_s3_upload':
-            switch(data['job_status']) {
-              case 'running':
-                onMturkBatchJobS3UploadRunning(data['mturk_batch_job_id']);
-                break;
-              case 'completed':
-                onMturkBatchJobS3UploadComplete(data['mturk_batch_job_id']);
-                break;
-            }
-            break;
-          case 'mturk_tweets_s3_upload':
-            switch(data['job_status']) {
-              case 'running':
-                onMturkTweetsS3UploadRunning(data['mturk_batch_job_id']);
-                break;
-              case 'completed':
-                onMturkTweetsS3UploadComplete(data['mturk_batch_job_id']);
-                break;
-            }
-            break;
           case 'mturk_worker_refresh_review_status':
             if (data['job_status'] == 'completed') {
               onRefreshReviewStatusComplete(data['assignment']);
@@ -62,3 +47,18 @@ $(document).on("turbolinks:load", function() {
     });
   }
 })
+
+function handle_s3_upload(data) {
+  // Handling in app/assets/javascripts/s3_upload.js
+  switch(data['job_status']) {
+    case 'running':
+      onS3UploadRunning(data['job_type'], data['record_id']);
+      break;
+    case 'completed':
+      onS3UploadComplete(data['job_type'], data['record_id']);
+      break;
+    case 'failed':
+      onS3UploadFailed(data['job_type'], data['record_id']);
+      break;
+  }
+}
