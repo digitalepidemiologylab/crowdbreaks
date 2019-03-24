@@ -58,8 +58,9 @@ class LocalBatchJob < ApplicationRecord
       csv << model_cols + added_cols
       results.each do |result|
         row = result.attributes.values_at(*model_cols)
+        tweet_text = result.local_batch_job.local_tweets.find_by(tweet_id: result.tweet_id)&.tweet_text
         row += [result.question_sequence_log&.log&.to_json,
-                result.task&.local_tweet&.tweet_text,
+                tweet_text,
                 result.user.username]
         csv << row
       end
