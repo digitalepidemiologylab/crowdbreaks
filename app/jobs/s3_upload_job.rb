@@ -23,6 +23,10 @@ class S3UploadJob < ApplicationJob
       record = LocalBatchJob.find(record_id)
       tmp_file_path = record.results_to_csv
       s3_key = record.csv_path(type, record.results)
+    when 'local-batch-job-tweets'
+      record = LocalBatchJob.find(record_id)
+      tmp_file_path = record.to_csv(record.local_tweets, ['tweet_id', 'tweet_text', 'availability'])
+      s3_key = record.csv_path(type, record.local_tweets)
     else
       ActionCable.server.broadcast("job_notification:#{user_id}", job_status: 'failed', record_id: record_id, job_type: "#{type}_s3_upload")
       Rails.logger.error("Upload type #{type} was not recognized.")
