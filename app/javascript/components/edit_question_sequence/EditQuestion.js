@@ -59,7 +59,7 @@ export class EditQuestion extends React.Component {
   }
 
   handleInputChangeTag(e) {
-    if (/^[a-z0-9-_]*$/.test(e.target.value) && e.target.value.length < 30) {
+    if (/^[a-z0-9-_]*$/.test(e.target.value) && e.target.value.length < 50) {
       this.setState({internalTag: e.target.value})
     }
   }

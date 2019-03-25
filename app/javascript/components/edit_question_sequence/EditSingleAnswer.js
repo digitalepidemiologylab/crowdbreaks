@@ -20,7 +20,7 @@ export class EditSingleAnswer extends React.Component {
   }
 
   onUpdateTag(e) {
-    if (/^[a-z0-9-_]*$/.test(e.target.value) && e.target.value.length < 30) {
+    if (/^[a-z0-9-_]*$/.test(e.target.value) && e.target.value.length < 50) {
       this.setState({tag: e.target.value})
     }
   }
