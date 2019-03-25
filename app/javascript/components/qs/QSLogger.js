@@ -19,6 +19,7 @@ export class QSLogger {
 
   reset() {
     this.initializeLog();
+    this.logMounted();
   }
 
   logResult(questionId, time) {
