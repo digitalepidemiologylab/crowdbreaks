@@ -6,24 +6,31 @@ export class EditQuestion extends React.Component {
     super(props);
     let editMode = false;
     let editModeInstructions = false;
+    let editTag = false;
     if (props.question == '') {
       editMode = true;
-      if (props.instructions != '') {
+      if (props.instructions) {
         editModeInstructions = true;
+      }
+      if (props.tag) {
+        editTag = true;
       }
     }
     this.state = {
       internalQuestion: props.question,
       editMode: editMode,
       editInstructions: editModeInstructions,
-      internalInstructions: props.instructions
+      editTag: editTag,
+      internalInstructions: props.instructions,
+      internalTag: props.tag
     };
   }
 
   startEditMode() {
     this.setState({
       editMode: true,
-      editInstructions: this.state.internalInstructions == "" ? false : true
+      editInstructions: this.state.internalInstructions == "" ? false : true,
+      editTag: this.state.internalTag == "" ? false : true
     })
   }
 
@@ -32,12 +39,14 @@ export class EditQuestion extends React.Component {
       this.props.onUpdateQuestion({
         'id': this.props.questionId,
         'question': this.state.internalQuestion,
-        'instructions': this.state.internalInstructions
+        'instructions': this.state.internalInstructions,
+        'tag': this.state.internalTag,
       })
     }
     this.setState({
       editMode: false,
-      editInstructions: false
+      editInstructions: false,
+      editTag: false
     })
   }
 
@@ -49,9 +58,21 @@ export class EditQuestion extends React.Component {
     this.setState({internalInstructions: e.target.value})
   }
 
+  handleInputChangeTag(e) {
+    if (/^[a-z0-9-_]*$/.test(e.target.value) && e.target.value.length < 30) {
+      this.setState({internalTag: e.target.value})
+    }
+  }
+
   startEditInstructions() {
     this.setState({
       editInstructions: true
+    })
+  }
+
+  startEditTag() {
+    this.setState({
+      editTag: true
     })
   }
 
@@ -70,21 +91,38 @@ export class EditQuestion extends React.Component {
           rows='2'>
         </textarea>
         {!this.state.editInstructions && <button 
-            onClick={() => this.startEditInstructions()}
+          onClick={() => this.startEditInstructions()}
+          className="btn btn-secondary">
+          <i className='fa fa-plus' style={{color: '#212529'}}></i>&emsp;Add instructions
+        </button>}
+        {this.state.editInstructions && <div>
+          <h4>Instructions (use Markdown)</h4>
+          <textarea 
+            value={this.state.internalInstructions} 
+            type='text' 
+            style={{fontFamily: 'monospace'}}
+            className="form-control"
+            onChange={(e) => this.handleInputChangeInstructions(e)}
+            rows='4'>
+          </textarea>
+        </div>}
+        {!this.state.editTag && <div className='mt-3'>
+          <button 
+            onClick={() => this.startEditTag()}
             className="btn btn-secondary">
-            <i className='fa fa-plus' style={{color: '#212529'}}></i>&emsp;Add instructions
-          </button>}
-          {this.state.editInstructions && <div>
-            <h4>Instructions (use Markdown)</h4>
-            <textarea 
-              value={this.state.internalInstructions} 
-              type='text' 
-              style={{fontFamily: 'monospace'}}
-              className="form-control"
-              onChange={(e) => this.handleInputChangeInstructions(e)}
-              rows='4'>
-            </textarea>
-          </div>}
+            <i className='fa fa-plus' style={{color: '#212529'}}></i>&emsp;Add tag
+          </button>
+        </div>}
+        {this.state.editTag && <div className='mt-3'>
+          <h4>Tag</h4>
+          <input 
+            value={this.state.internalTag} 
+            type='text'
+            style={{fontFamily: 'monospace'}}
+            className="form-control"
+            onChange={(e) => this.handleInputChangeTag(e)}>
+          </input>
+        </div>}
       </div>
     }
     const buttonStyle = {margin: '0px 10px 10px 0px'}; 

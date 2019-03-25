@@ -29,6 +29,7 @@ export class EditAnswers extends React.Component {
     dummyAnswers[e.answerPos].answer = e.answer;
     dummyAnswers[e.answerPos].color = e.color;
     dummyAnswers[e.answerPos].label = e.label;
+    dummyAnswers[e.answerPos].tag = e.tag;
     this.props.onUpdateAnswers({'answers': dummyAnswers, 'questionId': this.props.questionId})
     this.stopEditMode();
   }
@@ -61,6 +62,7 @@ export class EditAnswers extends React.Component {
               answer={answer.answer}
               color={answer.color}
               label={answer.label}
+              tag={answer.tag}
               colorOptions={this.props.colorOptions}
               labelOptions={this.props.labelOptions}
               questionId={this.props.questionId}

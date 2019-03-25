@@ -135,12 +135,12 @@ class QuestionSequence
 
   def update_question(q)
     original_question = Question.find(q[:original_id])
-    original_question.update_attributes({question: q[:question], instructions: q[:instructions]})
+    original_question.update_attributes({question: q[:question], instructions: q[:instructions], tag: q[:tag]})
     return original_question
   end
 
   def create_question(q)
-    return Question.new(project: @project, question: q[:question], instructions: q[:instructions])
+    return Question.new(project: @project, question: q[:question], instructions: q[:instructions], tag: q[:tag])
   end
 
   def delete_questions(ids)
@@ -164,12 +164,12 @@ class QuestionSequence
 
   def update_answer(a)
     original_answer = Answer.find(a[:original_id])
-    original_answer.update_attributes({answer: a[:answer], color: a[:color], label: a[:label]})
+    original_answer.update_attributes({answer: a[:answer], color: a[:color], label: a[:label], tag: a[:tag]})
     return original_answer
   end
 
   def create_answer(a)
-    return Answer.create(answer: a[:answer], color: a[:color], label: a[:label])
+    return Answer.create(answer: a[:answer], color: a[:color], label: a[:label], tag: a[:tag])
   end
 
   def get_questions(edit_mode: false)

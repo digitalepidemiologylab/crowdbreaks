@@ -52,16 +52,27 @@ class LocalBatchJob < ApplicationRecord
 
   def results_to_csv
     model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'user_id', 'project_id', 'flag', 'created_at']
-    added_cols = ['log', 'text', 'user_name']
+    added_cols = ['text', 'question_tag', 'answer_tag', 'user_name', 'total_duration_ms', 'full_log']
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
       results.each do |result|
         row = result.attributes.values_at(*model_cols)
         tweet_text = result.local_batch_job.local_tweets.find_by(tweet_id: result.tweet_id)&.tweet_text
-        row += [result.question_sequence_log&.log&.to_json,
-                tweet_text,
-                result.user.username]
+        log = result.question_sequence_log&.log
+        if not log.nil? and log.has_key?('totalDurationQuestionSequence')
+          total_duration_ms = log['totalDurationQuestionSequence']
+        else
+          total_duration_ms = 0
+        end
+        row += [
+          tweet_text,
+          result.question.tag,
+          result.answer.tag,
+          result.user.username,
+          total_duration_ms,
+          log&.to_json
+        ]
         csv << row
       end
     end

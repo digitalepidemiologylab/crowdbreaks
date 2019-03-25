@@ -1,5 +1,5 @@
 class QuestionSerializer < ActiveModel::Serializer
-  attributes :id, :question, :instructions
+  attributes :id, :question, :instructions, :tag
   has_many :answers
 
   def attributes(*args)

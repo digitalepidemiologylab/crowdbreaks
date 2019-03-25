@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_31_150436) do
+ActiveRecord::Schema.define(version: 2019_03_25_100711) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2019_01_31_150436) do
     t.string "color"
     t.string "label"
     t.string "answer"
+    t.string "tag", default: ""
   end
 
   create_table "friendly_id_slugs", id: :serial, force: :cascade do |t|
@@ -187,6 +188,7 @@ ActiveRecord::Schema.define(version: 2019_01_31_150436) do
     t.boolean "use_for_relevance_score", default: false, null: false
     t.text "question"
     t.text "instructions", default: ""
+    t.string "tag", default: ""
     t.index ["project_id"], name: "index_questions_on_project_id"
   end
 

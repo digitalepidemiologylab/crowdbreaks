@@ -6,7 +6,8 @@ export class EditSingleAnswer extends React.Component {
     this.state = {
       answer: props.answer,
       color: props.color,
-      label: props.label
+      label: props.label,
+      tag: props.tag
     };
   }
 
@@ -18,18 +19,25 @@ export class EditSingleAnswer extends React.Component {
     this.setState({label: e.target.value})
   }
 
+  onUpdateTag(e) {
+    if (/^[a-z0-9-_]*$/.test(e.target.value) && e.target.value.length < 30) {
+      this.setState({tag: e.target.value})
+    }
+  }
+
   onUpdateColor(e) {
     this.setState({color: e.target.value})
   }
 
   onUpdate() {
-    this.props.onUpdateInternalAnswer({'answerPos': this.props.answerPos, 'label': this.state.label, 'color': this.state.color, 'answer': this.state.answer})
+    this.props.onUpdateInternalAnswer({'answerPos': this.props.answerPos, 'label': this.state.label, 'color': this.state.color, 'answer': this.state.answer, 'tag': this.state.tag})
   }
 
   render() {
     const componentsStyle = {display: 'inline-block', marginRight: '10px', marginBottom: '10px'}
     const idStyle = {...componentsStyle, width: '5%'}
-    const answerStyle = {...componentsStyle, width: '35%'}
+    const answerStyle = {...componentsStyle, width: '30%'}
+    const tagStyle = {...componentsStyle, width: '15%'}
     const selectStyle = {...componentsStyle, width: '15%'}
     const buttonStyle = {margin: '10px 10px 10px 0px'}
 
@@ -47,6 +55,7 @@ export class EditSingleAnswer extends React.Component {
           <input 
             value={this.state.answer}
             disabled={this.props.isEditable ? false : 'disabled'}
+            placeholder={'<answer>'}
             onChange={(e) => this.onUpdateAnswer(e)}
             className='form-control'>
           </input>
@@ -74,6 +83,15 @@ export class EditSingleAnswer extends React.Component {
               })
             }
           </select>
+        </div>
+        <div style={tagStyle}>
+          <input 
+            value={this.state.tag}
+            onChange={(e) => this.onUpdateTag(e)}
+            style={{fontFamily: 'monospace'}}
+            placeholder={'<tag>'}
+            className='form-control'>
+          </input>
         </div>
         {updateButton}
         {this.props.isEditable && <button 

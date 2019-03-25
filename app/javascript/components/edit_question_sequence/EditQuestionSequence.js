@@ -13,7 +13,7 @@ export class EditQuestionSequence extends React.Component {
 
     let questions = props.questions;
     if (Object.keys(props.questions).length == 0) {
-      questions[0]  = {id: 0, question: '', answers: [], original_id: undefined, is_editable: true}
+      questions[0]  = {id: 0, question: '', answers: [], original_id: undefined, is_editable: true, tag: ''}
     } else {
       for (let questionId in questions) {
         questions[questionId].original_id = Number(questionId)
@@ -59,6 +59,7 @@ export class EditQuestionSequence extends React.Component {
     let dummyQuestion = this.state.questions;
     dummyQuestion[e.id].question = e.question;
     dummyQuestion[e.id].instructions = e.instructions;
+    dummyQuestion[e.id].tag = e.tag;
     this.setState({
       questions: dummyQuestion,
     })
@@ -114,7 +115,7 @@ export class EditQuestionSequence extends React.Component {
 
   addNewQuestion() {
     let newQuestions = this.state.questions;
-    newQuestions[this.state.newQuestionIdCounter] = {id: this.state.newQuestionIdCounter, question: '', answers: [], is_editable: true, original_id: null}
+    newQuestions[this.state.newQuestionIdCounter] = {id: this.state.newQuestionIdCounter, question: '', answers: [], is_editable: true, original_id: null, tag: ''}
     this.setState({
       questions: newQuestions,
       newQuestionIdCounter: this.state.newQuestionIdCounter + 1
@@ -123,7 +124,7 @@ export class EditQuestionSequence extends React.Component {
 
   addNewAnswer(questionId) {
     let dummyQuestions = this.state.questions;
-    dummyQuestions[questionId].answers.push({'id': this.state.newAnswerIdCounter, 'answer': '', 'color': 'btn-primary', 'label': '', original_id: null})
+    dummyQuestions[questionId].answers.push({'id': this.state.newAnswerIdCounter, 'answer': '', 'color': 'btn-primary', 'label': '', original_id: null, tag: ''})
     this.setState({
       questions: dummyQuestions,
       newAnswerIdCounter: this.state.newAnswerIdCounter + 1
@@ -283,6 +284,7 @@ export class EditQuestionSequence extends React.Component {
                     key={q.id} 
                     questionId={questionId} 
                     question={q.question} 
+                    tag={q.tag} 
                     instructions={q.instructions}
                     isEditable={q.is_editable}
                     onUpdateQuestion={(e) => prevThis.onUpdateQuestion(e)}
