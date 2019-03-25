@@ -1,0 +1,12 @@
+language: ruby
+addons:
+    postgresql: 9.6
+services:
+    - postgresql
+    - redis-server
+script:
+  - bundle exec rake db:migrate
+  - bundle exec rake rspec
+branches:
+  only:
+    - master
