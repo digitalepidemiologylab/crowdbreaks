@@ -124,6 +124,10 @@ RSpec.configure do |config|
     # invalid tweet id 0
     stub_request(:get, /api.twitter.com\/1.1\/statuses\/show\/0.json/)
       .to_return(status: 400, body: {id: '0'}.to_json, :headers => {"Content-Type"=> "application/json"})
+    # auth request if no valid credentials are provided
+    stub_request(:post, "https://api.twitter.com/oauth2/token")
+      .with(body: {"grant_type"=>"client_credentials"})
+      .to_return(status: 200, body: {'access_token': 'test_token'}.to_json, headers: {"Content-Type"=> "application/json"})       
     # --------------------
     # mturk
     mturk_base_url = /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/
@@ -146,6 +150,9 @@ RSpec.configure do |config|
     aws_s3_url = /https:\/\/crowdbreaks-dev.s3.eu-central-1.amazonaws.com(.*)/
     stub_request(:any, aws_s3_url)
       .to_return(status: 200, body: "", headers: {})
+    stub_request(:any, /https:\/\/s3.eu-central-1.amazonaws.com\/(.*)/)
+     .to_return(status: 200, body: "", headers: {})
+
   end
 end
 

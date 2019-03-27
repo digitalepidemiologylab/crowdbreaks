@@ -16,7 +16,7 @@ RSpec.describe S3UploadJob, type: :job do
   describe "#perform_now" do
     it "tries to upload to s3" do
       S3UploadJob.perform_now('mturk-batch-job-results', mturk_batch_job.id, user.id)
-      aws_s3_url = /https:\/\/crowdbreaks-dev.s3.eu-central-1.amazonaws.com(.*)/
+      aws_s3_url = /https:\/\/s3.eu-central-1.amazonaws.com\/(.*)/
       assert_requested :any, aws_s3_url
     end
   end
