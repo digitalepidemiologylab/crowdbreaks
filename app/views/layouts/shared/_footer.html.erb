@@ -8,12 +8,15 @@
   </div>
 
   <div class="credits">
-    <div class="">
+    <span class="no-wrap">
       <%= t('footer.developed_by_html',
             href_del: link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank'),
-            href_epfl: link_to('EPFL', 'https://www.epfl.ch/index.en.html', target: '_blank'))
+            href_epfl: link_to('EPFL', 'https://www.epfl.ch/en/home/', target: '_blank')) 
           %>
-      <img src=<%= image_url('logo-epfl.svg') %> class="logo-epfl" alt="EPFL">
-    </div>
+
+      <%= link_to 'https://www.epfl.ch/en/home/', 'target': '_blank' do %>
+        <img src=<%= image_url('logo-epfl.svg') %> class="logo-epfl pb-1" alt="EPFL">
+      <% end %>
+    </span>
   </div>
 </footer>

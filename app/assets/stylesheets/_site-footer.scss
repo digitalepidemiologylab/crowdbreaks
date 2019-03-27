@@ -77,12 +77,14 @@ body {
 
   .credits {
     line-height: 2rem;
+    padding-right: 40px;
     @include media-breakpoint-down(sm) {
       display: none;
     }
 
     .logo-epfl {
       margin-left: 1rem;
+      max-width: 70px;
 
       @include media-breakpoint-down(md) {
         display: none;
