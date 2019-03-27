@@ -4,6 +4,8 @@ addons:
 services:
     - postgresql
     - redis-server
+before_script:
+  - psql -c 'create database crowdbreaks_test;' -U postgres
 script:
   - bundle exec rake db:migrate
   - bundle exec rake rspec
