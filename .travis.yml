@@ -1,6 +1,6 @@
 language: ruby
 addons:
-    postgresql: 11.2
+    postgresql: "9.4"
 services:
     - postgresql
     - redis-server
