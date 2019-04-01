@@ -205,7 +205,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
         assignmentId: '321'
       }
       task.reload
-      expect(task.time_assigned).to eq(Time.current)
+      expect(task.time_assigned).to be_within(1.second).of Time.current
     end
 
     it "respects number of maximum assignments" do
@@ -335,7 +335,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       }
       task.reload
       expect(task.mturk_tweet_id).to eq(mturk_tweet3.id)
-      expect(task.time_assigned).to eq(Time.current)
+      expect(task.time_assigned).to be_within(1.second).of Time.current
       # worker 5 submits his solution
       Timecop.freeze
       post :final, params: {
@@ -360,7 +360,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(response).to be_successful
       task.reload
       expect(task.lifecycle_status).to eq('completed')
-      expect(task.time_completed).to eq(Time.current)
+      expect(task.time_completed).to be_within(1.second).of Time.current
       expect(task.results.count).to eq(1)
       expect(task.results.first.res_type).to eq('mturk')
       expect(task.results.first.question_id).to eq(question.id)

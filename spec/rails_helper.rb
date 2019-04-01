@@ -152,7 +152,6 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
     stub_request(:any, /https:\/\/s3.eu-central-1.amazonaws.com\/(.*)/)
      .to_return(status: 200, body: "", headers: {})
-
   end
 end
 

@@ -3,7 +3,7 @@ class AwsS3
 
   def initialize
     @client = Aws::S3::Client.new
-    @bucket_name = ENV['S3_BUCKET_NAME'] || 'crowdbreaks_dev'
+    @bucket_name = ENV['S3_BUCKET_NAME'] || 'crowdbreaks-dev'
     @signer = Aws::S3::Presigner.new
     if @bucket_name.present?
       s3 = Aws::S3::Resource.new
