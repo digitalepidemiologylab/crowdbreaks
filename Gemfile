@@ -103,6 +103,7 @@ group :test do
   # feature tests for testing react code
   gem 'capybara'
   gem 'capybara-selenium'
+  gem 'webdrivers'
   # nice rspec factories
   gem "factory_bot_rails"
   # leave your test db clean after you
