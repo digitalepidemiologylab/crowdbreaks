@@ -1,9 +1,7 @@
 language: ruby
 addons:
   postgresql: "9.4"
-  apt:
-    - google-chrome-stable
-    - chromium-chromedriver
+  chrome: stable
 
 services:
   - postgresql
@@ -11,7 +9,6 @@ services:
 
 before_script:
   - psql -c 'create database crowdbreaks_test;' -U postgres
-  - ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver
 
 script:
   - RAILS_ENV=test bundle exec rake db:migrate --trace
