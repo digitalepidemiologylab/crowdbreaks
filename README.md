@@ -9,8 +9,8 @@ This is the Rails application of Crowdbreaks.
 ## Development
 1. First, install ruby and rails through rbenv [by following this tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-16-04)
 ```
-rbenv install 2.5.0
-rbenv global 2.5.0
+rbenv install 2.5.3
+rbenv global 2.5.3
 ```
 2. Install Redis, have it run locally on port 6379. 
 3. Pull repo & install dependencies
