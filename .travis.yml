@@ -1,7 +1,9 @@
 language: ruby
 addons:
   postgresql: "9.4"
-  chrome: stable
+  apt:
+    - google-chrome-stable
+    - chromium-chromedriver
 
 services:
   - postgresql

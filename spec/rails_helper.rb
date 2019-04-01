@@ -93,21 +93,12 @@ Shoulda::Matchers.configure do |config|
 end
 
 # Capybara
+run_headless = ENV['RUN_HEADLESS'] || true
 Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
+  options = Selenium::WebDriver::Chrome::Options.new(args: run_headless ? %w[no-sandbox headless disable-gpu] : %w[no-sandbox disable-gpu])
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
-Capybara.register_driver :headless_chrome do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    chromeOptions: { args: %w(headless disable-gpu) }
-  )
-  Capybara::Selenium::Driver.new app,
-    browser: :chrome,
-    desired_capabilities: capabilities
-end
-# in order to see capybara tests in browser:
-# Capybara.javascript_driver = :chrome
-# else:
-Capybara.javascript_driver = :headless_chrome
+Capybara.javascript_driver = :chrome
 Capybara.server_port = '3001'
 Capybara.server = :puma, { Silent: true }
 
