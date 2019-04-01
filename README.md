@@ -2,6 +2,7 @@
 
 This is the Rails application of Crowdbreaks.
 
+[![Build Status](https://travis-ci.org/crowdbreaks/crowdbreaks.svg?branch=master)](https://travis-ci.org/crowdbreaks/crowdbreaks)
 
 # Install
 
