@@ -25,7 +25,7 @@ module S3Uploadable
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << cols
-      records.each do |rec|
+      records.find_each do |rec|
         csv << rec.attributes.values_at(*cols)
       end
     end

@@ -56,7 +56,7 @@ class LocalBatchJob < ApplicationRecord
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
-      results.each do |result|
+      results.find_each do |result|
         row = result.attributes.values_at(*model_cols)
         tweet_text = result.local_batch_job.local_tweets.find_by(tweet_id: result.tweet_id)&.tweet_text
         log = result.question_sequence_log&.log

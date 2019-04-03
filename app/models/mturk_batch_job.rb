@@ -113,7 +113,7 @@ class MturkBatchJob < ApplicationRecord
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
-      results.each do |result|
+      results.find_each do |result|
         row = result.attributes.values_at(*model_cols)
         log = result.question_sequence_log&.log
         if not log.nil? and log.has_key?('totalDurationQuestionSequence')
