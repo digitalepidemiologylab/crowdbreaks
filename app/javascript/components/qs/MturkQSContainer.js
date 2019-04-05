@@ -13,20 +13,23 @@ import { Instructions } from './Instructions';
 export class MturkQSContainer extends React.Component {
   constructor(props) {
     super(props);
-    let showErrorNotification = false;
-    if (props.notification) {
-      showErrorNotification = props.notification['status_code'] != 'success';
-    }
+    const { 
+      notification, 
+      questions, 
+      initialQuestionId,
+      delayStart,
+      delayNextQuestion,
+    } = props;
+    const showErrorNotification = !!notification && notification.status_code !== 'success';
     this.state = {
-      'questionSequenceHasEnded': false,
-      'errors': [],
-      'displayInstructions': false,
-      'numQuestionsAnswered': 0,
-      'currentQuestion': props.questions[props.initialQuestionId],
-      'showErrorNotification': showErrorNotification,
+      questionSequenceHasEnded: false,
+      errors: [],
+      displayInstructions: false,
+      numQuestionsAnswered: 0,
+      currentQuestion: questions[initialQuestionId],
+      showErrorNotification: showErrorNotification,
     };
-
-    this.log = new QSLogger(props.delayStart, props.delayNextQuestion);
+    this.log = new QSLogger(delayStart, delayNextQuestion);
     this.results = [];
   }
 
@@ -57,7 +60,6 @@ export class MturkQSContainer extends React.Component {
   onQuestionSequenceEnd(time) {
     // logging
     this.log.logFinal(time)
-    // Set final state which gets submitted in onMturkSubmit()
     this.setState({
       'questionSequenceHasEnded': true,
     });
@@ -188,27 +190,7 @@ export class MturkQSContainer extends React.Component {
     if (this.state.showErrorNotification) {
       return this.renderErrorNotification()
     }
-    if (!this.state.questionSequenceHasEnded) {
-      return <QuestionSequence 
-        ref={qs => {this.questionSequence = qs;}}
-        questions={this.props.questions}
-        currentQuestion={this.state.currentQuestion}
-        transitions={this.props.transitions}
-        tweetId={this.props.tweetId}
-        tweetText={this.props.tweetText}
-        onTweetLoadError={() => this.onTweetLoadError()}
-        onQuestionSequenceEnd={(time) => this.onQuestionSequenceEnd(time)}
-        onAnswerSubmit={(answerId, time) => this.onAnswerSubmit(answerId, time)}
-        gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
-        numTransitions={0}
-        captchaVerified={true}
-        delayStart={this.props.delayStart}
-        delayNextQuestion={this.props.delayNextQuestion}
-        displayQuestionInstructions={true}
-        numQuestionsAnswered={this.state.numQuestionsAnswered}
-        translations={this.props.translations}
-      /> 
-    } else {
+    if (this.state.questionSequenceHasEnded) {
       return <MturkFinal 
         onMturkSubmit={(event) => this.onMturkSubmit(event, new Date().getTime())}
         submitUrl={this.getSubmitUrl()}
@@ -216,10 +198,29 @@ export class MturkQSContainer extends React.Component {
         hitId={this.props.hitId}
       /> 
     }
+    return <QuestionSequence 
+      ref={qs => {this.questionSequence = qs;}}
+      questions={this.props.questions}
+      currentQuestion={this.state.currentQuestion}
+      transitions={this.props.transitions}
+      tweetId={this.props.tweetId}
+      tweetText={this.props.tweetText}
+      onTweetLoadError={() => this.onTweetLoadError()}
+      onQuestionSequenceEnd={(time) => this.onQuestionSequenceEnd(time)}
+      onAnswerSubmit={(answerId, time) => this.onAnswerSubmit(answerId, time)}
+      gotoNextQuestion={(nextQuestion) => this.gotoNextQuestion(nextQuestion)}
+      numTransitions={0}
+      captchaVerified={true}
+      delayStart={this.props.delayStart}
+      delayNextQuestion={this.props.delayNextQuestion}
+      displayQuestionInstructions={true}
+      numQuestionsAnswered={this.state.numQuestionsAnswered}
+      translations={this.props.translations}
+    /> 
   }
 
   render() {
-    let title = this.props.mturkTitle && <h4 className="mb-4">
+    const title = this.props.mturkTitle && <h4 className="mb-4">
       {this.props.mturkTitle}
     </h4>;
     let mturkInstructions = <Instructions 
@@ -228,9 +229,9 @@ export class MturkQSContainer extends React.Component {
       translations={this.props.translations.instructions}
       onToggleDisplay={() => this.onToggleInstructionDisplay()}
     />;
-    let body = this.getQuestionSequence()
-    let optionButtons = this.getOptionButtons()
-    let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
+    const body = this.getQuestionSequence()
+    const optionButtons = this.getOptionButtons()
+    const errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
       <li>Error:</li>
       {this.state.errors.map(function(error, i) {
         return <li key={i}>{error}</li>
