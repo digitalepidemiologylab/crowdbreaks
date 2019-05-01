@@ -13,12 +13,17 @@ module S3Uploadable
     s3.get_signed_url(csv_file, filename: csv_file.split('/')[-1])
   end
 
-  def csv_path(type, records,  attribute_name: 'name')
+  def csv_path(type, records, attribute_name: 'name')
     attribute_name = self.read_attribute(attribute_name)&.parameterize
     if attribute_name.nil?
       attribute_name = self.id.to_s
     end
-    "other/csv/#{type}/#{type}-#{attribute_name}-v#{records.maximum(:updated_at).to_i}-#{records.count}.csv"
+    if project.nil?
+      project_name = 'unknown_project'
+    else
+      project_name = project.es_index_name
+    end
+    "other/csv/#{project_name}/#{type}/#{type}-#{attribute_name}-v#{records.maximum(:updated_at).to_i}-#{records.count}.csv"
   end
 
   def to_csv(records, cols)
