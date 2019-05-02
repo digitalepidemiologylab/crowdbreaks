@@ -18,10 +18,9 @@ module S3Uploadable
     if attribute_name.nil?
       attribute_name = self.id.to_s
     end
-    if project.nil?
+    project_name = project&.es_index_name
+    if project_name.blank?
       project_name = 'unknown_project'
-    else
-      project_name = project.es_index_name
     end
     "other/csv/#{project_name}/#{type}/#{type}-#{attribute_name}-v#{records.maximum(:updated_at).to_i}-#{records.count}.csv"
   end

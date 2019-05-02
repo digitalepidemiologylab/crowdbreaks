@@ -47,4 +47,13 @@ class AwsS3
   def exists?(filepath)
     @bucket.object(filepath).exists?
   end
+
+  def list_dir(prefix)
+    @bucket.objects(prefix: prefix).collect(&:key)
+  end
+
+  def remove(target_key)
+    obj = @bucket.object(target_key)
+    obj.delete
+  end
 end

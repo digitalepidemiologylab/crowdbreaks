@@ -4,38 +4,115 @@ class SyncS3
     if defined?(Rails) && (Rails.env == 'development')
       Rails.logger = Logger.new(STDOUT)
     end
+    @s3 = AwsS3.new
   end
 
   def run
     t_start = Time.now
-    Rails.logger.info "Syncing MturkBatchJobs"
-    sync_mturk_batch_jobs
-    Rails.logger.info "Syncing LocalBatchJobs"
-    sync_local_batch_jobs
+    Rails.logger.debug "Collecting jobs..."
+    jobs = collect_jobs
+    Rails.logger.debug "Removing unused files..."
+    removable = get_removable(jobs) 
+    remove(removable)
+    Rails.logger.debug "Uploading non-existant files..."
+    upload(jobs)
     t_end = Time.now
     Rails.logger.info "Finished in #{(t_end - t_start).to_i/60.0} minutes"
   end
 
+  def remove(removable)
+    removable.each do |s3_key|
+      Rails.logger.debug "Removing file #{s3_key}"
+      @s3.remove(s3_key)
+    end
+  end
 
-  def sync_mturk_batch_jobs
+  def get_removable(jobs)
+    files_present = @s3.list_dir('other/csv').to_set
+    files_needed = jobs.collect{|j| j[:s3_key]}.to_set
+    return files_present - files_needed
+  end
+
+  def collect_jobs
+    jobs = []
     MturkBatchJob.find_each do |mturk_batch_job|
       if mturk_batch_job.results.any? 
-        S3UploadJob.perform_now('mturk-batch-job-results', mturk_batch_job.id, 0)
+        type = 'mturk-batch-job-results'
+        s3_key = mturk_batch_job.csv_path(type, mturk_batch_job.results)
+        exists = @s3.exists?(s3_key)
+        jobs.push({'s3_key': s3_key, 'type': type, 'record_id': mturk_batch_job.id, 'exists': exists})
       end
       if mturk_batch_job.mturk_tweets.any? 
-        S3UploadJob.perform_now('mturk-batch-job-tweets', mturk_batch_job.id, 0)
+        type = 'mturk-batch-job-tweets'
+        s3_key = mturk_batch_job.csv_path(type, mturk_batch_job.mturk_tweets)
+        exists = @s3.exists?(s3_key)
+        jobs.push({'s3_key': s3_key, 'type': type, 'record_id': mturk_batch_job.id, 'exists': exists})
+      end
+    end
+    LocalBatchJob.find_each do |local_batch_job|
+      if local_batch_job.results.any? 
+        type = 'local-batch-job-results'
+        s3_key = local_batch_job.csv_path(type, local_batch_job.results)
+        exists = @s3.exists?(s3_key)
+        jobs.push({'s3_key': s3_key, 'type': type, 'record_id': local_batch_job.id, 'exists': exists})
+      end
+      if local_batch_job.local_tweets.any? 
+        type = 'local-batch-job-tweets'
+        s3_key = local_batch_job.csv_path(type, local_batch_job.local_tweets)
+        exists = @s3.exists?(s3_key)
+        jobs.push({'s3_key': s3_key, 'type': type, 'record_id': local_batch_job.id, 'exists': exists})
+      end
+    end
+    return jobs
+  end
+
+  def upload(jobs)
+    jobs.each do |job|
+      unless job[:exists]
+        Rails.logger.debug "Uploading file #{job[:s3_key]}"
+        upload_by_id(job[:type], job[:record_id], s3_key=job[:s3_key], check_exists=false)
       end
     end
   end
 
-  def sync_local_batch_jobs
-    LocalBatchJob.find_each do |local_batch_job|
-      if local_batch_job.results.any? 
-        S3UploadJob.perform_now('local-batch-job-results', local_batch_job.id, 0)
-      end
-      if local_batch_job.local_tweets.any? 
-        S3UploadJob.perform_now('local-batch-job-tweets', local_batch_job.id, 0)
+  def upload_by_id(type, record_id, s3_key=nil, check_exists=true)
+    case type
+    when 'mturk-batch-job-results'
+      record = MturkBatchJob.find(record_id)
+      s3_key = record.csv_path(type, record.results) unless s3_key.present?
+    when 'mturk-batch-job-tweets'
+      record = MturkBatchJob.find(record_id)
+      s3_key = record.csv_path(type, record.mturk_tweets) unless s3_key.present?
+    when 'local-batch-job-results'
+      record = LocalBatchJob.find(record_id)
+      s3_key = record.csv_path(type, record.results) unless s3_key.present?
+    when 'local-batch-job-tweets'
+      record = LocalBatchJob.find(record_id)
+      s3_key = record.csv_path(type, record.local_tweets) unless s3_key.present?
+    else
+      Rails.logger.error("Upload type #{type} was not recognized.")
+      return false
+    end
+    # Check if file already exists
+    if check_exists
+      if @s3.exists?(s3_key)
+        Rails.logger.info("File #{s3_key} exists already on S3.")
+        return true
       end
     end
+    # Write local file
+    case type
+    when 'mturk-batch-job-results', 'local-batch-job-results'
+      tmp_file_path = record.results_to_csv
+    when 'mturk-batch-job-tweets'
+      tmp_file_path = record.to_csv(record.mturk_tweets, ['tweet_id', 'tweet_text', 'availability'])
+    when 'local-batch-job-tweets'
+      tmp_file_path = record.to_csv(record.local_tweets, ['tweet_id', 'tweet_text', 'availability'])
+    end
+    # upload local file to s3
+    @s3.upload_file(tmp_file_path, s3_key)
+    # Get rid of local file
+    File.delete(tmp_file_path)
+    return true
   end
 end
