@@ -4,8 +4,8 @@ Rollbar.configure do |config|
 
   config.access_token = ENV['ROLLBAR_ACCESS_TOKEN']
 
-  # Only enable in production
-  unless ENV['ENVIRONMENT_NAME'] == 'production'
+  # Disable in development/testing
+  if ['development', 'test'].include?(ENV['ENVIRONMENT_NAME'])
     config.enabled = false
   end
 
@@ -46,9 +46,9 @@ Rollbar.configure do |config|
   # config.use_sucker_punch
 
   # Enable delayed reporting (using Sidekiq)
-  # config.use_sidekiq
+  config.use_sidekiq
   # You can supply custom Sidekiq options:
-  # config.use_sidekiq 'queue' => 'default'
+  config.use_sidekiq 'queue' => 'low'
 
   # If your application runs behind a proxy server, you can set proxy parameters here.
   # If https_proxy is set in your environment, that will be used. Settings here have precedence.
