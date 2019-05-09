@@ -3,9 +3,14 @@ class LocalBatchJobsController < ApplicationController
 
   def show
     @user_id = current_user&.id
+    @test_mode = @local_batch_job.test_processing_mode?
     # only allow certain users to do task
     if not user_signed_in? or not @local_batch_job.allows_user?(@user_id)
-      raise CanCan::AccessDenied
+      if current_user.admin?
+        @test_mode = true
+      else
+        raise CanCan::AccessDenied
+      end
     end
     # calculate counts
     @user_count = @local_batch_job.results.counts_by_user(@user_id)
@@ -38,18 +43,30 @@ class LocalBatchJobsController < ApplicationController
       head :bad_request and return 
     end
     local_batch_job = LocalBatchJob.friendly.find(params[:local_batch_job_id])
+    test_mode = local_batch_job.test_processing_mode?
+
+    # Abort if user is not authorized to work on batch
+    if not local_batch_job.allows_user?(current_user.id)
+      if not current_user.admin?
+        head :bad_request and return 
+      else
+        # Switch into test mode for non-authorized admins
+        test_mode = true
+      end
+    end
 
     # store results
     results = final_params.fetch(:results, []) 
     logs = final_params.fetch(:logs, {}) 
-    if not results.empty? and not local_batch_job.test_processing_mode?
+    if not results.empty? and not test_mode
       if not create_results(results, local_batch_job.id, logs)
         head :bad_request
       end
     end
 
     # fetch next tweet
-    if local_batch_job.test_processing_mode?
+    if test_mode
+      # fetch random tweet in test mode
       local_tweet = local_batch_job.local_tweets.may_be_available.order("RANDOM()").first
     else
       local_tweet = local_batch_job.
@@ -71,6 +88,7 @@ class LocalBatchJobsController < ApplicationController
         local_tweet.unavailable!
       end
     else
+      # For tweets stored which are stored with text we don't check for availability
       tweet_is_available = true
     end
 

@@ -17,7 +17,6 @@ import { Instructions } from './Instructions';
 export class LocalBatchQSContainer extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.translations)
 
     this.state = {
       'questionSequenceHasEnded': false,
