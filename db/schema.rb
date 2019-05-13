@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_13_140159) do
+ActiveRecord::Schema.define(version: 2019_05_13_145506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 2019_05_13_140159) do
     t.integer "results_count", default: 0, null: false
     t.integer "storage_mode", default: 0
     t.string "locales", default: ["en"], array: true
+    t.string "name", default: "", null: false
     t.index ["es_index_name"], name: "index_projects_on_es_index_name", unique: true
     t.index ["slug"], name: "index_projects_on_slug"
   end
