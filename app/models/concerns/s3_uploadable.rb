@@ -18,7 +18,11 @@ module S3Uploadable
     if attribute_name.nil?
       attribute_name = self.id.to_s
     end
-    project_name = project&.es_index_name
+    if self.class.method_defined? 'project'
+      project_name = project&.es_index_name
+    elsif self.has_attribute? 'es_index_name'
+      project_name = es_index_name
+    end
     if project_name.blank?
       project_name = 'unknown_project'
     end

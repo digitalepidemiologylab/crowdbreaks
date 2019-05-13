@@ -35,6 +35,7 @@ class SyncS3
 
   def collect_jobs
     jobs = []
+    # mturk
     MturkBatchJob.find_each do |mturk_batch_job|
       if mturk_batch_job.results.any? 
         type = 'mturk-batch-job-results'
@@ -49,6 +50,7 @@ class SyncS3
         jobs.push({'s3_key': s3_key, 'type': type, 'record_id': mturk_batch_job.id, 'exists': exists})
       end
     end
+    # local
     LocalBatchJob.find_each do |local_batch_job|
       if local_batch_job.results.any? 
         type = 'local-batch-job-results'
@@ -61,6 +63,15 @@ class SyncS3
         s3_key = local_batch_job.csv_path(type, local_batch_job.local_tweets)
         exists = @s3.exists?(s3_key)
         jobs.push({'s3_key': s3_key, 'type': type, 'record_id': local_batch_job.id, 'exists': exists})
+      end
+    end
+    # public
+    Project.find_each do |project|
+      if project.results.public_res_type.any? 
+        type = 'public-results'
+        s3_key = project.csv_path(type, project.results.public_res_type)
+        exists = @s3.exists?(s3_key)
+        jobs.push({'s3_key': s3_key, 'type': type, 'record_id': project.id, 'exists': exists})
       end
     end
     return jobs
@@ -89,6 +100,9 @@ class SyncS3
     when 'local-batch-job-tweets'
       record = LocalBatchJob.find(record_id)
       s3_key = record.csv_path(type, record.local_tweets) unless s3_key.present?
+    when 'public-results'
+      record = Project.find(record_id)
+      s3_key = record.csv_path(type, record.results.public_res_type) unless s3_key.present?
     else
       Rails.logger.error("Upload type #{type} was not recognized.")
       return false
@@ -102,7 +116,7 @@ class SyncS3
     end
     # Write local file
     case type
-    when 'mturk-batch-job-results', 'local-batch-job-results'
+    when 'mturk-batch-job-results', 'local-batch-job-results', 'public-results'
       tmp_file_path = record.results_to_csv
     when 'mturk-batch-job-tweets'
       tmp_file_path = record.to_csv(record.mturk_tweets, ['tweet_id', 'tweet_text', 'availability'])

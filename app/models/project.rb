@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  include S3Uploadable
+
   extend FriendlyId
   friendly_id :title, use: :slugged
   has_many :questions
@@ -68,5 +70,32 @@ class Project < ApplicationRecord
       end
     end
     return true
+  end
+
+  def results_to_csv
+    model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'user_id', 'project_id', 'flag', 'created_at']
+    added_cols = ['question_tag', 'answer_tag', 'user_name', 'total_duration_ms', 'full_log']
+    tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
+    CSV.open(tmp_file_path, 'w') do |csv|
+      csv << model_cols + added_cols
+      results.public_res_type.find_each do |result|
+        row = result.attributes.values_at(*model_cols)
+        log = result.question_sequence_log&.log
+        if not log.nil? and log.has_key?('totalDurationQuestionSequence')
+          total_duration_ms = log['totalDurationQuestionSequence']
+        else
+          total_duration_ms = 0
+        end
+        row += [
+          result.question.tag,
+          result.answer.tag,
+          result.user.username,
+          total_duration_ms,
+          log&.to_json
+        ]
+        csv << row
+      end
+    end
+    return tmp_file_path
   end
 end
