@@ -1,9 +1,9 @@
 <tr>
   <td><%= project.title %></td>
   <td><%= project.es_index_name %></td>
-  <td><%= truncate(project.keywords.join(', ')) %></td>
-  <td><%= project.lang.join(', ') %></td>
-  <td><%= project.locales.join(', ') %> </td>
+  <td><%= truncate(project&.keywords&.join(', ')) %></td>
+  <td><%= project&.lang&.join(', ') %></td>
+  <td><%= project&.locales&.join(', ') %> </td>
   <td><%= status_yes_no(project.public?) %></td>
   <td><%= status_yes_no(project.active_stream?) %></td>
   <td>

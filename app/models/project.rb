@@ -1,22 +1,28 @@
 class Project < ApplicationRecord
   include S3Uploadable
-
   extend FriendlyId
-  friendly_id :title, use: :slugged
+
   has_many :questions
   has_many :transitions
   has_many :results
   has_many :mturk_batch_jobs
   has_many :local_batch_jobs
 
-  translates :title, :description
+  # callbacks
+  before_validation :normalize_blank_values
 
+  # validations
   validates_presence_of :title, :description
+  validates_uniqueness_of :es_index_name, allow_nil: true
 
+  # scopes
   default_scope { order(created_at: :asc)  }
   scope :for_current_locale, -> {where("'#{I18n.locale.to_s}' = ANY (locales)")}
 
+  # fields
+  friendly_id :title, use: :slugged
   enum storage_mode: [:'s3-es', :'s3-es-no-retweets', :s3, :test_mode]
+  translates :title, :description
 
   def display_name
     title
@@ -97,5 +103,11 @@ class Project < ApplicationRecord
       end
     end
     return tmp_file_path
+  end
+
+  def normalize_blank_values(columns: [:es_index_name])
+    columns.each do |column|
+      self[column].present? || self[column] = nil
+    end
   end
 end
