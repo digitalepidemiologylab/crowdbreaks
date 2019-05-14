@@ -1,0 +1,15 @@
+<%= simple_form_for(@project, url: @project.new_record? ? admin_projects_path : admin_project_path(@project), html: {id: 'project-form'}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="mb-5">
+    <h4>Add to project</h4>
+    <div class="form-group">
+      <%= f.input :name, as: :select, collection: @names %>
+      <%= hidden_field_tag(:question_sequence, true) %>
+    </div>
+  </div>
+
+  <div class="form-actions" class="mt-2">
+    <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
+  </div>
+<% end %>

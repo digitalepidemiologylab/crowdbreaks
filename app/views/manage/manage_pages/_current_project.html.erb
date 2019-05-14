@@ -1,19 +1,22 @@
 <tr>
-  <td><%= current_project.title %></td>
-  <td><%= current_project.es_index_name %></td>
-  <td><%= truncate(current_project.keywords.join(', '), length: 80, separator: ',') %></td>
-  <td><%= current_project.lang.join(', ') %></td>
-  <td><%= current_project.storage_mode %></td>
-  <td><%= status_yes_no(current_project.active_stream?) %></td>
+  <td><%= current_project[0].title %></td>
+  <td><%= current_project[0].es_index_name %></td>
+  <td><%= truncate(current_project[0]&.keywords&.join(', '), length: 80, separator: ',') %></td>
+  <td><%= current_project[0]&.lang&.join(', ') %></td>
+  <td><%= current_project[0].storage_mode %></td>
+  <td><%= status_yes_no(current_project[0].active_stream?) %></td>
   <td>
     <span class="no-wrap"> 
-      <% if can? :destroy, current_project %>
-        <%= link_to fa_icon("trash"), admin_project_path(current_project),
+      <% if can? :read, current_project[0] %>
+        <%= link_to fa_icon('eye'), admin_project_path(current_project[0]), title: 'Show' %>
+      <% end %>
+      <% if can? :destroy, current_project[0] %>
+        <%= link_to fa_icon("trash"), admin_project_path(current_project[0]),
           method: :delete,
           data: {confirm: "Delete current_project?"} %>
       <% end %>
-      <% if can? :update, current_project %>
-        <%= link_to fa_icon("pencil"), edit_admin_project_path(current_project)  %>
+      <% if can? :update, current_project[0] %>
+        <%= link_to fa_icon("pencil"), edit_admin_project_path(current_project[0])  %>
       <% end %>
     </span>
   </td>

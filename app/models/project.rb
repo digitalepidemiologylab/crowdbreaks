@@ -12,11 +12,10 @@ class Project < ApplicationRecord
   before_validation :normalize_blank_values
 
   # validations
-  validates_presence_of :title, :description
+  validates_presence_of :title, :description, :name
   validates_uniqueness_of :es_index_name, allow_nil: true
 
   # scopes
-  default_scope { order(created_at: :asc)  }
   scope :for_current_locale, -> {where("'#{I18n.locale.to_s}' = ANY (locales)")}
 
   # fields
@@ -26,6 +25,17 @@ class Project < ApplicationRecord
 
   def display_name
     title
+  end
+
+  def self.grouped_by_name(projects: nil)
+    if projects.nil?
+      projects = Project.all
+    end
+    grouped_projects = []
+    projects.distinct.pluck(:name).each do |name|
+      grouped_projects.push(Project.where(name: name).to_a)
+    end
+    grouped_projects
   end
 
   def initial_question

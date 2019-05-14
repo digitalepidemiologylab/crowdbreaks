@@ -19,14 +19,16 @@ module S3Uploadable
       attribute_name = self.id.to_s
     end
     if self.class.method_defined? 'project'
-      project_name = project&.es_index_name
+      project_name = project&.name
+      project_id = project.id.to_s
     elsif self.has_attribute? 'es_index_name'
-      project_name = es_index_name
+      project_name = name
+      project_id = id.to_s
     end
     if project_name.blank?
       project_name = 'unknown_project'
     end
-    "other/csv/#{project_name}/#{type}/#{type}-#{attribute_name}-v#{records.maximum(:updated_at).to_i}-#{records.count}.csv"
+    "other/csv/#{project_name}/#{type}/#{type}-#{attribute_name}-#{project_id}-#{records.maximum(:updated_at).to_i}-#{records.count}.csv"
   end
 
   def to_csv(records, cols)

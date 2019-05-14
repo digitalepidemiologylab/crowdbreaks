@@ -18,6 +18,9 @@
         <% end %>
       <% end %>
     </div>
+    <div class="form-group">
+      <%= f.input :name, hint: 'Name of the project. By convention this should be the same as the Elasticsearch index name (if provided), thus starting with the project_* prefix. The name should be unique, otherwise it will be grouped with the project of the same name.' %>
+    </div>
   </div>
 
   <div class="mb-5">

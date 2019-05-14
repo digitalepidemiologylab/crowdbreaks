@@ -1,17 +1,16 @@
 module Admin
   class QuestionSequencesController < BaseController
-    authorize_resource class: false
+    load_and_authorize_resource :project, parent: false
 
     def new
     end
 
     def index
-      @projects = Project.all
+      @projects = Project.grouped_by_name(projects: @projects)
     end
 
     def show
       respond_to do |format|
-        @project = Project.friendly.find(show_params[:id])
         format.html {
           @question_sequence = QuestionSequence.new(@project).load
           @user_id = current_or_guest_user.id
@@ -31,7 +30,6 @@ module Admin
     end
 
     def edit
-      @project = Project.friendly.find(params[:id])
       if @project.results.count > 0
         flash[:warning] = "This question sequence is associated with existing answers to questions (results). Therefore certain fields cannot be modified as this would invalidate old data."
       end
@@ -39,21 +37,18 @@ module Admin
     end
 
     def update
-      project = Project.friendly.find(params[:id])
       transitions = question_sequence_params.fetch(:transitions).to_h
       questions = question_sequence_params.fetch(:questions).to_h
-      
-      QuestionSequence.new(project).update(questions, transitions)
+      QuestionSequence.new(@project).update(questions, transitions)
       flash[:notice] = 'Successfully updated question sequence.'
       head :ok
     end
 
     def destroy
-      project = Project.friendly.find(params[:id])
-      if project.results.count > 0
+      if @project.results.count > 0
         redirect_to(admin_question_sequences_path, alert: 'Cannot delete question sequence with existing answers to questions (results). Delete results or define a new project.')
       else
-        QuestionSequence.new(project).destroy
+        QuestionSequence.new(@project).destroy
         redirect_to(admin_question_sequences_path, notice: 'Successfully deleted question sequence.')
       end
     end

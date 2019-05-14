@@ -3,12 +3,20 @@ module Admin
     load_and_authorize_resource param_method: :sanitized_projects_params, find_by: :slug
 
     def new
+      @names = Project.distinct.pluck(:name)
+    end
+
+    def show
     end
 
     def index
+      @projects = Project.grouped_by_name(projects: @projects)
     end
 
     def create
+      if params[:question_sequence]
+        @project = generate_question_sequence_project(@project)
+      end
       if @project.save
         respond_to do |format|
           format.html { redirect_to(admin_projects_path, notice: 'Project successfully created')}
@@ -49,7 +57,14 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :locales)
+      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :locales)
+    end
+
+    def generate_question_sequence_project(project)
+      main_project = Project.find_by(name: project.name)
+      project.title_translations = main_project.title_translations
+      project.description_translations = main_project.description_translations
+      project
     end
 
     def sanitized_projects_params
@@ -62,6 +77,7 @@ module Admin
     end
 
     def array_from_string(str)
+      return nil if str.nil?
       arr = []
       str.split(',').each do |k|
         _k = k.strip.downcase

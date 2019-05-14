@@ -14,7 +14,7 @@ module Manage
       current_streams = @api.get_config
       current_streams ||= []
       @is_up_to_date = Project.is_up_to_date(current_streams)
-      @projects = Project.all
+      @projects = Project.grouped_by_name
     end
 
     def monitor_streams

@@ -1,0 +1,10 @@
+<% @title ||= Project.model_name.human; title @title %>
+<%= go_back_btn admin_projects_path %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-md-8">
+    <h2>Project details</h2>
+  </div>
+</div>
+
+<%= attributes_table(@project) %>

@@ -1,8 +1,8 @@
 <% @title ||= 'Manage'; title @title %>
 <%= go_back_btn dashboard_path %>
 
-<div class="row justify-content-center mb-5">
-  <div class="col-12 col-md-10">
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
     <h2 class='mb-4'>Streaming configuration</h2>
     <span class="mb=4"> Streaming status: </span>
     <span class="badge badge-sentiment"><%= label_based_on_status(@stream_status) %></span><br/>
@@ -10,36 +10,39 @@
 </div>
 
 <% if not @stream_status == 'error' %>
-  <div class="row justify-content-center mb-5">
-    <div class="col-12 col-md-10 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-12">
       <% if @stream_status == 'running' %>
         <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), change_stream_status: 'stop', class: 'btn btn-lg btn-negative mr-2' do %>
-          <i class="fa fa-stop" style="margin-right:10px;color:#fff;"></i>
+          <%= fa_icon('stop', class: 'fa-white') %>
           Stop stream
         <% end %>
         <%= link_to stream_status_path(api: {change_stream_status: 'restart'}), class: 'btn btn-lg btn-primary' do %>
-          <i class="fa fa-refresh" style="margin-right:10px;color:#fff;"></i>
+          <%= fa_icon('refresh', class: 'fa-white') %>
           Restart stream
         <% end %>
       <% else %>
         <%= link_to stream_status_path(api: {change_stream_status: 'start'}), class: 'btn btn-lg btn-success' do %>
-          <i class="fa fa-play" style="margin-right:10px;color:#fff;"></i>
+          <%= fa_icon('play', class: 'fa-white') %>
           Start stream
         <% end %>
       <% end %>
     </div>
 
     <% if not @is_up_to_date %>
-      <div class="col-12 col-md-10 mb-5">
+      <div class="col-12 mt-4">
         <div class="alert alert-danger">The streaming configuration is not up-to-date.</div>
-        <%= link_to 'Update configuration', set_config_path, class: 'btn btn-primary btn-lg mr-2' %>
+        <%= link_to set_config_path, class: 'btn btn-primary btn-lg mr-2' do %>
+          <%= fa_icon('refresh', class: 'fa-white') %>
+          Update configuration
+        <% end %>
       </div>
     <% end %>
   </div>
 <% end %>
 
-<div class="row justify-content-center mb-5">
-  <div class="col-12 col-md-10">
+<div class="row justify-content-center mt-5">
+  <div class="col-12 mb-4">
     <h4>Current projects</h4>
     <table class="table">
       <thead>

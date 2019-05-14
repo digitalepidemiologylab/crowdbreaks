@@ -4,13 +4,21 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-10 col-lg-8">
-    <h2 class='mb-4'>Create a new project</h2>
+    <% if params[:question_sequence] %>
+      <h2 class='mb-4'>Add new question sequence</h2>
+    <% else %>
+      <h2 class='mb-4'>Create a new project</h2>
+    <% end %>
   </div>
 </div>
 
 
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-10 col-lg-8">
-    <%= render 'project_form' %>
+    <% if params[:question_sequence] %>
+      <%= render 'question_sequence_form' %>
+    <% else %>
+      <%= render 'project_form' %>
+    <% end %>
   </div>
 </div>

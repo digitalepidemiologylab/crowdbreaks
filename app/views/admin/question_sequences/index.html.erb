@@ -5,12 +5,13 @@
   </div>
 </div>
 
-<div class="row mb-6">
+<div class="row mb-4">
   <div class="col-12">
     <table class="table">
       <thead>
         <tr>
-          <th>Project</th>
+          <th>Project name</th>
+          <th>Title</th>
           <th># Questions</th>
           <th># Results</th>
           <th>View</th>
@@ -18,37 +19,50 @@
         </tr>
       </thead>
       <tbody>
-        <% @projects.each do |p| %>
-          <tr>
-            <td><%= p.title %></td>
-            <td><%= number_with_delimiter(p.questions.count, delimiter: ' ') %></td>
-            <td><%= number_with_delimiter(p.results.count, delimiter: ' ') %></td>
-            <td>
-              <%= link_to 'Public', admin_question_sequence_path(p.id, mode: :public) %> | 
-              <%= link_to 'Mturk', admin_question_sequence_path(p.id, mode: :mturk) %>
-            </td>
-            <td>
-              <span> 
-                <% if can? :destroy, :question_sequence %>
-                  <%= link_to fa_icon("trash"), admin_question_sequence_path(p.id),
-                    title: 'Destroy question sequence',
-                    method: :delete,
-                    data: {confirm: "Destroy question sequence?"} 
-                  %>
-                <% end %>
-                <% if can? :update, :question_sequence %>
-                  <%= link_to fa_icon("pencil"), edit_admin_question_sequence_path(p.id), title: "Edit question sequence"  %>
-                <% end %>
-                <% if can? :read, :question_sequence %>
-                  <% if p.questions.count > 0 %>
-                    <%= link_to fa_icon('download'), admin_question_sequence_path(p.id, format: 'csv'), title: 'Download question sequence info' %>
+        <% @projects.each do |project_group| %>
+          <% project_group.each_with_index do |p, idx| %>
+            <tr>
+              <% if idx == 0 %>
+                <td rowspan="<%= project_group.length %>"><%= p.name %></td>
+                <td rowspan="<%= project_group.length %>"><%= p.title %></td>
+              <% end %>
+              <td><%= number_with_delimiter(p.questions.count, delimiter: ' ') %></td>
+              <td><%= number_with_delimiter(p.results.count, delimiter: ' ') %></td>
+              <td>
+                <%= link_to 'Public', admin_question_sequence_path(p.id, mode: :public) %> | 
+                <%= link_to 'Mturk', admin_question_sequence_path(p.id, mode: :mturk) %>
+              </td>
+              <td>
+                <span> 
+                  <% if can? :destroy, :question_sequence %>
+                    <%= link_to fa_icon("trash"), admin_question_sequence_path(p.id),
+                      title: 'Destroy question sequence',
+                      method: :delete,
+                      data: {confirm: "Destroy question sequence?"} 
+                    %>
                   <% end %>
-                <% end %>
-              </span>
-            </td>
-          </tr>
+                  <% if can? :update, :question_sequence %>
+                    <%= link_to fa_icon("pencil"), edit_admin_question_sequence_path(p.id), title: "Edit question sequence"  %>
+                  <% end %>
+                  <% if can? :read, :question_sequence %>
+                    <% if p.questions.count > 0 %>
+                      <%= link_to fa_icon('download'), admin_question_sequence_path(p.id, format: 'csv'), title: 'Download question sequence info' %>
+                    <% end %>
+                  <% end %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
         <% end %>
       </tbody>
     </table>
   </div>
 </div>
+
+<% if can? :create, Project %>
+  <div class="row justify-content-center mb-4">
+    <div class="col-12">
+      <%= link_to 'New Question Sequence', new_admin_project_path(question_sequence: true), class: 'btn btn-primary btn-lg' %>
+    </div>
+  </div>
+<% end %>

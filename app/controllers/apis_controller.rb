@@ -77,7 +77,7 @@ class ApisController < ApplicationController
   def set_config
     authorize! :configure, :stream
 
-    @projects = Project.all.where(active_stream: true)
+    @projects = Project.all.where(active_stream: true).where.not(es_index_name: nil)
     config = ActiveModelSerializers::SerializableResource.new(@projects).as_json
     resp = @api.set_config(config)
     respond_with_flash(resp, streaming_path)
