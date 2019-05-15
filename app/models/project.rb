@@ -21,6 +21,7 @@ class Project < ApplicationRecord
   # fields
   friendly_id :title, use: :slugged
   enum storage_mode: [:'s3-es', :'s3-es-no-retweets', :s3, :test_mode]
+  enum image_storage_mode: [:inactive, :active, :avoid_possibly_sensitive]
   translates :title, :description
 
   def display_name
@@ -72,17 +73,11 @@ class Project < ApplicationRecord
     remote_config.each do |c|
       p = Project.find_by(slug: c['slug'])
       return false if p.nil?
-      if p.keywords.sort != c['keywords'].sort
-        return false
+      ['keywords', 'lang'].each do |prop|
+        return false if p[prop].sort != c[prop].sort
       end
-      if p.lang.sort != c['lang'].sort
-        return false
-      end
-      if p.es_index_name != c['es_index_name']
-        return false
-      end
-      if p.storage_mode != c['storage_mode']
-        return false
+      ['es_index_name', 'storage_mode', 'image_storage_mode'].each do |prop|
+        return false if p[prop] != c[prop]
       end
     end
     return true

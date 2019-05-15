@@ -39,6 +39,9 @@
         <%= f.input :storage_mode, collection: Project.storage_modes, include_blank: false, selected: @project.read_attribute_before_type_cast(:storage_mode), hint: 'Where to store tweets. In any case tweets will be stored on S3. If project is public it should include Elasticsearch (es).' %>
       </div>
       <div class="form-group">
+        <%= f.input :image_storage_mode, collection: Project.image_storage_modes, include_blank: false, selected: @project.read_attribute_before_type_cast(:image_storage_mode), hint: 'Download images (includes video thumbnails, gifs) to S3. Active: Download everything. Avoid possibly sensitive: Do not download if tweet was flagged as sensitive.' %>
+      </div>
+      <div class="form-group">
         <%= f.input :active_stream, input_html: {class: "mr-2", value: @project.active_stream}, hint: "Activate stream (if false, won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
       </div>
     </div>

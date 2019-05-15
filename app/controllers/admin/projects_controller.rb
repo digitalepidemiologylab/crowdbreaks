@@ -57,7 +57,7 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :locales)
+      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode, :locales)
     end
 
     def generate_question_sequence_project(project)
@@ -73,6 +73,7 @@ module Admin
       sanitized_params[:lang] = array_from_string(project_params[:lang])
       sanitized_params[:locales] = array_from_string(project_params[:locales])
       sanitized_params[:storage_mode] = sanitized_params[:storage_mode].to_i
+      sanitized_params[:image_storage_mode] = sanitized_params[:image_storage_mode].to_i
       sanitized_params
     end
 

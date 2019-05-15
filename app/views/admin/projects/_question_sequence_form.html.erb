@@ -4,7 +4,7 @@
   <div class="mb-5">
     <h4>Add to project</h4>
     <div class="form-group">
-      <%= f.input :name, as: :select, collection: @names %>
+      <%= f.input :name, as: :select, collection: @names, include_blank: false %>
       <%= hidden_field_tag(:question_sequence, true) %>
     </div>
   </div>

@@ -4,6 +4,7 @@
   <td><%= truncate(current_project[0]&.keywords&.join(', '), length: 80, separator: ',') %></td>
   <td><%= current_project[0]&.lang&.join(', ') %></td>
   <td><%= current_project[0].storage_mode %></td>
+  <td><%= current_project[0].image_storage_mode %></td>
   <td><%= status_yes_no(current_project[0].active_stream?) %></td>
   <td>
     <span class="no-wrap"> 
