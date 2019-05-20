@@ -72,7 +72,7 @@
               <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
             <% end %>
             <%= tag.span id: "mturk-batch-job-results-#{mturk_batch_job.id}-icon" do %>
-              <% if mturk_batch_job.csv_file_is_up_to_date('mturk-batch-job-results', mturk_batch_job.results) %>
+              <% if mturk_batch_job.assoc_s3_key_exists?('mturk-batch-job-results', mturk_batch_job.results) %>
                 <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
               <% else %>
                 <%= link_to fa_icon('download'), mturk_batch_job_path(mturk_batch_job), title: 'Download CSV', remote: true %>

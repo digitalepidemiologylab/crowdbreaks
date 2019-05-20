@@ -1,4 +1,5 @@
 class Project < ApplicationRecord
+  include S3Uploadable
   include S3UploadableAssociation
   extend FriendlyId
 

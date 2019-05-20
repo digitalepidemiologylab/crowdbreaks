@@ -41,7 +41,7 @@
             <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
           <% end %>
           <%= tag.span id: "local-batch-job-results-#{local_batch_job.id}-icon" do %>
-            <% if local_batch_job.csv_file_is_up_to_date('local-batch-job-results', local_batch_job.results) %>
+            <% if local_batch_job.assoc_s3_key_exists?('local-batch-job-results', local_batch_job.results) %>
               <%= link_to fa_icon('download'), manage_local_batch_job_path(local_batch_job, format: 'csv'), title: 'Download CSV' %>
             <% else %>
               <%= link_to fa_icon('download'), manage_local_batch_job_path(local_batch_job), title: 'Download CSV', remote: true %>

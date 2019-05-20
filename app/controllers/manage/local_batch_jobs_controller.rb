@@ -23,7 +23,7 @@ module Manage
           @num_tweets = @local_batch_job.local_tweets.count
         }
         format.csv { 
-          redirect_to @local_batch_job.signed_csv_file_path(type, @local_batch_job.results)
+          redirect_to @local_batch_job.assoc_signed_file_path(type, @local_batch_job.results)
         }
         format.js {
           ActionCable.server.broadcast("job_notification:#{current_user.id}", job_status: 'running', record_id: @local_batch_job.id, job_type: "#{type}_s3_upload", message: 'Upload started.')

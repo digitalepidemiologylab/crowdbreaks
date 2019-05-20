@@ -1,19 +1,19 @@
 module S3UploadableAssociation
   extend ActiveSupport::Concern
 
-  def csv_file_is_up_to_date(type, records, attribute_name: 'name')
+  def assoc_s3_key_exists?(type, records, attribute_name: 'name')
     s3 = AwsS3.new
-    csv_file = assoc_csv_path(type, records, attribute_name: attribute_name)
+    csv_file = assoc_s3_key(type, records, attribute_name: attribute_name)
     s3.exists?(csv_file)
   end
 
-  def signed_csv_file_path(type, records, attribute_name: 'name')
+  def assoc_signed_file_path(type, records, attribute_name: 'name')
     s3 = AwsS3.new
-    csv_file = assoc_csv_path(type, records, attribute_name: attribute_name)
+    csv_file = assoc_s3_key(type, records, attribute_name: attribute_name)
     s3.get_signed_url(csv_file, filename: csv_file.split('/')[-1])
   end
 
-  def assoc_csv_path(type, records, attribute_name: 'name')
+  def assoc_s3_key(type, records, attribute_name: 'name')
     attribute_name = self.read_attribute(attribute_name)&.parameterize
     if attribute_name.nil?
       attribute_name = self.id.to_s
@@ -31,7 +31,7 @@ module S3UploadableAssociation
     "other/csv/#{project_name}/#{type}/#{type}-#{attribute_name}-#{project_id}-#{records.maximum(:updated_at).to_i}-#{records.count}.csv"
   end
 
-  def association_to_csv(records, cols)
+  def assoc_dump(records, cols)
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << cols
