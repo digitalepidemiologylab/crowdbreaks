@@ -28,7 +28,7 @@ class SyncS3
   end
 
   def get_removable(jobs)
-    files_present = @s3.list_dir('other/csv').to_set
+    files_present = @s3.list_dir('other/').to_set
     files_needed = jobs.collect{|j| j[:s3_key]}.to_set
     return files_present - files_needed
   end
@@ -74,6 +74,13 @@ class SyncS3
         jobs.push({'s3_key': s3_key, 'type': type, 'record_id': project.id, 'exists': exists})
       end
     end
+    # projects
+    Project.where.not(es_index_name: nil).find_each do |project|
+      type = 'project'
+      s3_key = project.s3_key
+      exists = @s3.exists?(s3_key)
+      jobs.push({'s3_key': s3_key, 'type': type, 'record_id': project.id, 'exists': exists})
+    end
     return jobs
   end
 
@@ -103,6 +110,9 @@ class SyncS3
     when 'public-results'
       record = Project.find(record_id)
       s3_key = record.assoc_s3_key(type, record.results.public_res_type) unless s3_key.present?
+    when 'project'
+      record = Project.find(record_id)
+      s3_key = record.s3_key(type, record.results.public_res_type) unless s3_key.present?
     else
       Rails.logger.error("Upload type #{type} was not recognized.")
       return false
@@ -119,9 +129,11 @@ class SyncS3
     when 'mturk-batch-job-results', 'local-batch-job-results', 'public-results'
       tmp_file_path = record.results_to_csv
     when 'mturk-batch-job-tweets'
-      tmp_file_path = record.assoc_dump(record.mturk_tweets, ['tweet_id', 'tweet_text', 'availability'])
+      tmp_file_path = record.assoc_dump_to_local(record.mturk_tweets, ['tweet_id', 'tweet_text', 'availability'])
     when 'local-batch-job-tweets'
-      tmp_file_path = record.assoc_dump(record.local_tweets, ['tweet_id', 'tweet_text', 'availability'])
+      tmp_file_path = record.assoc_dump_to_local(record.local_tweets, ['tweet_id', 'tweet_text', 'availability'])
+    when 'project'
+      tmp_file_path = record.dump_to_local
     end
     # upload local file to s3
     @s3.upload_file(tmp_file_path, s3_key)

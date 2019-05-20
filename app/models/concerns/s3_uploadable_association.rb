@@ -31,7 +31,7 @@ module S3UploadableAssociation
     "other/csv/#{project_name}/#{type}/#{type}-#{attribute_name}-#{project_id}-#{records.maximum(:updated_at).to_i}-#{records.count}.csv"
   end
 
-  def assoc_dump(records, cols)
+  def assoc_dump_to_local(records, cols)
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << cols
