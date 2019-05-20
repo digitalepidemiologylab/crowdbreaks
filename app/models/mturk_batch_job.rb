@@ -1,6 +1,6 @@
 class MturkBatchJob < ApplicationRecord
   include ActiveModel::Validations
-  include S3Uploadable
+  include S3UploadableAssociation
 
   has_many :tasks, dependent: :delete_all
   has_many :mturk_tweets, dependent: :delete_all

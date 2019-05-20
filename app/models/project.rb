@@ -1,5 +1,5 @@
 class Project < ApplicationRecord
-  include S3Uploadable
+  include S3UploadableAssociation
   extend FriendlyId
 
   has_many :questions
@@ -45,7 +45,7 @@ class Project < ApplicationRecord
     first_transition.to_question
   end
 
-  def to_csv
+  def qs_to_csv
     CSV.generate do |csv|
       # questions
       csv << ['Questions']

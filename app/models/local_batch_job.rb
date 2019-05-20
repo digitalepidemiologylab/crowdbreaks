@@ -1,6 +1,6 @@
 class LocalBatchJob < ApplicationRecord
   include ActiveModel::Validations
-  include S3Uploadable
+  include S3UploadableAssociation
 
   extend FriendlyId
   friendly_id :name, use: :slugged

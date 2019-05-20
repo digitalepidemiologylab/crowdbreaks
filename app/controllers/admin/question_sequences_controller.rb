@@ -24,7 +24,7 @@ module Admin
           @notification = MturkNotification.new.success
         }
         format.csv {
-          send_data @project.to_csv, filename: "#{@project.title}-#{Time.current.strftime("%d-%m-%Y")}.csv"
+          send_data @project.qs_to_csv, filename: "#{@project.name}-#{Time.current.strftime("%d-%m-%Y")}.csv"
         }
       end
     end
