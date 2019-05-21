@@ -3,12 +3,20 @@
 <div class="row justify-content-center">
   <div class="col-12 col-md-10 col-lg-8 text-center">
     <h1 class='mb-5'><%= t('.about_crowdbreaks_title') %></h1>
-    <p class="large text-light text-left mb-5"><%= t('.about_crowdbreaks_html', 
-                                                     href_group: link_to('Digital Epidemiology Lab', 'https://www.digitalepidemiologylab.org/', target: '_blank'),
-                                                    href_EPFL: link_to('EPFL', 'https://www.epfl.ch/', target: '_blank'))%> </p>
-
-    <h4 class="and-divider mb-4"><span><%= t('.how_does_it_work_title') %></span></h4>
-    <p class="large text-light text-left mb-5"><%= t('.how_does_it_work') %></p>
+    <p class="large text-light text-left mb-5">
+      <%= t('.about_crowdbreaks_html', 
+            href_group: link_to('Digital Epidemiology Lab', 'https://www.digitalepidemiologylab.org/', target: '_blank'),
+            href_EPFL: link_to('EPFL', 'https://www.epfl.ch/', target: '_blank')) %> 
+    </p>
+    <h4 class="and-divider mb-4">
+      <span>
+        <%= t('.how_does_it_work_title') %>
+      </span>
+    </h4>
+    <p class="large text-light text-left">
+      <%= t('.how_does_it_work_html', href_crowdbreaks_paper: link_to(t('.latest_work_link'), 'https://www.frontiersin.org/articles/10.3389/fpubh.2019.00081/full', target: '_blank')) %>
+    </p>
+    <p class="large text-light text-left font-italic mb-5">Müller, Martin M., and Marcel Salathé. "Crowdbreaks: Tracking Health Trends Using Public Social Media Data and Crowdsourcing." Frontiers in public health 7 (2019).</p>
 
     <h4 class="and-divider mb-4"><span><%= t('.why_crowdsourcing_title') %></span></h4>
     <p class="large text-light text-left mb-5"><%= t('.why_crowdsourcing_html') %></p>
