@@ -24,7 +24,7 @@ module S3Uploadable
   def dump_to_local
     tmp_file_path = "/tmp/json_upload_#{SecureRandom.hex}.json"
     File.open(tmp_file_path, "w") do |f|
-      f.write(self.attributes.to_json)
+      f.write(JSON.pretty_generate(self.attributes))
     end
     return tmp_file_path
   end
