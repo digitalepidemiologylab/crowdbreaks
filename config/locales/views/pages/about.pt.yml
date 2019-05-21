@@ -2,13 +2,13 @@
 pt:
   pages:
     about:
-      about_crowdbreaks_title: Sobre Crowdbreaks
       about_crowdbreaks_html: Crowdbreaks é um sistema de acompanhamento de tendências de saúde, desenvolvido atualmente pelo %{href_group} em %{href_EPFL} na Suíça. O sistema foi projetado para rastrear tendências em saúde e problemas relacionados a doenças em tempo real em diferentes países. Ao obter feedback dos usuários, o sistema acabará melhorando e será capaz de tirar conclusões mais precisas sobre esses problemas.
-      help_title: Se envolver
+      about_crowdbreaks_title: Sobre Crowdbreaks
       help_html: Você pode nos ajudar respondendo as perguntas no %{projects_section}. Sinta-se à vontade para criar uma conta se quiser acompanhar seus esforços. Você também pode fornecer qualquer outro feedback, escrevendo para nós %{mail}.
+      help_title: Se envolver
+      how_does_it_work_html: 'Crowdbreaks coleta tweets com palavras-chave que podem estar relacionadas a tópicos de saúde específicos. Usando processamento de linguagem natural e técnicas de aprendizado de máquina, o sistema tenta filtrar o conteúdo relevante de conteúdo não relevante. Ao fornecer mais meta-informação (rotulagem) dos tweets, estes algoritmos irão melhorar continuamente para detectar tweets que sejam verdadeiramente relevantes e compreendam o seu conteúdo. Para uma explicação mais aprofundada do funcionamento interno da plataforma, consulte o nosso %{href_crowdbreaks_paper}:'
       how_does_it_work_title: Como funciona?
-      how_does_it_work_html: "Crowdbreaks coleta tweets com palavras-chave que podem estar relacionadas a tópicos de saúde específicos. Usando processamento de linguagem natural e técnicas de aprendizado de máquina, o sistema tenta filtrar o conteúdo relevante de conteúdo não relevante. Ao fornecer mais meta-informação (rotulagem) dos tweets, estes algoritmos irão melhorar continuamente para detectar tweets que sejam verdadeiramente relevantes e compreendam o seu conteúdo. Para uma explicação mais aprofundada do funcionamento interno da plataforma, consulte o nosso %{href_crowdbreaks_paper}:"
       latest_work_link: mais recente trabalho
       projects_link: Seção de projetos
-      why_crowdsourcing_title: Por que crowdsourcing?
       why_crowdsourcing_html: Milhões de pessoas usam as mídias sociais todos os dias para compartilhar como se sentem, tanto boas quanto ruins. Isto é, em certo sentido, como ter milhões de sensores que podem nos ajudar a entender a situação da saúde em tempo real. Ao pedir às pessoas que ajudem a entender os dados relatados, nós invocamos a sabedoria da multidão para nos ajudar a separar o sinal do ruído. Também esperamos envolver o público na saúde pública e tentar mostrar a importância dessas questões.
+      why_crowdsourcing_title: Por que crowdsourcing?
