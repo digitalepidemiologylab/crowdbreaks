@@ -105,7 +105,6 @@ class FlaskApi
     trials = 0
     tv = TweetValidation.new
     tweet_id = tweet.fetch(:tweet_id, nil)
-    debugger
     while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
       Rails.logger.info "Trial #{trials + 1}: Tweet #{tweet_id} is invalid and will be removed. Fetching new tweet instead."
       remove_tweet(project.es_index_name, tweet_id)
