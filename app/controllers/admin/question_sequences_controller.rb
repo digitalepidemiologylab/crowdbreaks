@@ -15,7 +15,8 @@ module Admin
           @question_sequence = QuestionSequence.new(@project).load
           @user_id = current_or_guest_user.id
           @hit_id = show_params[:hitId]
-          @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
+          tweet = FlaskApi.new.get_tweet(@project, user_id: @user_id)
+          @tweet_id = tweet[:tweet_id]
           @mode = show_params[:mode]
           @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
           @assignment_id = show_params[:assignmentId]
@@ -52,7 +53,7 @@ module Admin
         redirect_to(admin_question_sequences_path, notice: 'Successfully deleted question sequence.')
       end
     end
-    
+
 
     private
 

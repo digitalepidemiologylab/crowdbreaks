@@ -8,7 +8,9 @@ class QuestionSequencesController < ApplicationController
     # Other
     @user_id = current_or_guest_user.id
     # Fetch new tweet ID
-    @tweet_id = FlaskApi.new.get_tweet(@project.es_index_name, user_id: @user_id)
+    tweet = FlaskApi.new.get_tweet(@project, user_id: @user_id)
+    add_to_public_tweets(tweet, @project)
+    @tweet_id = tweet[:tweet_id]
 
     # @tweet_id = '1047868518224416769'
     # @tweet_id = '564984221203431000'  # invalid tweet
@@ -51,11 +53,11 @@ class QuestionSequencesController < ApplicationController
       render json: {}, status: 400 and return
     end
 
-    if test_mode 
-      new_tweet_id = api.get_tweet(project.es_index_name, user_id: user_id)
-      render json: {tweet_id: new_tweet_id}, status: 200 and return
+    if test_mode
+      new_tweet = api.get_tweet(project, user_id: user_id)
+      render json: {tweet_id: new_tweet[:tweet_id]}, status: 200 and return
     end
-    
+
     # update count
     if project.results.count > 0
       project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
@@ -66,10 +68,11 @@ class QuestionSequencesController < ApplicationController
     api.update_tweet(project.es_index_name, user_id, tweet_id)
 
     # get next tweet
-    new_tweet_id = api.get_tweet(project.es_index_name, user_id: user_id)
+    new_tweet = api.get_tweet(project, user_id: user_id)
+    new_tweet_id = new_tweet[:tweet_id]
 
     # save logs
-    logs = final_params.fetch(:logs, {}) 
+    logs = final_params.fetch(:logs, {})
     unless logs.empty?
       qs_log = QuestionSequenceLog.create(log: logs)
       # associated all previous results with logs
@@ -95,5 +98,17 @@ class QuestionSequencesController < ApplicationController
 
   def results_params
     params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)
+  end
+
+  def add_to_public_tweets(tweet, project)
+    if tweet[:tweet_text].present?
+      if not PublicTweet.where(tweet_id: tweet[:tweet_id], project: project).exists?
+        # whitelisting
+        whitelisted_keys = [:tweet_id, :tweet_text]
+        public_tweet = tweet.select { |key,_| whitelisted_keys.include? key }
+        public_tweet[:project] = project
+        PublicTweet.create(public_tweet)
+      end
+    end
   end
 end

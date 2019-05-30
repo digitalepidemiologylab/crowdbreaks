@@ -94,24 +94,32 @@ class FlaskApi
 
   # tweets
   def get_tweet(project, user_id: nil)
-    tweet_id = _get_tweet(project, user_id)
+    tweet = _get_tweet(project.es_index_name, user_id)
     # If API is down, fetch a random tweet
-    if tweet_id.nil? or not tweet_id.scan(/\D/).empty?
-      return get_random_tweet
+    if tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
+      ErrorLogger.error "API is down. Showing random tweet instead."
+      return get_random_tweet(project)
     end
-    
+    return get_random_tweet(project) if tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
     # test if tweet is publicly available
     trials = 0
     tv = TweetValidation.new
+    tweet_id = tweet.fetch(:tweet_id, nil)
     while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
-      Rails.logger.info "Tweet #{tweet_id} is invalid and will be removed"
+      Rails.logger.info "Trial #{trial}: Tweet #{tweet_id} is invalid and will be removed. Fetching new tweet instead."
       remove_tweet(project, tweet_id)
-      Rails.logger.info "Fetching new tweet"
-      tweet_id = _get_tweet(project, user_id)
+      tweet = _get_tweet(project.es_index_name, user_id)
+      tweet_id = tweet&.fetch(:tweet_id, nil)
       trials += 1
     end
-    return get_random_tweet if trials >= MAX_COUNT_REFETCH
-    tweet_id
+    if trials >= MAX_COUNT_REFETCH
+      ErrorLogger.error "Number of trials exceeded when trying to fetch new tweet from API. Showing random tweet instead."
+      return get_random_tweet(project)
+    elsif tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
+      ErrorLogger.error "Tweet returned from API is invalid or empty. Showing random tweet instead."
+      return get_random_tweet(project)
+    end
+    tweet
   end
 
   def update_tweet(project, user_id, tweet_id)
@@ -178,25 +186,32 @@ class FlaskApi
       JSON.parse(resp)
     end
   end
-  
+
   private
 
 
-  def get_random_tweet
-    # API is down, get random tweet from Results table instead
-    ErrorLogger.error "API is down, fetching random old tweet"
-    return '20' if Result.count == 0
-    trials = 0
-    tweet_id = Result.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
+  def get_random_tweet(project)
+    return random_tweet if Result.count == 0
+    if Result.where(project: project).exists?
+      results = Result.where(project: project)
+    else
+      results = Result.all
+    end
+    tweet_id = results.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
     tv = TweetValidation.new
+    trials = 0
     while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH_DB
       Rails.logger.info "Tweet #{tweet_id} is not available anymore, trying another"
       Result.uncached do
-        tweet_id = Result.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
+        tweet_id = results.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
       end
       trials += 1
     end
-    return tweet_id
+    return {tweet_id: tweet_id, tweet_text: nil}
+  end
+
+  def random_tweet
+    {tweet_id: '20', tweet_text: nil}
   end
 
   def remove_tweet(project, tweet_id)
@@ -206,14 +221,14 @@ class FlaskApi
     end
   end
 
-  def _get_tweet(project, user_id)
+  def _get_tweet(es_index_name, user_id)
     data = {'user_id': user_id}
-    tweet_id = nil
+    tweet = nil
     handle_error do
-      resp = self.class.get('/tweet/new/'+project, query: data, timeout: 2)
-      tweet_id = resp.parsed_response
+      resp = self.class.get('/tweet/new/'+es_index_name, query: data, timeout: 2)
+      tweet = resp.parsed_response.deep_symbolize_keys!
     end
-    tweet_id
+    tweet
   end
 
 

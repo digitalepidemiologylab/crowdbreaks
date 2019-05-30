@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_14_132416) do
+ActiveRecord::Schema.define(version: 2019_05_30_112759) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,18 @@ ActiveRecord::Schema.define(version: 2019_05_14_132416) do
     t.index ["slug"], name: "index_projects_on_slug"
   end
 
+  create_table "public_tweets", force: :cascade do |t|
+    t.bigint "tweet_id"
+    t.text "tweet_text"
+    t.bigint "project_id"
+    t.integer "availability", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["availability"], name: "index_public_tweets_on_availability"
+    t.index ["project_id"], name: "index_public_tweets_on_project_id"
+    t.index ["tweet_id"], name: "index_public_tweets_on_tweet_id"
+  end
+
   create_table "question_answers", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -279,6 +291,7 @@ ActiveRecord::Schema.define(version: 2019_05_14_132416) do
   end
 
   add_foreign_key "mturk_batch_jobs", "projects"
+  add_foreign_key "public_tweets", "projects"
   add_foreign_key "question_answers", "answers"
   add_foreign_key "question_answers", "questions"
   add_foreign_key "questions", "projects"
