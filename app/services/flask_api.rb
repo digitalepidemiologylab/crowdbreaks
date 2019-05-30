@@ -105,9 +105,10 @@ class FlaskApi
     trials = 0
     tv = TweetValidation.new
     tweet_id = tweet.fetch(:tweet_id, nil)
+    debugger
     while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
-      Rails.logger.info "Trial #{trials}: Tweet #{tweet_id} is invalid and will be removed. Fetching new tweet instead."
-      remove_tweet(project, tweet_id)
+      Rails.logger.info "Trial #{trials + 1}: Tweet #{tweet_id} is invalid and will be removed. Fetching new tweet instead."
+      remove_tweet(project.es_index_name, tweet_id)
       tweet = _get_tweet(project.es_index_name, user_id)
       tweet_id = tweet&.fetch(:tweet_id, nil)
       trials += 1
@@ -122,10 +123,10 @@ class FlaskApi
     tweet
   end
 
-  def update_tweet(project, user_id, tweet_id)
+  def update_tweet(es_index_name, user_id, tweet_id)
     data = {'user_id': user_id, 'tweet_id': tweet_id}
     handle_error do
-      self.class.post('/tweet/update/'+project, body: data.to_json, headers: JSON_HEADER)
+      self.class.post('/tweet/update/'+es_index_name, body: data.to_json, headers: JSON_HEADER)
     end
   end
 
@@ -214,10 +215,10 @@ class FlaskApi
     {tweet_id: '20', tweet_text: nil}
   end
 
-  def remove_tweet(project, tweet_id)
+  def remove_tweet(es_index_name, tweet_id)
     data = {'tweet_id': tweet_id}
     handle_error do
-      self.class.post('/tweet/remove/'+project, body: data.to_json, headers: JSON_HEADER)
+      self.class.post('/tweet/remove/'+es_index_name, body: data.to_json, headers: JSON_HEADER)
     end
   end
 
