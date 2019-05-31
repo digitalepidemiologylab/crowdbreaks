@@ -87,7 +87,7 @@ class Project < ApplicationRecord
 
   def results_to_csv
     model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'user_id', 'project_id', 'flag', 'created_at']
-    added_cols = ['question_tag', 'answer_tag', 'tweet_text', 'user_name', 'total_duration_ms', 'full_log']
+    added_cols = ['question_tag', 'answer_tag', 'text', 'user_name', 'total_duration_ms', 'full_log']
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
