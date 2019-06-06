@@ -30,6 +30,17 @@ class Project < ApplicationRecord
     title
   end
 
+  def to_label
+    # display name for simple form select options
+    if Project.where(name: name).count == 1
+      name
+    else
+      # display project name with index based on created_at
+      idx = Project.where(name: 'project_crispr').order(:created_at).pluck(:id).find_index(id) + 1
+      "#{name} (#{idx})"
+    end
+  end
+
   def self.grouped_by_name(projects: nil)
     if projects.nil?
       projects = Project.all
