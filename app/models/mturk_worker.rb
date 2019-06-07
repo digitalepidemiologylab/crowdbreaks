@@ -35,7 +35,7 @@ class MturkWorker < ApplicationRecord
       Rails.logger.info "task #{task.id} was requested by #{worker_id} but has been previously assigned to #{task.mturk_worker.worker_id}."
       if task.results.count > 0
         msg = "task #{task.id} already has associated results and can not be given to #{worker_id}. the previous results were done by worker #{task.mturk_worker.worker_id}."
-        worker_id == task.mturk_worker.worker_id ? Rails.logger.error(msg) : errorlogger.error(msg)  # only report to rollbar in case of wrong worker assignment
+        worker_id == task.mturk_worker.worker_id ? Rails.logger.error(msg) : Errorlogger.error(msg)  # only report to rollbar in case of wrong worker assignment
         task.completed!
         return nil, mturk_notification.error
       else
@@ -47,7 +47,7 @@ class MturkWorker < ApplicationRecord
     end
 
     if task.completed?
-      errorlogger.error "task #{task.id} has already been completed."
+      Errorlogger.error "task #{task.id} has already been completed."
       return nil, mturk_notification.error
     end
 
