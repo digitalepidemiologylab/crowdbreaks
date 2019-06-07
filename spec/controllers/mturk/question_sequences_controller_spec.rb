@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Mturk::QuestionSequencesController, type: :controller do
 
-  # shared 
+  # shared
   let!(:qs_log_mturk) { FactoryBot.create(:question_sequence_log, :mturk) }
   let!(:qs_log_public) { FactoryBot.create(:question_sequence_log, :public) }
 
@@ -153,7 +153,6 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       # expect assignment to be persisted
       task = Task.find(task_submitted1.id)
       expect(task.mturk_worker_id).to eq(mturk_worker1.id)
-
       # worker 1 returns hits, worker 2 accepts it again
       get :show, params: {
         hitId: task_submitted1.hit_id,
@@ -163,7 +162,6 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       # expect assignment to be changed
       task.reload
       expect(task.mturk_worker_id).to eq(mturk_worker2.id)
-      expect(task.mturk_tweet_id).to eq(mturk_tweet2.id)
     end
 
     it "does not update task after failed assignment" do
@@ -295,7 +293,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(assigns(:tweet_id)).to eq(tweet.tweet_id.to_s)
       task.reload
       expect(task.mturk_worker_id).to eq(mturk_worker8.id)
-      # worker 8 didn't finish work and returns it. Task is then not properly re-assigned and worker 6 submit his result. 
+      # worker 8 didn't finish work and returns it. Task is then not properly re-assigned and worker 6 submit his result.
       # In this case we want to store the results anyway in order not to lose anything
       expect(Result.count).to eq(0)
       expect(Rails.logger).to receive(:error).with(/was assigned to worker/)
