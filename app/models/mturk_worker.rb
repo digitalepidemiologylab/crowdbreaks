@@ -47,7 +47,7 @@ class MturkWorker < ApplicationRecord
     end
 
     if task.completed?
-      ErrorLogger.error "task #{task.id} has already been completed."
+      ErrorLogger.error "Task #{task.id} has been requested by #{worker_id} but has already been completed by #{task.mturk_worker.worker_id}."
       return nil, mturk_notification.error
     end
 
