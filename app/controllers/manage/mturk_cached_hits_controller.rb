@@ -5,21 +5,31 @@ module Manage
 
     def index
       @sandbox = param_is_truthy?(:sandbox, default: false)
-      @filtered = param_is_truthy?(:filtered)
-      @reviewable = param_is_truthy?(:reviewable)
-      filters = {sandbox: @sandbox}
-      if @filtered
+      @platform_only = param_is_truthy?(:platform_only, default: true)
+      @show_assignable = param_is_truthy?(:show_assignable, default: true)
+      @show_unassignable = param_is_truthy?(:show_unassignable, default: true)
+      @show_reviewable = param_is_truthy?(:show_reviewable, default: true)
+      @show_reviewing = param_is_truthy?(:show_reviewing, default: true)
+      statuses = []
+      statuses.push('Assignable') if @show_assignable
+      statuses.push('Unassignable') if @show_unassignable
+      statuses.push('Reviewable') if @show_reviewable
+      statuses.push('Reviewing') if @show_reviewing
+      filters = {sandbox: @sandbox, hit_status: statuses}
+      if @platform_only
         hit_types = MturkBatchJob.pluck(:hittype_id).reject{|v| v.blank?}
-        filters['hit_type_id'] = hit_types
-      end
-      if @reviewable
-        filters['hit_status'] = 'Reviewable'
+        filters[:hit_type_id] = hit_types
       end
       @mturk_cached_hits = MturkCachedHit.where(filters).all.order('creation_time DESC').page(params[:page]).per(50)
       @num_hits = MturkCachedHit.where(sandbox: @sandbox).count
-      @num_hits_reviewable = @num_hits - MturkCachedHit.where(sandbox: @sandbox, hit_review_status: 'NotReviewed').count
       @balance = @mturk.check_balance.available_balance
       @last_updated = MturkCachedHit.where(sandbox: @sandbox).order('updated_at').last&.updated_at
+      # filtered counts
+      filters.delete(:hit_status)
+      @num_assignable = MturkCachedHit.where(hit_status: 'Assignable', **filters).count
+      @num_unassignable = MturkCachedHit.where(hit_status: 'Unassignable', **filters).count
+      @num_reviewable = MturkCachedHit.where(hit_status: 'Reviewable', **filters).count
+      @num_reviewing = MturkCachedHit.where(hit_status: 'Reviewing', **filters).count
     end
 
     def show

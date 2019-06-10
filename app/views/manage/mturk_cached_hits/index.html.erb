@@ -11,7 +11,7 @@
         <table class="table vertical-align borderless-table">
           <%= table_row('Account balance', '$&nbsp;'.html_safe + num(@balance)) %>
           <%= table_row('Total number of HITs', num(@num_hits)) %>
-          <%= table_row('Number of reviewable HITs', num(@num_hits_reviewable)) %>
+          <%= table_row('Shown by filter', num(@mturk_cached_hits.total_count)) %>
         </table>
       </div>
     </div>
@@ -21,8 +21,12 @@
       <div class="card-body">
         <h4 class="card-title">Filters</h4>
         <%= toggle_switch(!@sandbox, 'Production', 'production-checkbox') %>
-        <%= toggle_switch(@filtered, 'Platform only', 'filtered-checkbox') %>
-        <%= toggle_switch(@reviewable, 'Reviewable', 'reviewable-checkbox') %>
+        <%= toggle_switch(@platform_only, 'Platform only', 'platform_only-hits-checkbox') %>
+        <h4 class="card-title mt-3">HIT status</h4>
+        <%= toggle_switch(@show_assignable, "Assignable (#{@num_assignable})", 'assignable-hits-checkbox') %>
+        <%= toggle_switch(@show_unassignable, "Unassignable (#{@num_unassignable})", 'unassignable-hits-checkbox') %>
+        <%= toggle_switch(@show_reviewable, "Reviewable (#{@num_reviewable})", 'reviewable-hits-checkbox') %>
+        <%= toggle_switch(@show_reviewing, "Reviewing (#{@num_reviewing})", 'reviewing-hits-checkbox') %>
       </div>
     </div>
   </div>

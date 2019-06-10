@@ -35,8 +35,8 @@ class Mturk::QuestionSequencesController < ApplicationController
         ErrorLogger.error("Task for #{tasks_params[:hit_id]} could not be found")
         head :bad_request and return
       end
-      results = tasks_params.fetch(:results, []) 
-      logs = tasks_params.fetch(:logs, {}) 
+      results = tasks_params.fetch(:results, [])
+      logs = tasks_params.fetch(:logs, {})
       # return if same HIT was already submitted before
       if task.results.count > 0
         Rails.logger.error("Worker #{tasks_params[:worker_id]} tried to submit work for task #{task.id}. " \
@@ -76,7 +76,7 @@ class Mturk::QuestionSequencesController < ApplicationController
   private
 
   def create_results_for_task(results, task, logs)
-    ActiveRecord::Base.transaction do  
+    ActiveRecord::Base.transaction do
       validate_results(results, task)
       qs_log = QuestionSequenceLog.create(log: logs)
       additional_params = {task_id: task.id, res_type: :mturk, question_sequence_log_id: qs_log.id}
@@ -121,7 +121,6 @@ class Mturk::QuestionSequencesController < ApplicationController
   def get_tweet_for_worker(worker_id, task)
     ##
     # Returns tweet_id (str), tweet_text (str) pair for a specific worker-task pair. If no available task for the worker can be found it returns empty strings.
-    Rails.logger.debug "Assigning task for worker #{worker_id}..."
     worker = MturkWorker.find_or_create_by(worker_id: worker_id)
     # Lock Task table
     lock_result = lock_tables do
@@ -132,6 +131,7 @@ class Mturk::QuestionSequencesController < ApplicationController
     end
     if lock_result.lock_was_acquired?
       mturk_tweet, notification = lock_result.result
+      Rails.logger.info "Task #{task.id}: Assigned tweet #{mturk_tweet&.tweet_id.to_s} to worker #{worker_id}"
       return mturk_tweet&.tweet_id.to_s, mturk_tweet&.tweet_text.to_s, notification
     else
       ErrorLogger.error "Something went wrong when trying to acquire lock for task #{task.id}"

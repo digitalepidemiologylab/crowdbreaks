@@ -35,22 +35,34 @@ function toggleSandbox() {
     toggleParam('sandbox', !toBeChecked);
   });
 }
-function toggleFiltered() {
-  $('.filtered-checkbox').change(function() {
+function togglePlatformOnly() {
+  $('.platform_only-hits-checkbox').change(function() {
     let toBeChecked = $(this).is(':checked');
-    toggleParam('filtered', toBeChecked);
+    toggleParam('platform_only', toBeChecked);
   });
 }
-function toggleReviewable() {
-  $('.reviewable-checkbox').change(function() {
+function toggleShowAssignable() {
+  $('.assignable-hits-checkbox').change(function() {
     let toBeChecked = $(this).is(':checked');
-    toggleParam('reviewable', toBeChecked);
+    toggleParam('show_assignable', toBeChecked);
   });
 }
-function toggleShowReviewed() {
-  $('.show-reviewed-checkbox').change(function() {
+function toggleShowUnassignable() {
+  $('.unassignable-hits-checkbox').change(function() {
     let toBeChecked = $(this).is(':checked');
-    toggleParam('show_reviewed', toBeChecked);
+    toggleParam('show_unassignable', toBeChecked);
+  });
+}
+function toggleShowReviewable() {
+  $('.reviewable-hits-checkbox').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('show_reviewable', toBeChecked);
+  });
+}
+function toggleShowReviewing() {
+  $('.reviewing-hits-checkbox').change(function() {
+    let toBeChecked = $(this).is(':checked');
+    toggleParam('show_reviewing', toBeChecked);
   });
 }
 // Admin/Result/index
@@ -132,10 +144,13 @@ $(document).on('turbolinks:load', function() {
   toggleBlocked();
 
   toggleGroupByQs();
+
   toggleSandbox();
-  toggleFiltered();
-  toggleReviewable();
-  toggleShowReviewed();
+  togglePlatformOnly();
+  toggleShowAssignable();
+  toggleShowUnassignable();
+  toggleShowReviewable();
+  toggleShowReviewing();
 
   toggleTaskUnsubmited();
   toggleTaskSubmited();
