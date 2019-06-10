@@ -34,11 +34,10 @@ module Manage
 
     def update
       if @task.update_attributes(task_params)
-        flash[:notice] = 'Task successfully updated!'
+        redirect_to mturk_batch_job_tasks_path, notice: 'Task successfully updated!'
       else
-        flash[:alert] = 'Editing task was unsuccessful'
+        redirect_to mturk_batch_job_tasks_path, alert: 'Editing task was unsuccessful'
       end
-      redirect_to mturk_batch_job_tasks_path
     end
 
     def destroy
@@ -49,9 +48,9 @@ module Manage
         end
       end
       if @task.destroy
-        redirect_to(mturk_batch_job_tasks_path, notice: 'Task successfully destroyed.'
+        redirect_to mturk_batch_job_tasks_path, notice: 'Task successfully destroyed.'
       else
-        redirect_to(mturk_batch_job_tasks_path, alert: 'Task could not be destroyed.'
+        redirect_to mturk_batch_job_tasks_path, alert: 'Task could not be destroyed.'
       end
     end
 
