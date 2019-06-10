@@ -4,7 +4,7 @@ module Manage
     before_action :mturk_init
 
     def index
-      @sandbox = param_is_truthy?(:sandbox, default: true)
+      @sandbox = param_is_truthy?(:sandbox, default: false)
       @filtered = param_is_truthy?(:filtered)
       @reviewable = param_is_truthy?(:reviewable)
       filters = {sandbox: @sandbox}
@@ -26,7 +26,7 @@ module Manage
     end
 
     def destroy
-      return_val = @mturk.delete_hit(@mturk_cached_hit.hit_id)
+      return_val = @mturk.delete_hit(@mturk_cached_hit.hit_id, expire: true)
       if return_val.nil?
         if @mturk.get_hit(@mturk_cached_hit.hit_id).nil?
           redirect_to(mturk_cached_hits_path, alert: 'Destroying HIT failed. Hit does not exist anymore')
@@ -40,7 +40,7 @@ module Manage
     end
 
     def clear_all
-      @sandbox = param_is_truthy?(:sandbox, default: true)
+      @sandbox = param_is_truthy?(:sandbox, default: false)
       # probably better to move this to a background job, but it should be relatively fast
       MturkCachedHit.where(sandbox: @sandbox).delete_all
       if MturkCachedHit.where(sandbox: @sandbox).count == 0
@@ -52,7 +52,7 @@ module Manage
 
     def update_cached_hits
       if current_user
-        UpdateMturkChachedHitsJob.perform_later(current_user.id, param_is_truthy?(:sandbox, default: true))
+        UpdateMturkChachedHitsJob.perform_later(current_user.id, param_is_truthy?(:sandbox, default: false))
         respond_to do |format|
           format.js { head :ok }
         end
@@ -70,7 +70,7 @@ module Manage
     end
 
     def mturk_init
-      @mturk = Mturk.new(sandbox: param_is_truthy?(:sandbox, default: true))
+      @mturk = Mturk.new(sandbox: param_is_truthy?(:sandbox, default: false))
     end
   end
 end

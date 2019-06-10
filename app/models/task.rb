@@ -70,11 +70,7 @@ class Task < ApplicationRecord
 
   def delete_hit
     if hit_id.present?
-      begin
-        return Mturk.new(sandbox: mturk_batch_job.sandbox).client.delete_hit(hit_id: hit_id)
-      rescue StandardError => e
-        return nil
-      end
+      Mturk.new(sandbox: mturk_batch_job.sandbox).delete_hit(hit_id: hit_id, expire: true)
     end
   end
 end

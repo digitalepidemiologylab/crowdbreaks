@@ -61,7 +61,7 @@ class Mturk
     params = {
       hit_type_id: hit_type_id,
       max_assignments: 1,
-      lifetime_in_seconds: batch_job.lifetime_in_seconds, 
+      lifetime_in_seconds: batch_job.lifetime_in_seconds,
       question: get_external_question_file,
       requester_annotation: task_id.to_s,
     }
@@ -83,19 +83,21 @@ class Mturk
     end
   end
 
-  def delete_hit(hit_id)
-    hit = get_hit(hit_id)
-    unless hit.nil?
-      case hit.hit_status
-      when 'Assignable'
-        # For HITS in 'Assignable' state forcefully expire by setting expiration time in the past
-        @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
-      when 'Reviewable', 'Reviewing'
-        @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
-        Rails.logger.info "Attempt to delete hit #{hit_id}..."
-      else
-        ErrorLogger.error "Cannot delete hit #{hit_id}. HIT needs to be either Assignable, Reviewable or Reviewing."
-        return
+  def delete_hit(hit_id, expire: false)
+    if expire
+      hit = get_hit(hit_id)
+      unless hit.nil?
+        case hit.hit_status
+        when 'Assignable'
+          # For HITS in 'Assignable' state forcefully expire by setting expiration time in the past
+          @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
+        when 'Reviewable', 'Reviewing'
+          @client.update_expiration_for_hit({hit_id: hit_id, expire_at: 1.day.ago})
+          Rails.logger.info "Attempt to delete hit #{hit_id}..."
+        else
+          ErrorLogger.error "Cannot delete hit #{hit_id}. HIT needs to be either Assignable, Reviewable or Reviewing."
+          return
+        end
       end
     end
     handle_error do
@@ -107,7 +109,7 @@ class Mturk
   # #############################
   # HIT review
   # #############################
-  
+
   def approve_assignment(assignment_id, message: '')
     assignment = get_assignment(assignment_id)
     if assignment.nil?
@@ -227,7 +229,7 @@ class Mturk
     handle_error do
       Rails.logger.info "Deleting qualification type #{qual_type}..."
       # Note: Sometimes this seems to throw an error when executing a short time befor or after the creation of the same qual type
-      # From the docs: It may take up to 48 hours before DeleteQualificationType completes and the unique name of 
+      # From the docs: It may take up to 48 hours before DeleteQualificationType completes and the unique name of
       # the Qualification type is available for reuse with CreateQualificationType.
       @client.delete_qualification_type(qualification_type_id: qual_type)
     end
@@ -307,6 +309,6 @@ class Mturk
     else
       question_file_path = File.join(Rails.root, 'app/views/mturk/external_question_staging.xml')
     end
-    File.read(question_file_path) 
+    File.read(question_file_path)
   end
 end

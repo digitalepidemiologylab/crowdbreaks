@@ -42,9 +42,17 @@ module Manage
     end
 
     def destroy
-      @task.delete_hit
-      # to be implemented...
-      redirect_to mturk_batch_job_tasks_path
+      if @task.hit_id.present?
+        resp = @task.delete_hit
+        if resp.nil?
+          redirect_to(mturk_batch_job_tasks_path, alert: 'Could not delete Task because corresponding HIT is in a state in which it cannot be deleted/disposed.') and return
+        end
+      end
+      if @task.destroy
+        redirect_to(mturk_batch_job_tasks_path, notice: 'Task successfully destroyed.'
+      else
+        redirect_to(mturk_batch_job_tasks_path, alert: 'Task could not be destroyed.'
+      end
     end
 
     private
