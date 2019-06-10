@@ -12,6 +12,15 @@ class MturkNotification
     }
   end
 
+  def already_completed
+    @notification = {
+      status_code: :unsuccessful,
+      code: 'already_completed',
+      title_message: 'You have already completed this HIT.',
+      message: 'You cannot work on this HIT again because you have previously submitted results for this HIT.',
+    }
+  end
+
   def max_tasks_by_worker_reached
     @notification = {
       status_code: :unsuccessful,

@@ -29,32 +29,42 @@ class MturkWorker < ApplicationRecord
     num_tasks_already_assigned = tasks.assigned.count
     if num_tasks_already_assigned > 0
       Rails.logger.info "Worker #{worker_id} has #{num_tasks_already_assigned}"
+      # Here one could limit the number of tasks a single worker can be assigned to at any given time.
     end
 
     if task.assigned?
-      Rails.logger.info "task #{task.id} was requested by #{worker_id} but has been previously assigned to #{task.mturk_worker.worker_id}."
-      if task.results.count > 0
-        msg = "task #{task.id} already has associated results and can not be given to #{worker_id}. the previous results were done by worker #{task.mturk_worker.worker_id}."
-        worker_id == task.mturk_worker.worker_id ? Rails.logger.error(msg) : ErrorLogger.error(msg)  # only report to rollbar in case of wrong worker assignment
-        task.completed!
-        return nil, mturk_notification.error
+      if worker_id == task.mturk_worker.worker_id
+        Rails.logger.info "Worker #{worker_id} requested task #{task.id} but was already assigned to it."
+        return task.mturk_tweet, mturk_notification.success
       else
-        Rails.logger.info "task #{task.id} was requested by #{worker_id} but has been previously assigned to #{task.mturk_worker.worker_id}. task will be re-assigned to #{worker_id}."
+        if task.results.count > 0
+          msg = "Task #{task.id} already has associated results and can not be given to #{worker_id}. The previous results were done by worker #{task.mturk_worker.worker_id}."
+          worker_id == task.mturk_worker.worker_id ? Rails.logger.error(msg) : ErrorLogger.error(msg)  # only report to rollbar in case of wrong worker assignment
+          task.completed!
+          return nil, mturk_notification.error
+        else
+          Rails.logger.info "Task #{task.id} was requested by #{worker_id} but has been previously assigned to #{task.mturk_worker.worker_id}. Task will be re-assigned to #{worker_id}."
+        end
+        # task was previously assigned to someone else (who didn't complete task). give task to new worker
+        task.unassign
+        task.reload
       end
-      # task was previously assigned to someone else (who didn't complete task). give task to new worker
-      task.unassign
-      task.reload
     end
 
     if task.completed?
-      ErrorLogger.error "Task #{task.id} has been requested by #{worker_id} but has already been completed by #{task.mturk_worker.worker_id}."
-      return nil, mturk_notification.error
+      if worker_id == task.mturk_worker.worker_id
+        Rails.logger.info "Task #{task.id} has been requested by #{worker_id} but has already been completed by the same worker."
+        return nil, mturk_notification.already_completed
+      else
+        ErrorLogger.error "Task #{task.id} has been requested by #{worker_id} but has already been completed by #{task.mturk_worker.worker_id}."
+        return nil, mturk_notification.error
+      end
     end
 
     # retrieve potential new tweet for worker
     mturk_tweet = retrieve_mturk_tweet_for_task(task)
     if mturk_tweet.nil?
-      Rails.logger.info "all tasks finished for batch #{task.mturk_batch_job}"
+      Rails.logger.info "All tasks finished for batch #{task.mturk_batch_job}"
       exclude_worker(task.mturk_batch_job)
       return nil, mturk_notification.all_tasks_finished
     end
