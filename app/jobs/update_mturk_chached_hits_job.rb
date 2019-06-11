@@ -21,7 +21,7 @@ class UpdateMturkChachedHitsJob < ApplicationJob
     mturk = Mturk.new(sandbox: sandbox)
     next_token = nil
     total = 0
-    max_hits = 20000
+    max_hits = 50000
 
     loop do
       all_hits = []

@@ -47,6 +47,7 @@ class Mturk::QuestionSequencesController < ApplicationController
         begin
           create_results_for_task(results, task, logs)
         rescue
+          ErrorLogger.error("Could not create results for #{task.id} submitted by #{tasks_params[:worker_id]} for tweet #{tasks_params[:tweet_id]}")
           head :bad_request and return
         else
           task.update_on_final(tasks_params)
@@ -131,7 +132,11 @@ class Mturk::QuestionSequencesController < ApplicationController
     end
     if lock_result.lock_was_acquired?
       mturk_tweet, notification = lock_result.result
-      Rails.logger.info "Task #{task.id}: Assigned tweet #{mturk_tweet&.tweet_id.to_s} to worker #{worker_id}"
+      if mturk_tweet.nil?
+        Rails.logger.error "Task #{task.id}: Could not not assign any work to worker #{worker_id}"
+      else
+        Rails.logger.info "Task #{task.id}: Assigned tweet #{mturk_tweet&.tweet_id.to_s} to worker #{worker_id}"
+      end
       return mturk_tweet&.tweet_id.to_s, mturk_tweet&.tweet_text.to_s, notification
     else
       ErrorLogger.error "Something went wrong when trying to acquire lock for task #{task.id}"

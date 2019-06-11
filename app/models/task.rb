@@ -26,6 +26,7 @@ class Task < ApplicationRecord
   end
 
   def update_on_final(tasks_params)
+    Rails.logger.info("Task #{id}: Worker #{tasks_params[:worker_id]} has submitted results for #{tasks_params[:tweet_id]}")
     if mturk_worker&.worker_id != tasks_params[:worker_id]
       ErrorLogger.error("Task #{id} for #{tasks_params[:hit_id]} was assigned to worker #{mturk_worker.worker_id} and is now re-assigned to worker #{tasks_params[:worker_id]}.")
       self.update_attributes!({
