@@ -1,30 +1,39 @@
 {
+  "name": "crowdbreaks",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crowdbreaks/crowdbreaks"
+  },
+  "author": {
+    "name": "Martin Müller",
+    "email": "martin.mathias.mueller@gmail.com"
+  },
   "dependencies": {
-    "@rails/webpacker": "^3.0.1",
-    "babel-preset-react": "^6.24.1",
-    "chart.js": "^2.7.1",
-    "d3": "^5.5.0",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "@rails/webpacker": "^4.0.7",
+    "chart.js": "^2.8.0",
+    "d3": "^5.9.2",
     "humps": "^2.0.1",
-    "jquery": "^3.2.1",
-    "moment": "^2.20.1",
-    "prop-types": "^15.5.10",
-    "react": "^15.6.1",
-    "react-addons-css-transition-group": "^15.6.2",
-    "react-bootstrap": "^0.31.5",
-    "react-chartjs-2": "^2.6.4",
-    "react-d3-graph": "^1.3.0",
-    "react-dom": "^15.6.1",
-    "react-markdown": "^3.3.4",
-    "react-modal": "^3.4.4",
-    "react-spinners": "^0.1.9",
-    "react-tweet-embed": "^1.1.0",
-    "react-vega": "^3.1.2",
-    "reactstrap": "^5.0.0-alpha.4",
+    "moment": "^2.24.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-chartjs-2": "^2.7.6",
+    "react-d3-graph": "^2.0.2",
+    "react-dom": "^16.8.6",
+    "react-markdown": "^4.0.8",
+    "react-modal": "^3.8.1",
+    "react-tweet-embed": "^1.2.2",
+    "react-vega": "^6.0.1",
+    "reactstrap": "^8.0.0",
     "toastr": "^2.1.4",
-    "vega": "^4.0.0-rc.3",
+    "vega": "^5.4.0",
+    "webpack": "^4.0.0",
     "webpacker-react": "^0.3.2"
   },
   "devDependencies": {
-    "webpack-dev-server": "^2.8.2"
+    "webpack-dev-server": "^3.7.1"
   }
 }

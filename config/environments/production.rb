@@ -68,7 +68,7 @@ Rails.application.configure do
     user_name:            ENV['MANDRILL_USERNAME'],
     password:             ENV['MANDRILL_PASSWORD'],
     authentication:       'plain',
-    enable_starttls_auto: true  
+    enable_starttls_auto: true
   }
 
   # Ignore bad email addresses and do not raise email delivery errors.
@@ -77,7 +77,7 @@ Rails.application.configure do
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
-  config.i18n.fallbacks = true
+  # config.i18n.fallbacks = true
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
@@ -107,10 +107,10 @@ Rails.application.configure do
 
   # Websockets for action cable
   if ENV['ENVIRONMENT_NAME'] == 'staging'
-    config.web_socket_server_url = "wss://crowdbreaks-stg.herokuapp.com/cable" 
+    config.web_socket_server_url = "wss://crowdbreaks-stg.herokuapp.com/cable"
     config.action_cable.allowed_request_origins = ['https://crowdbreaks-stg.herokuapp.com', 'http://crowdbreaks-stg.herokuapp.com']
   else
-    config.web_socket_server_url = "wss://crowdbreaks-prd.herokuapp.com/cable" 
+    config.web_socket_server_url = "wss://crowdbreaks-prd.herokuapp.com/cable"
     config.action_cable.allowed_request_origins = ['https://crowdbreaks-prd.herokuapp.com', 'http://crowdbreaks-prd.herokuapp.com']
   end
 

@@ -2,7 +2,6 @@
 import React from 'react'
 // Other
 let humps = require('humps');
-import { ClipLoader } from 'react-spinners';
 
 export class AssignmentReview extends React.Component {
   constructor(props) {
@@ -89,7 +88,7 @@ export class AssignmentReview extends React.Component {
   renderSubmitMsg() {
     if (this.state.submitStatusMsg == '')  {
       const centerStyle = {'margin': 'auto'}
-      return <div className='spinner' style={centerStyle}></div> 
+      return <div className='spinner' style={centerStyle}></div>
     } else {
       let textStyle = {};
       if (this.state.error) {

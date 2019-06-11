@@ -30,7 +30,7 @@ coverage/*
 ./config/application.yml
 
 # Node modules
-./node_modules
+node_modules
 
 # Vim
 **/*.swp
@@ -41,7 +41,7 @@ coverage/*
 # Ignore Byebug command history file.
 .byebug_history
 
-# Redis 
+# Redis
 dump.rdb
 
 # Heroku backup
@@ -49,12 +49,11 @@ latest.dump*
 
 # other
 **/*.DS_Store
+.ignore
 
-
-# Ignore application configuration
-/config/application.yml
+# webpacker/yarn
 /public/packs
 /public/packs-test
-/node_modules
-
-.ignore
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity

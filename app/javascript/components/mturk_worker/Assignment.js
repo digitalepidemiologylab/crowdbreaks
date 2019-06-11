@@ -103,7 +103,7 @@ export class Assignment extends React.Component {
     const centerStyle = {'margin': 'auto'}
     return <div>
       <h4 className='card-title'>HIT Assignment</h4>
-      {this.state.isLoading && <div className='spinner' style={centerStyle}></div>} 
+      {this.state.isLoading && <div className='spinner' style={centerStyle}></div>}
       {!this.state.isLoading && <div>
         <div style={{'position': 'absolute', 'top': '10px', 'right': '10px'}}>
           <button onClick={() => this.refresh()} className='btn p-0'><i className="fa fa-refresh"></i></button>
@@ -117,7 +117,7 @@ export class Assignment extends React.Component {
             {this.tableRow('Submit time', moment(this.state.submitTime).fromNow())}
           </tbody>
         </table>
-        {this.state.reviewable && <AssignmentReview 
+        {this.state.reviewable && <AssignmentReview
           reviewPath={this.props.review_path}
           defaultApproveMessage={this.props.default_approve_message}
           defaultRejectMessage={this.props.default_reject_message}

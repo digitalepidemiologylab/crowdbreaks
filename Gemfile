@@ -53,14 +53,14 @@ gem 'aws-sdk-s3'
 # email
 gem 'mandrill-api'
 # JS build
-gem 'webpacker', '~> 3.0'
+gem 'webpacker', '~> 4.0'
 gem 'webpacker-react', "~> 0.3.2"
 # JSON serializer
 gem 'active_model_serializers', '~> 0.10.0'
 # More powerful hashes
 gem 'hashie', '~> 3.4', '>= 3.4.6'
 # Twitter API
-gem 'twitter' 
+gem 'twitter'
 # Job scheduling
 gem 'sidekiq'
 gem 'redis'

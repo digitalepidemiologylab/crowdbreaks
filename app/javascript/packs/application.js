@@ -21,7 +21,7 @@ import { EditQuestionSequence } from './../components/edit_question_sequence/Edi
 import { Assignment } from './../components/mturk_worker/Assignment';
 import TweetEmbed from 'react-tweet-embed'
 
-// Register components using Webpacker-react 
+// Register components using Webpacker-react
 Turbolinks.start()
 WebpackerReact.setup({
   QSContainer,
