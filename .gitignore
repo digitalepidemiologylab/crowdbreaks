@@ -27,7 +27,7 @@ coverage/*
 ./public/brakeman.html
 
 # Ignore application configuration
-./config/application.yml
+config/application.yml
 
 # Node modules
 node_modules
