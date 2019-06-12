@@ -302,8 +302,8 @@ select.form-control-lg {
   border-radius: .2rem;
 }
 
-@include form-validation-state("valid", $form-feedback-valid-color);
-@include form-validation-state("invalid", $form-feedback-invalid-color);
+@include form-validation-state("valid", $form-feedback-valid-color, "none");
+@include form-validation-state("invalid", $form-feedback-invalid-color, "none");
 
 // Inline forms
 //

@@ -25,7 +25,7 @@ gem 'jbuilder', '~> 2.5'
 # ENV vars management
 gem 'figaro', '~> 1.1.1'
 # authentication
-gem 'devise', '~> 4.4'
+gem 'devise', '>= 4.6.0'
 gem 'devise-i18n'
 # authorization
 gem 'cancancan', '~> 2.0'
@@ -36,9 +36,9 @@ gem 'kaminari', '~> 1.0.1'
 # Forms
 gem 'simple_form'
 # Bootstrap
-gem "bootstrap", ">= 4.1.2"
+gem 'bootstrap', '>= 4.3.1'
 # Use autoprefixes for CSS
-gem 'autoprefixer-rails', '6.7.6'
+gem 'autoprefixer-rails', '>= 9.1.0'
 # HTTP requests
 gem 'httparty', '~> 0.13.7'
 # I18n for model columns using JSONB
@@ -54,7 +54,7 @@ gem 'aws-sdk-s3'
 gem 'mandrill-api'
 # JS build
 gem 'webpacker', '~> 4.0'
-gem 'webpacker-react', "~> 0.3.2"
+gem 'webpacker-react', '~> 0.3.2'
 # JSON serializer
 gem 'active_model_serializers', '~> 0.10.0'
 # More powerful hashes
@@ -84,7 +84,7 @@ group :development, :test do
   gem 'ffaker'
   gem 'foreman'
   # allows failing tests if translations are missing
-  gem "i18n-tasks"
+  gem 'i18n-tasks'
 end
 
 group :development do
@@ -105,7 +105,7 @@ group :test do
   gem 'capybara-selenium'
   gem 'webdrivers'
   # nice rspec factories
-  gem "factory_bot_rails"
+  gem 'factory_bot_rails'
   # leave your test db clean after you
   gem 'database_cleaner'
   # freeze/manage time in tests

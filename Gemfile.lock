@@ -51,7 +51,7 @@ GEM
       public_suffix (>= 2.0.2, < 4.0)
     arel (9.0.0)
     ast (2.4.0)
-    autoprefixer-rails (6.7.6)
+    autoprefixer-rails (9.6.0)
       execjs
     aws-eventstream (1.0.1)
     aws-partitions (1.130.0)
@@ -71,12 +71,12 @@ GEM
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.0)
     aws-sigv4 (1.0.3)
-    bcrypt (3.1.12)
+    bcrypt (3.1.13)
     bindex (0.5.0)
-    bootstrap (4.1.3)
-      autoprefixer-rails (>= 6.0.3)
-      popper_js (>= 1.12.9, < 2)
-      sass (>= 3.5.2)
+    bootstrap (4.3.1)
+      autoprefixer-rails (>= 9.1.0)
+      popper_js (>= 1.14.3, < 2)
+      sassc-rails (>= 2.0.0)
     buftok (0.2.0)
     builder (3.2.3)
     byebug (10.0.2)
@@ -103,7 +103,7 @@ GEM
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
     database_cleaner (1.7.0)
-    devise (4.5.0)
+    devise (4.6.2)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 4.1.0, < 6.0)
@@ -321,9 +321,9 @@ GEM
       ffi (~> 1.0)
     redis (4.1.0)
     regexp_parser (1.3.0)
-    responders (2.4.0)
-      actionpack (>= 4.2.0, < 5.3)
-      railties (>= 4.2.0, < 5.3)
+    responders (2.4.1)
+      actionpack (>= 4.2.0, < 6.0)
+      railties (>= 4.2.0, < 6.0)
     rollbar (2.18.2)
       multi_json
     rspec (3.8.0)
@@ -376,6 +376,15 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    sassc (2.0.1)
+      ffi (~> 1.9)
+      rake
+    sassc-rails (2.1.1)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2, >= 1.2.2)
@@ -471,16 +480,16 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
-  autoprefixer-rails (= 6.7.6)
+  autoprefixer-rails (>= 9.1.0)
   aws-sdk-mturk
   aws-sdk-s3
-  bootstrap (>= 4.1.2)
+  bootstrap (>= 4.3.1)
   byebug
   cancancan (~> 2.0)
   capybara
   capybara-selenium
   database_cleaner
-  devise (~> 4.4)
+  devise (>= 4.6.0)
   devise-i18n
   factory_bot_rails
   ffaker
