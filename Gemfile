@@ -36,7 +36,7 @@ gem 'kaminari', '~> 1.0.1'
 # Forms
 gem 'simple_form'
 # Bootstrap
-gem 'bootstrap', '~> 4.0.0'
+gem "bootstrap", ">= 4.1.2"
 # Use autoprefixes for CSS
 gem 'autoprefixer-rails', '6.7.6'
 # HTTP requests
