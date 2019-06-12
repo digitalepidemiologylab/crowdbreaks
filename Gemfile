@@ -16,8 +16,6 @@ gem 'puma', '~> 3.0'
 gem 'sass-rails', '~> 5.0', '>= 5.0.4'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -43,8 +41,6 @@ gem 'autoprefixer-rails', '>= 9.1.0'
 gem 'httparty', '~> 0.13.7'
 # I18n for model columns using JSONB
 gem 'json_translate'
-# use jquery with turbolinks
-gem 'jquery-turbolinks'
 # slug creation
 gem 'friendly_id', '~> 5.1'
 # AWS
@@ -125,4 +121,4 @@ group :production do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+# gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
