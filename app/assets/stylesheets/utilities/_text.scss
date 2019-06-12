@@ -41,9 +41,3 @@
 .text-lighter { color: $gray-400 !important; }
 .text-light 	{ color: $gray-500 !important; }
 .text-muted 	{ color: $text-muted !important; }
-
-// Misc
-
-.text-hide {
-  @include text-hide();
-}
