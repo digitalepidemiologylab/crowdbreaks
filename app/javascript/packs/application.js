@@ -8,6 +8,17 @@
 // layout file, like app/views/layouts/application.html.erb
 
 import WebpackerReact from 'webpacker-react'
+import TweetEmbed from 'react-tweet-embed'
+import Rails from 'rails-ujs';
+import Turbolinks from 'turbolinks';
+import 'bootstrap/dist/js/bootstrap';
+
+// Start rails-ujs and turbolinks
+Rails.start();
+Turbolinks.start()
+
+
+// Components
 import { QSContainer } from './../components/qs/QSContainer';
 import { MturkQSContainer } from './../components/qs/MturkQSContainer';
 import { LocalBatchQSContainer } from './../components/qs/LocalBatchQSContainer';
@@ -19,10 +30,11 @@ import { Leadline } from './../components/frontpage/Leadline';
 import { UserActivity } from './../components/user_activity/UserActivity';
 import { EditQuestionSequence } from './../components/edit_question_sequence/EditQuestionSequence';
 import { Assignment } from './../components/mturk_worker/Assignment';
-import TweetEmbed from 'react-tweet-embed'
+
+// Custom
+import 'custom';
 
 // Register components using Webpacker-react
-Turbolinks.start()
 WebpackerReact.setup({
   QSContainer,
   MturkQSContainer,
@@ -38,5 +50,5 @@ WebpackerReact.setup({
   Assignment,
 })
 
-// this is needed for components to properly unmount and not being cached
+// This is needed for components to properly unmount and not being cached
 $(document).on('turbolinks:before-cache', () => WebpackerReact.unmountComponents())
