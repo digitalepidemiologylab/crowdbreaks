@@ -41,7 +41,7 @@ export class EditSingleAnswer extends React.Component {
     const selectStyle = {...componentsStyle, width: '15%'}
     const buttonStyle = {margin: '10px 10px 10px 0px'}
 
-    let updateButton = <button 
+    let updateButton = <button
       className='btn btn-primary'
       style={buttonStyle}
       onClick={() => this.onUpdate()}
@@ -52,7 +52,7 @@ export class EditSingleAnswer extends React.Component {
           {this.props.answerId}
         </div>
         <div style={answerStyle}>
-          <input 
+          <input
             value={this.state.answer}
             disabled={this.props.isEditable ? false : 'disabled'}
             placeholder={'<answer>'}
@@ -61,8 +61,8 @@ export class EditSingleAnswer extends React.Component {
           </input>
         </div>
         <div style={selectStyle}>
-          <select 
-            className='form-control' 
+          <select
+            className='form-control'
             value={this.state.color}
             onChange={(e) => this.onUpdateColor(e)}>
             {
@@ -73,8 +73,8 @@ export class EditSingleAnswer extends React.Component {
           </select>
         </div>
         <div style={selectStyle}>
-          <select 
-            className='form-control' 
+          <select
+            className='form-control'
             value={this.state.label}
             onChange={(e) => this.onUpdateLabel(e)}>
             {
@@ -85,7 +85,7 @@ export class EditSingleAnswer extends React.Component {
           </select>
         </div>
         <div style={tagStyle}>
-          <input 
+          <input
             value={this.state.tag}
             onChange={(e) => this.onUpdateTag(e)}
             style={{fontFamily: 'monospace'}}
@@ -94,7 +94,7 @@ export class EditSingleAnswer extends React.Component {
           </input>
         </div>
         {updateButton}
-        {this.props.isEditable && <button 
+        {this.props.isEditable && <button
           onClick={(e) => this.props.onDeleteAnswer(this.props.answerId, this.props.questionId, e)}
           style={buttonStyle}
           className="btn btn-negative">Delete
@@ -102,4 +102,4 @@ export class EditSingleAnswer extends React.Component {
       </div>
     );
   }
-};
+}

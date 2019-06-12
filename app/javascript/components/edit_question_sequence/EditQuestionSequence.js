@@ -140,7 +140,7 @@ export class EditQuestionSequence extends React.Component {
     })
   }
 
-  onDeleteQuestion(questionId, e) {
+  onDeleteQuestion(questionId) {
     // Delete question and its answers
     let newQuestions = this.state.questions;
     delete newQuestions[questionId]
@@ -164,7 +164,7 @@ export class EditQuestionSequence extends React.Component {
     })
   }
 
-  onDeleteAnswer(answerId, questionId, e) {
+  onDeleteAnswer(answerId, questionId) {
     // Delete answers from questions
     let newAnswers = [];
     let oldAnswers = this.state.questions[questionId].answers;
@@ -189,7 +189,7 @@ export class EditQuestionSequence extends React.Component {
     })
   }
 
-  onDeleteTransition(transitionId, e) {
+  onDeleteTransition(transitionId) {
     let newTransitions = this.state.transitions;
     delete newTransitions[transitionId]
     this.setState({
@@ -233,7 +233,7 @@ export class EditQuestionSequence extends React.Component {
       url: this.props.saveQuestionSequencePath,
       data: JSON.stringify(data),
       contentType: "application/json",
-      success: (response) => {
+      success: () => {
         window.location = this.props.redirectPath
       },
       error: (response) => {
@@ -261,8 +261,8 @@ export class EditQuestionSequence extends React.Component {
       <div>
         {/* Questions */}
         <div className='mb-4'>
-          <button 
-            onClick={() => this.toggleCheckbox('questions')} 
+          <button
+            onClick={() => this.toggleCheckbox('questions')}
             className='btn btn-secondary btn-lg btn-block'>
             {questionLabel}
           </button>
@@ -278,13 +278,13 @@ export class EditQuestionSequence extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(this.state.questions).map( (questionId, id) => {
+                {Object.keys(this.state.questions).map( (questionId) => {
                   let q = prevThis.state.questions[questionId]
-                  return <EditQuestion 
-                    key={q.id} 
-                    questionId={questionId} 
-                    question={q.question} 
-                    tag={q.tag} 
+                  return <EditQuestion
+                    key={q.id}
+                    questionId={questionId}
+                    question={q.question}
+                    tag={q.tag}
                     instructions={q.instructions}
                     isEditable={q.is_editable}
                     onUpdateQuestion={(e) => prevThis.onUpdateQuestion(e)}
@@ -294,8 +294,8 @@ export class EditQuestionSequence extends React.Component {
               </tbody>
             </table>
             <div className='mb-5'>
-              <button 
-                onClick={() => this.addNewQuestion()} 
+              <button
+                onClick={() => this.addNewQuestion()}
                 className='btn btn-primary btn-lg'>
                 <i className='fa fa-plus' style={{color: '#fff'}}></i>&emsp;Add new question
               </button>
@@ -305,8 +305,8 @@ export class EditQuestionSequence extends React.Component {
 
         {/* Answers */}
         <div className='mb-4'>
-          <button 
-            onClick={() => this.toggleCheckbox('answers')} 
+          <button
+            onClick={() => this.toggleCheckbox('answers')}
             className='btn btn-secondary btn-lg btn-block'>
             {answersLabel}
           </button>
@@ -321,12 +321,12 @@ export class EditQuestionSequence extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(this.state.questions).map( (questionId, id) => {
+            {Object.keys(this.state.questions).map( (questionId) => {
               let q = prevThis.state.questions[questionId]
               return <EditAnswers
-                key={q.id} 
-                questionId={questionId} 
-                answers={q.answers} 
+                key={q.id}
+                questionId={questionId}
+                answers={q.answers}
                 colorOptions={prevThis.props.colorOptions}
                 labelOptions={prevThis.props.labelOptions}
                 onUpdateAnswers={(e) => prevThis.onUpdateAnswers(e)}
@@ -341,8 +341,8 @@ export class EditQuestionSequence extends React.Component {
 
         {/* Transitions */}
         <div className='mb-4'>
-          <button 
-            onClick={() => this.toggleCheckbox('transitions')} 
+          <button
+            onClick={() => this.toggleCheckbox('transitions')}
             className='btn btn-secondary btn-lg btn-block'>
             {transitionsLabel}
           </button>
@@ -374,8 +374,8 @@ export class EditQuestionSequence extends React.Component {
               </tbody>
             </table>
             <div className='mb-5'>
-              <button 
-                onClick={() => this.addNewTransition()} 
+              <button
+                onClick={() => this.addNewTransition()}
                 className='btn btn-primary btn-lg'>
                 <i className='fa fa-plus' style={{color: '#fff'}}></i>&emsp;Add new transition
               </button>
@@ -391,9 +391,9 @@ export class EditQuestionSequence extends React.Component {
             <div className="spinner"></div>
           </div>
         </div>
-        } 
-        { !this.state.isLoading && <button 
-          onClick={() => this.saveQuestionSequence()} 
+        }
+        { !this.state.isLoading && <button
+          onClick={() => this.saveQuestionSequence()}
           className='btn btn-primary btn-lg'>
           Save Question Sequence
         </button>

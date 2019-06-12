@@ -1,7 +1,7 @@
 // React
 import React from 'react'
 
-// Other 
+// Other
 let humps = require('humps');
 import { QSLogger } from './QSLogger';
 
@@ -13,9 +13,9 @@ import { Instructions } from './Instructions';
 export class MturkQSContainer extends React.Component {
   constructor(props) {
     super(props);
-    const { 
-      notification, 
-      questions, 
+    const {
+      notification,
+      questions,
       initialQuestionId,
       delayStart,
       delayNextQuestion,
@@ -97,8 +97,7 @@ export class MturkQSContainer extends React.Component {
       data: JSON.stringify(taskUpdate),
       crossDomain: true,
       contentType: "application/json",
-      success: (response) => {
-        console.log('success')
+      success: () => {
         $('#submit-form').submit();
         return true;
       },
@@ -147,10 +146,10 @@ export class MturkQSContainer extends React.Component {
       errors: this.state.errors.concat(['Error when trying to load tweet. Ensure you disable browser plugins which may block this content.'])
     });
   }
-  
+
   //// RENDER helpers
   onHelp() {
-    window.location.href= 'mailto:'.concat(this.props.helpEmail,  
+    window.location.href= 'mailto:'.concat(this.props.helpEmail,
       '?subject=Mturk worker question, hitId=', this.props.hitId)
   }
   getOptionButtons() {
@@ -158,12 +157,12 @@ export class MturkQSContainer extends React.Component {
       return;
     }
     return <div className='mb-5 buttons'>
-      {this.props.allowReset && <button 
+      {this.props.allowReset && <button
           onClick={() => this.onRestart()}
           className='btn btn-secondary'>
           <i className='fa fa-refresh' style={{color: '#212529'}}></i>&emsp;{this.props.translations.general.restart}
         </button>}
-      <button 
+      <button
         onClick={() => this.onHelp()}
         className='btn btn-secondary'>
         <i className='fa fa-question-circle' style={{color: '#212529'}}></i>&emsp;{this.props.translations.general.ask_for_help}
@@ -191,14 +190,14 @@ export class MturkQSContainer extends React.Component {
       return this.renderErrorNotification()
     }
     if (this.state.questionSequenceHasEnded) {
-      return <MturkFinal 
+      return <MturkFinal
         onMturkSubmit={(event) => this.onMturkSubmit(event, new Date().getTime())}
         submitUrl={this.getSubmitUrl()}
         assignmentId={this.props.assignmentId}
         hitId={this.props.hitId}
-      /> 
+      />
     }
-    return <QuestionSequence 
+    return <QuestionSequence
       ref={qs => {this.questionSequence = qs;}}
       questions={this.props.questions}
       currentQuestion={this.state.currentQuestion}
@@ -216,14 +215,14 @@ export class MturkQSContainer extends React.Component {
       displayQuestionInstructions={true}
       numQuestionsAnswered={this.state.numQuestionsAnswered}
       translations={this.props.translations}
-    /> 
+    />
   }
 
   render() {
     const title = this.props.mturkTitle && <h4 className="mb-4">
       {this.props.mturkTitle}
     </h4>;
-    let mturkInstructions = <Instructions 
+    let mturkInstructions = <Instructions
       display={this.state.displayInstructions || this.props.previewMode}
       instructions={this.props.instructions}
       translations={this.props.translations.instructions}
@@ -240,7 +239,7 @@ export class MturkQSContainer extends React.Component {
     return(
       <div className="col-12 text-center" style={{paddingTop: '30px'}}>
         {title}
-        {mturkInstructions} 
+        {mturkInstructions}
         {optionButtons}
         {errors}
         {body}

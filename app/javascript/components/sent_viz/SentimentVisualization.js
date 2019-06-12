@@ -1,6 +1,5 @@
 // React
 import React from 'react'
-import PropTypes from 'prop-types';
 import { Line, defaults } from 'react-chartjs-2';
 import { Input, Col, Row, FormText } from 'reactstrap';
 
@@ -217,7 +216,6 @@ export class SentimentVisualization extends React.Component {
           borderColor: '#1e9CeA',
           backgroundColor: '#1e9CeA',
           data: this.state.neutral_data,
-          pointRadius: 2,
           spanGaps: true,
           pointRadius: this.state.point_radius,
           borderWidth: this.state.border_width
@@ -244,8 +242,6 @@ export class SentimentVisualization extends React.Component {
         }
       ]
     };
-    let prevThis = this;
-
     return(
       <div>
         <Row className="mb-4">

@@ -10,7 +10,6 @@ import { QuestionSequence } from './QuestionSequence';
 import { Final } from './Final';
 import { InstructionModal } from './InstructionModal';
 
-
 export class QSContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -78,8 +77,9 @@ export class QSContainer extends React.Component {
         data: JSON.stringify(resultData),
         contentType: "application/json",
         error: (response) => {
+          let errors = response['responseJSON']['errors'];
           this.setState({
-            errors: this.state.errors.concat(['Internal error'])
+            errors: this.state.errors.concat(errors)
           });
         }
       });
@@ -165,7 +165,6 @@ export class QSContainer extends React.Component {
         contentType: "application/json",
         success: (response) => {
           if (response['captcha_verified']) {
-            console.log('successfully verified captcha');
             this.setState({
               captchaVerified: true
             })
@@ -182,18 +181,18 @@ export class QSContainer extends React.Component {
         }
       });
     }
-  };
+  }
 
   render() {
     let body = null;
     if (!this.state.questionSequenceHasEnded) {
       body = <div>
-        <InstructionModal 
+        <InstructionModal
           openModal={this.state.openModal}
           projectsPath={this.props.projectsPath}
           translations={this.props.translations.instruction_modal}
         />
-        <QuestionSequence 
+        <QuestionSequence
           ref={qs => {this.questionSequence = qs;}}
           projectTitle={this.props.projectTitle}
           questions={this.props.questions}
@@ -215,14 +214,14 @@ export class QSContainer extends React.Component {
           displayQuestionInstructions={false}
           numQuestionsAnswered={this.state.numQuestionsAnswered}
           translations={this.props.translations}
-        /> 
+        />
       </div>
     } else {
-      body = <Final 
+      body = <Final
         onNextQuestionSequence={() => this.onNextQuestionSequence()}
         projectsPath={this.props.projectsPath}
         translations={this.props.translations.final}
-      /> 
+      />
     }
     let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
       <li>Error:</li>

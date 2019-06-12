@@ -11,7 +11,6 @@ import { LocalBatchFinal } from './LocalBatchFinal';
 import { LocalBatchNoMoreWork } from './LocalBatchFinal';
 import { LocalBatchTweetNotAvailable } from './LocalBatchFinal';
 import { LocalBatchCounts } from './LocalBatchCounts';
-import { InstructionModal } from './InstructionModal';
 import { Instructions } from './Instructions';
 
 export class LocalBatchQSContainer extends React.Component {
@@ -150,20 +149,20 @@ export class LocalBatchQSContainer extends React.Component {
 
   getQuestionSequence() {
     if (this.state.noWorkAvailable) {
-      return <LocalBatchNoMoreWork 
+      return <LocalBatchNoMoreWork
         exitPath={this.props.exitPath}
         totalCount={this.state.totalCount}
-        /> 
+        />
     }
     if (!this.state.tweetIsAvailable) {
-      return <LocalBatchTweetNotAvailable 
+      return <LocalBatchTweetNotAvailable
         onNextQuestionSequence={() => this.onNextQuestionSequence()}
         exitPath={this.props.exitPath}
         tweetId={this.state.tweetId}
-        /> 
+        />
     }
     if (!this.state.questionSequenceHasEnded) {
-      return <QuestionSequence 
+      return <QuestionSequence
           ref={qs => {this.questionSequence = qs;}}
           questions={this.state.questions}
           currentQuestion={this.state.currentQuestion}
@@ -185,19 +184,19 @@ export class LocalBatchQSContainer extends React.Component {
           displayQuestionInstructions={true}
           numQuestionsAnswered={this.state.numQuestionsAnswered}
           translations={this.props.translations}
-        /> 
+        />
     } else {
-      return <LocalBatchFinal 
+      return <LocalBatchFinal
         onNextQuestionSequence={() => this.onNextQuestionSequence()}
         exitPath={this.props.exitPath}
-      /> 
+      />
     }
   }
 
   render() {
     let body = this.getQuestionSequence()
     let counts = <div className="mb-3">
-      <LocalBatchCounts 
+      <LocalBatchCounts
         noWorkAvailable={this.state.noWorkAvailable}
         testMode={this.props.testMode}
         userCount={this.state.userCount}

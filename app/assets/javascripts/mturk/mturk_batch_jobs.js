@@ -1,5 +1,5 @@
 function convertUnitsBeforeSubmit() {
-  $('#mturk-batch-job-form').submit(function(e) {
+  $('#mturk-batch-job-form').submit(function() {
     // convert days -> s
     $('input#mturk_batch_job_lifetime_in_seconds')[0].value *= 24*3600;
     $('input#mturk_batch_job_auto_approval_delay_in_seconds')[0].value *= 24*3600;

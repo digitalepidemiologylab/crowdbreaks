@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types';
 
 // Other
 
@@ -70,32 +69,32 @@ export class EditTransition extends React.Component {
   }
 
   render() {
-    const buttonStyle = {margin: '0px 10px 0px 0px'}; 
-    const inputStyle = {width: '60px'}; 
+    const buttonStyle = {margin: '0px 10px 0px 0px'};
+    const inputStyle = {width: '60px'};
     let sourceId = this.props.sourceId;
     let targetId = this.props.transition.to_question;
     let answerId = this.props.transition.answer;
 
     if (this.state.editMode) {
       if (!this.state.isStartingNode) {
-        sourceId = <input 
-          value={this.state.internalSourceId} 
-          type='text' 
+        sourceId = <input
+          value={this.state.internalSourceId}
+          type='text'
           className="form-control"
           onChange={(e) => this.handleInputChangeSource(e)}
           style={inputStyle}>
         </input>
-        answerId = <input 
-          value={this.state.internalAnswerId} 
-          type='text' 
+        answerId = <input
+          value={this.state.internalAnswerId}
+          type='text'
           className="form-control"
           onChange={(e) => this.handleInputChangeAnswer(e)}
           style={inputStyle}>
         </input>
       }
-      targetId = <input 
-        value={this.state.internalTargetId} 
-        type='text' 
+      targetId = <input
+        value={this.state.internalTargetId}
+        type='text'
         className="form-control"
         onChange={(e) => this.handleInputChangeTarget(e)}
         style={inputStyle}>
@@ -108,12 +107,12 @@ export class EditTransition extends React.Component {
         <td>{answerId}</td>
         <td>
           {!this.state.editMode && <div>
-            <button 
+            <button
               onClick={() => this.startEditMode()}
               style={buttonStyle}
               className="btn btn-secondary">Edit
             </button>
-            {!this.state.isStartingNode && <button 
+            {!this.state.isStartingNode && <button
               onClick={(questionId, e) => this.props.onDeleteTransition(this.props.transitionId, e)}
               style={buttonStyle}
               className="btn btn-negative">Delete

@@ -2,7 +2,6 @@ import React from 'react'
 import Modal from 'react-modal';
 import Markdown from 'react-markdown';
 
-
 export class QuestionInstructions extends React.Component {
   constructor(props) {
     super(props);
@@ -12,7 +11,7 @@ export class QuestionInstructions extends React.Component {
       modalWidth: '0px'
     };
   }
-	
+
   componentWillMount() {
     Modal.setAppElement('#qs-root')
   }
@@ -48,7 +47,7 @@ export class QuestionInstructions extends React.Component {
     });
     this.props.toggleQuestionInstructions()
   }
-  
+
   render() {
     const modalStyle = {
       content : {
@@ -67,10 +66,10 @@ export class QuestionInstructions extends React.Component {
     const markdownStyle = {textAlign: 'left'}
 
     return (
-      <Modal 
+      <Modal
         isOpen={this.state.modalIsOpen}
         onRequestClose={() => this.onModalClose()}
-        contentLabel="Instructions" 
+        contentLabel="Instructions"
         style={modalStyle} >
         <div className="row mb-4">
           <div className="col-12">
@@ -89,4 +88,4 @@ export class QuestionInstructions extends React.Component {
     );
 
   }
-};
+}

@@ -22,7 +22,6 @@ function toggleBlocked() {
 // Manage/MturkWorker/review
 function selectWorkerReviewBatchJob() {
   $('#worker-review-mturk_batch_job-filter').change(function() {
-    console.log('hello')
     let batch_name = $(this).find(":selected").val()
     changeSelectParam('batch_name_filter', batch_name)
   })

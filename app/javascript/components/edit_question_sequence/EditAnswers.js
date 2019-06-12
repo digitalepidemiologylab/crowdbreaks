@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types';
 
 import { SingleAnswer } from './SingleAnswer';
 import { EditSingleAnswer } from './EditSingleAnswer';
@@ -74,8 +73,8 @@ export class EditAnswers extends React.Component {
         }
       </div>
       <div>
-        {this.props.isEditable && <button 
-          onClick={() => this.props.addNewAnswer(this.props.questionId)} 
+        {this.props.isEditable && <button
+          onClick={() => this.props.addNewAnswer(this.props.questionId)}
           className='btn btn-primary'>
           <i className='fa fa-plus' style={{color: '#fff'}}></i>&emsp;Add new answer
         </button>}
@@ -88,8 +87,8 @@ export class EditAnswers extends React.Component {
         <td>{this.props.questionId}</td>
         <td>{answers}</td>
         <td>
-          {!this.state.editMode && <button 
-            key={this.props.questionId} 
+          {!this.state.editMode && <button
+            key={this.props.questionId}
             onClick={() => this.startEditMode()}
             className="btn btn-secondary">Edit
           </button>

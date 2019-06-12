@@ -10,8 +10,8 @@ export class SentimentTextBox extends React.Component {
     this.state = {
       'textValue': "",
       'label': 'undetermined',
-      'pro_vaccine': 0, 
-      'neutral': 0, 
+      'pro_vaccine': 0,
+      'neutral': 0,
       'anti_vaccine': 0
     };
     this.num_words = 0;
@@ -19,7 +19,6 @@ export class SentimentTextBox extends React.Component {
 
   onHandleChange(value) {
     let data = {"text": value};
-    let newLabel = this.state.label;
     this.setState({
       'textValue': value,
     });
@@ -28,7 +27,7 @@ export class SentimentTextBox extends React.Component {
       this.setState({'label': 'undetermined'});
       return
     }
-    
+
     // only update once new word has been typed
     if (this.num_words == input_num_words) {
       return
@@ -49,7 +48,6 @@ export class SentimentTextBox extends React.Component {
         for (let i=0; i<result['labels'].length; i++) {
           p_vals[result['labels'][i]] = result['probabilities'][i];
         }
-        console.log('Received label '+result['labels'][0]);
         this.setState({
           'label': result['labels'][0],
           'pro_vaccine': p_vals['pro-vaccine'],
@@ -67,18 +65,18 @@ export class SentimentTextBox extends React.Component {
 
   round(input, precision=3) {
     const factor = Math.pow(10, precision)
-    const res = Math.round(input*100*factor)/factor 
+    const res = Math.round(input*100*factor)/factor
     if (res>100.0) {
       return 100;
     } else {
       return res;
     }
   }
-  
+
 
   render() {
     const examples = [
-      'You should vaccinate your kids', 
+      'You should vaccinate your kids',
       'You shouldn\'t vaccinate your kids',
       'Make sure to get vaccinated',
       'Time to get vaccinated',
@@ -97,9 +95,9 @@ export class SentimentTextBox extends React.Component {
       <div>
         <div className="mb-5">
           <h4>Type something (at least 3 words)</h4>
-          <textarea 
+          <textarea
             id="inputTextField"
-            type="text" 
+            type="text"
             value={this.state.textValue}
             onChange={changeEvent => this.onHandleChange(changeEvent.target.value)}
             className="form-control"

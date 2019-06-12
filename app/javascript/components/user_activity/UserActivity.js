@@ -1,6 +1,5 @@
 // React
 import React from 'react'
-import PropTypes from 'prop-types';
 import { Bar, defaults } from 'react-chartjs-2';
 import { Input, Col, Row, FormText, Table } from 'reactstrap';
 let moment = require('moment');
@@ -94,7 +93,7 @@ export class UserActivity extends React.Component {
           fillDate = fillDate.add(1, 'days');
         }
         if (labels.length > 0) {
-          let lastDate = moment(labels[labels.length - 1]) 
+          let lastDate = moment(labels[labels.length - 1])
           while (!lastDate.isSame(moment(this.state.end_date, 'YYYY-MM-DD'), 'day')) {
             lastDate = lastDate.add(1, 'days')
             labels.push(lastDate.format('YYYY-MM-DD HH:mm:ss'))
@@ -151,7 +150,7 @@ export class UserActivity extends React.Component {
           <td>{row[2]}</td>
           <td>{row[0]}</td>
           <td>{row[1]}</td>
-        </tr> 
+        </tr>
       })}
       </tbody>;
 

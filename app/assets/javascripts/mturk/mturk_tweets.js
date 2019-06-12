@@ -5,7 +5,7 @@ function onRefreshAvailability() {
     $('#refresh-availability').hide()
     $('#refresh-availability-running').show()
   })
-  $('#refresh-mturk-hits').on('ajax:error', function(e) {
+  $('#refresh-mturk-hits').on('ajax:error', function() {
     $('#refresh-availability').show()
     $('#refresh-availability-running').hide()
   })

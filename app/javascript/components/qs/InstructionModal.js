@@ -1,7 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types';
 import Modal from 'react-modal';
-
 
 export class InstructionModal extends React.Component {
   constructor(props) {
@@ -12,7 +10,7 @@ export class InstructionModal extends React.Component {
       modalWidth: '0px'
     };
   }
-	
+
   componentWillMount() {
     Modal.setAppElement('#qs-root')
   }
@@ -47,7 +45,7 @@ export class InstructionModal extends React.Component {
       modalIsOpen: false
     });
   }
-  
+
   handleRequestCloseFunc() {
     // Navigate back to projects section
     window.location = this.props.projectsPath;
@@ -70,10 +68,10 @@ export class InstructionModal extends React.Component {
     };
 
     return (
-      <Modal 
+      <Modal
         isOpen={this.state.modalIsOpen}
         onRequestClose={() => this.handleRequestCloseFunc()}
-        contentLabel="Instructions" 
+        contentLabel="Instructions"
         style={modalStyle} >
         <div className="row mb-4">
           <div className="col-12">
@@ -103,4 +101,4 @@ export class InstructionModal extends React.Component {
       </Modal>
     );
   }
-};
+}

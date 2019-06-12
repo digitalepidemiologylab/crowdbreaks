@@ -1,11 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types';
-
 
 export const LocalBatchCounts = (props) => {
   let content = null;
   if (props.testMode) {
-    content = <p className='alert alert-info'>{props.translations.test_mode}</p> 
+    content = <p className='alert alert-info'>{props.translations.test_mode}</p>
       return wrapContent(content)
   }
   if (!props.noWorkAvailable) {

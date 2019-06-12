@@ -24,13 +24,13 @@ export class MturkFinal extends React.Component {
 
   render() {
     return (
-      <div className='row justify-content-center'> 
+      <div className='row justify-content-center'>
         <div className="col-12">
           <div className='mb-5'>
             <h3>Thank you for your help.</h3>
             <p>Please click the button below to submit the HIT and claim your reward.</p>
           </div>
-          { 
+          {
             this.state.submitting &&
               <div>
                 <div className="spinner mb-3" style={{margin: 'auto'}}></div>
@@ -38,7 +38,7 @@ export class MturkFinal extends React.Component {
                   Submitting... Please wait
                 </div>
               </div>
-          } 
+          }
           <div className='mb-5'>
             <form onSubmit={(e) => this.onFormSubmit(e, new Date().getTime())} id="submit-form" action={this.props.submitUrl}>
               <input type="hidden" name="assignmentId" value={this.props.assignmentId} />
@@ -51,7 +51,7 @@ export class MturkFinal extends React.Component {
       </div>
     );
   }
-};
+}
 
 MturkFinal.propTypes = {
   onMturkSubmit: PropTypes.func,

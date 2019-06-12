@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types';
 
 export class EditQuestion extends React.Component {
   constructor(props) {
@@ -81,8 +80,8 @@ export class EditQuestion extends React.Component {
     if (this.state.editMode) {
       <p>editable: {this.props.isEditable}</p>
       question = <div>
-        <textarea 
-          value={this.state.internalQuestion} 
+        <textarea
+          value={this.state.internalQuestion}
           type='text'
           style={{marginBottom: '20px'}}
           className="form-control"
@@ -90,16 +89,16 @@ export class EditQuestion extends React.Component {
           disabled={this.props.isEditable ? false : 'disabled'}
           rows='2'>
         </textarea>
-        {!this.state.editInstructions && <button 
+        {!this.state.editInstructions && <button
           onClick={() => this.startEditInstructions()}
           className="btn btn-secondary">
           <i className='fa fa-plus' style={{color: '#212529'}}></i>&emsp;Add instructions
         </button>}
         {this.state.editInstructions && <div>
           <h4>Instructions (use Markdown)</h4>
-          <textarea 
-            value={this.state.internalInstructions} 
-            type='text' 
+          <textarea
+            value={this.state.internalInstructions}
+            type='text'
             style={{fontFamily: 'monospace'}}
             className="form-control"
             onChange={(e) => this.handleInputChangeInstructions(e)}
@@ -107,7 +106,7 @@ export class EditQuestion extends React.Component {
           </textarea>
         </div>}
         {!this.state.editTag && <div className='mt-3'>
-          <button 
+          <button
             onClick={() => this.startEditTag()}
             className="btn btn-secondary">
             <i className='fa fa-plus' style={{color: '#212529'}}></i>&emsp;Add tag
@@ -115,8 +114,8 @@ export class EditQuestion extends React.Component {
         </div>}
         {this.state.editTag && <div className='mt-3'>
           <h4>Tag</h4>
-          <input 
-            value={this.state.internalTag} 
+          <input
+            value={this.state.internalTag}
             type='text'
             style={{fontFamily: 'monospace'}}
             className="form-control"
@@ -125,19 +124,19 @@ export class EditQuestion extends React.Component {
         </div>}
       </div>
     }
-    const buttonStyle = {margin: '0px 10px 10px 0px'}; 
+    const buttonStyle = {margin: '0px 10px 10px 0px'};
     return (
       <tr>
         <td>{this.props.questionId}</td>
         <td>{question}</td>
         <td>
           {!this.state.editMode && <div>
-            <button 
+            <button
               onClick={() => this.startEditMode()}
               style={buttonStyle}
               className="btn btn-secondary">Edit
             </button>
-            {this.props.isEditable && <button 
+            {this.props.isEditable && <button
               onClick={(questionId, e) => this.props.onDeleteQuestion(questionId, e)}
               style={buttonStyle}
               className="btn btn-negative">Delete
@@ -161,4 +160,4 @@ export class EditQuestion extends React.Component {
       </tr>
     );
   }
-};
+}

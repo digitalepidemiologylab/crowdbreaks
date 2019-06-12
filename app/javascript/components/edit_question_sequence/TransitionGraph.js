@@ -1,6 +1,4 @@
-
 import React from 'react'
-import PropTypes from 'prop-types';
 
 // Other
 import { Graph  } from 'react-d3-graph';
@@ -41,7 +39,7 @@ export class TransitionGraph extends React.Component {
         transitions[nodes_arr[i]] = ['end']
       }
     }
-    
+
     // collect links
     let links = [];
     for (let i in transitions) {
@@ -77,9 +75,9 @@ export class TransitionGraph extends React.Component {
     };
 
     return (
-      <div 
+      <div
         style={{width: '100%', height: '300px', border: '1px solid #808080'}}>
-        <Graph 
+        <Graph
           id="question-sequence-graph"
           data={data}
           config={myConfig}

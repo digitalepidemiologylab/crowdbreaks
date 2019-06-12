@@ -64,7 +64,7 @@ export class Assignment extends React.Component {
     if (status == 'Approved') {
       if (this.wasAutoApproved(assignment['auto_approval_time'], assignment['approval_time'])) {
         return 'Auto-approved'
-      };
+      }
     }
     return status;
   }

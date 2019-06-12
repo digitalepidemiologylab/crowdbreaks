@@ -1,9 +1,6 @@
 // React
 import React from 'react'
 
-// Other 
-let humps = require('humps');
-
 // Sub-components
 import { Answer } from './Answer';
 import { Question } from './Question';
@@ -88,7 +85,7 @@ export class QuestionSequence extends React.Component {
       this.delayEnableAnswers(this.props.delayNextQuestion)
     }
   }
-  
+
   enableAnswerButtons() {
     this.setState({answersDisabled: false});
   }
@@ -111,13 +108,13 @@ export class QuestionSequence extends React.Component {
         shadowRoot.appendChild(style)
         if (shadowRoot.children[1].innerHTML == "") {
           // This can occur when a tweet was set to private, thus is not accessible anymore. Handle this case separately
-          console.log("Tweet with id", this.props.tweetId, "could not be loaded.")
+          console.warn("Tweet with id", this.props.tweetId, "could not be loaded.")
           this.props.onTweetLoadError();
         }
       }
     } catch(err) {
-      console.log('An error occured while trying to access shadow DOM.')
-      console.log(err)
+      console.error('An error occured while trying to access shadow DOM.')
+      console.error(err)
     }
     this.setState({
       'tweetIsLoading': false
@@ -152,9 +149,9 @@ export class QuestionSequence extends React.Component {
     }
     let questionSequenceBody = <div ref={(tweet) => this.tweet = tweet}>
       {/* Title and tweet */}
-      <div className='row justify-content-center'> 
+      <div className='row justify-content-center'>
         <div className="col-12">
-          {this.props.projectTitle && <h4 className="mb-5">{this.props.projectTitle}</h4>} 
+          {this.props.projectTitle && <h4 className="mb-5">{this.props.projectTitle}</h4>}
           {tweetEmbedding}
         </div>
       </div>
@@ -165,15 +162,15 @@ export class QuestionSequence extends React.Component {
               <div className="spinner" style={{margin: 'auto'}}></div>
             </div>
           </div>
-      } 
+      }
       {/* Circle question number */}
-      { !this.state.tweetIsLoading && 
+      { !this.state.tweetIsLoading &&
           <div className="row justify-content-center">
             <div className="col-xs-12 col-lg-8 text-center">
               <div className="v-line"></div>
               <h4 className="circle-text mb-4">{Q}</h4>
               {/* Question */}
-              <Question 
+              <Question
                 question={this.props.currentQuestion.question}
                 hasInstructions={this.props.displayQuestionInstructions && this.props.currentQuestion.instructions}
                 toggleQuestionInstructions={() => this.toggleQuestionInstructions()}
@@ -181,9 +178,9 @@ export class QuestionSequence extends React.Component {
               {/* Answers */}
               <div className="buttons mb-4">
                 {this.props.currentQuestion.answers.map(function(answer) {
-                  return <Answer 
-                    key={answer.id} 
-                    answer={answer.answer} 
+                  return <Answer
+                    key={answer.id}
+                    answer={answer.answer}
                     disabled={parentThis.state.answersDisabled}
                     submit={() => parentThis.onAnswerSubmitQS(answer.id, new Date().getTime())}
                     color={answer.color}
@@ -194,8 +191,8 @@ export class QuestionSequence extends React.Component {
               <ul className="progress-dots">
                 { progressDots }
               </ul>
-            </div> 
-          </div> 
+            </div>
+          </div>
       }
       {/* Invisible recaptcha */}
       {!this.props.userSignedIn && !this.props.captchaVerified &&
@@ -206,11 +203,11 @@ export class QuestionSequence extends React.Component {
           </div>
       }
     </div>
-      let questionInstructions = this.state.showQuestionInstruction && <QuestionInstructions 
-        instructions={this.props.currentQuestion.instructions} 
+      let questionInstructions = this.state.showQuestionInstruction && <QuestionInstructions
+        instructions={this.props.currentQuestion.instructions}
         toggleQuestionInstructions={() => this.toggleQuestionInstructions()}
         translations={this.props.translations.question_instructions}
-      /> 
+      />
     return (
       <div>
         {questionInstructions}

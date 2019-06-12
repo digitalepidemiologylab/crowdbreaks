@@ -32,10 +32,10 @@ export class LeadlineItem extends React.Component {
       let shadowRoot = this.tweet.querySelector('.twitter-tweet').shadowRoot
       if (shadowRoot != null) {
         shadowRoot.appendChild(style)
-      } 
+      }
     } catch(err) {
-      console.log('An error occured while trying to access shadow DOM.')
-      console.log(err)
+      console.error('An error occured while trying to access shadow DOM.')
+      console.error(err)
     }
   }
 
@@ -43,7 +43,7 @@ export class LeadlineItem extends React.Component {
     return (
       <div className="classification" ref={ (tweet) => {this.tweet = tweet} } >
         <TweetEmbed
-          id={this.props.tweetId} 
+          id={this.props.tweetId}
           options={this.options}
           onTweetLoadSuccess={() => this.onTweetLoad()}
         />
@@ -59,4 +59,4 @@ export class LeadlineItem extends React.Component {
       </div>
     );
   }
-};
+}

@@ -5,7 +5,7 @@ function onUpdateMturkHitsRunning(hits_loaded) {
   setSpinnerInfoText(text, false);
 }
 // Failed
-function onUpdateMturkHitsFailed(hits_loaded) {
+function onUpdateMturkHitsFailed() {
   const text = 'Refreshing Mturk HITs is already running. Try again later.';
   setSpinnerInfoText(text, true);
 }
@@ -27,7 +27,7 @@ function onRefreshMturkHits() {
     const text = 'Refreshing Mturk HITs. This may take a while...'
     setSpinnerInfoText(text, false);
   })
-  $('#refresh-mturk-hits').on('ajax:error', function(e) {
+  $('#refresh-mturk-hits').on('ajax:error', function() {
     const text = 'Refreshing Mturk HITs failed.';
     setSpinnerInfoText(text, true);
   })
