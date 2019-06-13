@@ -11,9 +11,9 @@ function convertTimeAgo() {
     } else {
       console.error('Provided time is not valid and cannot be converted by moment.')
     }
-  })
+  });
 }
 
-$(document).ready(() => {
+$(document).on('turbolinks:load', () => {
   convertTimeAgo();
-})
+});
