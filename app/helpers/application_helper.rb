@@ -75,7 +75,7 @@ module ApplicationHelper
   def toggle_switch(instance_var, label, name, color: nil)
     content_tag :div do
       content_tag :label, class: 'switch' do
-        concat check_box_tag(name, 'checkbox', instance_var, class: name) 
+        concat check_box_tag(name, 'checkbox', instance_var, class: name)
         concat tag.span(class: "slider round#{color.nil? ? '' : " slider-#{color}"}")
         concat tag.span(label, class: 'switch-label')
       end
@@ -96,7 +96,7 @@ module ApplicationHelper
   def go_back_btn(path, col: 'col-12', center: false, mb: 'mb-5')
     content_tag :div, class: "row #{center ? 'justify-content-center' : ''} #{mb}" do
       content_tag :div, class: col do
-        link_to path, class: 'btn btn-secondary btn-lg' do 
+        link_to path, class: 'btn btn-secondary btn-lg' do
           t 'helpers.go_back'
         end
       end
@@ -118,15 +118,6 @@ module ApplicationHelper
   end
 
   def time_ago(time_at)
-    return '' if not time_at.respond_to?(:strftime)
-    case I18n.locale
-    when :de
-      'vor ' + time_ago_in_words(time_at)
-    when :pt
-      time_ago_in_words(time_at) + ' atrás'
-    else
-      # default to english
-      time_ago_in_words(time_at) + ' ago'
-    end
+    tag.div(time_at.to_time.iso8601, class: 'convert-by-moment', data: {lang: I18n.locale})
   end
 end
