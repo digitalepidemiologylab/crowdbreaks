@@ -118,6 +118,8 @@ module ApplicationHelper
   end
 
   def time_ago(time_at)
-    tag.div(time_at.to_time.iso8601, class: 'convert-by-moment', data: {lang: I18n.locale})
+    if time_at.respond_to?(:strftime)
+      tag.div(time_at.iso8601, class: 'convert-by-moment', data: {lang: I18n.locale})
+    end
   end
 end
