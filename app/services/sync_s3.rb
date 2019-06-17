@@ -12,7 +12,7 @@ class SyncS3
     Rails.logger.debug "Collecting jobs..."
     jobs = collect_jobs
     Rails.logger.debug "Removing unused files..."
-    removable = get_removable(jobs) 
+    removable = get_removable(jobs)
     remove(removable)
     Rails.logger.debug "Uploading non-existant files..."
     upload(jobs)
@@ -28,7 +28,9 @@ class SyncS3
   end
 
   def get_removable(jobs)
-    files_present = @s3.list_dir('other/').to_set
+    files_present = @s3.list_dir('other/')
+    # ignore content in /other/csv/*/other-results/*
+    files_present = files_present.reject{|u| u =~ /\/other-results\//}.to_set
     files_needed = jobs.collect{|j| j[:s3_key]}.to_set
     return files_present - files_needed
   end
@@ -37,13 +39,13 @@ class SyncS3
     jobs = []
     # mturk
     MturkBatchJob.find_each do |mturk_batch_job|
-      if mturk_batch_job.results.any? 
+      if mturk_batch_job.results.any?
         type = 'mturk-batch-job-results'
         s3_key = mturk_batch_job.assoc_s3_key(type, mturk_batch_job.results)
         exists = @s3.exists?(s3_key)
         jobs.push({'s3_key': s3_key, 'type': type, 'record_id': mturk_batch_job.id, 'exists': exists})
       end
-      if mturk_batch_job.mturk_tweets.any? 
+      if mturk_batch_job.mturk_tweets.any?
         type = 'mturk-batch-job-tweets'
         s3_key = mturk_batch_job.assoc_s3_key(type, mturk_batch_job.mturk_tweets)
         exists = @s3.exists?(s3_key)
@@ -52,13 +54,13 @@ class SyncS3
     end
     # local
     LocalBatchJob.find_each do |local_batch_job|
-      if local_batch_job.results.any? 
+      if local_batch_job.results.any?
         type = 'local-batch-job-results'
         s3_key = local_batch_job.assoc_s3_key(type, local_batch_job.results)
         exists = @s3.exists?(s3_key)
         jobs.push({'s3_key': s3_key, 'type': type, 'record_id': local_batch_job.id, 'exists': exists})
       end
-      if local_batch_job.local_tweets.any? 
+      if local_batch_job.local_tweets.any?
         type = 'local-batch-job-tweets'
         s3_key = local_batch_job.assoc_s3_key(type, local_batch_job.local_tweets)
         exists = @s3.exists?(s3_key)
@@ -67,7 +69,7 @@ class SyncS3
     end
     # public
     Project.find_each do |project|
-      if project.results.public_res_type.any? 
+      if project.results.public_res_type.any?
         type = 'public-results'
         s3_key = project.assoc_s3_key(type, project.results.public_res_type)
         exists = @s3.exists?(s3_key)
