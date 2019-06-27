@@ -16,6 +16,7 @@ class Project < ApplicationRecord
   # validations
   validates_presence_of :title, :description, :name
   validates_uniqueness_of :es_index_name, allow_nil: true
+  validate :accessible_by_email_pattern_is_valid
 
   # scopes
   scope :for_current_locale, -> {where("'#{I18n.locale.to_s}' = ANY (locales)")}
@@ -128,6 +129,14 @@ class Project < ApplicationRecord
   def normalize_blank_values(columns: [:es_index_name])
     columns.each do |column|
       self[column].present? || self[column] = nil
+    end
+  end
+
+  def accessible_by_email_pattern_is_valid
+    if accessible_by_email_pattern.present?
+      unless accessible_by_email_pattern.all? {|p| p.include?('@')}
+        errors.add(:accessible_by_email_pattern, 'Patterns need to be email patterns including "@"')
+      end
     end
   end
 end

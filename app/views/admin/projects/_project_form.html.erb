@@ -25,10 +25,10 @@
 
   <div class="mb-5">
     <h4>Twitter Streaming Options</h4>
-    <input id="twitter-streaming-options-checkbox" type="checkbox" <%= @project.active_stream ? 'checked' : ''%> style="margin-right:5px">Show streaming options</input> 
+    <input id="twitter-streaming-options-checkbox" type="checkbox" <%= @project.active_stream ? 'checked' : ''%> style="margin-right:5px">Show streaming options</input>
     <div id="twitter-streaming-options" data-active-stream=<%=  @project.active_stream? %>>
       <div class="form-group">
-        <%= f.input :keywords, hint: 'Comma-separated list of keywords for the Twitter streaming API to filter for' , 
+        <%= f.input :keywords, hint: 'Comma-separated list of keywords for the Twitter streaming API to filter for' ,
           input_html: {value: @project.keywords&.join(', ') || ""} %>
         <%= f.input :lang, label: "Languages", hint: 'Languages of tweets to collect through Twitter API (2-letter language code, e.g. "en")', :input_html => { value: @project.lang&.join(', ') || '' } %>
       </div>
@@ -48,9 +48,12 @@
   </div>
 
   <div class="mb-5">
-    <h4>Other</h4>
+    <h4>Accessibility options</h4>
     <div class="form-group">
       <%= f.input :public, label: "Make public", input_html: {class: "mr-2", value: @project.public || false}, hint: 'List project under /projects publicly', label_html: {class: 'label-inline'} %>
+    </div>
+    <div class="form-group">
+      <%= f.input :accessible_by_email_pattern, as: :string, hint: 'Restrict access to users with an account registered with a certain email pattern. Leave empty for no restriction. "*@*" will allow access to all registered users. Seperate multiple patterns by commas: E.g. "*@epfl.ch, *@ethz.ch"', :input_html => { value: @project.accessible_by_email_pattern&.join(', ') || '' } %>
     </div>
     <div class="form-group">
       <%= f.input :locales, label: "Locales", hint: "List of locales (any of [#{Crowdbreaks::Locales.join(', ')}]) for which this project should be publicly displayed (under /projects)", :input_html => { value: @project.locales&.join(', ') || '' } %>
