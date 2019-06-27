@@ -3,11 +3,11 @@ class ProjectsController < ApplicationController
 
   def index
     # only select projects which are public and have to correct locale setting
-    @projects = @projects.where(public: true).where("'#{I18n.locale.to_s}' = ANY (locales)")
+    @projects = @projects.where(public: true).where("'#{I18n.locale.to_s}' = ANY (locales)").accessible_by_user(current_user)
   end
 
   def show
-    if not @project.locales.include?(I18n.locale.to_s) or @project.es_index_name != 'project_vaccine_sentiment' 
+    if not @project.locales.include?(I18n.locale.to_s) or @project.es_index_name != 'project_vaccine_sentiment'
       redirect_to projects_path
     end
 
@@ -21,5 +21,5 @@ class ProjectsController < ApplicationController
   end
 
   private
-  
+
 end

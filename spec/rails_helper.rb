@@ -4,16 +4,17 @@ require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'question_sequence'
-require 'rspec/rails'
 require 'spec_helper'
+require 'rspec/rails'
 require 'ffaker'
 require 'devise'
 require 'simplecov'
 require 'database_cleaner'
 require 'factory_bot_rails'
 require 'selenium/webdriver'
-require 'support/database_cleaner'
 require 'webmock/rspec'
+require 'support/database_cleaner'
+require_relative 'support/controller_macros'
 
 
 # Add additional requires below this line. Rails is not loaded until this point!
@@ -67,7 +68,7 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-  
+
   # make url helpers accessible
   config.include Rails.application.routes.url_helpers
   config.before(:each) do
@@ -81,8 +82,9 @@ RSpec.configure do |config|
 
   # Devise controller helpers
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.extend ControllerMacros, :type => :controller
 end
-  
+
 
 # shoulda matchers
 Shoulda::Matchers.configure do |config|
@@ -119,7 +121,7 @@ RSpec.configure do |config|
     # auth request if no valid credentials are provided
     stub_request(:post, "https://api.twitter.com/oauth2/token")
       .with(body: {"grant_type"=>"client_credentials"})
-      .to_return(status: 200, body: {'access_token': 'test_token'}.to_json, headers: {"Content-Type"=> "application/json"})       
+      .to_return(status: 200, body: {'access_token': 'test_token'}.to_json, headers: {"Content-Type"=> "application/json"})
     # --------------------
     # mturk
     mturk_base_url = /mturk-requester(?:-sandbox)?.us-east-1.amazonaws.com/
