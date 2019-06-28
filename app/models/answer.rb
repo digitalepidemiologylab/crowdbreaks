@@ -9,6 +9,8 @@ class Answer < ApplicationRecord
   validates_presence_of :answer
   validates :key, presence: true, uniqueness: true
 
+  enum answer_type: [:button, :select], _prefix: true
+
   # color constants
   COLORS = {
     'btn-primary': 'btn-primary',
