@@ -3,6 +3,12 @@ class QuestionSequencesController < ApplicationController
 
   def show
     @project = Project.friendly.find(params[:project_id])
+
+    # only allow access if project is both public and accessible by user
+    if not @project.public?
+      redirect_to projects_path unless @project.accessible_by?(current_user)
+    end
+
     # Collect question sequence info
     @question_sequence = QuestionSequence.new(@project).load
     # Other

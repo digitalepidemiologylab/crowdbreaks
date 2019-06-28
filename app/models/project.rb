@@ -49,6 +49,21 @@ class Project < ApplicationRecord
     projects.where(id: match_ids)
   end
 
+  def accessible_by?(user)
+    if user.nil?
+      # user is not signed in, only allow projects without any restrictions/patterns given
+      accessible_by_email_pattern.length != 0
+    else
+      # user is signed in, decide on access restrictions
+      if accessible_by_email_pattern.length == 0
+        false
+      else
+        regexp = /#{accessible_by_email_pattern.join('|')}/
+        user.email.match?(regexp)
+      end
+    end
+  end
+
   def to_label
     # display name for simple form select options
     if Project.where(name: name).count == 1

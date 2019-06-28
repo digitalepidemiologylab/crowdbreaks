@@ -7,6 +7,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    redirect_to projects_path unless @project.public?
     if not @project.locales.include?(I18n.locale.to_s) or @project.es_index_name != 'project_vaccine_sentiment'
       redirect_to projects_path
     end

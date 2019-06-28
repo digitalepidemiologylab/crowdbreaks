@@ -58,7 +58,7 @@ Rails.application.routes.draw do
       get 'sentiment_analysis_chart', to: 'manage_pages#sentiment_analysis_chart'
       get 'sentiment_analysis_map', to: 'manage_pages#sentiment_analysis_map'
       get 'user_activity', to: 'manage_pages#user_activity'
-      
+
       # mturk
       resources :mturk_batch_jobs do
         resources :tasks
