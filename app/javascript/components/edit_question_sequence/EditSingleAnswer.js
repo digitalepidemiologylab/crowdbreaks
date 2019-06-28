@@ -7,7 +7,8 @@ export class EditSingleAnswer extends React.Component {
       answer: props.answer,
       color: props.color,
       label: props.label,
-      tag: props.tag
+      tag: props.tag,
+      answer_type: props.answer_type
     };
   }
 
@@ -17,6 +18,10 @@ export class EditSingleAnswer extends React.Component {
 
   onUpdateLabel(e) {
     this.setState({label: e.target.value})
+  }
+
+  onUpdateAnswerType(e) {
+    this.setState({answer_type: e.target.value})
   }
 
   onUpdateTag(e) {
@@ -30,16 +35,26 @@ export class EditSingleAnswer extends React.Component {
   }
 
   onUpdate() {
-    this.props.onUpdateInternalAnswer({'answerPos': this.props.answerPos, 'label': this.state.label, 'color': this.state.color, 'answer': this.state.answer, 'tag': this.state.tag})
+    this.props.onUpdateInternalAnswer(
+      {
+        answerPos: this.props.answerPos,
+        label: this.state.label,
+        color: this.state.color,
+        answer: this.state.answer,
+        tag: this.state.tag,
+        answer_type: this.state.answer_type
+      }
+    )
   }
 
   render() {
     const componentsStyle = {display: 'inline-block', marginRight: '10px', marginBottom: '10px'}
-    const idStyle = {...componentsStyle, width: '5%'}
+    const idStyle = {...componentsStyle, width: '3%'}
     const answerStyle = {...componentsStyle, width: '30%'}
+    const answerTypeStyle = {...componentsStyle, width: '10%'}
     const tagStyle = {...componentsStyle, width: '15%'}
-    const selectStyle = {...componentsStyle, width: '15%'}
-    const buttonStyle = {margin: '10px 10px 10px 0px'}
+    const selectStyle = {...componentsStyle, width: '10%'}
+    const buttonStyle = {margin: '10px 10px 10px 0px', color: 'white'}
 
     let updateButton = <button
       className='btn btn-primary'
@@ -59,6 +74,18 @@ export class EditSingleAnswer extends React.Component {
             onChange={(e) => this.onUpdateAnswer(e)}
             className='form-control'>
           </input>
+        </div>
+        <div style={answerTypeStyle}>
+          <select
+            className='form-control'
+            value={this.state.answer_type}
+            onChange={(e) => this.onUpdateAnswerType(e)}>
+            {
+              this.props.answerTypeOptions.map( (answerType, i) => {
+                return(<option key={i} value={answerType}>{answerType}</option>)
+              })
+            }
+          </select>
         </div>
         <div style={selectStyle}>
           <select
@@ -97,7 +124,7 @@ export class EditSingleAnswer extends React.Component {
         {this.props.isEditable && <button
           onClick={(e) => this.props.onDeleteAnswer(this.props.answerId, this.props.questionId, e)}
           style={buttonStyle}
-          className="btn btn-negative">Delete
+          className="btn btn-negative">&#x2716;
         </button>}
       </div>
     );

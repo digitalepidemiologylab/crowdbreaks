@@ -29,6 +29,7 @@ export class EditAnswers extends React.Component {
     dummyAnswers[e.answerPos].color = e.color;
     dummyAnswers[e.answerPos].label = e.label;
     dummyAnswers[e.answerPos].tag = e.tag;
+    dummyAnswers[e.answerPos].answer_type = e.answer_type;
     this.props.onUpdateAnswers({'answers': dummyAnswers, 'questionId': this.props.questionId})
     this.stopEditMode();
   }
@@ -50,8 +51,8 @@ export class EditAnswers extends React.Component {
         }
       </div>
     } else {
-      answers = <div className='mb-5'>
-        <div className='mb-5'>
+      answers = <div>
+        <div>
         {
           this.props.answers.map( (answer, id) => {
             return <EditSingleAnswer
@@ -62,8 +63,10 @@ export class EditAnswers extends React.Component {
               color={answer.color}
               label={answer.label}
               tag={answer.tag}
+              answer_type={answer.answer_type}
               colorOptions={this.props.colorOptions}
               labelOptions={this.props.labelOptions}
+              answerTypeOptions={this.props.answerTypeOptions}
               questionId={this.props.questionId}
               isEditable={this.props.isEditable}
               onUpdateInternalAnswer={(e) => this.onUpdateInternalAnswer(e)}

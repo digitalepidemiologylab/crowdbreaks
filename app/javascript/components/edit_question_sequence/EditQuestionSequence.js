@@ -124,7 +124,7 @@ export class EditQuestionSequence extends React.Component {
 
   addNewAnswer(questionId) {
     let dummyQuestions = this.state.questions;
-    dummyQuestions[questionId].answers.push({'id': this.state.newAnswerIdCounter, 'answer': '', 'color': 'btn-primary', 'label': '', original_id: null, tag: ''})
+    dummyQuestions[questionId].answers.push({'id': this.state.newAnswerIdCounter, 'answer': '', 'color': 'btn-primary', 'label': '', original_id: null, tag: '', answer_type: 'button'})
     this.setState({
       questions: dummyQuestions,
       newAnswerIdCounter: this.state.newAnswerIdCounter + 1
@@ -329,6 +329,7 @@ export class EditQuestionSequence extends React.Component {
                 answers={q.answers}
                 colorOptions={prevThis.props.colorOptions}
                 labelOptions={prevThis.props.labelOptions}
+                answerTypeOptions={prevThis.props.answerTypeOptions}
                 onUpdateAnswers={(e) => prevThis.onUpdateAnswers(e)}
                 onDeleteAnswer={prevThis.onDeleteAnswer.bind(prevThis)}
                 isEditable={q.is_editable}

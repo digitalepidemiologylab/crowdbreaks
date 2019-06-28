@@ -22,6 +22,7 @@
       projectId: @project.id,
       colorOptions: Answer::COLORS,
       labelOptions: Answer::LABELS.values.push(''),
+      answerTypeOptions: Answer.answer_types.keys,
       saveQuestionSequencePath: admin_question_sequence_path(@project.id),
       redirectPath: admin_question_sequences_path
     }) %>

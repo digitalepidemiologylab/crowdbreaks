@@ -14,7 +14,7 @@ class QuestionSequence
     # transitions
     transitions = get_transitions
     num_transitions = Transition.find_path_length(transitions)
-    
+
     return {
       'questions': questions,
       'initial_question_id': initial_question_id,
@@ -47,7 +47,7 @@ class QuestionSequence
   end
 
 
-  private 
+  private
 
   def update_question_answers(questions)
     id_mapping = {questions: {}, answers: {}}
@@ -164,12 +164,12 @@ class QuestionSequence
 
   def update_answer(a)
     original_answer = Answer.find(a[:original_id])
-    original_answer.update_attributes({answer: a[:answer], color: a[:color], label: a[:label], tag: a[:tag]})
+    original_answer.update_attributes({answer: a[:answer], color: a[:color], label: a[:label], tag: a[:tag], answer_type: a[:answer_type]})
     return original_answer
   end
 
   def create_answer(a)
-    return Answer.create(answer: a[:answer], color: a[:color], label: a[:label], tag: a[:tag])
+    return Answer.create(answer: a[:answer], color: a[:color], label: a[:label], tag: a[:tag], answer_type: a[:answer_type])
   end
 
   def get_questions(edit_mode: false)
