@@ -173,8 +173,16 @@ class FlaskApi
     end
   end
 
-  private
+  # email status
+  def get_streaming_email_status(type: 'weekly')
+    options = {type: type}
+    handle_error(error_return_value: '') do
+      resp = self.class.get('/email/status', query: options, timeout: 20)
+      resp.parsed_response
+    end
+  end
 
+  private
 
 
   def handle_error(error_return_value: nil)
