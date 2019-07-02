@@ -16,7 +16,7 @@ module Manage
       type = 'mturk-batch-job-results'
       respond_to do |format|
         format.html
-        format.csv { 
+        format.csv {
           redirect_to @mturk_batch_job.assoc_signed_file_path(type, @mturk_batch_job.results)
         }
         format.js {
@@ -34,7 +34,7 @@ module Manage
       if @mturk_batch_job.update_attributes(mturk_batch_job_params)
         if @mturk_batch_job.job_file.present?
           # only overwrite if file was provided
-          CreateTasksJob.perform_later(@mturk_batch_job.id, retrieve_tweet_rows_from_job_file, destroy_first: true)
+          CreateTasksJob.perform_later(@mturk_batch_job.id, @mturk_batch_job.retrieve_tweet_rows, destroy_first: true)
         end
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being updated...")
       else
@@ -46,7 +46,7 @@ module Manage
       @mturk_batch_job.sanitize_keywords!
       if @mturk_batch_job.save
         # generate tasks
-        CreateTasksJob.perform_later(@mturk_batch_job.id, retrieve_tweet_rows_from_job_file)
+        CreateTasksJob.perform_later(@mturk_batch_job.id, @mturk_batch_job.retrieve_tweet_rows)
         redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' is being created...")
       else
         render :new and return
@@ -76,7 +76,7 @@ module Manage
 
     def clone
       mturk_batch_job_clone = MturkBatchJob.find(params[:clone_id])
-      cloned_attributes = mturk_batch_job_clone.attributes.select{ |a| 
+      cloned_attributes = mturk_batch_job_clone.attributes.select{ |a|
         ['name', 'project_id', 'description', 'title', 'keywords', 'reward', 'lifetime_in_seconds', 'auto_approval_delay_in_seconds',
          'assignment_duration_in_seconds', 'instructions', 'number_of_assignments', 'minimal_approval_rate', 'max_tasks_per_worker',
          'exclude_blacklisted', 'check_availability', 'min_num_hits_approved', 'delay_start', 'delay_next_question', 'sandbox'].include?(a)
@@ -92,14 +92,6 @@ module Manage
 
     def mturk_batch_job_params
       params.require(:mturk_batch_job).permit(:name, :title, :description, :keywords, :project_id, :number_of_assignments, :job_file, :reward, :lifetime_in_seconds, :auto_approval_delay_in_seconds, :assignment_duration_in_seconds, :sandbox, :instructions, :minimal_approval_rate, :max_tasks_per_worker, :check_availability, :exclude_blacklisted, :min_num_hits_approved, :delay_start, :delay_next_question)
-    end
-
-    def retrieve_tweet_rows_from_job_file
-      if @mturk_batch_job.job_file.present?
-        CSV.foreach(@mturk_batch_job.job_file.path).map{ |row| row }
-      else
-        []
-      end
     end
   end
 end

@@ -122,4 +122,18 @@ module ApplicationHelper
       tag.div(time_at.iso8601, class: 'convert-by-moment', data: {lang: I18n.locale})
     end
   end
+
+  def _progress_circle_outer
+    content_tag :div, class: 'circle' do
+      concat content_tag(:div, '<div class="fill"></div>', {class: 'mask full'}, false)
+      concat content_tag :div, '<div class="fill"></div><div class="fill fix"></div>', {class: 'mask half'}, false
+    end
+  end
+
+  def progress_circle(id, small: false, progress: 0)
+    content_tag :div, id: id, class: "#{small ? 'progress-circle-sm' : 'progress-circle'}", data: {progress: progress}, style: "display:none;" do
+      concat _progress_circle_outer
+      concat tag.div class: 'inset'
+    end
+  end
 end

@@ -8,8 +8,6 @@ class FlaskApi
   # debug_output $stderr
   basic_auth ENV['FLASK_API_USERNAME'], ENV['FLASK_API_PASSWORD']
   JSON_HEADER = {'Content-Type' => 'application/json', :Accept => 'application/json'}
-  MAX_COUNT_REFETCH = 5
-  MAX_COUNT_REFETCH_DB = 10
 
   def initialize
   end
@@ -93,33 +91,21 @@ class FlaskApi
   end
 
   # tweets
-  def get_tweet(project, user_id: nil)
-    tweet = _get_tweet(project.es_index_name, user_id)
-    # If API is down, fetch a random tweet
-    if tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
-      ErrorLogger.error "API is down. Showing random tweet instead."
-      return get_random_tweet(project)
-    end
-    return get_random_tweet(project) if tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
-    # test if tweet is publicly available
-    trials = 0
-    tv = TweetValidation.new
-    tweet_id = tweet.fetch(:tweet_id, nil)
-    while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
-      Rails.logger.info "Trial #{trials + 1}: Tweet #{tweet_id} is invalid and will be removed. Fetching new tweet instead."
-      remove_tweet(project.es_index_name, tweet_id)
-      tweet = _get_tweet(project.es_index_name, user_id)
-      tweet_id = tweet&.fetch(:tweet_id, nil)
-      trials += 1
-    end
-    if trials >= MAX_COUNT_REFETCH
-      ErrorLogger.error "Number of trials exceeded when trying to fetch new tweet from API. Showing random tweet instead."
-      return get_random_tweet(project)
-    elsif tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
-      ErrorLogger.error "Tweet returned from API is invalid or empty. Showing random tweet instead."
-      return get_random_tweet(project)
+  def get_tweet(es_index_name, user_id: nil)
+    data = {'user_id': user_id}
+    tweet = nil
+    handle_error do
+      resp = self.class.get('/tweet/new/'+es_index_name, query: data, timeout: 2)
+      tweet = resp.parsed_response.deep_symbolize_keys!
     end
     tweet
+  end
+
+  def remove_tweet(es_index_name, tweet_id)
+    data = {'tweet_id': tweet_id}
+    handle_error do
+      self.class.post('/tweet/remove/'+es_index_name, body: data.to_json, headers: JSON_HEADER)
+    end
   end
 
   def update_tweet(es_index_name, user_id, tweet_id)
@@ -189,47 +175,6 @@ class FlaskApi
 
   private
 
-
-  def get_random_tweet(project)
-    return random_tweet if Result.count == 0
-    if Result.where(project: project).exists?
-      results = Result.where(project: project)
-    else
-      results = Result.all
-    end
-    tweet_id = results.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
-    tv = TweetValidation.new
-    trials = 0
-    while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH_DB
-      Rails.logger.info "Tweet #{tweet_id} is not available anymore, trying another"
-      Result.uncached do
-        tweet_id = results.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
-      end
-      trials += 1
-    end
-    return {tweet_id: tweet_id, tweet_text: nil}
-  end
-
-  def random_tweet
-    {tweet_id: '20', tweet_text: nil}
-  end
-
-  def remove_tweet(es_index_name, tweet_id)
-    data = {'tweet_id': tweet_id}
-    handle_error do
-      self.class.post('/tweet/remove/'+es_index_name, body: data.to_json, headers: JSON_HEADER)
-    end
-  end
-
-  def _get_tweet(es_index_name, user_id)
-    data = {'user_id': user_id}
-    tweet = nil
-    handle_error do
-      resp = self.class.get('/tweet/new/'+es_index_name, query: data, timeout: 2)
-      tweet = resp.parsed_response.deep_symbolize_keys!
-    end
-    tweet
-  end
 
 
   def handle_error(error_return_value: nil)

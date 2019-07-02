@@ -13,10 +13,17 @@ class QuestionSequencesController < ApplicationController
     @question_sequence = QuestionSequence.new(@project).load
     # Other
     @user_id = current_or_guest_user.id
-    # Fetch new tweet ID
-    tweet = FlaskApi.new.get_tweet(@project, user_id: @user_id)
-    add_to_public_tweets(tweet, @project)
-    @tweet_id = tweet[:tweet_id]
+    @tweet_id = @project.get_tweet(user_id: @user_id)
+    # if @project.stream_annotation_mode?
+    #   # Get a recent tweet from the streaming queue
+    #   tweet = FlaskApi.new.get_tweet(@project, user_id: @user_id)
+    #   add_to_public_tweets(tweet, @project)
+    #   @tweet_id = tweet[:tweet_id]
+    # elsif @project.local_annotation_mode?
+    #   # Fetch tweet from a pool of tweets stored in the public_tweets table
+    #   public_tweet = @project.get_public_tweet
+    #   @tweet_id = public_tweet&.tweet_id&.to_s
+    # end
 
     # @tweet_id = '1047868518224416769'
     # @tweet_id = '564984221203431000'  # invalid tweet
@@ -60,7 +67,7 @@ class QuestionSequencesController < ApplicationController
     end
 
     if test_mode
-      new_tweet = api.get_tweet(project, user_id: user_id)
+      new_tweet = project.get_tweet(test_mode: true)
       render json: {tweet_id: new_tweet[:tweet_id]}, status: 200 and return
     end
 
@@ -71,11 +78,12 @@ class QuestionSequencesController < ApplicationController
     end
 
     # update tweet in Redis pool
-    api.update_tweet(project.es_index_name, user_id, tweet_id)
+    if project.stream_annotation_mode?
+      api.update_tweet(project.es_index_name, user_id, tweet_id)
+    end
 
     # get next tweet
-    new_tweet = api.get_tweet(project, user_id: user_id)
-    new_tweet_id = new_tweet[:tweet_id]
+    new_tweet_id = project.get_tweet(user_id: user_id)
 
     # save logs
     logs = final_params.fetch(:logs, {})
@@ -106,15 +114,4 @@ class QuestionSequencesController < ApplicationController
     params.require(:result).permit(:answer_id, :tweet_id, :question_id, :user_id, :project_id)
   end
 
-  def add_to_public_tweets(tweet, project)
-    if tweet[:tweet_text].present?
-      if not PublicTweet.where(tweet_id: tweet[:tweet_id], project: project).exists?
-        # whitelisting
-        whitelisted_keys = [:tweet_id, :tweet_text]
-        public_tweet = tweet.select { |key,_| whitelisted_keys.include? key }
-        public_tweet[:project] = project
-        PublicTweet.create(public_tweet)
-      end
-    end
-  end
 end

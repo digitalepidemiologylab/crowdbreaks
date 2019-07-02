@@ -12,6 +12,7 @@ $(document).on("turbolinks:load", function() {
       },
 
       received: function(data) {
+        console.log(data)
         if (data['job_type'].endsWith('_s3_upload')) {
           data['job_type'] = data['job_type'].split('_s3_upload')[0]
           handle_s3_upload(data);
@@ -42,11 +43,32 @@ $(document).on("turbolinks:load", function() {
               onRefreshReviewStatusComplete(data['assignment']);
             }
             break;
+          case 'progress':
+            onUpdateProgress(data['record_id'], data['record_type'], data['progress']);
+            break;
         }
       }
     });
   }
 })
+
+function onUpdateProgress(record_id, record_type, progress) {
+  // Hide context, show progress circle if not complete
+  let progressCircleId = '#progress-circle-record-' + record_id + '-' + record_type;
+  let progressCircleContextId = progressCircleId + '-context';
+  if (progress < 100) {
+    $(progressCircleContextId).hide();
+    $(progressCircleId).show();
+  } else {
+    $(progressCircleContextId).show();
+    $(progressCircleId).hide();
+    return
+  }
+  // update progress if progress was made
+  if (progress > $(progressCircleId).data('progress')) {
+    $(progressCircleId).attr('data-progress', progress);
+  }
+}
 
 function handle_s3_upload(data) {
   // Handling in app/assets/javascripts/s3_upload.js

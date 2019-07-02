@@ -1,6 +1,7 @@
 class MturkBatchJob < ApplicationRecord
   include ActiveModel::Validations
   include S3UploadableAssociation
+  include CsvFileHandler
 
   has_many :tasks, dependent: :delete_all
   has_many :mturk_tweets, dependent: :delete_all
@@ -17,7 +18,7 @@ class MturkBatchJob < ApplicationRecord
   validates_with CsvValidator, fields: [:job_file]
   validates_with HitTypeValidator, on: :create
 
-  attr_accessor :job_file, :cloned_name
+  attr_accessor :cloned_name
 
   def workers
     MturkWorker.where(id: tasks&.select(:mturk_worker_id))
@@ -74,7 +75,7 @@ class MturkBatchJob < ApplicationRecord
   end
 
   def exclude_blacklisted_workers
-    # Exclude all blacklisted workers from this batch job 
+    # Exclude all blacklisted workers from this batch job
     MturkWorker.blacklisted_status.each do |mturk_worker|
       mturk_worker.exclude_worker(self)
     end
@@ -98,7 +99,7 @@ class MturkBatchJob < ApplicationRecord
 
   def default_mturk_instructions
     default_instructions_path = File.join(Rails.root, 'app/views/mturk/default_mturk_instructions.md')
-    File.read(default_instructions_path) 
+    File.read(default_instructions_path)
   end
 
   def sanitize_keywords!
@@ -135,6 +136,6 @@ class MturkBatchJob < ApplicationRecord
     return tmp_file_path
   end
 
-  private 
+  private
 
 end

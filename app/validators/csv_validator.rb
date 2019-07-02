@@ -20,12 +20,15 @@ class CsvValidator < ActiveModel::Validator
       return false, 'Unsuccessful. File was empty.'
     end
 
-    # check how many columns 
-    first_row = CSV.open(csv_file.path, 'r') {|csv| csv.first} 
+    # check how many columns
+    first_row = CSV.open(csv_file.path, 'r') {|csv| csv.first}
     with_text = false
+    with_image_url = false
     if first_row.count == 2
       with_text = true
-    elsif first_row.count > 2
+    elsif first_row.count == 3
+      with_image_url = true
+    elsif first_row.count > 3
       return false, 'Detected more than 2 columns in CSV'
     end
 
@@ -39,6 +42,12 @@ class CsvValidator < ActiveModel::Validator
         text = row[1].to_s
         if text.empty?
           return false, 'Found empty tweet text'
+        end
+      end
+      if with_image_url
+        text = row[2].to_s
+        if text.empty?
+          return false, 'Found empty tweet image URL'
         end
       end
     end

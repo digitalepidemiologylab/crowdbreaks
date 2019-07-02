@@ -18,13 +18,15 @@ module Admin
         @project = generate_question_sequence_project(@project)
       end
       if @project.save
-        respond_to do |format|
-          format.html { redirect_to(admin_projects_path, notice: 'Project successfully created')}
+        if @project.job_file.present?
+          CreatePublicTweetsJob.perform_later(@project.id, current_user.id, @project.retrieve_tweet_rows)
+          redirect_to admin_projects_path, notice: "Project #{@project.name} is being created..."
+        else
+          redirect_to admin_projects_path, notice: "Project #{@project.name} successfully created!"
         end
       else
-        respond_to do |format|
-          format.html { render :new }
-        end
+        flash[:alert] = 'Creating project was unsuccessful'
+        render :new
       end
     end
 
@@ -33,8 +35,12 @@ module Admin
 
     def update
       if @project.update_attributes(sanitized_projects_params)
-        flash[:notice] = 'Project successfully updated!'
-        redirect_to admin_projects_path
+        if @project.job_file.present?
+          CreatePublicTweetsJob.perform_later(@project.id, current_user.id, @project.retrieve_tweet_rows, destroy_first: true)
+          redirect_to admin_projects_path, notice: "Project #{@project.name} is being updated..."
+        else
+          redirect_to admin_projects_path, notice: "Project #{@project.name} successfully updated!"
+        end
       else
         flash[:alert] = 'Editing project was unsuccessful'
         render :edit
@@ -57,7 +63,7 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode, :locales, :accessible_by_email_pattern)
+      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode, :locales, :accessible_by_email_pattern, :annotation_mode, :job_file)
     end
 
     def generate_question_sequence_project(project)
@@ -75,6 +81,7 @@ module Admin
       sanitized_params[:accessible_by_email_pattern] = array_from_string(project_params[:accessible_by_email_pattern])
       sanitized_params[:storage_mode] = sanitized_params[:storage_mode].to_i
       sanitized_params[:image_storage_mode] = sanitized_params[:image_storage_mode].to_i
+      sanitized_params[:annotation_mode] = sanitized_params[:annotation_mode].to_i
       sanitized_params
     end
 

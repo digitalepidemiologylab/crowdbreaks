@@ -60,6 +60,32 @@
     </div>
   </div>
 
+  <div class="mb-5">
+    <h4>Annotation mode</h4>
+    <div class="form-group">
+      <%= f.input :annotation_mode, collection: Project.annotation_modes, include_blank: false, selected: @project.read_attribute_before_type_cast(:annotation_mode), hint: "Annotation mode for the public interface (doesn't concern mturk or local mode). Annotation mode stream: Only works well when a stream of tweets are being collected (see streaming options). In this case, a recently collected tweet is fetched from a queue (queue is implemented in crowdbreaks-streamer). In local mode (not be confused with local batch processing) tweets are fetched from the public_tweets table.", input_html: {id: 'select-annotation-mode'} %>
+    </div>
+    <div id="options-annotation-mode-local" >
+      <div class="form-group">
+        <%= f.input 'Upload tweet IDs',
+          hint: 'Please use a header-less CSV in which each row corresponds to a tweet ID. You can specify a second column for the text. In that case the text instead of the entire tweet will be shown to turkers.',
+          label_html: {class: 'label-no-wrap'} do %>
+        <div class="btn btn-secondary" onClick="document.getElementById('job-file-local').click();">
+          <%= fa_icon 'upload', class: 'mr-2' %>
+          <span>Choose file</span>
+        </div>
+      <% end %>
+      <div class='hidden-file-upload'>
+        <%= f.input :job_file, as: :file, input_html: {id: 'job-file-local', class: 'input-file'} %>
+      </div>
+      <%= f.error :job_file %>
+      <% if @project.public_tweets.count > 0 %>
+        <div class="alert alert-danger">Note: Existing entries in public tweets table will be deleted if they don't have results associated with it.</div>
+      <% end %>
+      </div>
+    </div>
+  </div>
+
   <div class="form-actions" class="mt-2">
     <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
   </div>

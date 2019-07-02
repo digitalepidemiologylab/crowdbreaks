@@ -1,0 +1,72 @@
+@mixin progress-circle-mxn($circle-size) {
+	// $circle-size: 30px;
+	$circle-background: #f3f3f3;
+	$circle-color: $blue;
+	$inset-size: $circle-size * 2/3;
+	$transition-length: 1s;
+
+	margin: 0px;
+	width: $circle-size;
+	height: $circle-size;
+
+	background-color: $circle-background;
+	border-radius: 50%;
+	.circle {
+		.mask, .fill {
+			width: $circle-size;
+			height: $circle-size;
+			position: absolute;
+			border-radius: 50%;
+		}
+		.mask, .fill {
+			-webkit-backface-visibility: hidden;
+			transition: -webkit-transform $transition-length;
+			transition: -ms-transform $transition-length;
+			transition: transform $transition-length;
+			border-radius: 50%;
+		}
+		.mask {
+			clip: rect(0px, $circle-size, $circle-size, $circle-size/2);
+			.fill {
+				clip: rect(0px, $circle-size/2, $circle-size, 0px);
+				background-color: $circle-color;
+			}
+		}
+	}
+	.inset {
+		width: $inset-size;
+		height: $inset-size;
+		position: absolute;
+		margin-left: ($circle-size - $inset-size)/2.0;
+		margin-top: ($circle-size - $inset-size)/2.0;
+		background-color: $white;
+		border-radius: 50%;
+	}
+
+	$increment: 180deg / 100;
+	@for $i from 0 through 100 {
+		&[data-progress="#{$i}"] {
+			.circle {
+				.mask.full, .fill {
+					-webkit-transform: rotate($increment * $i);
+					-ms-transform: rotate($increment * $i);
+					transform: rotate($increment * $i);
+				}
+				.fill.fix {
+					-webkit-transform: rotate($increment * $i * 2);
+					-ms-transform: rotate($increment * $i * 2);
+					transform: rotate($increment * $i * 2);
+				}
+			}
+		}
+	}
+}
+
+
+.progress-circle {
+  @include progress-circle-mxn(30px);
+}
+
+.progress-circle-sm {
+  @include progress-circle-mxn(20px);
+}

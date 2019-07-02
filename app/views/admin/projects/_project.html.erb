@@ -1,25 +1,28 @@
-<tr>  
+<tr>
   <td><%= project[0].title %></td>
-  <td><%= project[0].name %></td>                                                                                                         
-  <td><%= project.length %></td>                                                                                       
-  <td><%= truncate(project[0]&.keywords&.join(', ')) %></td>                                                                              
+  <td><%= project[0].name %></td>
+  <td><%= project.length %></td>
+  <td><%= truncate(project[0]&.keywords&.join(', ')) %></td>
   <td><%= project[0]&.lang&.join(', ') %></td>
-  <td><%= project[0]&.locales&.join(', ') %> </td>                                                                                        
-  <td><%= status_yes_no(project[0].public?) %></td>                                                                                       
-  <td><%= status_yes_no(project[0].active_stream?) %></td>                                                                                
-  <td>      
-    <span class="no-wrap"> 
-      <% if can? :read, project[0] %>
-        <%= link_to fa_icon('eye'), admin_project_path(project[0]), title: 'Show' %>
-      <% end %>
-      <% if can? :destroy, project[0] %>                                                                                                  
-        <%= link_to fa_icon("trash"), admin_project_path(project[0]),                                                                     
-          method: :delete,
-          data: {confirm: "Delete project?"} %>                                                                                        
-      <% end %>
-      <% if can? :update, project[0] %>                                                                                                   
-        <%= link_to fa_icon("pencil"), edit_admin_project_path(project[0])  %>                                                            
-      <% end %>
-    </span> 
-  </td>   
+  <td><%= project[0]&.locales&.join(', ') %> </td>
+  <td><%= status_yes_no(project[0].public?) %></td>
+  <td><%= status_yes_no(project[0].active_stream?) %></td>
+  <td>
+    <div id="progress-circle-record-<%= project[0].id %>-public-tweets-context">
+      <span class="no-wrap">
+        <% if can? :read, project[0] %>
+          <%= link_to fa_icon('eye'), admin_project_path(project[0]), title: 'Show' %>
+        <% end %>
+        <% if can? :destroy, project[0] %>
+          <%= link_to fa_icon("trash"), admin_project_path(project[0]),
+            method: :delete,
+            data: {confirm: "Delete project?"} %>
+        <% end %>
+        <% if can? :update, project[0] %>
+          <%= link_to fa_icon("pencil"), edit_admin_project_path(project[0])  %>
+        <% end %>
+      </span>
+    </div>
+    <%= progress_circle("progress-circle-record-#{project[0].id}-public-tweets", small: false) %>
+  </td>
 </tr>
