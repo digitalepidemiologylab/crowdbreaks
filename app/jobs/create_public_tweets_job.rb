@@ -14,9 +14,9 @@ class CreatePublicTweetsJob < ApplicationJob
     end
 
     total_count = tweet_rows.count
-    prev_percentage = 0
     if total_count > 0
       tv = TweetValidation.new
+      pn = ProgressNotifier.new(projct_id, user_id, 'public-tweets', total_count)
       tweet_rows.each_with_index do |row, i|
         pt = PublicTweet.where(tweet_id: row[0], tweet_text: row.length == 1 ? "" : row[1], project: project).first_or_create
         if tv.tweet_is_valid?(row[0])
@@ -24,14 +24,9 @@ class CreatePublicTweetsJob < ApplicationJob
         else
           pt.unavailable!
         end
-        new_percentage = 100*i/total_count.ceil
-        if prev_percentage < new_percentage
-          prev_percentage = new_percentage
-          ActionCable.server.broadcast("job_notification:#{user_id}", record_id: project_id, record_type: 'public-tweets', job_type: "progress", progress: new_percentage)
-        end
+        pn.update_progress(i)
       end
-      # End progress
-      ActionCable.server.broadcast("job_notification:#{user_id}", record_id: project_id, record_type: 'public-tweets', job_type: "progress", progress: 100)
+      pn.finish
     end
   end
 end

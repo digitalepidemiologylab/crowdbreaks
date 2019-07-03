@@ -8,8 +8,6 @@ class MturkBatchJob < ApplicationRecord
   belongs_to :project
   has_many :results, through: :tasks
 
-  enum check_availability: [:before, :after, :before_and_after, :never], _prefix: true
-
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
   validates_presence_of :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward
   validates_inclusion_of :sandbox, in: [true, false]
@@ -17,6 +15,8 @@ class MturkBatchJob < ApplicationRecord
   validates_inclusion_of :number_of_assignments, in: 1..100, message: 'Number assignments cannot be 1 or >100'
   validates_with CsvValidator, fields: [:job_file]
   validates_with HitTypeValidator, on: :create
+
+  enum check_availability: [:before, :after, :before_and_after, :never], _prefix: true
 
   attr_accessor :cloned_name
 

@@ -2,19 +2,24 @@
   <td><%= local_batch_job.name %></td>
   <td><%= local_batch_job.project.title %></td>
   <td><%= time_ago(local_batch_job.created_at) %></td>
-  <td><span class='badge badge-sentiment'><%= local_batch_job_status(local_batch_job.status)%></span></td>
+  <td>
+    <div id="progress-circle-record-<%= local_batch_job.id %>-local-tweets-context">
+      <span class='badge badge-sentiment'><%= local_batch_job_status(local_batch_job.status)%></span>
+    </div>
+    <%= progress_circle("progress-circle-record-#{local_batch_job.id}-local-tweets") %>
+  </td>
   <td><%= local_batch_job.completed_by.join(' ') %></td>
   <td><%= local_batch_job.users.count %></td>
   <td><%= num(local_batch_job.local_tweets.count) %></td>
   <td><%= local_batch_job.processing_mode %></td>
   <td>
     <% if local_batch_job.local_tweets.count > 0 %>
-      <div class='no-wrap'> 
+      <div class='no-wrap'>
         <%= link_to manage_local_batch_job_local_tweets_path(local_batch_job) do %>
           Tweets <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>
       </div>
-      <div class='no-wrap'> 
+      <div class='no-wrap'>
         <%= link_to local_batch_job_path(local_batch_job) do %>
           View <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         <% end %>

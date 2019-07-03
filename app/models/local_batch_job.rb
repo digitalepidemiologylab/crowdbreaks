@@ -15,6 +15,7 @@ class LocalBatchJob < ApplicationRecord
   validates_with CsvValidator, fields: [:job_file]
 
   enum processing_mode: {default: 0, test: 1}, _suffix: :processing_mode
+  enum check_availability: [:do_not, :do], _suffix: true
 
   attr_accessor :job_file
 
@@ -37,7 +38,6 @@ class LocalBatchJob < ApplicationRecord
   def status
     return 'processing' if processing
     return 'deleting' if deleting
-    return 'empty' if local_tweets.count == 0
     'ready'
   end
 

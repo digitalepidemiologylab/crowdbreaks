@@ -12,7 +12,6 @@ $(document).on("turbolinks:load", function() {
       },
 
       received: function(data) {
-        console.log(data)
         if (data['job_type'].endsWith('_s3_upload')) {
           data['job_type'] = data['job_type'].split('_s3_upload')[0]
           handle_s3_upload(data);

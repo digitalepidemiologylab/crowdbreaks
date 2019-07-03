@@ -10,7 +10,7 @@ export const TweetEmbedding = (props) => {
   return (
     <div className="question-sequence-tweet">
       <TweetEmbed
-        id={props.tweetId} 
+        id={props.tweetId}
         options={options}
         onTweetLoadSuccess={props.onTweetLoad}
       />

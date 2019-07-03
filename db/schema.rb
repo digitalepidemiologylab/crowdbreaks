@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_28_165802) do
+ActiveRecord::Schema.define(version: 2019_07_03_202401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,8 @@ ActiveRecord::Schema.define(version: 2019_06_28_165802) do
     t.boolean "deleting", default: false
     t.string "slug"
     t.integer "processing_mode", default: 0, null: false
+    t.integer "check_availability", default: 0, null: false
+    t.index ["check_availability"], name: "index_local_batch_jobs_on_check_availability"
     t.index ["project_id"], name: "index_local_batch_jobs_on_project_id"
     t.index ["slug"], name: "index_local_batch_jobs_on_slug"
   end
