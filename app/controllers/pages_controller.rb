@@ -2,7 +2,7 @@ class PagesController < ApplicationController
   authorize_resource :class => false
 
   def index
-    @num_tweets_classified = Result.distinct.count(:tweet_id)
+    @num_tweets_classified = Result.num_annotations
     if user_signed_in?
       @projects = Project.where(id: current_user.results.select('project_id').group('project_id').pluck(:project_id)).where(public: true).for_current_locale
       @counts = {}
@@ -13,10 +13,10 @@ class PagesController < ApplicationController
           'anti-vaccine': label_counts['anti-vaccine'] || 0,
           'neutral': label_counts['neutral'] || 0,
         }
-        @counts[project.id][:total] = @counts[project.id][:'pro-vaccine'] + @counts[project.id][:'anti-vaccine'] + @counts[project.id][:neutral] 
+        @counts[project.id][:total] = @counts[project.id][:'pro-vaccine'] + @counts[project.id][:'anti-vaccine'] + @counts[project.id][:neutral]
       end
       @local_batch_jobs = current_user.local_batch_jobs
-      @total_count = current_user.results.distinct.count(:tweet_id)
+      @total_count = current_user.results.num_annotations
     end
   end
 

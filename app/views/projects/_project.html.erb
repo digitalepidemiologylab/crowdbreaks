@@ -3,7 +3,7 @@
     <h3 class="mb-2">
       <%= link_to project.title, project_question_sequence_path(project) %>
     </h3>
-    <p class="text-light mb-4"><%= t('projects.index.num_classified_html', num: number_with_delimiter(project.question_sequences_count, delimiter: ',')) %></p>
+    <p class="text-light mb-4"><%= t('projects.index.num_classified_html', num: number_with_delimiter(project.results.num_annotations, delimiter: ',')) %></p>
     <p class="large"><%= project.description %></p>
   </div>
   <div class="card-footer">
