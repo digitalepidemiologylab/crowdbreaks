@@ -14,8 +14,9 @@ class Result < ApplicationRecord
   scope :num_public_annotations, -> { public_res_type.select("\"tweet_id\" || ',' || \"user_id\" || ',' || \"project_id\"").distinct.count }
   scope :num_local_annotations, -> { local_res_type.select("\"tweet_id\" || ',' || \"user_id\" || ',' || \"project_id\"").distinct.count }
   scope :num_mturk_annotations, -> { mturk_res_type.left_outer_joins(:task).select("\"tweet_id\" || '+' || \"mturk_worker_id\" || ',' || \"project_id\"").distinct.count }
+  scope :num_other_annotations, -> { other_res_type.distinct(:tweet_id).count } # other annotations are counted as distinctly annotated tweets for now
   scope :num_annotations, -> {
-    num_public_annotations + num_local_annotations + num_mturk_annotations
+    num_public_annotations + num_local_annotations + num_mturk_annotations + num_other_annotations
   }
 
   # group by mturk worker
@@ -30,7 +31,7 @@ class Result < ApplicationRecord
     .group(:project_id, :tweet_id, :user_id)
   }
 
-  enum res_type: [:public, :local, :mturk], _suffix: true
+  enum res_type: [:public, :local, :mturk, :other], _suffix: true
   enum flag: [:default, :incorrect, :correct], _prefix: true
   enum manual_review_status: [:unreviewed, :reviewed], _suffix: true
 

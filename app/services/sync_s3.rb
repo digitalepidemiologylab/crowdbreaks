@@ -28,9 +28,7 @@ class SyncS3
   end
 
   def get_removable(jobs)
-    files_present = @s3.list_dir('other/')
-    # ignore content in /other/csv/*/other-results/*
-    files_present = files_present.reject{|u| u =~ /\/other-results\//}.to_set
+    files_present = @s3.list_dir('other/').to_set
     files_needed = jobs.collect{|j| j[:s3_key]}.to_set
     return files_present - files_needed
   end
@@ -76,6 +74,15 @@ class SyncS3
         jobs.push({'s3_key': s3_key, 'type': type, 'record_id': project.id, 'exists': exists})
       end
     end
+    # other
+    Project.find_each do |project|
+      if project.results.other_res_type.any?
+        type = 'other-results'
+        s3_key = project.assoc_s3_key(type, project.results.public_res_type)
+        exists = @s3.exists?(s3_key)
+        jobs.push({'s3_key': s3_key, 'type': type, 'record_id': project.id, 'exists': exists})
+      end
+    end
     # projects
     Project.where.not(es_index_name: nil).find_each do |project|
       type = 'project'
@@ -112,6 +119,9 @@ class SyncS3
     when 'public-results'
       record = Project.find(record_id)
       s3_key = record.assoc_s3_key(type, record.results.public_res_type) unless s3_key.present?
+    when 'other-results'
+      record = Project.find(record_id)
+      s3_key = record.assoc_s3_key(type, record.results.other_res_type) unless s3_key.present?
     when 'project'
       record = Project.find(record_id)
       s3_key = record.s3_key(type, record.results.public_res_type) unless s3_key.present?
@@ -128,8 +138,8 @@ class SyncS3
     end
     # Write local file
     case type
-    when 'mturk-batch-job-results', 'local-batch-job-results', 'public-results'
-      tmp_file_path = record.results_to_csv
+    when 'mturk-batch-job-results', 'local-batch-job-results', 'public-results', 'other-results'
+      tmp_file_path = record.results_to_csv(type: type)
     when 'mturk-batch-job-tweets'
       tmp_file_path = record.assoc_dump_to_local(record.mturk_tweets, ['tweet_id', 'tweet_text', 'availability'])
     when 'local-batch-job-tweets'

@@ -136,13 +136,20 @@ class Project < ApplicationRecord
     return true
   end
 
-  def results_to_csv
+  def results_to_csv(type: 'public-results')
     model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'user_id', 'project_id', 'flag', 'created_at']
     added_cols = ['question_tag', 'answer_tag', 'text', 'user_name', 'total_duration_ms', 'full_log']
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
+    if type == 'public-results'
+      _results = results.public_res_type
+    elsif type == 'other-results'
+      _results = results.other_res_type
+    else
+      raise "Unsupported results type #{type}"
+    end
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
-      results.public_res_type.find_each do |result|
+      _results.find_each do |result|
         row = result.attributes.values_at(*model_cols)
         log = result.question_sequence_log&.log
         tweet_text = public_tweets.find_by(tweet_id: result.tweet_id)&.tweet_text
