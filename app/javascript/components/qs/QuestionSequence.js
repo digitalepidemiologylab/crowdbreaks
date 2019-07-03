@@ -25,6 +25,11 @@ export class QuestionSequence extends React.Component {
     if (props.tweetText == "" || props.tweetText === undefined) {
       tweetTextPresent = false;
     }
+    // Check for tweetDisplayMode
+    this.tweetDisplayMode = props.tweetDisplayMode;
+    if (!this.tweetDisplayMode) {
+      this.tweetDisplayMode = 'hide_card_hide_conversation';
+    }
     // set initial question state
     this.state = {
       'tweetIsLoading': !tweetTextPresent,
@@ -145,7 +150,7 @@ export class QuestionSequence extends React.Component {
     if (this.state.showTweetText) {
       tweetEmbedding = <TweetTextEmbedding tweetText={this.props.tweetText} />
     } else {
-      tweetEmbedding = <TweetEmbedding tweetId={this.props.tweetId} onTweetLoad={() => this.onTweetLoad()} />
+      tweetEmbedding = <TweetEmbedding tweetId={this.props.tweetId} tweetDisplayMode={this.tweetDisplayMode} onTweetLoad={() => this.onTweetLoad()} />
     }
     let questionSequenceBody = <div ref={(tweet) => this.tweet = tweet}>
       {/* Title and tweet */}

@@ -3,10 +3,23 @@ import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed'
 
 export const TweetEmbedding = (props) => {
-  const options = {
-    cards: 'hidden',
-    conversation: 'none',
-  };
+  let options = {};
+  console.log(props.tweetDisplayMode)
+  if (!props.tweetDisplayMode || props.tweetDisplayMode == 'hide_card_hide_conversation') {
+    options = {
+      cards: 'hidden',
+      conversation: 'none',
+    };
+  } else if (props.tweetDisplayMode == 'show_card_hide_conversation') {
+    options = {
+      conversation: 'none'
+    };
+  } else if (props.tweetDisplayMode == 'hide_card_show_conversation') {
+    options = {
+      cards: 'hidden'
+    };
+  }
+  console.log(options)
   return (
     <div className="question-sequence-tweet">
       <TweetEmbed

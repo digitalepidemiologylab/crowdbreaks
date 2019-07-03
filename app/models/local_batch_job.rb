@@ -16,6 +16,7 @@ class LocalBatchJob < ApplicationRecord
 
   enum processing_mode: {default: 0, test: 1}, _suffix: :processing_mode
   enum check_availability: [:do_not, :do], _suffix: true
+  enum tweet_display_mode: [:hide_card_hide_conversation, :show_card_hide_conversation, :hide_card_show_conversation, :show_card_show_conversation]
 
   attr_accessor :job_file
 

@@ -183,6 +183,7 @@ export class LocalBatchQSContainer extends React.Component {
           delayNextQuestion={this.props.delayNextQuestion}
           displayQuestionInstructions={true}
           numQuestionsAnswered={this.state.numQuestionsAnswered}
+          tweetDisplayMode={this.props.tweetDisplayMode}
           translations={this.props.translations}
         />
     } else {
