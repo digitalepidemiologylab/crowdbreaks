@@ -4,7 +4,6 @@ import TweetEmbed from 'react-tweet-embed'
 
 export const TweetEmbedding = (props) => {
   let options = {};
-  console.log(props.tweetDisplayMode)
   if (!props.tweetDisplayMode || props.tweetDisplayMode == 'hide_card_hide_conversation') {
     options = {
       cards: 'hidden',
@@ -19,7 +18,6 @@ export const TweetEmbedding = (props) => {
       cards: 'hidden'
     };
   }
-  console.log(options)
   return (
     <div className="question-sequence-tweet">
       <TweetEmbed
