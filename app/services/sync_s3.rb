@@ -138,7 +138,9 @@ class SyncS3
     end
     # Write local file
     case type
-    when 'mturk-batch-job-results', 'local-batch-job-results', 'public-results', 'other-results'
+    when 'mturk-batch-job-results', 'local-batch-job-results'
+      tmp_file_path = record.results_to_csv
+    when 'public-results', 'other-results'
       tmp_file_path = record.results_to_csv(type: type)
     when 'mturk-batch-job-tweets'
       tmp_file_path = record.assoc_dump_to_local(record.mturk_tweets, ['tweet_id', 'tweet_text', 'availability'])
