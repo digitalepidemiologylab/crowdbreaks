@@ -17,6 +17,7 @@ class CreatePublicTweetsJob < ApplicationJob
     if total_count > 0
       tv = TweetValidation.new
       pn = ProgressNotifier.new(projct_id, user_id, 'public-tweets', total_count)
+      pn.start
       tweet_rows.each_with_index do |row, i|
         pt = PublicTweet.where(tweet_id: row[0], tweet_text: row.length == 1 ? "" : row[1], project: project).first_or_create
         if tv.tweet_is_valid?(row[0])
@@ -24,7 +25,7 @@ class CreatePublicTweetsJob < ApplicationJob
         else
           pt.unavailable!
         end
-        pn.update_progress(i)
+        pn.update(i)
       end
       pn.finish
     end
