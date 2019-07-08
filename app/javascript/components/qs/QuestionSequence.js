@@ -182,12 +182,13 @@ export class QuestionSequence extends React.Component {
               />
               {/* Answers */}
               <div className="buttons mb-4">
-                {this.props.currentQuestion.answers.map(function(answer) {
+                {this.props.currentQuestion.answers.map(function(answer, i) {
                   return <Answer
                     key={answer.id}
                     answer={answer.answer}
                     disabled={parentThis.state.answersDisabled}
                     submit={() => parentThis.onAnswerSubmitQS(answer.id, new Date().getTime())}
+                    accessKey={i}
                     color={answer.color}
                   />
                 })}
