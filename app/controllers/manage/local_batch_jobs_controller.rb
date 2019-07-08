@@ -78,7 +78,7 @@ module Manage
     end
 
     def local_batch_job_params
-      params.require(:local_batch_job).permit(:name, :project_id, :job_file, :instructions, :processing_mode, :check_availability, :tweet_display_mode, :user_ids => [])
+      params.require(:local_batch_job).permit(:name, :project_id, :job_file, :instructions, :processing_mode, :check_availability, :tweet_display_mode, :delay_start, :delay_next_question, :user_ids => [])
     end
   end
 end

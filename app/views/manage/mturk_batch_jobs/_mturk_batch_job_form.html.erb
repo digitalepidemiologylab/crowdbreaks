@@ -8,7 +8,7 @@
   <div class="form-group">
     <%= f.input :name, hint: 'Has to be unique' %>
   </div>
-  
+
   <div class="form-group">
     <%= f.input :title, hint: 'Title of each HIT on Mturk, short and descriptive', input_html: {value: f.object.title || "Label tweet"} %>
   </div>
@@ -49,14 +49,14 @@
 
   <div class="form-group">
     <%= f.input :number_of_assignments,
-      as: :integer, 
+      as: :integer,
       input_html: { value: f.object.number_of_assignments || 1 },
       hint: "Label every tweet n times by n different workers." %>
   </div>
 
   <div class="form-group">
     <%= f.input :max_tasks_per_worker,
-      as: :integer, 
+      as: :integer,
       hint: "Maximum number of tasks a worker can complete for this batch. If left empty, a worker may work through all his available tasks." %>
   </div>
 
@@ -72,7 +72,7 @@
   </div>
 
   <div class="form-group">
-    <%= f.input 'Answer delay start', hint: "Delay until answer buttoms become clickable in the beginning of the question sequence." do %>
+    <%= f.input 'Answer delay start', hint: "Delay until answer buttons become clickable in the beginning of the question sequence." do %>
       <div class="input-group">
         <%= f.input_field :delay_start,
           class: 'form-control border-right-0',
@@ -85,7 +85,7 @@
   </div>
 
   <div class="form-group">
-    <%= f.input 'Answer delay subsequent questions', hint: "Delay until answer buttoms become clickable for all subsequent questions after the first one." do %>
+    <%= f.input 'Answer delay subsequent questions', hint: "Delay until answer buttons become clickable for all subsequent questions after the first one." do %>
       <div class="input-group">
         <%= f.input_field :delay_next_question,
           class: 'form-control border-right-0',
@@ -94,7 +94,7 @@
         <span class="input-group-text">ms</span>
       </div>
     <% end %>
-    <%= f.error :delay_start %>
+    <%= f.error :delay_next_question %>
   </div>
 
   <div class="form-group">
@@ -152,7 +152,7 @@
   <div class="form-group">
     <%= f.input :min_num_hits_approved,
       label: 'Minimal number of HITs qualification',
-      as: :integer, 
+      as: :integer,
       input_html: { value: f.object.min_num_hits_approved },
       hint: "The minimum number of HITs a worker needs to have in order to qualify for the tasks. Reasonable numbers are >5000. Leave empty for not having this qualification."
     %>

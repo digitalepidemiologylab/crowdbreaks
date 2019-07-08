@@ -50,17 +50,43 @@
       selected: @local_batch_job.read_attribute_before_type_cast(:processing_mode),
       hint: "If in test mode, answers to questions (results) are not recorded."
     %>
-</div>
+  </div>
 
-<div class="form-group">
-  <%= f.input :check_availability, as: :select, collection: LocalBatchJob.check_availabilities.keys.to_a, include_blank: false,
-    hint: 'By default tweets will not be checked for availability. Change to "do check availability" otherwise' %>
-</div>
+  <div class="form-group">
+    <%= f.input 'Answer delay start', hint: "Delay until answer buttons become clickable in the beginning of the question sequence." do %>
+      <div class="input-group">
+        <%= f.input_field :delay_start,
+          class: 'form-control border-right-0',
+          value: f.object.delay_start
+        %>
+      <span class="input-group-text">ms</span>
+      </div>
+    <% end %>
+    <%= f.error :delay_start %>
+  </div>
 
-<div class="form-group">
-  <%= f.input :tweet_display_mode, as: :select, collection: LocalBatchJob.tweet_display_modes.keys.to_a, include_blank: false,
-    hint: 'Tweet display mode (only relevant when showing embedded tweet). By default hides any cards (photos, videos, gifs, link previews etc.) and reply threads (conversations).' %>
-</div>
+  <div class="form-group">
+    <%= f.input 'Answer delay subsequent questions', hint: "Delay until answer buttons become clickable for all subsequent questions after the first one." do %>
+      <div class="input-group">
+        <%= f.input_field :delay_next_question,
+          class: 'form-control border-right-0',
+          value: f.object.delay_next_question
+        %>
+      <span class="input-group-text">ms</span>
+      </div>
+    <% end %>
+    <%= f.error :delay_next_question %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :check_availability, as: :select, collection: LocalBatchJob.check_availabilities.keys.to_a, include_blank: false,
+      hint: 'By default tweets will not be checked for availability. Change to "do check availability" otherwise' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :tweet_display_mode, as: :select, collection: LocalBatchJob.tweet_display_modes.keys.to_a, include_blank: false,
+      hint: 'Tweet display mode (only relevant when showing embedded tweet). By default hides any cards (photos, videos, gifs, link previews etc.) and reply threads (conversations).' %>
+  </div>
 
   <div class="form-actions" style="margin-top:25px;">
     <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
