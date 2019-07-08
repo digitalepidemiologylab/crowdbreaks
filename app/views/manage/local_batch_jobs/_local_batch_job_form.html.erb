@@ -12,7 +12,7 @@
   <div class="form-group">
     <div class="input field_with_hint">
       <div>
-        <label>Give access to admin users</label>
+        <label>Give access to contributors</label>
       </div>
       <%= f.collection_check_boxes :user_ids, User.where.not(role: 'default'), :id, :user_email do |b| %>
         <% b.label(style: "margin-right: 10px") { b.check_box(style: "margin-right: 3px") + b.text}%>
@@ -83,7 +83,7 @@
       collection: LocalBatchJob.annotation_display_modes,
       include_blank: false,
       selected: @local_batch_job.read_attribute_before_type_cast(:annotation_display_mode),
-      hint: 'By default annotation ends with a "Final" screen. Use the skip_final option to jump directly to the next question sequence.'
+      hint: 'By default the question sequence ends with a "Final" screen. Use the skip_final option to jump directly to the next question sequence.'
     %>
   </div>
 
