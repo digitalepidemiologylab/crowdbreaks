@@ -100,6 +100,10 @@ export class LocalBatchQSContainer extends React.Component {
             totalCount: response['total_count'],
             totalCountUnavailable: response['total_count_unavailable'],
             noWorkAvailable: response['no_work_available'],
+          }, () => {
+            if (this.props.annotationDisplayMode == 'skip_final') {
+              this.onNextQuestionSequence();
+            }
           });
         }
       }
@@ -211,14 +215,14 @@ export class LocalBatchQSContainer extends React.Component {
     let title = this.props.projectTitle && <h4 className="mb-4">
       {this.props.projectTitle}
     </h4>;
-    let instructions = <div className="mb-4">
-      <Instructions
-        display={this.state.displayInstructions}
-        instructions={this.props.instructions}
-        onToggleDisplay={() => this.onToggleInstructionDisplay()}
-        translations={this.props.translations.instructions}
-      />
-    </div>;
+    let instructions = this.props.instructions != '' && <div className="mb-4">
+        <Instructions
+          display={this.state.displayInstructions}
+          instructions={this.props.instructions}
+          onToggleDisplay={() => this.onToggleInstructionDisplay()}
+          translations={this.props.translations.instructions}
+        />
+      </div>;
     let errors = this.state.errors.length > 0 && <ul className='qs-error-notifications'>
       <li>{this.props.translations.general.error}</li>
       {this.state.errors.map(function(error, i) {

@@ -79,6 +79,16 @@
   </div>
 
   <div class="form-group">
+    <%= f.input :annotation_display_mode,
+      collection: LocalBatchJob.annotation_display_modes,
+      include_blank: false,
+      selected: @local_batch_job.read_attribute_before_type_cast(:annotation_display_mode),
+      hint: 'By default annotation ends with a "Final" screen. Use the skip_final option to jump directly to the next question sequence.'
+    %>
+  </div>
+
+
+  <div class="form-group">
     <%= f.input :check_availability, as: :select, collection: LocalBatchJob.check_availabilities.keys.to_a, include_blank: false,
       hint: 'By default tweets will not be checked for availability. Change to "do check availability" otherwise' %>
   </div>
