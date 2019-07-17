@@ -21,6 +21,12 @@ class LocalBatchJob < ApplicationRecord
 
   attr_accessor :job_file
 
+  def progress_by_user(user)
+    return 0 unless users.where(id: user.id).exists?
+    user_count = results.counts_by_user(user.id)
+    total_count = local_tweets.may_be_available.count
+    (100*user_count/total_count).to_i
+  end
 
   def completed_by
     return [] unless status == 'ready'

@@ -1,5 +1,4 @@
 @mixin progress-circle-mxn($circle-size) {
-	// $circle-size: 30px;
 	$circle-background: #f3f3f3;
 	$circle-color: $blue;
 	$inset-size: $circle-size * 2/3;
@@ -68,5 +67,33 @@
 }
 
 .progress-circle-sm {
-  @include progress-circle-mxn(20px);
+  @include progress-circle-mxn(18px);
+}
+
+.progress-with-label-sm {
+  width: 150px;
+  height: 25px;
+  .progress-circle-sm {
+    display:inline-block;
+  }
+  .progress-label {
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom: 8px;
+    padding-left: 3px;
+  }
+}
+
+.progress-with-label {
+  width: 180px;
+  height: 40px;
+  .progress-circle {
+    display:inline-block;
+  }
+  .progress-label {
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom: 20px;
+    padding-left: 3px;
+  }
 }

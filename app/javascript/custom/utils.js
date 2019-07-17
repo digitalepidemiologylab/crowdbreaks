@@ -13,7 +13,11 @@ function convertTimeAgo() {
     }
   });
 }
+function tooltip() {
+  $('[data-toggle="tooltip"]').tooltip();
+}
 
 $(document).on('turbolinks:load', () => {
   convertTimeAgo();
+  tooltip();
 });

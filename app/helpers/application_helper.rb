@@ -130,8 +130,8 @@ module ApplicationHelper
     end
   end
 
-  def progress_circle(id, small: false, progress: 0)
-    content_tag :div, id: id, class: "#{small ? 'progress-circle-sm' : 'progress-circle'}", data: {progress: progress}, style: "display:none;" do
+  def progress_circle(id, small: false, progress: 0, visible: false)
+    content_tag :div, id: id, class: "#{small ? 'progress-circle-sm' : 'progress-circle'}", data: {progress: progress}, style: "#{visible ? '' : 'display:none;'}" do
       concat _progress_circle_outer
       concat tag.div class: 'inset'
     end
