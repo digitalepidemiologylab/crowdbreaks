@@ -76,7 +76,7 @@ class Project < ApplicationRecord
       name
     else
       # display project name with index based on created_at
-      idx = Project.where(name: 'project_crispr').order(:created_at).pluck(:id).find_index(id) + 1
+      idx = Project.where(name: name).order(:created_at).pluck(:id).find_index(id) + 1
       "#{name} (#{idx})"
     end
   end
