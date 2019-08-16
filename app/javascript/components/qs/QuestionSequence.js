@@ -188,7 +188,7 @@ export class QuestionSequence extends React.Component {
                     answer={answer.answer}
                     disabled={parentThis.state.answersDisabled}
                     submit={() => parentThis.onAnswerSubmitQS(answer.id, new Date().getTime())}
-                    accessKey={i}
+                    accessKey={i+1}
                     color={answer.color}
                   />
                 })}
