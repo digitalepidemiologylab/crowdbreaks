@@ -65,7 +65,7 @@ module ApplicationHelper
   end
 
   def link_to_tweet(tweet_id)
-    link_to tweet_id.to_s, 'https://twitter.com/statuses/' + tweet_id.to_s, target: '_blank'
+    link_to tweet_id.to_s, 'https://twitter.com/user/status/' + tweet_id.to_s, target: '_blank'
   end
 
   def num(num)

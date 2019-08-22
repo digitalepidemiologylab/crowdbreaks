@@ -45,7 +45,7 @@ class TweetValidation
     # Check validity of tweet first by making a HEAD request to
     begin
       Rails.logger.info 'Checking tweet in front end'
-      url = "https://twitter.com/statuses/#{tweet_id}"
+      url = "https://twitter.com/user/status/#{tweet_id}"
       return self.class.head(url).response.code == '200' ? true : false
     rescue StandardError => e
       ErrorLogger.error e
