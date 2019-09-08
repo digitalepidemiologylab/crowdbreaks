@@ -1,6 +1,6 @@
 class WatchStream
   CACHE_KEY = "watch_stream_error_report_sent"
-  CACHE_KEY_EXPIRY = 6.hours
+  CACHE_KEY_EXPIRY = 1.hours
 
   def initialize
     @mailer = ApplicationMailer.new
