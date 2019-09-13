@@ -35,6 +35,7 @@
     "toastr": "^2.1.4",
     "turbolinks": "^5.2.0",
     "vega": "^5.4.0",
+    "vega-lite": "^4.0.0-beta.2",
     "webpack": "^4.0.0",
     "webpacker-react": "^0.3.2"
   },
