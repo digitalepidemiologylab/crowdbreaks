@@ -251,17 +251,17 @@ class Project < ApplicationRecord
     tweet_id = tweet.fetch(:tweet_id, nil)
     while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
       Rails.logger.info "Trial #{trials + 1}: Tweet #{tweet_id} is invalid and will be removed. Fetching new tweet instead."
-      api.remove_tweet(project.es_index_name, tweet_id)
+      api.remove_tweet(es_index_name, tweet_id)
       tweet = api.get_tweet(es_index_name, user_id)
       tweet_id = tweet&.fetch(:tweet_id, nil)
       trials += 1
     end
     if trials >= MAX_COUNT_REFETCH
       ErrorLogger.error "Number of trials exceeded when trying to fetch new tweet from API. Showing random tweet instead."
-      return project.get_random_tweet
+      return get_random_tweet
     elsif tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
       ErrorLogger.error "Tweet returned from API is invalid or empty. Showing random tweet instead."
-      return project.get_random_tweet
+      return get_random_tweet
     end
     tweet
   end
