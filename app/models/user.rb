@@ -8,10 +8,11 @@ class User < ApplicationRecord
   has_and_belongs_to_many :local_batch_jobs
 
   validates_uniqueness_of :email
+  validates :honeypot, absence: true
 
   enum role: [:default, :contributor, :collaborator, :admin]
   @skip = false
-  attr_accessor :mark_as_confirmed
+  attr_accessor :mark_as_confirmed, :honeypot
 
   scope :exclude_guests, -> {where('email !~ ?', 'guest_\d+@example.com')}
 
@@ -19,7 +20,7 @@ class User < ApplicationRecord
   def user_email
     "#{username} (#{email})"
   end
-  
+
   # methods needed to get around devise validations/notifications on create
   # compare here: https://github.com/plataformatec/devise/wiki/How-to-manage-users-with-a-standard-Rails-controller
   def skip_notifications!()
