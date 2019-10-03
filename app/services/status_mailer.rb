@@ -64,6 +64,7 @@ class StatusMailer
     table do
       concat table_row("Total annotations:", num(annotation_counts), align: align)
       concat table_row("Annotations #{@type == 'weekly' ? 'this week' : 'today'}:", num(annotation_counts(date_range: @date_range)), align: align)
+      concat table_row("New users #{@type == 'weekly' ? 'this week' : 'today'}:", num(sign_up_counts(date_range: @date_range)), align: align)
     end
   end
 
@@ -100,6 +101,10 @@ class StatusMailer
     else
       raise 'Unsupported mode'
     end
+  end
+
+  def sign_up_counts(date_range: nil)
+    User.where(created_at: date_range).count
   end
 
   def total_annotations
