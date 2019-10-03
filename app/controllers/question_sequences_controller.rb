@@ -14,20 +14,9 @@ class QuestionSequencesController < ApplicationController
     # Other
     @user_id = current_or_guest_user.id
     @tweet_id = @project.get_tweet(user_id: @user_id)
-    # if @project.stream_annotation_mode?
-    #   # Get a recent tweet from the streaming queue
-    #   tweet = FlaskApi.new.get_tweet(@project, user_id: @user_id)
-    #   add_to_public_tweets(tweet, @project)
-    #   @tweet_id = tweet[:tweet_id]
-    # elsif @project.local_annotation_mode?
-    #   # Fetch tweet from a pool of tweets stored in the public_tweets table
-    #   public_tweet = @project.get_public_tweet
-    #   @tweet_id = public_tweet&.tweet_id&.to_s
-    # end
 
     # @tweet_id = '1047868518224416769'
     # @tweet_id = '564984221203431000'  # invalid tweet
-    # @tweet_id = '955454023519391744'  # invalid tweet
   end
 
   def create

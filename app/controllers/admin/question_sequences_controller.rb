@@ -15,8 +15,7 @@ module Admin
           @question_sequence = QuestionSequence.new(@project).load
           @user_id = current_or_guest_user.id
           @hit_id = show_params[:hitId]
-          tweet = FlaskApi.new.get_tweet(@project, user_id: @user_id)
-          @tweet_id = tweet[:tweet_id]
+          @tweet_id = @project.get_tweet(user_id: @user_id)
           @mode = show_params[:mode]
           @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
           @assignment_id = show_params[:assignmentId]
