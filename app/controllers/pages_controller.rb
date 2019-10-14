@@ -28,4 +28,7 @@ class PagesController < ApplicationController
 
   def terms_of_use
   end
+
+  def viz
+  end
 end
