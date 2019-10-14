@@ -17,8 +17,12 @@ import 'bootstrap/dist/js/bootstrap';
 Rails.start();
 Turbolinks.start()
 
+// JS modules
+import 'custom';
+import 'models';
+import 'channels/job_notification';
 
-// Components
+// React components
 import { QSContainer } from './../components/qs/QSContainer';
 import { MturkQSContainer } from './../components/qs/MturkQSContainer';
 import { LocalBatchQSContainer } from './../components/qs/LocalBatchQSContainer';
@@ -30,9 +34,6 @@ import { Leadline } from './../components/frontpage/Leadline';
 import { UserActivity } from './../components/user_activity/UserActivity';
 import { EditQuestionSequence } from './../components/edit_question_sequence/EditQuestionSequence';
 import { Assignment } from './../components/mturk_worker/Assignment';
-
-// Custom
-import 'custom';
 
 // Register components using Webpacker-react
 WebpackerReact.setup({

@@ -12,5 +12,3 @@ function convertUnitsBeforeSubmit() {
 $(document).on('turbolinks:load', function() {
   convertUnitsBeforeSubmit();
 })
-
-

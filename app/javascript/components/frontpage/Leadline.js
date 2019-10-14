@@ -19,7 +19,7 @@ export class Leadline extends React.Component {
     moment.locale(props.locale)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let postData = {
       'leadline': {
         'num_new_entries': '3',
@@ -57,7 +57,7 @@ export class Leadline extends React.Component {
     return(
       <div className="text-center">
         {this.state.queue_items.map(function(item) {
-          return <LeadlineItem 
+          return <LeadlineItem
             key={item[3]}
             tweetId={item[0]}
             classified_by={item[1]}

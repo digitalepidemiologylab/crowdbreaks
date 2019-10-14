@@ -22,13 +22,6 @@ function onCorrectingMturkWorkerClick() {
   });
 }
 
-// websocket update functions (see channels/job_notification.js)
-// Update Review status
-function onRefreshReviewStatusComplete() {
-  // Callback for Update Review satus
-}
-
-
 $(document).on('turbolinks:load', function() {
   onCorrectingMturkWorkerClick();
 })

@@ -12,3 +12,11 @@ environment.plugins.prepend(
     Popper: ['popper.js', 'default']
   })
 )
+
+environment.loaders.prepend('erb', {
+  test: /\.erb$/,
+  enforce: 'pre',
+  use: [{
+    loader: 'rails-erb-loader',
+  }]
+})

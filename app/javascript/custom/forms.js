@@ -1,7 +1,7 @@
 // JS snippets to be used across forms
 
 // File input (Show filename on file select)
-$(document).on('turbolinks:load', function() {
+function onChooseFile() {
   let inputs = Array.from(document.querySelectorAll('.input-file'));
   inputs.forEach((input) => {
     let uploadButton = input.parentNode.parentNode.previousSibling.previousSibling.querySelector('div')
@@ -11,5 +11,9 @@ $(document).on('turbolinks:load', function() {
       uploadButton.querySelector('span').innerHTML = filename
     })
   })
-})
+}
 
+
+$(document).on('turbolinks:load', () => {
+  onChooseFile();
+});

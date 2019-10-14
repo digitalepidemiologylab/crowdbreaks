@@ -1,0 +1,16 @@
+import Rollbar from 'rollbar';
+
+// Disable rollbar in test/dev env
+let enableRollbar = false;
+if ("<%= ENV['ENVIRONMENT_NAME'] %>" === "production" || "<%= ENV['ENVIRONMENT_NAME'] %>" === "staging") {
+  enableRollbar = true;
+}
+
+let rollbar = new Rollbar({
+  accessToken: '<%= ENV['ROLLBAR_ACCESS_TOKEN_CLIENT'] %>',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+  enabled: enableRollbar
+});
+
+window.rollbar = rollbar;

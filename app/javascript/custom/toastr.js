@@ -1,3 +1,5 @@
+import toastr from 'toastr';
+
 // toastr options
 toastr.options = ({
   "positionClass": "toast-top-right",
@@ -8,3 +10,5 @@ toastr.options = ({
   "preventDuplicates": true,
   "preventOpenDuplicates": true,
 })
+
+window.toastr = toastr;
