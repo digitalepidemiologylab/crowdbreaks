@@ -15,7 +15,7 @@ export class SentimentMap extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setData();
   }
 
@@ -39,10 +39,10 @@ export class SentimentMap extends React.Component {
       success: (result) => {
         this.setState({
           data: result.map((d) => new Object({
-            "longitude": d._source.place.average_location[0], 
+            "longitude": d._source.place.average_location[0],
             "latitude": d._source.place.average_location[1],
             "label": label_dict[d._source.meta.sentiment.fasttext_v1.label_val]
-          })) 
+          }))
         });
       }
     });
@@ -69,7 +69,7 @@ export class SentimentMap extends React.Component {
       "padding": 5,
       "width": 1000,
       "height": 800,
-      "projections": 
+      "projections":
       [
         {
           "name": "projection",
@@ -80,7 +80,7 @@ export class SentimentMap extends React.Component {
         }
       ],
 
-      "marks": 
+      "marks":
       [
         {
           "name": "layer_0_marks",
@@ -119,7 +119,7 @@ export class SentimentMap extends React.Component {
 
       "config": {"axisY": {"minExtent": 30}},
 
-      "data": 
+      "data":
       [
         {
           "name": "source_0",

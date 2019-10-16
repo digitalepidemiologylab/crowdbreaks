@@ -54,7 +54,7 @@ export class UserActivity extends React.Component {
     defaults.global.defaultFontFamily = 'Roboto';
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const data = {
       "user_activity": {
         "start_date": this.state.start_date,

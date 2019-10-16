@@ -18,7 +18,7 @@ export class Assignment extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.refresh();
   }
 

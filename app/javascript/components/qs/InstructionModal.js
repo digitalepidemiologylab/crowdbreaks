@@ -5,14 +5,11 @@ export class InstructionModal extends React.Component {
   constructor(props) {
     super(props);
 
+    Modal.setAppElement('#qs-root')
     this.state = {
       modalIsOpen: props.openModal,
       modalWidth: '0px'
     };
-  }
-
-  componentWillMount() {
-    Modal.setAppElement('#qs-root')
   }
 
   componentDidMount() {

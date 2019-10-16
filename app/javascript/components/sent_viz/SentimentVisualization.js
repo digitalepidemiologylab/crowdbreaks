@@ -75,7 +75,7 @@ export class SentimentVisualization extends React.Component {
     defaults.global.defaultFontFamily = 'Roboto';
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const data = {
       "viz": {
         "interval": this.props.interval,

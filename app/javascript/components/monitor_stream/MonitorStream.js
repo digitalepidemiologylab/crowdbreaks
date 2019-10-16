@@ -63,7 +63,7 @@ export class MonitorStream extends React.Component {
     defaults.global.defaultFontFamily = 'Roboto';
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const data = {
       'api': {
         'es_index_name': this.props.es_index_name,
