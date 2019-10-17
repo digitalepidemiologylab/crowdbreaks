@@ -7,11 +7,8 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-import WebpackerReact from 'webpacker-react'
-import TweetEmbed from 'react-tweet-embed'
 import Rails from 'rails-ujs';
 import Turbolinks from 'turbolinks';
-import 'bootstrap/dist/js/bootstrap';
 
 // Start rails-ujs and turbolinks
 Rails.start();
@@ -20,36 +17,8 @@ Turbolinks.start()
 // JS modules
 import 'custom';
 import 'models';
-import 'channels/job_notification';
+import 'channels';
+import 'components';
 
-// React components
-import { QSContainer } from './../components/qs/QSContainer';
-import { MturkQSContainer } from './../components/qs/MturkQSContainer';
-import { LocalBatchQSContainer } from './../components/qs/LocalBatchQSContainer';
-import { SentimentTextBox } from './../components/sent_textbox/SentimentTextBox';
-import { SentimentVisualization } from './../components/sent_viz/SentimentVisualization';
-import { SentimentMap } from './../components/sent_viz/SentimentMap';
-import { MonitorStream } from './../components/monitor_stream/MonitorStream';
-import { Leadline } from './../components/frontpage/Leadline';
-import { UserActivity } from './../components/user_activity/UserActivity';
-import { EditQuestionSequence } from './../components/edit_question_sequence/EditQuestionSequence';
-import { Assignment } from './../components/mturk_worker/Assignment';
-
-// Register components using Webpacker-react
-WebpackerReact.setup({
-  QSContainer,
-  MturkQSContainer,
-  SentimentTextBox,
-  SentimentVisualization,
-  SentimentMap,
-  MonitorStream,
-  Leadline,
-  UserActivity,
-  EditQuestionSequence,
-  LocalBatchQSContainer,
-  TweetEmbed,
-  Assignment,
-})
-
-// This is needed for components to properly unmount and not being cached
-$(document).on('turbolinks:before-cache', () => WebpackerReact.unmountComponents())
+// vendor
+import 'bootstrap/dist/js/bootstrap';
