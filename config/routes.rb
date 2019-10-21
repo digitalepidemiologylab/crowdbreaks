@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     get 'privacy', to: 'pages#privacy'
     get 'terms_of_use', to: 'pages#terms_of_use'
     resources :projects, only: [:show, :index] do
+      get 'viz', on: :collection
       resource :question_sequence, only: [:show, :create] do
         post 'final'
       end

@@ -1,0 +1,43 @@
+.stream-graph-axis {
+  color: $gray-200;
+  text {
+    color: gray;
+    font-size: 13px;
+    font-family: $font-family-sans-serif;
+    mix-blend-mode: difference;
+  }
+}
+
+.stream-graph-btn-group {
+  @extend .btn-group;
+  float: right;
+}
+
+.stream-graph-viz-option-btn {
+  border: 1px solid $gray-300;
+  img {
+    width: 15px;
+    filter: opacity(50%);
+  }
+  &:hover {
+    border-color: $gray-400 !important;
+    color: $gray-600 !important;
+  }
+}
+.stream-graph-viz-option-btn-active {
+  background-color: $gray-100;
+  img {
+    filter: opacity(100%);
+  }
+}
+
+.loading-notification-container {
+  height: 300px;
+  position: relative;
+  .loading-notification {
+    position: absolute;
+    margin: 0;
+    top: 50%;
+    left: 45%;
+  }
+}

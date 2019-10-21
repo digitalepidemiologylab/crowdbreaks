@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  load_and_authorize_resource find_by: :slug
+  load_and_authorize_resource find_by: :slug, except: [:viz]
 
   def index
     # only select projects which are public and have to correct locale setting
@@ -19,6 +19,10 @@ class ProjectsController < ApplicationController
       @neutral_vaccine_count = counts['neutral'] || 0
     end
     @total_count = @pro_vaccine_count + @anti_vaccine_count + @neutral_vaccine_count
+  end
+
+  def viz
+    @project = Project.find_by(es_index_name: 'project_vaccine_sentiment')
   end
 
   private

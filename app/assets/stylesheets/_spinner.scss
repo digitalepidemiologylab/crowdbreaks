@@ -21,3 +21,15 @@
     height: 20px;
     animation: spin 2s linear infinite;
 }
+
+// Text next to spinner
+.spinner-with-text {
+  display: inline-block;
+  margin-right: 16px !important;
+}
+.spinner-text {
+  display: inline-block;
+  margin: auto;
+  position: absolute;
+  margin-top: 4px;
+}
