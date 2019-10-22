@@ -13,7 +13,7 @@ const randomNum = () => Math.floor(Math.random() * 50000);
 const randomDataSet = () => {
   let data = [];
   for (let i=0; i<30; i++) {
-    data.push({'year': i, 'positive': randomNum(), 'negative': randomNum(), 'neutral': randomNum()})
+    data.push({'date': i, 'positive': randomNum(), 'neutral': randomNum(), 'negative': randomNum()})
   }
   return data;
 }
@@ -46,11 +46,11 @@ export class StreamGraph extends React.Component {
       height: 300,
       activeVizOption: 'wiggle'
     };
-    this.colors = ['#CD5050', '#FF9E4B', '#68AA43']; // red, orange, green
+    this.colors = ['#68AA43', '#FF9E4B', '#CD5050']; // green, orange, red
   }
 
   componentDidMount() {
-    this.randomizeData()
+    this.randomizeData();
   }
 
   randomizeData() {
@@ -66,6 +66,15 @@ export class StreamGraph extends React.Component {
     });
   }
 
+  retrieveKeys(data) {
+    let keys = [];
+    if (this.state.data.length > 0) {
+        keys = Object.keys(this.state.data[0]);
+        keys = keys.filter(item => item !== 'date')
+      }
+    return keys;
+  }
+
   render() {
     let body;
     if (this.state.isLoading) {
@@ -77,11 +86,12 @@ export class StreamGraph extends React.Component {
           </div>
         </div>
     } else {
+      let keys = this.retrieveKeys(this.state.data);
       body =
         <div>
           <div className='mb-5'>
             <button className="btn btn-primary" onClick={() => this.randomizeData()}>
-                Randomize Data
+              Randomize Data
             </button>
           </div>
           <VizOptions
@@ -94,6 +104,7 @@ export class StreamGraph extends React.Component {
             height={this.state.height}
             colors={this.colors}
             vizOption={this.state.activeVizOption}
+            keys={keys}
           />
         </div>
     }

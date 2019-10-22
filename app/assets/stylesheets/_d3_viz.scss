@@ -1,7 +1,13 @@
+.legend{
+  fill: $gray-600;
+  font-size: 13px;
+  font-family: $font-family-sans-serif;
+}
+
 .stream-graph-axis {
   color: $gray-200;
   text {
-    color: gray;
+    fill: gray;
     font-size: 13px;
     font-family: $font-family-sans-serif;
     mix-blend-mode: difference;
@@ -11,6 +17,7 @@
 .stream-graph-btn-group {
   @extend .btn-group;
   float: right;
+  top: 25px;
 }
 
 .stream-graph-viz-option-btn {
@@ -24,6 +31,7 @@
     color: $gray-600 !important;
   }
 }
+
 .stream-graph-viz-option-btn-active {
   background-color: $gray-100;
   img {

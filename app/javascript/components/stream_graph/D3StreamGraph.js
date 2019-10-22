@@ -1,14 +1,12 @@
 import * as d3 from 'd3';
 import React from 'react';
 
-
 export class D3StreamGraph extends React.Component {
   constructor(props) {
     super(props);
-    this.margin = {top: 20, right: 0, bottom: 35, left: 5};
+    this.margin = {top: 40, right: 0, bottom: 35, left: 5};
     this.width = this.props.width - this.margin.left - this.margin.right;
     this.height = this.props.height - this.margin.top - this.margin.bottom;
-    this.keys = ['positive', 'negative', 'neutral'];
   }
 
   componentDidMount() {
@@ -21,16 +19,17 @@ export class D3StreamGraph extends React.Component {
 
   create() {
     // append the svg object to the body of the page
-    let svg = d3.select(this._rootNode)
-      .append("svg")
+    let root = d3.select(this._rootNode).append('svg')
+    let fig = root
       .attr("width", this.width + this.margin.left + this.margin.right)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
       .attr("transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")");
+        "translate(" + this.margin.left + "," + this.margin.top + ")")
+      .attr('class', 'figure');
 
-    let _this = this;
-    svg.append('g')
+    // plotting area
+    fig.append('g')
       .attr('class', 'stream-data')
       .selectAll('paths')
       .data(this.stackedData())
@@ -38,19 +37,39 @@ export class D3StreamGraph extends React.Component {
       .append("path")
 
     // Add X axis
-    svg.append("g")
+    fig.append("g")
       .attr('class', 'stream-graph-axis xaxis')
       .attr("transform", "translate(0," + this.height + ")")
 
     // Add Y axis
-    svg.append("g")
+    fig.append("g")
       .attr('class', 'stream-graph-axis yaxis')
+
+    // legend
+    let legend = root.append('g').attr('class', 'legend')
+    legend.selectAll('legend-dots')
+      .data(this.props.keys)
+      .enter()
+      .append('circle')
+      .attr('cx', (d, i) => {return this.margin.left + 6 + i*100})
+      .attr('cy', 6)
+      .attr('r', 6)
+      .style('fill', (d) => {return this.color(d)})
+    legend.selectAll('legend-text')
+      .data(this.props.keys)
+      .enter()
+      .append('text')
+      .attr('x', (d, i) => {return this.margin.left + 20 + i*100})
+      .attr('y', 6)
+      .text((d) => {return d})
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
 
     this.update()
   }
 
   xScale() {
-    return d3.scaleLinear().domain(d3.extent(this.props.data, function(d) { return d.year; })).range([0, this.width])
+    return d3.scaleLinear().domain(d3.extent(this.props.data, function(d) { return d.date; })).range([0, this.width])
   }
 
   yScale() {
@@ -76,8 +95,8 @@ export class D3StreamGraph extends React.Component {
     return d3.scaleLinear().domain(extent).range([ this.height, 0 ]);
   }
 
-  color() {
-    return d3.scaleOrdinal().domain(this.keys).range(this.props.colors)
+  color(d) {
+    return d3.scaleOrdinal().domain(this.props.keys).range(this.props.colors)(d)
   }
 
   stackedData() {
@@ -97,7 +116,7 @@ export class D3StreamGraph extends React.Component {
     return d3.stack()
       .offset(offset)
       .order(order)
-      .keys(this.keys)(this.props.data)
+      .keys(this.props.keys)(this.props.data)
   }
 
   update() {
@@ -123,11 +142,11 @@ export class D3StreamGraph extends React.Component {
     d3.select('.stream-data')
       .selectAll('path')
       .data(this.stackedData())
-      .style("fill", function(d) { return _this.color()(d.key); })
+      .style("fill", function(d) { return _this.color(d.key); })
       .transition(t)
       .attr("d", d3.area()
         .curve(d3.curveBasis)
-        .x(function(d, i) { return _this.xScale()(d.data.year); })
+        .x(function(d, i) { return _this.xScale()(d.data.date); })
         .y0(function(d) { return _this.yScale()(d[0]); })
         .y1(function(d) { return _this.yScale()(d[1]); })
       )
