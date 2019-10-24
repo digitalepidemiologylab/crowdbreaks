@@ -13,7 +13,7 @@ const randomNum = () => Math.floor(Math.random() * 50000);
 const randomDataSet = () => {
   let data = [];
   for (let i=0; i<30; i++) {
-    data.push({'date': i, 'positive': randomNum(), 'neutral': randomNum(), 'negative': randomNum()})
+    data.push({'date': new Date(1571832748794 - (30-i)*1000*60*24), 'Pro-vaccine': randomNum(), 'Neutral': randomNum(), 'Anti-vaccine': randomNum()})
   }
   return data;
 }
@@ -89,11 +89,6 @@ export class StreamGraph extends React.Component {
       let keys = this.retrieveKeys(this.state.data);
       body =
         <div>
-          <div className='mb-5'>
-            <button className="btn btn-primary" onClick={() => this.randomizeData()}>
-              Randomize Data
-            </button>
-          </div>
           <VizOptions
             activeOption={this.state.activeVizOption}
             onChangeOption={(e) => this.onChangeVizOption(e)}
@@ -110,7 +105,7 @@ export class StreamGraph extends React.Component {
     }
 
     return (
-      <div ref={(container) => this.container = container}>
+      <div id="stream-graph-container" ref={(container) => this.container = container}>
         {body}
       </div>
     )

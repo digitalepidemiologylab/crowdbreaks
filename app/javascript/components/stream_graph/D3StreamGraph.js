@@ -7,6 +7,8 @@ export class D3StreamGraph extends React.Component {
     this.margin = {top: 40, right: 0, bottom: 35, left: 5};
     this.width = this.props.width - this.margin.left - this.margin.right;
     this.height = this.props.height - this.margin.top - this.margin.bottom;
+    this.timeFormat = d3.timeFormat("%H:%M");
+    this.toolboxTimeFormat = d3.timeFormat("%H:%M %b %m, %Y");
   }
 
   componentDidMount() {
@@ -19,10 +21,10 @@ export class D3StreamGraph extends React.Component {
 
   create() {
     // append the svg object to the body of the page
-    let root = d3.select(this._rootNode).append('svg')
-    let fig = root
-      .attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom)
+    let svg = d3.select(this._rootNode).append('svg')
+    let fig = svg
+      .attr("width", this.props.width)
+      .attr("height", this.props.height)
       .append("g")
       .attr("transform",
         "translate(" + this.margin.left + "," + this.margin.top + ")")
@@ -46,7 +48,7 @@ export class D3StreamGraph extends React.Component {
       .attr('class', 'stream-graph-axis yaxis')
 
     // legend
-    let legend = root.append('g').attr('class', 'legend')
+    let legend = svg.append('g').attr('class', 'legend')
     legend.selectAll('legend-dots')
       .data(this.props.keys)
       .enter()
@@ -65,11 +67,135 @@ export class D3StreamGraph extends React.Component {
       .attr("text-anchor", "left")
       .style("alignment-baseline", "middle")
 
-    this.update()
+    // tooltip
+    this.createTooltip();
+
+    this.update();
+  }
+
+  createTooltip() {
+    let tooltipContainer = d3.select('svg').append('g').attr('class', 'tooltip-container')
+
+    // html tooltip
+    let tooltip = d3.select('#d3-stream-graph-container')
+      .append("div")
+      .attr("class", "stream-graph-tooltip")
+      .style("display", 'none')
+    let tooltipSvg = tooltip.append('svg').attr('width', 190).attr('height', 70)
+
+    // draw svg within tooltip div
+    tooltipSvg
+      .append('g')
+      .append('text')
+      .attr('class', 'sg-tooltip-title')
+      .attr('x', 0)
+      .attr('y', 12)
+      .attr('height', 12)
+      .attr('width', 100)
+      .text('Title')
+
+    let tooltipInfo = tooltipSvg
+      .append('g')
+      .attr('class', 'sg-tooltip-info')
+      .selectAll('labels')
+      .data(this.props.keys.slice().reverse())
+      .enter()
+
+    // Symbols in tooltip
+    tooltipInfo
+      .append('circle')
+      .attr('cx', 6)
+      .attr('cy', (d, i) => (i+1)*18 + 8)
+      .attr('r', 6)
+      .style('fill', (d) => this.color(d))
+
+    // Text in tooltip
+    tooltipInfo
+      .append('text')
+      .text((d) => d)
+      .attr('y', (d, i) => {return (i+1)*18 + 13})
+      .attr('x', 20)
+
+    // Vertical line indicator
+    let verticalLine = d3.select('.figure')
+      .append("path")
+      .attr("class", "tooltip-vertical-line")
+      .style("stroke", "white")
+      .style("stroke-width", "1px")
+      .style("opacity", 0);
+
+    // activate tooltip once mouse moves into this area
+    let tooltipMouseOver = tooltipContainer
+      .append("rect")
+      .attr("id", "tooltip-mousover")
+      .attr("x", this.margin.left)
+      .attr("y", this.margin.top)
+      .attr("width", this.width)
+      .attr("height", this.height)
+      .style("opacity", 0)
+
+    // mouse events
+    const _this = this;
+    tooltipMouseOver
+      .on("mouseover", function(){
+        tooltip.style('display', 'block')
+        verticalLine.style("opacity", 1);
+      })
+      .on("touchmove mousemove", function() {
+        // Get mouse position
+        const mouse = d3.mouse(this);
+        // since we will modify the data, make sure to work on a copy of the bisected data (hence the spread operator)
+        let focusData = {..._this.bisect(mouse[0]-8)};
+        // Update position
+        const xpos = _this.xScale()(focusData.date);
+        verticalLine
+          .attr("d", () => {
+            var d = "M" + (xpos) + "," + (_this.height);
+            d += " " + (xpos) + "," + 0;
+            return d;
+          });
+        tooltip
+          .style("left", (xpos) + "px")
+          .style("top", (mouse[1]+30) + "px")
+        // Update tooltip
+        d3.select('.sg-tooltip-title')
+          .text(_this.toolboxTimeFormat(focusData.date))
+        // Compute percentage
+        let totalCount = 0
+        _this.props.keys.forEach((key) => {
+          totalCount += focusData[key]
+        })
+        if (totalCount > 0) {
+          _this.props.keys.forEach((key) => {
+            focusData[key] = Math.round(focusData[key] / totalCount * 100);
+          })
+        }
+        tooltipInfo
+          .selectAll('text')
+          .text((key) => focusData[key] + '% predicted as ' + key)
+
+      })
+      .on("mouseout", function(){
+        tooltip.style('display', 'none')
+        verticalLine.style("opacity", 0);
+      });
+  }
+
+
+  bisect(mx) {
+    const bisect = d3.bisector(d => d.date).left;
+    const date = this.xScale().invert(mx);
+    const index = bisect(this.props.data, date, 1);
+    const a = this.props.data[index - 1];
+    if (index >= this.props.data.length) {
+      return a
+    }
+    const b = this.props.data[index];
+    return date - a.date > b.date - date ? b : a;
   }
 
   xScale() {
-    return d3.scaleLinear().domain(d3.extent(this.props.data, function(d) { return d.date; })).range([0, this.width])
+    return d3.scaleTime().domain(d3.extent(this.props.data, function(d) { return d.date; })).range([0, this.width])
   }
 
   yScale() {
@@ -80,14 +206,22 @@ export class D3StreamGraph extends React.Component {
         break;
       case 'wiggle':
         extent = d3.extent(this.props.data, (d) => {
-          return d3.sum([d.positive, d.negative, d.neutral])
+          let totalSum = 0;
+          this.props.keys.forEach((key) => {
+            totalSum += d[key]
+          })
+          return totalSum
         });
         const diff = (extent[1] - extent[0])/2 * 1.6;
         extent = [-diff, diff];
         break;
       case 'zero':
         const max = d3.max(this.props.data, (d) => {
-          return d3.sum([d.positive, d.negative, d.neutral])
+          let totalSum = 0;
+          this.props.keys.forEach((key) => {
+            totalSum += d[key]
+          })
+          return totalSum
         });
         extent = [0, max];
         break;
@@ -128,7 +262,11 @@ export class D3StreamGraph extends React.Component {
 
     // Add X axis
     d3.select('.xaxis')
-      .call(d3.axisBottom(this.xScale()).tickSize(15))
+      .call(
+        d3.axisBottom(this.xScale())
+        .tickSize(15)
+        .tickFormat(this.timeFormat)
+      )
       .call(g => g.select(".domain").remove())
       .call(g => g.selectAll(".tick text").attr("y", 22))
 
@@ -158,7 +296,9 @@ export class D3StreamGraph extends React.Component {
 
   render() {
     return (
-      <div id="stream-graph-container" ref={this._setRef.bind(this)}></div>
+      <div>
+        <div id="d3-stream-graph-container" ref={this._setRef.bind(this)}></div>
+      </div>
     )
   }
 }
