@@ -38,8 +38,22 @@ class ApisController < ApplicationController
       render json: {'errors': ['es_index_name needs to be present']}, status: 400
       return
     end
-    
+
     resp = @api.get_geo_sentiment(options)
+    render json: resp.to_json, status: 200
+  end
+
+  def get_stream_graph_data
+    options = {
+      interval: 'hour',
+      start_date: api_params_viz[:start_date],
+      end_date: api_params_viz[:end_date],
+    }
+    resp = {
+      "Pro-vaccine": @api.get_sentiment_data('pro-vaccine', options),
+      "Anti-vaccine": @api.get_sentiment_data('anti-vaccine', options),
+      "Neutral": @api.get_sentiment_data('neutral', options),
+    }
     render json: resp.to_json, status: 200
   end
 
@@ -72,7 +86,7 @@ class ApisController < ApplicationController
       respond_with_flash(resp, streaming_path)
     end
   end
-  
+
   # update stream configuration
   def set_config
     authorize! :configure, :stream
@@ -127,7 +141,7 @@ class ApisController < ApplicationController
   def api_params_user_activity
     params.require(:user_activity).permit(:start_date, :end_date)
   end
-  
+
   def api_params
     params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes)
   end

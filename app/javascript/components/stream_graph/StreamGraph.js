@@ -2,6 +2,7 @@
 import React from 'react'
 import { D3StreamGraph } from './D3StreamGraph';
 import { VizOptions } from './VizOptions';
+import moment from 'moment';
 
 // The number of data points for the chart.
 const numDataPoints = 50;
@@ -44,13 +45,101 @@ export class StreamGraph extends React.Component {
       isLoading: true,
       width: width,
       height: 300,
-      activeVizOption: 'wiggle'
+      activeVizOption: 'wiggle',
+      errorNotification: '',
+      interval: 'hour'
     };
     this.colors = ['#68AA43', '#FF9E4B', '#CD5050']; // green, orange, red
+    this.keys = ['Pro-vaccine', 'Neutral', 'Anti-vaccine'];
   }
 
   componentDidMount() {
-    this.randomizeData();
+    const options = {
+      interval: this.state.interval,
+      start_date: moment().format('Y-M-D H:m:s'),
+      end_date: moment().subtract(1, 'day').format('Y-M-D H:m:s')
+    };
+    console.log(options);
+
+    this.getData(options);
+  }
+
+  getData(options) {
+    const params = {
+      'viz': options
+    };
+    $.ajax({
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      type: "POST",
+      crossDomain: true,
+      url: this.props.dataEndpoint,
+      data: JSON.stringify(params),
+      dataType: "json",
+      contentType: "application/json",
+      success: (result) => {
+        const arrayLengths = this.keys.map((key) => result[key].length)
+        const maxLengthKey = this.keys[arrayLengths.indexOf(Math.max(...arrayLengths))]
+        let data = [];
+        let counters = {};
+        this.keys.forEach((key) => {
+          counters[key] = 0;
+        });
+
+        for (let i=0; i < result[maxLengthKey].length; i++) {
+          let d = {'date': new Date(result[maxLengthKey][i].key_as_string)}
+          this.keys.forEach((key) => {
+            if (result[key][counters[key]].key_as_string === result[maxLengthKey][i].key_as_string) {
+              let doc_count = result[key][counters[key]].doc_count;
+              if (doc_count === 'null') {
+                d[key] = 0;
+              } else {
+                d[key] = doc_count;
+              }
+              counters[key] += 1;
+            } else {
+              d[key] = 0;
+            }
+          });
+          data.push(d);
+        }
+        if (data.length == 0) {
+          this.setState({
+            errorNotification: "Something went wrong when trying to load the data. Sorry ¯\\_(ツ)_/¯"
+          })
+          return
+        }
+        // pad data with zeroes in the beginning and end of the range (if data is missing)
+        const startDaterange = this.daterange(options.start_date, data[0].date, frequency=options.interval);
+        let padZeroes = {}
+        this.keys.forEach((key) => {
+          padZeroes[key] = 0;
+        })
+        for (let i=0; i < startDaterange.length; i++) {
+          const d = {date: startDaterange[i], ...padZeroes}
+          data.unshift(d)
+        }
+        const endDaterange = this.daterange(data.slice(-1).date, options.end_date, frequency=options.interval);
+        for (let i=0; i < endDaterange.length; i++) {
+          const d = {date: endDaterange[i], ...padZeroes}
+          data.push(d)
+        }
+        this.setState({
+          data: data,
+          isLoading: false
+        });
+      }
+    });
+  }
+
+  daterange(startDate, stopDate, frequency='hour') {
+    var dateArray = [];
+    var currentDate = moment(startDate);
+    var stopDate = moment(stopDate);
+    while (currentDate <= stopDate) {
+        dateArray.push(new Date(currentDate))
+        currentDate = moment(currentDate).add(1, frequency);
+    }
+    return dateArray;
   }
 
   randomizeData() {
@@ -78,13 +167,21 @@ export class StreamGraph extends React.Component {
   render() {
     let body;
     if (this.state.isLoading) {
-      body =
-        <div className='loading-notification-container'>
-          <div className="loading-notification">
-            <div className="spinner spinner-with-text"></div>
-            <div className='spinner-text'>Loading...</div>
+      if (this.state.errorNotification == '') {
+        body =
+          <div className='loading-notification-container'>
+            <div className="loading-notification">
+              <div className="spinner spinner-with-text"></div>
+              <div className='spinner-text'>Loading...</div>
+            </div>
+          </div>
+      } else {
+        body = <div className='loading-notification-container'>
+          <div className="alert alert-primary">
+              {this.state.errorNotification}
           </div>
         </div>
+      }
     } else {
       let keys = this.retrieveKeys(this.state.data);
       body =
