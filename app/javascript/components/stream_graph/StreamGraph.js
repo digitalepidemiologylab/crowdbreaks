@@ -51,16 +51,15 @@ export class StreamGraph extends React.Component {
     };
     this.colors = ['#68AA43', '#FF9E4B', '#CD5050']; // green, orange, red
     this.keys = ['Pro-vaccine', 'Neutral', 'Anti-vaccine'];
+    this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
   }
 
   componentDidMount() {
     const options = {
       interval: this.state.interval,
-      start_date: moment().format('Y-M-D H:m:s'),
-      end_date: moment().subtract(1, 'day').format('Y-M-D H:m:s')
+      start_date: moment().format(this.momentTimeFormat),
+      end_date: moment().subtract(1, 'day').format(this.momentTimeFormat)
     };
-    console.log(options);
-
     this.getData(options);
   }
 
