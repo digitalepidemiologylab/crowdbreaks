@@ -45,7 +45,7 @@ class ApisController < ApplicationController
 
   def get_stream_graph_data
     options = {
-      interval: 'hour',
+      interval: api_params_viz[:interval],
       start_date: api_params_viz[:start_date],
       end_date: api_params_viz[:end_date],
     }

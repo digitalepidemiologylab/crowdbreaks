@@ -4,7 +4,7 @@ import React from 'react';
 export class D3StreamGraph extends React.Component {
   constructor(props) {
     super(props);
-    this.margin = {top: 40, right: 0, bottom: 35, left: 5};
+    this.margin = {top: 40, right: 0, bottom: 35, left: 0};
     this.width = this.props.width - this.margin.left - this.margin.right;
     this.height = this.props.height - this.margin.top - this.margin.bottom;
     this.timeFormat = d3.timeFormat("%H:%M");
@@ -261,14 +261,29 @@ export class D3StreamGraph extends React.Component {
       .ease(d3.easeCubic)
 
     // Add X axis
-    d3.select('.xaxis')
-      .call(
-        d3.axisBottom(this.xScale())
+
+    let xaxis = d3.axisBottom(this.xScale())
         .tickSize(15)
-        .tickFormat(this.timeFormat)
-      )
+        .tickFormat(this.multiFormat)
+
+    d3.select('.xaxis')
+      .call(xaxis)
       .call(g => g.select(".domain").remove())
       .call(g => g.selectAll(".tick text").attr("y", 22))
+
+    // Remove xticks which are too close to border
+    let firstTick = d3.select('.xaxis .tick:first-child')
+    let firstTickTransform = firstTick.attr('transform');
+    let firstTickX = firstTickTransform.substring(firstTickTransform.indexOf("(")+1, firstTickTransform.indexOf(")")).split(",")[0];
+    if (firstTickX < 10) {
+      firstTick.remove()
+    }
+    let lastTick = d3.select('.xaxis .tick:last-child')
+    let lastTickTransform = lastTick.attr('transform');
+    let lastTickX = lastTickTransform.substring(lastTickTransform.indexOf("(")+1, lastTickTransform.indexOf(")")).split(",")[0];
+    if (lastTickX > this.width - 10) {
+      lastTick.remove()
+    }
 
     // Add Y axis
     d3.select('.yaxis')
@@ -288,6 +303,25 @@ export class D3StreamGraph extends React.Component {
         .y0(function(d) { return _this.yScale()(d[0]); })
         .y1(function(d) { return _this.yScale()(d[1]); })
       )
+  }
+
+  multiFormat(date) {
+    var formatMillisecond = d3.timeFormat(".%L"),
+      formatSecond = d3.timeFormat(":%S"),
+      formatMinute = d3.timeFormat("%I:%M"),
+      formatHour = d3.timeFormat("%H:%M"),
+      formatDay = d3.timeFormat("%a %d"),
+      formatWeek = d3.timeFormat("%b %d"),
+      formatMonth = d3.timeFormat("%B"),
+      formatYear = d3.timeFormat("%Y");
+
+    return (d3.timeSecond(date) < date ? formatMillisecond
+      : d3.timeMinute(date) < date ? formatSecond
+      : d3.timeHour(date) < date ? formatMinute
+      : d3.timeDay(date) < date ? formatHour
+      : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek)
+      : d3.timeYear(date) < date ? formatMonth
+      : formatYear)(date);
   }
 
   _setRef(componentNode) {

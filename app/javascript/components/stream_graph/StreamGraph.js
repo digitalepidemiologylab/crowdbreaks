@@ -55,10 +55,12 @@ export class StreamGraph extends React.Component {
   }
 
   componentDidMount() {
+    const end_date = moment.utc().startOf(this.state.interval)
+    const start_date = end_date.clone().subtract(1, 'day')
     const options = {
       interval: this.state.interval,
-      start_date: moment().format(this.momentTimeFormat),
-      end_date: moment().subtract(1, 'day').format(this.momentTimeFormat)
+      start_date: start_date.format(this.momentTimeFormat),
+      end_date: end_date.format(this.momentTimeFormat)
     };
     this.getData(options);
   }
@@ -85,9 +87,9 @@ export class StreamGraph extends React.Component {
         });
 
         for (let i=0; i < result[maxLengthKey].length; i++) {
-          let d = {'date': new Date(result[maxLengthKey][i].key_as_string)}
+          let d = {'date': new Date(moment.utc(result[maxLengthKey][i].key_as_string))}
           this.keys.forEach((key) => {
-            if (result[key][counters[key]].key_as_string === result[maxLengthKey][i].key_as_string) {
+            if (result[key][counters[key]] && result[key][counters[key]].key_as_string === result[maxLengthKey][i].key_as_string) {
               let doc_count = result[key][counters[key]].doc_count;
               if (doc_count === 'null') {
                 d[key] = 0;
@@ -108,16 +110,16 @@ export class StreamGraph extends React.Component {
           return
         }
         // pad data with zeroes in the beginning and end of the range (if data is missing)
-        const startDaterange = this.daterange(options.start_date, data[0].date, frequency=options.interval);
+        const startDaterange = this.daterange(moment.utc(options.start_date), moment(data[0].date), this.state.interval);
         let padZeroes = {}
         this.keys.forEach((key) => {
           padZeroes[key] = 0;
         })
-        for (let i=0; i < startDaterange.length; i++) {
+        for (let i=startDaterange.length-1; i >= 0; i--) {
           const d = {date: startDaterange[i], ...padZeroes}
           data.unshift(d)
         }
-        const endDaterange = this.daterange(data.slice(-1).date, options.end_date, frequency=options.interval);
+        const endDaterange = this.daterange(moment(data.slice(-1)[0].date), moment.utc(options.end_date).subtract(1, this.state.interval), this.state.interval);
         for (let i=0; i < endDaterange.length; i++) {
           const d = {date: endDaterange[i], ...padZeroes}
           data.push(d)
@@ -132,11 +134,10 @@ export class StreamGraph extends React.Component {
 
   daterange(startDate, stopDate, frequency='hour') {
     var dateArray = [];
-    var currentDate = moment(startDate);
-    var stopDate = moment(stopDate);
-    while (currentDate <= stopDate) {
-        dateArray.push(new Date(currentDate))
-        currentDate = moment(currentDate).add(1, frequency);
+    var currentDate = startDate;
+    while (currentDate < stopDate) {
+      dateArray.push(new Date(currentDate))
+      currentDate = moment(currentDate).add(1, frequency);
     }
     return dateArray;
   }
