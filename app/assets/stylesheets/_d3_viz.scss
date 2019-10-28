@@ -1,3 +1,9 @@
+#stream-graph-container {
+  padding-top: 50px;
+  @include media-breakpoint-up(xl) {
+    padding-top: 0px;
+  }
+}
 .legend{
   fill: $gray-600;
   font-size: 13px;
@@ -15,9 +21,28 @@
 }
 
 .stream-graph-btn-group {
-  @extend .btn-group;
+  position: absolute;
   float: right;
+  right: 20px;
   top: 24px;
+  width: 100%;
+}
+
+.stream-graph-viz-options-container {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+}
+
+.stream-graph-time-options-container {
+  display: inline-block;
+  position: absolute;
+  left: 40px;
+  @include media-breakpoint-up(xl) {
+    margin-right: -200px;
+    position: relative;
+    display: inline-block;
+  }
 }
 
 .stream-graph-viz-option-btn {
@@ -37,6 +62,19 @@
   img {
     filter: opacity(100%);
   }
+}
+
+.stream-graph-time-option-btn {
+  border: 1px solid $gray-300;
+  color: $gray-600;
+  &:hover {
+    border-color: $gray-400 !important;
+    color: $gray-600 !important;
+  }
+}
+
+.stream-graph-time-option-btn-active {
+  background-color: $gray-100;
 }
 
 .loading-notification-container {

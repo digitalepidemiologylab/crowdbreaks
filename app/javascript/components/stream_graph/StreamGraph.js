@@ -2,22 +2,8 @@
 import React from 'react'
 import { D3StreamGraph } from './D3StreamGraph';
 import { VizOptions } from './VizOptions';
+import { TimeOptions } from './TimeOptions';
 import moment from 'moment';
-
-// The number of data points for the chart.
-const numDataPoints = 50;
-
-// A function that returns a random number from 0 to 1000
-const randomNum = () => Math.floor(Math.random() * 50000);
-
-// A function that creates an array of 50 elements of (x, y) coordinates.
-const randomDataSet = () => {
-  let data = [];
-  for (let i=0; i<30; i++) {
-    data.push({'date': new Date(1571832748794 - (30-i)*1000*60*24), 'Pro-vaccine': randomNum(), 'Neutral': randomNum(), 'Anti-vaccine': randomNum()})
-  }
-  return data;
-}
 
 
 export class StreamGraph extends React.Component {
@@ -41,33 +27,58 @@ export class StreamGraph extends React.Component {
       // desktop
       width = 720;
     }
+    this.colors = ['#68AA43', '#FF9E4B', '#CD5050']; // green, orange, red
+    this.keys = ['Pro-vaccine', 'Neutral', 'Anti-vaccine'];
+    this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.state = {
       isLoading: true,
       width: width,
       height: 300,
       activeVizOption: 'wiggle',
       errorNotification: '',
-      interval: 'hour'
+      interval: 'day',
+      useTransition: false,
+      timeOption: '2'
     };
-    this.colors = ['#68AA43', '#FF9E4B', '#CD5050']; // green, orange, red
-    this.keys = ['Pro-vaccine', 'Neutral', 'Anti-vaccine'];
-    this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
   }
 
   componentDidMount() {
-    const end_date = moment.utc().startOf(this.state.interval)
-    const start_date = end_date.clone().subtract(1, 'day')
-    const options = {
-      interval: this.state.interval,
-      start_date: start_date.format(this.momentTimeFormat),
-      end_date: end_date.format(this.momentTimeFormat)
-    };
+    const options = this.getTimeOption(this.state.timeOption)
     this.getData(options);
+  }
+
+  getTimeOption(option) {
+    let interval, startDate, endDate;
+    switch(option) {
+      case '1':
+        interval = 'day'
+        endDate = moment.utc().startOf(interval)
+        startDate = endDate.clone().subtract(1, 'year')
+        break;
+      case '2':
+        interval = 'day'
+        endDate = moment.utc().startOf(interval)
+        startDate = endDate.clone().subtract(3, 'month')
+        break;
+      case '3':
+        interval = 'hour'
+        endDate = moment.utc().startOf(interval)
+        startDate = endDate.clone().subtract(1, 'day')
+        break;
+    }
+    // avoid first interval of endDate
+    endDate.subtract(1, 'second')
+    return {
+      interval: interval,
+      start_date: startDate.format(this.momentTimeFormat),
+      end_date: endDate.format(this.momentTimeFormat),
+      timeOption: option
+    }
   }
 
   getData(options) {
     const params = {
-      'viz': options
+      viz: options
     };
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
@@ -110,7 +121,7 @@ export class StreamGraph extends React.Component {
           return
         }
         // pad data with zeroes in the beginning and end of the range (if data is missing)
-        const startDaterange = this.daterange(moment.utc(options.start_date), moment(data[0].date), this.state.interval);
+        const startDaterange = this.daterange(moment.utc(options.start_date), moment(data[0].date), options.interval);
         let padZeroes = {}
         this.keys.forEach((key) => {
           padZeroes[key] = 0;
@@ -119,14 +130,18 @@ export class StreamGraph extends React.Component {
           const d = {date: startDaterange[i], ...padZeroes}
           data.unshift(d)
         }
-        const endDaterange = this.daterange(moment(data.slice(-1)[0].date), moment.utc(options.end_date).subtract(1, this.state.interval), this.state.interval);
+        const endDaterange = this.daterange(moment(data.slice(-1)[0].date), moment.utc(options.end_date).subtract(1, options.interval), options.interval);
+
         for (let i=0; i < endDaterange.length; i++) {
           const d = {date: endDaterange[i], ...padZeroes}
           data.push(d)
         }
         this.setState({
           data: data,
-          isLoading: false
+          isLoading: false,
+          interval: options.interval,
+          useTransition: false,
+          timeOption: options.timeOption
         });
       }
     });
@@ -142,17 +157,16 @@ export class StreamGraph extends React.Component {
     return dateArray;
   }
 
-  randomizeData() {
+  onChangeVizOption(option) {
     this.setState({
-      data: randomDataSet(),
-      isLoading: false
+      activeVizOption: option,
+      useTransition: true
     });
   }
 
-  onChangeVizOption(option) {
-    this.setState({
-      activeVizOption: option
-    });
+  onChangeTimeOption(option) {
+    const options = this.getTimeOption(option)
+    this.getData(options)
   }
 
   retrieveKeys(data) {
@@ -186,16 +200,23 @@ export class StreamGraph extends React.Component {
       let keys = this.retrieveKeys(this.state.data);
       body =
         <div>
-          <VizOptions
-            activeOption={this.state.activeVizOption}
-            onChangeOption={(e) => this.onChangeVizOption(e)}
-          />
+          <div className='stream-graph-btn-group'>
+            <TimeOptions
+              timeOption={this.state.timeOption}
+              onChangeOption={(e) => this.onChangeTimeOption(e)}
+            />
+              <VizOptions
+                activeOption={this.state.activeVizOption}
+                onChangeOption={(e) => this.onChangeVizOption(e)}
+              />
+          </div>
           <D3StreamGraph
             data={this.state.data}
             width={this.state.width}
             height={this.state.height}
             colors={this.colors}
             vizOption={this.state.activeVizOption}
+            useTransition={this.state.useTransition}
             keys={keys}
           />
         </div>

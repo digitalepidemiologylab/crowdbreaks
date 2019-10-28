@@ -8,7 +8,7 @@ export class D3StreamGraph extends React.Component {
     this.width = this.props.width - this.margin.left - this.margin.right;
     this.height = this.props.height - this.margin.top - this.margin.bottom;
     this.timeFormat = d3.timeFormat("%H:%M");
-    this.toolboxTimeFormat = d3.timeFormat("%H:%M %b %m, %Y");
+    this.toolboxTimeFormat = d3.timeFormat("%H:%M %b %d, %Y");
   }
 
   componentDidMount() {
@@ -256,9 +256,11 @@ export class D3StreamGraph extends React.Component {
   update() {
     // Show the areas
     let _this = this;
-    let t = d3.transition()
-      .duration(750)
-      .ease(d3.easeCubic)
+
+    let t = d3.transition().duration(0)
+    if (this.props.useTransition) {
+      t = d3.transition() .duration(500).ease(d3.easeCubic)
+    }
 
     // Add X axis
 
@@ -275,7 +277,7 @@ export class D3StreamGraph extends React.Component {
     let firstTick = d3.select('.xaxis .tick:first-child')
     let firstTickTransform = firstTick.attr('transform');
     let firstTickX = firstTickTransform.substring(firstTickTransform.indexOf("(")+1, firstTickTransform.indexOf(")")).split(",")[0];
-    if (firstTickX < 10) {
+    if (firstTickX < 20) {
       firstTick.remove()
     }
     let lastTick = d3.select('.xaxis .tick:last-child')
@@ -312,7 +314,7 @@ export class D3StreamGraph extends React.Component {
       formatHour = d3.timeFormat("%H:%M"),
       formatDay = d3.timeFormat("%a %d"),
       formatWeek = d3.timeFormat("%b %d"),
-      formatMonth = d3.timeFormat("%B"),
+      formatMonth = d3.timeFormat("%b"),
       formatYear = d3.timeFormat("%Y");
 
     return (d3.timeSecond(date) < date ? formatMillisecond
