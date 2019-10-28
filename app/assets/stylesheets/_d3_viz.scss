@@ -12,11 +12,11 @@
 
 .stream-graph-axis {
   color: $gray-200;
+  mix-blend-mode: difference;
   text {
     fill: gray;
     font-size: 13px;
     font-family: $font-family-sans-serif;
-    mix-blend-mode: difference;
   }
 }
 
