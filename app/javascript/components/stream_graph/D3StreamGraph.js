@@ -62,10 +62,10 @@ export class D3StreamGraph extends React.Component {
       .enter()
       .append('text')
       .attr('x', (d, i) => {return this.margin.left + 20 + i*100})
-      .attr('y', 6)
+      .attr('y', 7)
       .text((d) => {return d})
       .attr("text-anchor", "left")
-      .style("alignment-baseline", "middle")
+      .style("dominant-baseline", "middle")
 
     // tooltip
     this.createTooltip();
