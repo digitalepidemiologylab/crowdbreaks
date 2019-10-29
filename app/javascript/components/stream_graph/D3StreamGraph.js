@@ -261,12 +261,18 @@ export class D3StreamGraph extends React.Component {
     if (this.props.useTransition) {
       t = d3.transition() .duration(500).ease(d3.easeCubic)
     }
+    // By default let d3 figure out how many ticks, but on tablet/mobile reduce ticks
+    let numTicks = null;
+    if (this.props.device == 'mobile' || this.props.device == 'tablet') {
+      numTicks = 6;
+    }
 
     // Add X axis
 
     let xaxis = d3.axisBottom(this.xScale())
         .tickSize(15)
         .tickFormat(this.multiFormat)
+        .ticks(numTicks)
 
     d3.select('.xaxis')
       .call(xaxis)

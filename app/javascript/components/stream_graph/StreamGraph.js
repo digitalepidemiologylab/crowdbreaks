@@ -13,12 +13,15 @@ export class StreamGraph extends React.Component {
     super(props);
     let windowWidth = window.innerWidth;
     let width;
+    let device = 'desktop';
     if (windowWidth < 576) {
       // mobile
       width = windowWidth - 40;
+      device = 'mobile';
     } else if (windowWidth < 768) {
       // tablet
       width = 500;
+      device = 'tablet';
     } else if (windowWidth < 992) {
       width = 560;
     } else if (windowWidth < 1200) {
@@ -29,6 +32,9 @@ export class StreamGraph extends React.Component {
     }
     this.colors = ['#68AA43', '#FF9E4B', '#CD5050']; // green, orange, red
     this.keys = ['Pro-vaccine', 'Neutral', 'Anti-vaccine'];
+    this.caption = "Real-time predictions of vaccination sentiment based on tweets in English language visualized as a stream graph.\
+      No country-specific filtering has been applied.\
+      Switch between temporal options (1 year, 3 month and 1 day) and representation options (area, wiggle, normalized) in order to explore the data."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.state = {
       isLoading: true,
@@ -36,9 +42,9 @@ export class StreamGraph extends React.Component {
       height: 300,
       activeVizOption: 'wiggle',
       errorNotification: '',
-      interval: 'day',
       useTransition: false,
-      timeOption: '2'
+      timeOption: '2',
+      device: device
     };
   }
 
@@ -139,7 +145,6 @@ export class StreamGraph extends React.Component {
         this.setState({
           data: data,
           isLoading: false,
-          interval: options.interval,
           useTransition: false,
           timeOption: options.timeOption
         });
@@ -218,7 +223,11 @@ export class StreamGraph extends React.Component {
             vizOption={this.state.activeVizOption}
             useTransition={this.state.useTransition}
             keys={keys}
+            device={this.state.device}
           />
+          <div className="mt-4 text-light">
+            {this.caption}
+          </div>
         </div>
     }
 

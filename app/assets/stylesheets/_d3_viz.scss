@@ -26,6 +26,9 @@
   top: 50px;
   width: 100%;
 }
+.stream-graph-btn-group  button:not(:last-child) {
+  border-right: none; /* Prevent double borders */
+}
 
 .stream-graph-viz-options-container {
   display: inline-block;
