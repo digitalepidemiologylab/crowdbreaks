@@ -9,31 +9,45 @@
   </div>
 </div>
 
-
-<div class="row justify-content-center">
-  <div class="col-12 col-lg-10 text-center">
-    <h4 class="and-divider mb-5"><span><%= t('.breakdown') %></span></h4>
-    <div class="row mb-5">
-      <div class="col-6 col-md-3 text-center">
-        <h3 class="display-4 text"><%= number_with_delimiter(@total_count, delimiter: ',') %></h3>
-        <p class="text-light"><%= t('.total') %></p>
-      </div>
-      <div class="col-6 col-md-3 text-center">
-        <h3 class="display-4 text-success"><%= number_with_delimiter(@pro_vaccine_count, delimiter: ',') %></h3>
-        <p class="text-light"><%= t('.pro_vaccine') %></p>
-      </div>
-      <div class="col-6 col-md-3 text-center">
-        <h3 class="display-4 text-danger"><%= number_with_delimiter(@anti_vaccine_count, delimiter: ',') %></h3>
-        <p class="text-light"><%= t('.anti_vaccine') %></p>
-      </div>
-      <div class="col-6 col-md-3 text-center">
-        <h3 class="display-4 text-light"><%= number_with_delimiter(@neutral_vaccine_count, delimiter: ',') %></h3>
-        <p class="text-light"><%= t('.neutral_vaccine') %></p>
+<% if @project.es_index_name == 'project_vaccine_sentiment' %>
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 text-center">
+      <h4 class="and-divider mb-5">
+        <span>Vaccination sentiment</span>
+      </h4>
+      <div>
+        <%= react_component 'StreamGraph', {
+          'dataEndpoint': get_stream_graph_data_path,
+          'project': @project.name,
+        } %>
       </div>
     </div>
   </div>
-</div>
-
+<% else %>
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10 text-center">
+      <h4 class="and-divider mb-5"><span><%= t('.breakdown') %></span></h4>
+      <div class="row mb-5">
+        <div class="col-6 col-md-3 text-center">
+          <h3 class="display-4 text"><%= number_with_delimiter(@total_count, delimiter: ',') %></h3>
+          <p class="text-light"><%= t('.total') %></p>
+        </div>
+        <div class="col-6 col-md-3 text-center">
+          <h3 class="display-4 text-success"><%= number_with_delimiter(@pro_vaccine_count, delimiter: ',') %></h3>
+          <p class="text-light"><%= t('.pro_vaccine') %></p>
+        </div>
+        <div class="col-6 col-md-3 text-center">
+          <h3 class="display-4 text-danger"><%= number_with_delimiter(@anti_vaccine_count, delimiter: ',') %></h3>
+          <p class="text-light"><%= t('.anti_vaccine') %></p>
+        </div>
+        <div class="col-6 col-md-3 text-center">
+          <h3 class="display-4 text-light"><%= number_with_delimiter(@neutral_vaccine_count, delimiter: ',') %></h3>
+          <p class="text-light"><%= t('.neutral_vaccine') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
 
 <% content_for :get_involved do %>
   <div class="cta">
