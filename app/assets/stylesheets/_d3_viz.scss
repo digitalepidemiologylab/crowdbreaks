@@ -38,7 +38,7 @@
   position: absolute;
   left: 40px;
   @include media-breakpoint-up(xl) {
-    margin-right: -200px;
+    margin-right: -400px;
     position: relative;
     display: inline-block;
   }
@@ -48,7 +48,6 @@
   border: 1px solid $gray-300;
   img {
     width: 15px;
-    filter: opacity(50%);
   }
   &:hover {
     border-color: $gray-400 !important;
@@ -65,7 +64,7 @@
 
 .stream-graph-time-option-btn {
   border: 1px solid $gray-300;
-  color: $gray-600;
+  color: $gray-500;
   &:hover {
     border-color: $gray-400 !important;
     color: $gray-600 !important;
@@ -74,6 +73,7 @@
 
 .stream-graph-time-option-btn-active {
   background-color: $gray-100;
+  color: $gray-600;
 }
 
 .loading-notification-container {
@@ -93,9 +93,9 @@
   border-radius: 3px;
   font-size: 13px;
   text-align: left;
-  width: 200px;
-  height: 80px;
-  padding: 5px;
+  width: 220px;
+  height: 90px;
+  padding: 10px;
   margin-top: 0px;
   margin-left: -183px;
   background: black;

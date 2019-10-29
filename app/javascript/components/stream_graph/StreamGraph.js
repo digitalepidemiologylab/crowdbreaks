@@ -25,10 +25,10 @@ export class StreamGraph extends React.Component {
     } else if (windowWidth < 992) {
       width = 560;
     } else if (windowWidth < 1200) {
-      width = 600;
+      width = 760;
     } else {
       // desktop
-      width = 720;
+      width = 910;
     }
     this.colors = ['#68AA43', '#FF9E4B', '#CD5050']; // green, orange, red
     this.keys = ['Pro-vaccine', 'Neutral', 'Anti-vaccine'];
@@ -44,7 +44,8 @@ export class StreamGraph extends React.Component {
       errorNotification: '',
       useTransition: false,
       timeOption: '2',
-      device: device
+      device: device,
+      cachedData: {}
     };
   }
 
@@ -83,6 +84,17 @@ export class StreamGraph extends React.Component {
   }
 
   getData(options) {
+    // check if data has been previously loaded
+    if (options.timeOption in this.state.cachedData) {
+      const newData = this.state.cachedData[options.timeOption];
+      this.setState({
+        data: newData,
+        isLoading: false,
+        useTransition: false,
+        timeOption: options.timeOption
+      });
+      return
+    }
     const params = {
       viz: options
     };
@@ -142,11 +154,14 @@ export class StreamGraph extends React.Component {
           const d = {date: endDaterange[i], ...padZeroes}
           data.push(d)
         }
+        let cachedData = this.state.cachedData;
+        cachedData[options.timeOption] = data;
         this.setState({
           data: data,
           isLoading: false,
           useTransition: false,
-          timeOption: options.timeOption
+          timeOption: options.timeOption,
+          cachedData: cachedData
         });
       }
     });
@@ -171,6 +186,9 @@ export class StreamGraph extends React.Component {
 
   onChangeTimeOption(option) {
     const options = this.getTimeOption(option)
+    this.setState({
+      isLoading: true
+    })
     this.getData(options)
   }
 
@@ -225,7 +243,7 @@ export class StreamGraph extends React.Component {
             keys={keys}
             device={this.state.device}
           />
-          <div className="mt-4 text-light">
+          <div className="mt-5 text-light">
             {this.caption}
           </div>
         </div>
