@@ -34,7 +34,7 @@ export const TimeOptions = (props) => {
   })
 
   return (
-    <div className="stream-graph-time-options-container">
+    <div className="btn-group stream-graph-time-options-container">
       {buttons}
     </div>
   );

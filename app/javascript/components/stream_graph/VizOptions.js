@@ -35,7 +35,7 @@ export const VizOptions = (props) => {
   })
 
   return (
-    <div className="stream-graph-viz-options-container">
+    <div className="btn-group stream-graph-viz-options-container">
       {buttons}
     </div>
   );
