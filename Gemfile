@@ -56,7 +56,7 @@ gem 'hashie', '~> 3.4', '>= 3.4.6'
 # Twitter API
 gem 'twitter'
 # Job scheduling
-gem 'sidekiq'
+gem 'sidekiq', '~> 5.2.7'
 gem 'redis'
 # Monitoring
 gem 'rollbar'
