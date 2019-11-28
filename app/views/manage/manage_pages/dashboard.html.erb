@@ -8,43 +8,62 @@
 
 <div class="row justify-content-center mb-5">
   <div class="col-lg-6 text-center">
-    <h4 class="and-divider mb-4"><span>Pipeline</span></h4>
-    <% if can? :configure, :streaming %>
-      <%= link_to 'Streaming configuration', streaming_path, class: 'btn btn-primary btn-lg btn-block'%>
-      <%= link_to 'Stream monitoring', monitor_streams_path, class: 'btn btn-primary btn-lg btn-block' %>
-    <% end %>
-    <% if can? :read, :elasticsearch_index %>
-      <%= link_to 'Elasticsearch', elasticsearch_indexes_path, class: 'btn btn-primary btn-lg btn-block' %>
+    <h4 class="and-divider mb-4"><span>Annotation</span></h4>
+    <button class="btn btn-primary btn-lg btn-block mb-2 collapse-toggle" type="button" data-toggle="collapse" data-target="#manage-mturk-menu" aria-expanded="false" aria-controls="collapseExample">
+      Mturk
+    </button>
+    <div class="collapse mb-2" id="manage-mturk-menu">
+      <% if can? :read, MturkBatchJob %>
+        <%= link_to 'Batch', mturk_batch_jobs_path, class: 'btn btn-secondary btn-lg btn-block'%>
+      <% end %>
+      <% if can? :read, MturkWorker %>
+        <%= link_to 'Workers', mturk_workers_path, class: 'btn btn-secondary btn-lg btn-block'%>
+      <% end %>
+      <% if can? :read, MturkCachedHit %>
+        <%= link_to 'HITs', mturk_cached_hits_path, class: 'btn btn-secondary btn-lg btn-block'%>
+      <% end %>
+      <% if can? :read, :mturk_reviewable_hit %>
+        <%= link_to 'Review', mturk_reviewable_hits_path, class: 'btn btn-secondary btn-lg btn-block' %>
+      <% end %>
+    </div>
+    <% if can? :read, LocalBatchJob %>
+      <%= link_to 'Local', manage_local_batch_jobs_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
   </div>
-  <div class="col-lg-6 text-center mt-4 mt-lg-0">
-    <h4 class="and-divider mb-4"><span>Other</span></h4>
-    <% if can? :view, :sentiment_analysis %>
-      <%= link_to 'Sentiment analysis', sentiment_analysis_path, class: 'btn btn-primary btn-lg btn-block'%>
-    <% end %>
-    <% if can? :view, :user_activity %>
-      <%= link_to 'User activity', user_activity_path, class: 'btn btn-primary btn-lg btn-block'%>
-    <% end %>
-    <% if can? :read, LocalBatchJob %>
-      <%= link_to 'Local Batch processing', manage_local_batch_jobs_path, class: 'btn btn-primary btn-lg btn-block'%>
+  <div class="col-lg-6 text-center">
+    <h4 class="and-divider mb-4"><span>Stream</span></h4>
+    <% if can? :configure, :streaming %>
+      <%= link_to 'Configuration', streaming_path, class: 'btn btn-primary btn-lg btn-block'%>
+      <%= link_to 'Monitoring', monitor_streams_path, class: 'btn btn-primary btn-lg btn-block' %>
     <% end %>
   </div>
 </div>
 
 <div class="row mb-5">
   <div class="col-lg-6 text-center">
-    <h4 class="and-divider mb-4"><span>Mturk</span></h4>
-    <% if can? :read, MturkBatchJob %>
-      <%= link_to 'Mturk Batch processing', mturk_batch_jobs_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <h4 class="and-divider mb-4"><span>ML</span></h4>
+    <% if can? :view, :ml %>
+      <%= link_to 'Endpoints', list_endpoints_ml_resources_path, class: 'btn btn-primary btn-lg btn-block'%>
+      <%= link_to 'Models', list_models_ml_resources_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
-    <% if can? :read, MturkWorker %>
-      <%= link_to 'Mturk workers', mturk_workers_path, class: 'btn btn-primary btn-lg btn-block'%>
+  </div>
+  <div class="col-lg-6 text-center mt-4 mt-lg-0">
+    <h4 class="and-divider mb-4"><span>Other</span></h4>
+    <% if can? :view, :sentiment_analysis %>
+      <button class="btn btn-primary btn-lg btn-block mb-2 collapse-toggle" type="button" data-toggle="collapse" data-target="#manage-sentiment-menu" aria-expanded="false" aria-controls="collapseExample">
+        Sentiment analysis
+      </button>
+      <div class="collapse mb-2" id="manage-sentiment-menu">
+        <%= link_to 'Playground', sentiment_analysis_playground_path, class: 'btn btn-secondary btn-lg btn-block' %>
+        <%= link_to 'Chart', sentiment_analysis_chart_path, class: 'btn btn-secondary btn-lg btn-block' %>
+        <%= link_to 'Map', sentiment_analysis_map_path, class: 'btn btn-secondary btn-lg btn-block' %>
+      </div>
     <% end %>
-    <% if can? :read, MturkCachedHit %>
-      <%= link_to 'List HITs', mturk_cached_hits_path, class: 'btn btn-primary btn-lg btn-block'%>
+    <% if can? :view, :user_activity %>
+      <%= link_to 'User activity', user_activity_path, class: 'btn btn-primary btn-lg btn-block'%>
     <% end %>
-    <% if can? :read, :mturk_reviewable_hit %>
-      <%= link_to 'Review HITs', mturk_reviewable_hits_path, class: 'btn btn-primary btn-lg btn-block' %>
+    <% if can? :read, :elasticsearch_index %>
+      <%= link_to 'Elasticsearch', elasticsearch_indexes_path, class: 'btn btn-primary btn-lg btn-block' %>
     <% end %>
   </div>
 </div>
@@ -61,7 +80,7 @@
         <th>Status</th>
       </thead>
       <tbody>
-        <tr> 
+        <tr>
           <td>Flask API</td>
           <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
           <td><span class="badge badge-sentiment"><%= image_tag(@api_ready ? 'running.svg' : 'not-running.svg') %>&nbsp;<%= @api_ready ? 'Connected' : 'Not connected'%>&nbsp;</span></td>

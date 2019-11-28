@@ -141,3 +141,9 @@
   color: $dropdown-header-color;
   white-space: nowrap; // as with > li > a
 }
+
+
+// Collapse classes
+.collapse-toggle {
+  @include caret(down);
+}

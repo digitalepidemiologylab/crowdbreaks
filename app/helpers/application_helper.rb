@@ -60,6 +60,16 @@ module ApplicationHelper
     end
   end
 
+  def endpoint_status(status)
+    if status == 'InService'
+      tag.span(status, class: 'badge badge-success')
+    elsif status == 'Failed'
+      tag.span(status, class: 'badge badge-danger')
+    else
+      tag.span(status, class: 'badge badge-warning')
+    end
+  end
+
   def status_badge(label, type)
     tag.span(label, class: "badge badge-#{type}")
   end

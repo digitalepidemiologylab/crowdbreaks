@@ -1,0 +1,39 @@
+<% @title ||= 'ML models'; title @title %>
+<%= go_back_btn dashboard_path, mb: 'mb-6' %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>ML Endpoints</h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mt-5">
+  <% if @api_ready %>
+    <div class="col-12 mb-4">
+      <table class="table">
+        <thead>
+          <tr class='no-wrap'>
+            <th>Name</th>
+            <th>Created at</th>
+            <th>Last modified</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @endpoints.each do |endpoint| %>
+            <tr>
+              <td><%= endpoint['EndpointName'] %></td>
+              <td><%= time_ago(DateTime.parse(endpoint['CreationTime'])) %></td>
+              <td><%= time_ago(DateTime.parse(endpoint['LastModifiedTime'])) %></td>
+              <td><%= endpoint_status(endpoint['EndpointStatus']) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="col-12">
+      <div class="alert alert-primary">Could not reach API.</div>
+    </div>
+  <% end %>
+</div>

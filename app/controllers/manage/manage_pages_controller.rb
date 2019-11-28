@@ -3,7 +3,7 @@ module Manage
     before_action :api_init
 
     def dashboard
-      authorize! :view, :manage_dashboard 
+      authorize! :view, :manage_dashboard
       @api_ready = @api.ping
       @status_all = @api.status_all
     end
@@ -44,7 +44,7 @@ module Manage
       @interval = 'day'
     end
 
-    private 
+    private
 
     def api_init
       @api = FlaskApi.new
