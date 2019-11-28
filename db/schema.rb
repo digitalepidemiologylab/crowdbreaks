@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_08_101302) do
+ActiveRecord::Schema.define(version: 2019_11_28_140600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 2019_07_08_101302) do
     t.integer "min_num_hits_approved"
     t.integer "delay_start", default: 2000, null: false
     t.integer "delay_next_question", default: 1000, null: false
+    t.string "existing_qualification_type_id", default: "", null: false
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
   end
 

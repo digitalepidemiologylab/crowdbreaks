@@ -18,6 +18,19 @@ class Mturk
       return
     end
     Rails.logger.info "Generated new qualifaction type ID: #{qual_type_id}"
+    # qualification requirements
+    qualification_requirements = [{
+        qualification_type_id: qual_type_id,
+        comparator: 'DoesNotExist',   # If worker does not exist on list, worker is qualified
+        actions_guarded: "Accept"     # Worker can still preview the task but not accept
+      }]
+    if batch_job.existing_qualification_type_id.present?
+      qualification_requirements.push({
+        qualification_type_id: batch_job.existing_qualification_type_id,
+        comparator: 'Exists',                        # Worker has to have qualification
+        actions_guarded: "DiscoverPreviewAndAccept"     # Worker cannot accept, preview, or see HIT in their search results
+      })
+    end
     # create a HIT type
     props = {
       title: batch_job.title,
@@ -26,13 +39,7 @@ class Mturk
       keywords: batch_job.keywords,
       auto_approval_delay_in_seconds: batch_job.auto_approval_delay_in_seconds,
       assignment_duration_in_seconds: batch_job.assignment_duration_in_seconds,
-      qualification_requirements: [
-        {
-          qualification_type_id: qual_type_id,
-          comparator: 'DoesNotExist',   # If worker does not exist on list, worker is qualified
-          actions_guarded: "Accept"     # Worker can still preview the task but not accept
-        }
-      ]
+      qualification_requirements: qualification_requirements
     }
     # system qualfification: minimum approval rate
     unless batch_job.minimal_approval_rate.nil?

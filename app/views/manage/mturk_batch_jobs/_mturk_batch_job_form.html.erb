@@ -163,6 +163,10 @@
   </div>
 
   <div class="form-group">
+    <%= f.input :existing_qualification_type_id, hint: 'Ensure workers have a pre-existing qualification. Leave empty if no qualification should be applied.' %>
+  </div>
+
+  <div class="form-group">
     <%= f.input :check_availability, as: :select, collection: MturkBatchJob.check_availabilities.keys.to_a, include_blank: false,
       hint: 'Determine at which stage a tweet should be checked for whether it is still available. Before: Check before creating tasks (this will create tasks only for available tweets). After: Create tasks for all tweets and check during worker assignment for availability. Never: Try to display tweet and never test for availability.' %>
   </div>
