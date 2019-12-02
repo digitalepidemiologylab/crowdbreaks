@@ -27,7 +27,8 @@ class Mturk
     if batch_job.existing_qualification_type_id.present?
       qualification_requirements.push({
         qualification_type_id: batch_job.existing_qualification_type_id,
-        comparator: 'Exists',                        # Worker has to have qualification
+        comparator: 'EqualTo',                          # Worker has to have a perfect score in qualification!
+        integer_values: [100],
         actions_guarded: "DiscoverPreviewAndAccept"     # Worker cannot accept, preview, or see HIT in their search results
       })
     end
