@@ -18,7 +18,9 @@
             <th>Created at</th>
             <th>Project</th>
             <th>Question tag</th>
-            <th>Has endpoint</th>
+            <th>Endpoint status</th>
+            <th>Endpiont action</th>
+            <th>Pipeline action</th>
           </tr>
         </thead>
         <tbody>
@@ -28,7 +30,23 @@
               <td><%= time_ago(DateTime.parse(model['CreationTime'])) %></td>
               <td><%= model['Tags']['project_name'] %></td>
               <td><%= model['Tags']['question_tag'] %></td>
-              <td><%= status_yes_no(model['HasEndpoint']) %></td>
+              <td>
+                <% if model['EndpointStatus'].present? %>
+                  <span class='badge badge-sentiment'><%= endpoint_status(model['EndpointStatus']) %></span>
+                <% end %>
+              </td>
+              <td>
+                <% if model['EndpointStatus'] == 'InService' %>
+                  <%= link_to 'Delete endpoint', delete_endpoint_ml_resources_path(model_name: model['ModelName']), method: :post %>
+                <% elsif model['EndpointStatus'].nil? %>
+                  <%= link_to 'Create endpoint', create_endpoint_ml_resources_path(model_name: model['ModelName']), method: :post%>
+                <% end %>
+              </td>
+              <td>
+                <% if model['EndpointStatus'] == 'InService' and model['Tags']['project_name'].present? %>
+                  <%= link_to 'Activate', activate_endpoint_ml_resources_path(model_name: model['ModelName'], project_name: model['Tags']['project_name']), method: :post %>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>

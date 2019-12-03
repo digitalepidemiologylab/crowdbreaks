@@ -64,6 +64,9 @@ Rails.application.routes.draw do
       resources :ml_resources do
         get 'list_endpoints', on: :collection
         get 'list_models', on: :collection
+        post 'create_endpoint', on: :collection
+        post 'delete_endpoint', on: :collection
+        post 'activate_endpoint', on: :collection
       end
 
       # mturk

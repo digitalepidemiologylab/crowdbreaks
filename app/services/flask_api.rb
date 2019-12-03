@@ -1,7 +1,4 @@
 require 'httparty'
-require 'api/ml'
-require 'api/pipeline'
-require 'api/elasticsearch'
 
 class FlaskApi
   include HTTParty

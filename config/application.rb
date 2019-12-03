@@ -30,11 +30,14 @@ module Crowdbreaks
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-    
+
     # Avoid creating .coffee files, instead create .js files when using generators
     config.generators do |g|
       g.javascript_engine :js
     end
+
+    # Autoload path
+    config.autoload_paths += Dir[Rails.root.join('app', 'services', 'api')]
 
     # Internationalization
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
@@ -54,7 +57,7 @@ module Crowdbreaks
     # Job scheduling
     config.active_job.queue_adapter = :sidekiq
 
-    # Issues with I18n load_path not available on assets:precompile 
+    # Issues with I18n load_path not available on assets:precompile
     config.assets.initialize_on_precompile = false
   end
 end
