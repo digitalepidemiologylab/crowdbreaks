@@ -1,28 +1,28 @@
 <tr>
-  <td><%= project[0].title %></td>
-  <td><%= project[0].name %></td>
-  <td><%= project.length %></td>
-  <td><%= truncate(project[0]&.keywords&.join(', ')) %></td>
-  <td><%= project[0]&.lang&.join(', ') %></td>
-  <td><%= project[0]&.locales&.join(', ') %> </td>
-  <td><%= status_yes_no(project[0].public?) %></td>
-  <td><%= status_yes_no(project[0].active_stream?) %></td>
+  <td><%= project.title %></td>
+  <td><%= project.name %></td>
+  <td><%= project.num_question_sequences %></td>
+  <td><%= truncate(project&.keywords&.join(', ')) %></td>
+  <td><%= project&.lang&.join(', ') %></td>
+  <td><%= project&.locales&.join(', ') %> </td>
+  <td><%= status_yes_no(project.public?) %></td>
+  <td><%= status_yes_no(project.active_stream?) %></td>
   <td>
-    <div id="progress-circle-record-<%= project[0].id %>-public-tweets-context">
+    <div id="progress-circle-record-<%= project.id %>-public-tweets-context">
       <span class="no-wrap">
-        <% if can? :read, project[0] %>
-          <%= link_to fa_icon('eye'), admin_project_path(project[0]), title: 'Show' %>
+        <% if can? :read, project %>
+          <%= link_to fa_icon('eye'), admin_project_path(project), title: 'Show' %>
         <% end %>
-        <% if can? :destroy, project[0] %>
-          <%= link_to fa_icon("trash"), admin_project_path(project[0]),
+        <% if can? :destroy, project %>
+          <%= link_to fa_icon("trash"), admin_project_path(project),
             method: :delete,
             data: {confirm: "Delete project?"} %>
         <% end %>
-        <% if can? :update, project[0] %>
-          <%= link_to fa_icon("pencil"), edit_admin_project_path(project[0])  %>
+        <% if can? :update, project %>
+          <%= link_to fa_icon("pencil"), edit_admin_project_path(project)  %>
         <% end %>
       </span>
     </div>
-    <%= progress_circle("progress-circle-record-#{project[0].id}-public-tweets", small: false) %>
+    <%= progress_circle("progress-circle-record-#{project.id}-public-tweets", small: false) %>
   </td>
 </tr>

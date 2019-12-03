@@ -70,17 +70,19 @@ class StatusMailer
 
   def counts_by_project(total: false)
     align = ['left'] + ['right']*4
+    modes = ['public', 'local', 'mturk', 'all']
     date_range = @date_range unless total
     table(header: ['Project', "Public", "Local", "Mturk", "Total"]) do
-      Project.grouped_by_name.each do |project|
-        concat table_row(
-          project[0].name,
-          num(annotation_counts(date_range: date_range, mode: 'public', results: project[0].results)),
-          num(annotation_counts(date_range: date_range, mode: 'local', results: project[0].results)),
-          num(annotation_counts(date_range: date_range, mode: 'mturk', results: project[0].results)),
-          num(annotation_counts(date_range: date_range, mode: 'all', results: project[0].results)),
-          align: align
-        )
+      Project.grouped_by_name.each do |projects|
+        counts = {}
+        modes.each do |mode|
+          counts[mode] = 0
+          projects.each do |project|
+            counts[mode] += annotation_counts(date_range: date_range, mode: mode, results: project.results)
+          end
+          counts[mode] = num(counts[mode])
+        end
+        concat table_row(projects[0].name, *counts.values_at(*modes), align: align)
       end
     end
   end

@@ -1,23 +1,24 @@
 <tr>
-  <td><%= current_project[0].title %></td>
-  <td><%= current_project[0].es_index_name %></td>
-  <td><%= truncate(current_project[0]&.keywords&.join(', '), length: 80, separator: ',') %></td>
-  <td><%= current_project[0]&.lang&.join(', ') %></td>
-  <td><%= current_project[0].storage_mode %></td>
-  <td><%= current_project[0].image_storage_mode %></td>
-  <td><%= status_yes_no(current_project[0].active_stream?) %></td>
+  <td><%= current_project.title %></td>
+  <td><%= current_project.es_index_name %></td>
+  <td><%= truncate(current_project&.keywords&.join(', '), length: 80, separator: ',') %></td>
+  <td><%= current_project&.lang&.join(', ') %></td>
+  <td><%= current_project.storage_mode %></td>
+  <td><%= current_project.image_storage_mode %></td>
+  <td><%= truncate(current_project.model_endpoints&.join(', ')) %></td>
+  <td><%= status_yes_no(current_project.active_stream?) %></td>
   <td>
-    <span class="no-wrap"> 
-      <% if can? :read, current_project[0] %>
-        <%= link_to fa_icon('eye'), admin_project_path(current_project[0]), title: 'Show' %>
+    <span class="no-wrap">
+      <% if can? :read, current_project %>
+        <%= link_to fa_icon('eye'), admin_project_path(current_project), title: 'Show' %>
       <% end %>
-      <% if can? :destroy, current_project[0] %>
-        <%= link_to fa_icon("trash"), admin_project_path(current_project[0]),
+      <% if can? :destroy, current_project %>
+        <%= link_to fa_icon("trash"), admin_project_path(current_project),
           method: :delete,
           data: {confirm: "Delete current_project?"} %>
       <% end %>
-      <% if can? :update, current_project[0] %>
-        <%= link_to fa_icon("pencil"), edit_admin_project_path(current_project[0])  %>
+      <% if can? :update, current_project %>
+        <%= link_to fa_icon("pencil"), edit_admin_project_path(current_project)  %>
       <% end %>
     </span>
   </td>

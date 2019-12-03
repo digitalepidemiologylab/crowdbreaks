@@ -90,7 +90,6 @@ class ApisController < ApplicationController
   # update stream configuration
   def set_config
     authorize! :configure, :stream
-
     @projects = Project.all.where(active_stream: true).where.not(es_index_name: nil)
     config = ActiveModelSerializers::SerializableResource.new(@projects).as_json
     resp = @api.set_config(config)

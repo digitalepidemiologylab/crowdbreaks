@@ -22,6 +22,7 @@ class Project < ApplicationRecord
 
   # scopes
   scope :for_current_locale, -> {where("'#{I18n.locale.to_s}' = ANY (locales)")}
+  scope :primary, -> {where.not(es_index_name: nil).order(:created_at)}
 
   # fields
   friendly_id :title, use: :slugged
@@ -35,6 +36,10 @@ class Project < ApplicationRecord
 
   def display_name
     title
+  end
+
+  def num_question_sequences
+    Project.where(name: name).count
   end
 
   def self.accessible_by_user(user)
@@ -127,14 +132,16 @@ class Project < ApplicationRecord
   def self.is_up_to_date(remote_config)
     # test if given stream configuration is identical to projects
     return false if remote_config.nil?
-    return false if remote_config.length != Project.where(active_stream: true).count
+    return false if remote_config.length != Project.primary.where(active_stream: true).count
     remote_config.each do |c|
       p = Project.find_by(slug: c['slug'])
       return false if p.nil?
-      ['keywords', 'lang'].each do |prop|
+      ['keywords', 'lang', 'model_endpoints'].each do |prop|
+        return false if p[prop].nil? or c[prop].nil?
         return false if p[prop].sort != c[prop].sort
       end
       ['es_index_name', 'storage_mode', 'image_storage_mode'].each do |prop|
+        return false if p[prop].nil? or c[prop].nil?
         return false if p[prop] != c[prop]
       end
     end

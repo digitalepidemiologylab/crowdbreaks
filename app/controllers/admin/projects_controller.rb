@@ -10,7 +10,7 @@ module Admin
     end
 
     def index
-      @projects = Project.grouped_by_name(projects: @projects)
+      @projects = Project.primary
     end
 
     def create

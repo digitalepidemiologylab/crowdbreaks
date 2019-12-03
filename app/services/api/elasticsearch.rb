@@ -26,7 +26,7 @@ module Elasticsearch
 
   def create_index(name)
     handle_error_notification do
-      self.class.post("/#{PREFIX}/create", body: {name: name}.to_json, headers: JSON_HEADER)
+      self.class.post("/#{PREFIX}/create", body: {name: name}.to_json, headers: FlaskApi::JSON_HEADER)
     end
   end
 end

@@ -34,7 +34,7 @@ module Pipeline
 
   def set_config(data)
     handle_error_notification do
-      self.class.post("/#{PREFIX}/config", body: data.to_json, headers: JSON_HEADER)
+      self.class.post("/#{PREFIX}/config", body: data.to_json, headers: FlaskApi::JSON_HEADER)
     end
   end
 
