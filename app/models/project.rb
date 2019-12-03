@@ -92,6 +92,11 @@ class Project < ApplicationRecord
     grouped_projects
   end
 
+  def self.by_name(name)
+    # Multiple projects can have the same name (e.g. two question sequences). This method returns the original project record
+    where.not(es_index_name: nil).where(name: name)&.first
+  end
+
   def initial_question
     first_transition = transitions.find_by(from_question: nil)
     return nil if first_transition.nil?
@@ -202,6 +207,21 @@ class Project < ApplicationRecord
     return tweet_id
   end
 
+  def add_endpoint(endpoint_name)
+    return if has_endpoint(endpoint_name) or endpoint_name.nil?
+    model_endpoints << endpoint_name
+    save
+  end
+
+  def remove_endpoint(endpoint_name)
+    return unless has_endpoint(endpoint_name) or endpoint_name.nil?
+    model_endpoints.delete(endpoint_name)
+    save
+  end
+
+  def has_endpoint(endpoint_name)
+    model_endpoints.include?(endpoint_name)
+  end
 
   private
 

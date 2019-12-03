@@ -14,6 +14,14 @@ module Manage
       @api_ready = @api.ping
       use_cache = params['use_cache'] == 'false' ? false : true
       @models = @api.list_model_endpoints(use_cache: use_cache)
+      @models.each do |model|
+        model['ActiveEndpoint'] = false
+        return unless model['Tags'].present?
+        if model['Tags']['project_name'].present?
+          project_name = model['Tags']['project_name']
+          model['ActiveEndpoint'] = Project.by_name(project_name).has_endpoint(model['ModelName'])
+        end
+      end
     end
 
     def create_endpoint
@@ -38,13 +46,32 @@ module Manage
 
     def activate_endpoint
       authorize! :view, :ml
-      project = Project.where.not(es_index_name: nil).where(name: params[:project_name])&.first
+      project = Project.by_name(params[:project_name])
       if project.nil?
-        redirect_to(list_models_ml_resources_path, error: 'Could not activate endpoint')
+        redirect_to(list_models_ml_resources_path, error: "Could not activate endpoint. Project #{params[:project_name]} could not be found.")
       end
-      redirect_to(list_models_ml_resources_path, notice: 'Successfully activated endpoint. Restart stream for changes to be active.')
-
+      project.add_endpoint(params[:model_name])
+      if project.has_endpoint(params[:model_name])
+        redirect_to(list_models_ml_resources_path, notice: 'Successfully activated endpoint. Restart stream for changes to be active.')
+      else
+        redirect_to(list_models_ml_resources_path, error: 'Something went wrong when trying to activate endpoint.')
+      end
     end
+
+    def deactivate_endpoint
+      authorize! :view, :ml
+      project = Project.by_name(params[:project_name])
+      if project.nil?
+        redirect_to(list_models_ml_resources_path, error: "Could not deactivate endpoint. Project #{params[:project_name]} could not be found.")
+      end
+      project.remove_endpoint(params[:model_name])
+      if not project.has_endpoint(params[:model_name])
+        redirect_to(list_models_ml_resources_path, notice: 'Successfully deactivated endpoint. Restart stream for changes to be active.')
+      else
+        redirect_to(list_models_ml_resources_path, error: 'Something went wrong when trying to deactivate endpoint.')
+      end
+    end
+
 
     private
 

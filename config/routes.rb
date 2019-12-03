@@ -67,6 +67,7 @@ Rails.application.routes.draw do
         post 'create_endpoint', on: :collection
         post 'delete_endpoint', on: :collection
         post 'activate_endpoint', on: :collection
+        post 'deactivate_endpoint', on: :collection
       end
 
       # mturk

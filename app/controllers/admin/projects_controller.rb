@@ -63,7 +63,7 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode, :locales, :accessible_by_email_pattern, :annotation_mode, :job_file)
+      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode, :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :model_endpoints)
     end
 
     def generate_question_sequence_project(project)
@@ -75,23 +75,26 @@ module Admin
 
     def sanitized_projects_params
       sanitized_params = project_params
-      sanitized_params[:keywords] = array_from_string(project_params[:keywords])
-      sanitized_params[:lang] = array_from_string(project_params[:lang])
-      sanitized_params[:locales] = array_from_string(project_params[:locales])
-      sanitized_params[:accessible_by_email_pattern] = array_from_string(project_params[:accessible_by_email_pattern])
+      sanitized_params[:keywords] = array_from_string(project_params[:keywords], downcase: true)
+      sanitized_params[:lang] = array_from_string(project_params[:lang], downcase: true)
+      sanitized_params[:locales] = array_from_string(project_params[:locales], downcase: true)
+      sanitized_params[:accessible_by_email_pattern] = array_from_string(project_params[:accessible_by_email_pattern], downcase: true)
+      sanitized_params[:model_endpoints] = array_from_string(project_params[:model_endpoints])
       sanitized_params[:storage_mode] = sanitized_params[:storage_mode].to_i
       sanitized_params[:image_storage_mode] = sanitized_params[:image_storage_mode].to_i
       sanitized_params[:annotation_mode] = sanitized_params[:annotation_mode].to_i
       sanitized_params
     end
 
-    def array_from_string(str)
+    def array_from_string(str, downcase: false, make_unique: true)
       return nil if str.nil?
       arr = []
       str.split(',').each do |k|
-        _k = k.strip.downcase
+        _k = k.strip
+        _k = _k.downcase if downcase
         arr.push(_k) if _k.length > 0
       end
+      arr = arr.uniq if make_unique
       arr
     end
   end

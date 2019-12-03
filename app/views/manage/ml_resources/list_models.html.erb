@@ -20,6 +20,7 @@
             <th>Question tag</th>
             <th>Endpoint status</th>
             <th>Endpiont action</th>
+            <th>Pipeline status</th>
             <th>Pipeline action</th>
           </tr>
         </thead>
@@ -43,8 +44,21 @@
                 <% end %>
               </td>
               <td>
-                <% if model['EndpointStatus'] == 'InService' and model['Tags']['project_name'].present? %>
-                  <%= link_to 'Activate', activate_endpoint_ml_resources_path(model_name: model['ModelName'], project_name: model['Tags']['project_name']), method: :post %>
+                <% if model['ActiveEndpoint'] %>
+                  <span class='badge badge-success'>Active</span>
+                <% else %>
+                  <span class='badge badge-light'>Inactive</span>
+                <% end %>
+              </td>
+              <td>
+                <% if model['Tags']['project_name'].present? %>
+                  <% if model['ActiveEndpoint'] %>
+                      <%= link_to 'Deactivate', deactivate_endpoint_ml_resources_path(model_name: model['ModelName'], project_name: model['Tags']['project_name']), method: :post %>
+                  <% else %>
+                    <% if model['EndpointStatus'] == 'InService' %>
+                      <%= link_to 'Activate', activate_endpoint_ml_resources_path(model_name: model['ModelName'], project_name: model['Tags']['project_name']), method: :post %>
+                    <% end %>
+                  <% end %>
                 <% end %>
               </td>
             </tr>

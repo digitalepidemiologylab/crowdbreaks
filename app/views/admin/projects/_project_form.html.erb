@@ -48,15 +48,9 @@
   </div>
 
   <div class="mb-5">
-    <h4>Accessibility options</h4>
+    <h4>Pipeline</h4>
     <div class="form-group">
-      <%= f.input :public, label: "Make public", input_html: {class: "mr-2", value: @project.public || false}, hint: 'List project under /projects publicly, else project is private', label_html: {class: 'label-inline'} %>
-    </div>
-    <div class="form-group">
-      <%= f.input :accessible_by_email_pattern, as: :string, hint: 'Restrict access to users with an account registered with a certain email pattern. Leave empty for no restriction. The project can be set to private with "\w@\w" as the pattern, which will allow access to all registered users without showing the project under /projects. Seperate multiple regex patterns by commas: E.g. "\w@epfl\.ch, \w@ethz\.ch, other@user.com"', :input_html => { value: @project.accessible_by_email_pattern&.join(', ') || '' } %>
-    </div>
-    <div class="form-group">
-      <%= f.input :locales, label: "Locales", hint: "List of locales (any of [#{Crowdbreaks::Locales.join(', ')}]) for which this project should be publicly displayed (under /projects)", :input_html => { value: @project.locales&.join(', ') || '' } %>
+      <%= f.input :model_endpoints, hint: 'Comma-separated list of model endpoints. Model endpoints listed here will be invoked in real-time in the data pipeline. Predictions will then be added to the meta field and stored on Elasticsearch.', input_html: {value: @project.model_endpoints&.join(', ') || ""} %>
     </div>
   </div>
 
@@ -83,6 +77,19 @@
         <div class="alert alert-danger">Note: Existing entries in public tweets table will be deleted if they don't have results associated with it.</div>
       <% end %>
       </div>
+    </div>
+  </div>
+
+  <div class="mb-5">
+    <h4>Accessibility options</h4>
+    <div class="form-group">
+      <%= f.input :public, label: "Make public", input_html: {class: "mr-2", value: @project.public || false}, hint: 'List project under /projects publicly, else project is private', label_html: {class: 'label-inline'} %>
+    </div>
+    <div class="form-group">
+      <%= f.input :accessible_by_email_pattern, as: :string, hint: 'Restrict access to users with an account registered with a certain email pattern. Leave empty for no restriction. The project can be set to private with "\w@\w" as the pattern, which will allow access to all registered users without showing the project under /projects. Seperate multiple regex patterns by commas: E.g. "\w@epfl\.ch, \w@ethz\.ch, other@user.com"', :input_html => { value: @project.accessible_by_email_pattern&.join(', ') || '' } %>
+    </div>
+    <div class="form-group">
+      <%= f.input :locales, label: "Locales", hint: "List of locales (any of [#{Crowdbreaks::Locales.join(', ')}]) for which this project should be publicly displayed (under /projects)", :input_html => { value: @project.locales&.join(', ') || '' } %>
     </div>
   </div>
 
