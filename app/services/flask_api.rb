@@ -82,9 +82,9 @@ class FlaskApi
   end
 
   def get_vaccine_sentiment(text)
-    data = {'text': text}
+    data = {'text': text, model_endpoint: 'crowdbreaks-2da2332569'}
     handle_error do
-      self.class.post('/sentiment/vaccine/', body: data.to_json, headers: JSON_HEADER)
+      self.class.post('/ml/predict', body: data.to_json, headers: JSON_HEADER)
     end
   end
 

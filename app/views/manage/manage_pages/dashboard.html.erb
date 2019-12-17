@@ -54,9 +54,9 @@
         Sentiment analysis
       </button>
       <div class="collapse mb-2" id="manage-sentiment-menu">
-        <%= link_to 'Playground', sentiment_analysis_playground_path, class: 'btn btn-secondary btn-lg btn-block' %>
-        <%= link_to 'Chart', sentiment_analysis_chart_path, class: 'btn btn-secondary btn-lg btn-block' %>
-        <%= link_to 'Map', sentiment_analysis_map_path, class: 'btn btn-secondary btn-lg btn-block' %>
+        <%= link_to 'Playground', sentiment_analysis_playground_path, class: 'btn btn-secondary btn-lg btn-block', data: {turbolinks: false} %>
+        <%= link_to 'Chart', sentiment_analysis_chart_path, class: 'btn btn-secondary btn-lg btn-block', data: {turbolinks: false} %>
+        <%= link_to 'Map', sentiment_analysis_map_path, class: 'btn btn-secondary btn-lg btn-block', data: {turbolinks: false}%>
       </div>
     <% end %>
     <% if can? :view, :user_activity %>

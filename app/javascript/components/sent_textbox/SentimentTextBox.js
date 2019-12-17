@@ -10,9 +10,8 @@ export class SentimentTextBox extends React.Component {
     this.state = {
       'textValue': "",
       'label': 'undetermined',
-      'pro_vaccine': 0,
-      'neutral': 0,
-      'anti_vaccine': 0
+      'labels': [],
+      'probabilities': []
     };
     this.num_words = 0;
   }
@@ -43,16 +42,11 @@ export class SentimentTextBox extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
-        result = JSON.parse(result);
-        let p_vals = {}
-        for (let i=0; i<result['labels'].length; i++) {
-          p_vals[result['labels'][i]] = result['probabilities'][i];
-        }
+        let prediction = result['prediction']
         this.setState({
-          'label': result['labels'][0],
-          'pro_vaccine': p_vals['pro-vaccine'],
-          'anti_vaccine': p_vals['anti-vaccine'],
-          'neutral': p_vals['neutral']
+          'label': prediction['labels'][0],
+          'labels': prediction['labels'],
+          'probabilities': prediction['probabilities'],
         });
       }
     });
@@ -90,6 +84,11 @@ export class SentimentTextBox extends React.Component {
     const labelStyle = {
       color: color
     }
+    let probabilities = <ul>
+        {this.state.labels.map((label, i) => {
+          return <li key={i}>{label} ({this.round(this.state.probabilities[i])}%)</li>
+        })}
+    </ul>;
 
     return(
       <div>
@@ -102,8 +101,11 @@ export class SentimentTextBox extends React.Component {
             onChange={changeEvent => this.onHandleChange(changeEvent.target.value)}
             className="form-control"
           />
-          <h2 style={labelStyle}>{this.state.label}</h2>
-          <span>Pro-vaccine ({this.round(this.state.pro_vaccine)}%), Neutral ({this.round(this.state.neutral)}%), Anti-vaccine ({this.round(this.state.anti_vaccine)}%)</span>
+
+          <div className="mt-3">
+            <h2 style={labelStyle}>{this.state.label}</h2>
+            {probabilities}
+          </div>
         </div>
         <h3>Test examples:</h3>
         {examples.map(function(ex) {
