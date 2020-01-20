@@ -63,11 +63,9 @@ class ApisController < ApplicationController
       start_date: api_params_stream_graph_keywords[:start_date],
       end_date: api_params_stream_graph_keywords[:end_date]
     }
-    resp = {
-      'All': @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
-    }
     queries = api_params_stream_graph_keywords[:queries]
-    not_keywords = []
+    all_keywords = []
+    resp = {}
     if queries.present?
       queries.each do |query, keywords|
         _options = options
@@ -80,9 +78,13 @@ class ApisController < ApplicationController
         end
         _options[:not_keywords] = not_keywords
         resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], _options)
-        not_keywords += keywords
+        all_keywords += keywords
       end
     end
+    # Match all which were not included in previous queries
+    options[:not_keywords] = all_keywords
+    options[:keywords] = []
+    resp['Other'] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
     render json: resp.to_json, status: 200
   end
 

@@ -30,10 +30,10 @@ export class StreamGraphKeywords extends React.Component {
       // desktop
       width = 910;
     }
-    this.colors = ['#68AA43', '#1e9CeA', '#FF9E4B', '#CD5050']; // green, blue, orange, red
-    this.keys = ['All', 'Japan', 'Thailand', 'Korea'];
-    this.legendPos = [0, 50, 120, 205];
-    this.queries = {'Japan': ['japan'], 'Thailand': ['thailand'], 'Korea': ['korea']}
+    this.colors = ['#1e9CeA', '#FF9E4B', '#CD5050', '#68AA43', '#aab8c2']; // green, blue, orange, red
+    this.keys = ['China', 'Japan', 'Thailand', 'Korea', 'Other'];
+    this.legendPos = [0, 70, 150, 250, 330];
+    this.queries = {'China': ['china'], 'Japan': ['japan'], 'Thailand': ['thailand'], 'Korea': ['korea']}
     this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\" or \"wuhan\". Tracking started in January 13, 2020. Keywords matching shows subset which uniquely match one of the keywords."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.state = {
@@ -109,6 +109,7 @@ export class StreamGraphKeywords extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
+        console.log(result);
         const arrayLengths = this.keys.map((key) => result[key].length)
         const maxLengthKey = this.keys[arrayLengths.indexOf(Math.max(...arrayLengths))]
         let data = [];
