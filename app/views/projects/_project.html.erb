@@ -12,6 +12,9 @@
       <% if project.es_index_name == 'project_vaccine_sentiment' %>
         <%= link_to t('projects.index.explore'), project_path(project), class: 'btn btn-secondary btn-lg' %>
       <% end %>
+      <% if project.es_index_name == 'project_wuhan' %>
+        <%= link_to t('projects.index.explore'), project_path(project), class: 'btn btn-secondary btn-lg' %>
+      <% end %>
     </div>
   </div>
 </div>

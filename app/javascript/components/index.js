@@ -14,6 +14,7 @@ import { UserActivity } from './user_activity/UserActivity';
 import { EditQuestionSequence } from './edit_question_sequence/EditQuestionSequence';
 import { Assignment } from './mturk_worker/Assignment';
 import { StreamGraph } from './stream_graph/StreamGraph';
+import { StreamGraphKeywords } from './stream_graph_keywords/StreamGraphKeywords';
 
 // Register components using Webpacker-react
 WebpackerReact.setup({
@@ -30,6 +31,7 @@ WebpackerReact.setup({
   TweetEmbed,
   Assignment,
   StreamGraph,
+  StreamGraphKeywords,
 })
 
 // This is needed for components to properly unmount and not being cached

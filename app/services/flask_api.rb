@@ -61,7 +61,7 @@ class FlaskApi
   # elasticsearch - all data
   def get_all_data(index, options={})
     handle_error(error_return_value: []) do
-      resp = self.class.get('/data/all/'+index, query: options, timeout: 20)
+      resp = self.class.get('/data/all/'+index, body: options.to_json, timeout: 20, headers: JSON_HEADER)
       JSON.parse(resp)
     end
   end

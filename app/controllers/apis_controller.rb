@@ -57,6 +57,35 @@ class ApisController < ApplicationController
     render json: resp.to_json, status: 200
   end
 
+  def get_stream_graph_keywords_data
+    options = {
+      interval: api_params_stream_graph_keywords[:interval],
+      start_date: api_params_stream_graph_keywords[:start_date],
+      end_date: api_params_stream_graph_keywords[:end_date]
+    }
+    resp = {
+      'All': @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
+    }
+    queries = api_params_stream_graph_keywords[:queries]
+    not_keywords = []
+    if queries.present?
+      queries.each do |query, keywords|
+        _options = options
+        _options[:keywords] = keywords
+        not_keywords = []
+        queries.each do |_query, _keywords|
+          if _query != query
+            not_keywords += _keywords
+          end
+        end
+        _options[:not_keywords] = not_keywords
+        resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], _options)
+        not_keywords += keywords
+      end
+    end
+    render json: resp.to_json, status: 200
+  end
+
   # Monitor streams
   def stream_data
     authorize! :configure, :stream
@@ -147,6 +176,10 @@ class ApisController < ApplicationController
 
   def api_params_viz
     params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :include_retweets)
+  end
+
+  def api_params_stream_graph_keywords
+    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :timeOption, :queries => {})
   end
 
   def api_params_leadline

@@ -44,6 +44,17 @@
   }
 }
 
+.stream-graph-keywords-time-options-container {
+  display: inline-block;
+  position: absolute;
+  left: 40px;
+  @include media-breakpoint-up(xl) {
+    margin-right: -480px;
+    position: relative;
+    display: inline-block;
+  }
+}
+
 .stream-graph-viz-option-btn {
   border: 1px solid $gray-300;
   img {
