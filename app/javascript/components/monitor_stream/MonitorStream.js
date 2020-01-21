@@ -37,12 +37,13 @@ export class MonitorStream extends React.Component {
             labelString: "Counts"
           },
           ticks: {
-            min: 0
+            min: 0,
+            maxTicksLimit: 3
           }
         }],
         xAxes: [{
           type: 'time',
-          barPercentage: .8,
+          barPercentage: 10,
           time: {
             unit: 'second',
             displayFormats: {

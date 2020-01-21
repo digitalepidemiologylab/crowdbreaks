@@ -34,7 +34,7 @@
     <h4 class="and-divider mb-4"><span>Stream</span></h4>
     <% if can? :configure, :streaming %>
       <%= link_to 'Configuration', streaming_path, class: 'btn btn-primary btn-lg btn-block'%>
-      <%= link_to 'Monitoring', monitor_streams_path, class: 'btn btn-primary btn-lg btn-block' %>
+      <%= link_to 'Monitoring', monitor_streams_path, class: 'btn btn-primary btn-lg btn-block', data: {turbolinks: false} %>
     <% end %>
   </div>
 </div>
