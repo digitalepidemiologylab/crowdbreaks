@@ -20,7 +20,7 @@ RSpec.feature "Question sequence", type: :feature, js: true do
     it 'navigates to page correctly' do
       expect(page).to have_current_path(project_question_sequence_path(project))
     end
-    
+
     it 'do question sequence as guest user' do
       expect(page).to have_content('Welcome')
       click_button "Let's go"

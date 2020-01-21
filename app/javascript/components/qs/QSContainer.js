@@ -23,9 +23,6 @@ export class QSContainer extends React.Component {
     if (this.testMode === undefined) {
       this.testMode = false;
     }
-    console.log(this.props.projectsPath);
-    console.log(this.props.resultsPath);
-    console.log(this.props.endQuestionSequencePath);
 
     this.state = {
       'questionSequenceHasEnded': false,

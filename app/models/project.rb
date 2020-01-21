@@ -62,6 +62,11 @@ class Project < ApplicationRecord
     question_sequences.map{|project| project.results.num_annotations}.sum
   end
 
+  def primary_project
+    # in case of a project having multiple question sequences this method will return the original one
+    Project.where(name: name).where.not(es_index_name: nil)&.first || self
+  end
+
   def question_sequences
     Project.where(name: name)
   end

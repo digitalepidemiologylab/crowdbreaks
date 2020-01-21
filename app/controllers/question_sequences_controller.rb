@@ -4,24 +4,27 @@ class QuestionSequencesController < ApplicationController
   def show
     @project = Project.friendly.find(params[:project_id])
 
+    # make sure we are working with the original project
+    primary_project = @project.primary_project
+
     # only allow access if project is both public and accessible by user
-    if not @project.public?
-      redirect_to projects_path unless @project.accessible_by?(current_user)
+    if not primary_project.public?
+      redirect_to projects_path unless primary_project.accessible_by?(current_user)
     end
 
-    if @project.active_question_sequence_id == 0
+    if primary_project.active_question_sequence_id == 0
       # By default pick project as question sequence (active_question_sequence is initialized as 0)
-      question_sequence_project = @project
+      question_sequence_project = primary_project
     else
       # Otherwise find project with id
-      question_sequence_project = Project.find(@project.active_question_sequence_id)
+      question_sequence_project = Project.find(primary_project.active_question_sequence_id)
     end
 
     # Collect question sequence info
     @question_sequence = QuestionSequence.new(question_sequence_project).load
     # Other
     @user_id = current_or_guest_user.id
-    @tweet_id = @project.get_tweet(user_id: @user_id)
+    @tweet_id = primary_project.get_tweet(user_id: @user_id)
 
     # @tweet_id = '1047868518224416769'
     # @tweet_id = '564984221203431000'  # invalid tweet
@@ -68,6 +71,8 @@ class QuestionSequencesController < ApplicationController
       render json: {tweet_id: new_tweet[:tweet_id]}, status: 200 and return
     end
 
+    primary_project = project.primary_project
+
     # update count
     if project.results.count > 0
       project.question_sequences_count = project.results.group(:tweet_id, :user_id).count.length
@@ -75,12 +80,12 @@ class QuestionSequencesController < ApplicationController
     end
 
     # update tweet in Redis pool
-    if project.stream_annotation_mode?
-      api.update_tweet(project.es_index_name, user_id, tweet_id)
+    if primary_project.stream_annotation_mode?
+      api.update_tweet(primary_project.es_index_name, user_id, tweet_id)
     end
 
     # get next tweet
-    new_tweet_id = project.get_tweet(user_id: user_id)
+    new_tweet_id = primary_project.get_tweet(user_id: user_id)
 
     # save logs
     logs = final_params.fetch(:logs, {})
