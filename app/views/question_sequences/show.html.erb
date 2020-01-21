@@ -15,6 +15,7 @@
       userId: @user_id,
       projectId: @project.id,
       numTransitions: @question_sequence[:num_transitions],
+      colorOptions: Answer::COLORS,
       captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
       enableCaptcha: false,
       userSignedIn: user_signed_in?,

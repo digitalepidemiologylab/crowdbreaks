@@ -189,6 +189,7 @@ export class LocalBatchQSContainer extends React.Component {
           numQuestionsAnswered={this.state.numQuestionsAnswered}
           tweetDisplayMode={this.props.tweetDisplayMode}
           translations={this.props.translations}
+          colorOptions={this.props.colorOptions}
         />
     } else {
       return <LocalBatchFinal

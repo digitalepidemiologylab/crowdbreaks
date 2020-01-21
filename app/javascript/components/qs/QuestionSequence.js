@@ -189,6 +189,7 @@ export class QuestionSequence extends React.Component {
                     disabled={parentThis.state.answersDisabled}
                     submit={() => parentThis.onAnswerSubmitQS(answer.id, new Date().getTime())}
                     accessKey={i+1}
+                    colorOptions={parentThis.props.colorOptions}
                     color={answer.color}
                   />
                 })}

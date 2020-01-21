@@ -215,6 +215,7 @@ export class MturkQSContainer extends React.Component {
       displayQuestionInstructions={true}
       numQuestionsAnswered={this.state.numQuestionsAnswered}
       translations={this.props.translations}
+      colorOptions={this.props.colorOptions}
     />
   }
 

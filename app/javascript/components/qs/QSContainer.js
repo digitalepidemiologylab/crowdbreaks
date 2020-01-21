@@ -214,6 +214,7 @@ export class QSContainer extends React.Component {
           displayQuestionInstructions={false}
           numQuestionsAnswered={this.state.numQuestionsAnswered}
           translations={this.props.translations}
+          colorOptions={this.props.colorOptions}
         />
       </div>
     } else {

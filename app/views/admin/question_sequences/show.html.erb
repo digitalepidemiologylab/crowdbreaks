@@ -58,6 +58,7 @@
         assignmentId: @assignment_id,
         workerId: @worker_id,
         notification: @notification,
+        colorOptions: Answer::COLORS,
         translations: t('question_sequences', locale: @project.locales&.first || :en), # force locale value to be that of project
       }) %>
     <% elsif @mode == 'public' %>
@@ -79,6 +80,7 @@
         userSignedIn: user_signed_in?,
         delayStart: 2000,
         delayNextQuestion: 0,
+        colorOptions: Answer::COLORS,
         testMode: true
       }) %>
   <% end %>

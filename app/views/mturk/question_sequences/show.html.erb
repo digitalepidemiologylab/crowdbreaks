@@ -30,9 +30,10 @@
       assignmentId: @assignment_id,
       workerId: @worker_id,
       notification: @notification,
+      colorOptions: Answer::COLORS,
       translations: t('question_sequences', locale: @project.locales&.first || :en), # force locale value to be that of project
     },
-    class: 'row', 
+    class: 'row',
     id: 'mturk-question-sequence-component')
   %>
   </div>
