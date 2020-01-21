@@ -35,10 +35,12 @@
 
 // Tweets on question sequence
 .question-sequence-tweet {
-  flex-direction: column;
-  justify-content: center;
+  // flex-direction: column;
+  // justify-content: center;
   align-items: center;
-  display: flex;
+  max-width: 500px;
+  margin: auto;
+  // display: flex;
   iframe {
     display: inline-block !important;
     vertical-align: top !important;
@@ -55,5 +57,5 @@
   padding: 1.5rem;
   font-size: 1.2rem;
   word-wrap: break-word;
-  font-family: 'Helvetica Neue', 'Roboto', sans-serif; 
+  font-family: 'Helvetica Neue', 'Roboto', sans-serif;
 }

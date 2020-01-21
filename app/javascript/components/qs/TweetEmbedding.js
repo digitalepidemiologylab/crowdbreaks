@@ -18,6 +18,17 @@ export const TweetEmbedding = (props) => {
       cards: 'hidden'
     };
   }
+  let windowWidth = window.innerWidth;
+  let width;
+  let margin = 40;
+  if (windowWidth < 500 + margin) {
+    // mobile
+    width = Math.max(windowWidth - margin, 250);
+  } else {
+    // desktop
+    width = 500;
+  }
+  options['width'] = width;
   return (
     <div className="question-sequence-tweet">
       <TweetEmbed
