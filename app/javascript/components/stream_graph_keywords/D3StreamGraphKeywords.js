@@ -9,6 +9,11 @@ export class D3StreamGraph extends React.Component {
     this.height = this.props.height - this.margin.top - this.margin.bottom;
     this.timeFormat = d3.timeFormat("%H:%M");
     this.toolboxTimeFormat = d3.timeFormat("%H:%M %b %d, %Y");
+    this.legendPos = this.props.legendPos;
+    // scale legend pos down a bit on mobile (legend items will appear closer together)
+    if (this.props.device == 'mobile') {
+      this.legendPos = this.props.legendPos.map((i) => i * 0.8)
+    }
   }
 
   componentDidMount() {
@@ -53,7 +58,7 @@ export class D3StreamGraph extends React.Component {
       .data(this.props.keys)
       .enter()
       .append('circle')
-      .attr('cx', (d, i) => {return this.margin.left + 10 + this.props.legendPos[i]})
+      .attr('cx', (d, i) => {return this.margin.left + 10 + this.legendPos[i]})
       .attr('cy', 6)
       .attr('r', 6)
       .style('fill', (d) => {return this.color(d)})
@@ -61,7 +66,7 @@ export class D3StreamGraph extends React.Component {
       .data(this.props.keys)
       .enter()
       .append('text')
-      .attr('x', (d, i) => {return this.margin.left + 20 + this.props.legendPos[i]})
+      .attr('x', (d, i) => {return this.margin.left + 20 + this.legendPos[i]})
       .attr('y', 7)
       .text((d) => {return d})
       .attr("text-anchor", "left")
@@ -255,7 +260,7 @@ export class D3StreamGraph extends React.Component {
     // By default let d3 figure out how many ticks, but on tablet/mobile reduce ticks
     let numTicks = null;
     if (this.props.device == 'mobile' || this.props.device == 'tablet') {
-      numTicks = 6;
+      numTicks = 5;
     }
 
     // Add X axis
