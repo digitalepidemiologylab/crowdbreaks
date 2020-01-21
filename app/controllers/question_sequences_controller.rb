@@ -9,8 +9,16 @@ class QuestionSequencesController < ApplicationController
       redirect_to projects_path unless @project.accessible_by?(current_user)
     end
 
+    if @project.active_question_sequence_id == 0
+      # By default pick project as question sequence (active_question_sequence is initialized as 0)
+      question_sequence_project = @project
+    else
+      # Otherwise find project with id
+      question_sequence_project = Project.find(@project.active_question_sequence_id)
+    end
+
     # Collect question sequence info
-    @question_sequence = QuestionSequence.new(@project).load
+    @question_sequence = QuestionSequence.new(question_sequence_project).load
     # Other
     @user_id = current_or_guest_user.id
     @tweet_id = @project.get_tweet(user_id: @user_id)

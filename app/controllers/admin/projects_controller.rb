@@ -63,7 +63,7 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode, :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :model_endpoints)
+      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales}, :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode, :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :model_endpoints, :active_question_sequence_id)
     end
 
     def generate_question_sequence_project(project)

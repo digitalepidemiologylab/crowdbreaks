@@ -42,6 +42,18 @@ class Project < ApplicationRecord
     Project.where(name: name).count
   end
 
+  def active_question_sequence
+    if active_question_sequence_id == 0
+      id
+    else
+      active_question_sequence_id
+    end
+  end
+
+  def question_sequences
+    Project.where(name: name)
+  end
+
   def self.accessible_by_user(user)
     projects = all
     match_ids = []
