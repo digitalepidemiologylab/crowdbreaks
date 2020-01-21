@@ -34,7 +34,7 @@ export class StreamGraphKeywords extends React.Component {
     this.keys = ['China', 'Japan', 'Thailand', 'Korea', 'Other'];
     this.legendPos = [0, 70, 150, 250, 330];
     this.queries = {'China': ['china'], 'Japan': ['japan'], 'Thailand': ['thailand'], 'Korea': ['korea']}
-    this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\" or \"wuhan\". Tracking started in January 13, 2020. Keywords matching shows subset which uniquely match one of the keywords."
+    this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", or \"coronavirus\". Tracking started in January 13, 2020. Keywords matching shows subset which uniquely match one of the keywords."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.state = {
       isLoading: true,
