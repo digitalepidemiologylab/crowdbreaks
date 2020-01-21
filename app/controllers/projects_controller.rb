@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
 
   def index
     # only select projects which are public and have to correct locale setting
-    @projects = @projects.order(created_at: :desc).where(public: true).primary.where("'#{I18n.locale.to_s}' = ANY (locales)").accessible_by_user(current_user)
+    @projects = @projects.order(created_at: :desc).where(public: true).where("'#{I18n.locale.to_s}' = ANY (locales)").accessible_by_user(current_user)
   end
 
   def show
