@@ -50,6 +50,14 @@ class Project < ApplicationRecord
     end
   end
 
+  def active_question_sequence_project
+    if active_question_sequence_id == 0
+      self
+    else
+      Project.find(active_question_sequence_id)
+    end
+  end
+
   def question_sequences
     Project.where(name: name)
   end
