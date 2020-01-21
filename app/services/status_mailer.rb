@@ -109,10 +109,6 @@ class StatusMailer
     User.where(created_at: date_range).count
   end
 
-  def total_annotations
-    Result.num_annotations
-  end
-
   def stream_status
     @api.get_streaming_email_status(type: @type).strip
   end

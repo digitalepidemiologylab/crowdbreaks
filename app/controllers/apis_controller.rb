@@ -137,7 +137,7 @@ class ApisController < ApplicationController
     result = []
     num_new_entries.to_i.times do
       resp = Result.order(created_at: :desc).where(created_at: since..Time.current).where.not(tweet_id: exclude_tweet_ids).
-        joins(:user, :answer, :project).where(projects: {public: true}).where("'#{I18n.locale.to_s}' = ANY (projects.locales)").where.not(users: {username: exclude_usernames}).where(answers: {label: Answer::LABELS.values}).limit(1).
+        joins(:user, :answer, :project).where.not(users: {username: exclude_usernames}).limit(1).
         pluck(Arel.sql('results.tweet_id,users.username as username,answers.label as label,results.created_at,projects.title_translations as title'))
       unless resp.empty?
         if TweetValidation.new.tweet_is_valid?(resp[0][0])

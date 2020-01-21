@@ -58,6 +58,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def num_annotations
+    question_sequences.map{|project| project.results.num_annotations}.sum
+  end
+
   def question_sequences
     Project.where(name: name)
   end
