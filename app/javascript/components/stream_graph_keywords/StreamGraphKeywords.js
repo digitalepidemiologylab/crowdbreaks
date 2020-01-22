@@ -31,9 +31,9 @@ export class StreamGraphKeywords extends React.Component {
       width = 910;
     }
     this.colors = ['#1e9CeA', '#FF9E4B', '#CD5050', '#68AA43', '#aab8c2']; // green, blue, orange, red
-    this.keys = ['China', 'Japan', 'Thailand', 'Korea', 'Other'];
-    this.legendPos = [0, 70, 150, 250, 330];
-    this.queries = {'China': ['china'], 'Japan': ['japan'], 'Thailand': ['thailand'], 'Korea': ['korea']}
+    this.keys = ['China', 'US', 'Japan', 'Thailand', 'Other'];
+    this.legendPos = [0, 70, 130, 210, 300];
+    this.queries = {'China': ['china'], 'US': ['us'],  'Japan': ['japan'], 'Thailand': ['thailand']}
     this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", or \"coronavirus\". Tracking started in January 13, 2020. Keywords matching shows subset which uniquely match one of the keywords."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.state = {
