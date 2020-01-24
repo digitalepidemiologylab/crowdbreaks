@@ -12,7 +12,7 @@ export class D3StreamGraph extends React.Component {
     this.legendPos = this.props.legendPos;
     // scale legend pos down a bit on mobile (legend items will appear closer together)
     if (this.props.device == 'mobile') {
-      this.legendPos = this.props.legendPos.map((i) => i * 0.8)
+      this.legendPos = this.props.legendPos.map((i) => i * 1)
     }
   }
 
@@ -86,7 +86,7 @@ export class D3StreamGraph extends React.Component {
       .append("div")
       .attr("class", "stream-graph-tooltip")
       .style("display", 'none')
-      .style("height", '125px')
+      .style("height", '145px')
     let tooltipSvg = tooltip.append('svg').attr('width', 190).attr('height', 180)
 
     // draw svg within tooltip div
