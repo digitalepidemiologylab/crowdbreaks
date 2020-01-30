@@ -59,18 +59,24 @@ class FlaskApi
 
 
   # elasticsearch - all data
-  def get_all_data(index, options={})
-    handle_error(error_return_value: []) do
-      resp = self.class.get('/data/all/'+index, body: options.to_json, timeout: 20, headers: JSON_HEADER)
-      JSON.parse(resp)
+  def get_all_data(index, options={}, use_cache=false)
+    cache_key = "get-all-data-#{index}-#{options.to_s}"
+    cached(cache_key, use_cache=use_cache) do
+      handle_error(error_return_value: []) do
+        resp = self.class.get('/data/all/'+index, body: options.to_json, timeout: 20, headers: JSON_HEADER)
+        JSON.parse(resp)
+      end
     end
   end
 
   # elasticsearch - sentiment data
-  def get_sentiment_data(value, options={})
-    handle_error(error_return_value: []) do
-      resp = self.class.get('/sentiment/data/'+value, query: options, timeout: 20)
-      JSON.parse(resp)
+  def get_sentiment_data(value, options={}, use_cache=false)
+    cache_key = "get-sentiment-data-#{value}-#{options.to_s}"
+    cached(cache_key, use_cache=use_cache) do
+      handle_error(error_return_value: []) do
+        resp = self.class.get('/sentiment/data/'+value, query: options, timeout: 20)
+        JSON.parse(resp)
+      end
     end
   end
 
@@ -106,6 +112,23 @@ class FlaskApi
 
 
   private
+
+  def cached(cache_key, use_cache=false, cache_duration=5.minutes)
+    # by default don't use cache
+    return yield unless use_cache
+    # use cache
+    if Rails.cache.exist?(cache_key)
+      Rails.logger.info("Reading from cache key #{cache_key}")
+      return Rails.cache.read(cache_key)
+    else
+      resp = yield
+      unless resp.nil? or resp == [] or resp == {}
+        Rails.logger.info("Setting cache key #{cache_key}")
+        Rails.cache.write(cache_key, resp, expires_in: cache_duration)
+      end
+      resp
+    end
+  end
 
   def handle_error(error_return_value: nil)
     begin

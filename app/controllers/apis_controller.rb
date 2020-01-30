@@ -50,9 +50,9 @@ class ApisController < ApplicationController
       end_date: api_params_viz[:end_date],
     }
     resp = {
-      "Pro-vaccine": @api.get_sentiment_data('pro-vaccine', options),
-      "Anti-vaccine": @api.get_sentiment_data('anti-vaccine', options),
-      "Neutral": @api.get_sentiment_data('neutral', options),
+      "Pro-vaccine": @api.get_sentiment_data('pro-vaccine', options, use_cache=true),
+      "Anti-vaccine": @api.get_sentiment_data('anti-vaccine', options, use_cache=true),
+      "Neutral": @api.get_sentiment_data('neutral', options, use_cache=true),
     }
     render json: resp.to_json, status: 200
   end
@@ -77,7 +77,7 @@ class ApisController < ApplicationController
           end
         end
         _options[:not_keywords] = not_keywords
-        resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], _options)
+        resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], _options, use_cache=true)
         all_keywords += keywords
       end
     end
@@ -177,7 +177,7 @@ class ApisController < ApplicationController
   end
 
   def api_params_viz
-    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :include_retweets)
+    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :include_retweets, :timeOption)
   end
 
   def api_params_stream_graph_keywords
