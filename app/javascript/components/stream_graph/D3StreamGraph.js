@@ -88,6 +88,7 @@ export class D3StreamGraph extends React.Component {
       .append("div")
       .attr("class", "stream-graph-tooltip")
       .style("display", 'none')
+      .style("height", '90px')
     let tooltipSvg = tooltip.append('svg').attr('width', 190).attr('height', 70)
 
     // draw svg within tooltip div
