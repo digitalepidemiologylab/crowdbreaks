@@ -30,10 +30,9 @@ export class StreamGraphKeywords extends React.Component {
       // desktop
       width = 910;
     }
-    this.colors = ['#1e9CeA', '#FF9E4B', '#CD5050', '#68AA43', '#2c3e50',  '#aab8c2']; // green, blue, orange, red
-    this.keys = ['China', 'US',  'France', 'Japan', 'Thailand', 'Other'];
-    this.legendPos = [0, 70, 125, 200, 275, 355];
-    this.queries = {'China': ['china'], 'US': ['us'], 'France': ['france'], 'Japan': ['japan'], 'Thailand': ['thailand']}
+    this.baseColor = '#1e9CeA'
+    this.queryColor = '#FF9E4B'
+    this.defaultKey = '__other'
     this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", or \"coronavirus\". Tracking started January 13, 2020. Keywords matching shows subset which uniquely match one of the keywords. Y-axis shows counts per hour (for 1m option counts are per day)."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.state = {
@@ -45,8 +44,33 @@ export class StreamGraphKeywords extends React.Component {
       useTransition: false,
       timeOption: '2',
       device: device,
-      cachedData: {}
+      cachedData: {},
+      query: '',
+      queryTyped: '',
+      keys: [],
+      colors: []
     };
+  }
+
+  getKeys() {
+    if (this.state.query.length) {
+      return [this.state.query, this.defaultKey]
+    }
+    return [this.defaultKey]
+  }
+
+  setKeysColors() {
+    this.setState({
+      keys: this.getKeys(),
+      colors: this.getColors()
+    })
+  }
+
+  getColors() {
+    if (this.state.query.length) {
+      return [this.queryColor, this.baseColor]
+    }
+    return [this.baseColor]
   }
 
   componentDidMount() {
@@ -81,20 +105,20 @@ export class StreamGraphKeywords extends React.Component {
       end_date: endDate.format(this.momentTimeFormat),
       timeOption: option,
       es_index_name: this.props.es_index_name,
-      queries: this.queries
+      query: this.state.query
     }
   }
 
   getData(options) {
     // check if data has been previously loaded
-    if (options.timeOption in this.state.cachedData) {
-      const newData = this.state.cachedData[options.timeOption];
+    if (options.timeOption+this.state.query in this.state.cachedData) {
+      const newData = this.state.cachedData[options.timeOption+this.state.query];
       this.setState({
         data: newData,
         isLoading: false,
         useTransition: false,
         timeOption: options.timeOption
-      });
+      }, this.setKeysColors());
       return
     }
     const params = {
@@ -109,18 +133,18 @@ export class StreamGraphKeywords extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
-        console.log(result);
-        const arrayLengths = this.keys.map((key) => result[key].length)
-        const maxLengthKey = this.keys[arrayLengths.indexOf(Math.max(...arrayLengths))]
+        const keys = this.getKeys()
+        const arrayLengths = keys.map((key) => result[key].length)
+        const maxLengthKey = keys[arrayLengths.indexOf(Math.max(...arrayLengths))]
         let data = [];
         let counters = {};
-        this.keys.forEach((key) => {
+        keys.forEach((key) => {
           counters[key] = 0;
         });
 
         for (let i=0; i < result[maxLengthKey].length; i++) {
           let d = {'date': new Date(moment.utc(result[maxLengthKey][i].key_as_string))}
-          this.keys.forEach((key) => {
+          keys.forEach((key) => {
             if (result[key][counters[key]] && result[key][counters[key]].key_as_string === result[maxLengthKey][i].key_as_string) {
               let doc_count = result[key][counters[key]].doc_count;
               if (doc_count === 'null') {
@@ -144,7 +168,7 @@ export class StreamGraphKeywords extends React.Component {
         // pad data with zeroes in the beginning and end of the range (if data is missing)
         const startDaterange = this.daterange(moment.utc(options.start_date), moment(data[0].date), options.interval);
         let padZeroes = {}
-        this.keys.forEach((key) => {
+        keys.forEach((key) => {
           padZeroes[key] = 0;
         })
         for (let i=startDaterange.length-1; i >= 0; i--) {
@@ -157,15 +181,26 @@ export class StreamGraphKeywords extends React.Component {
           const d = {date: endDaterange[i], ...padZeroes}
           data.push(d)
         }
+        // add "all" counts
+        for (let i=0; i < data.length; i++) {
+          let sum = 0;
+          keys.forEach((key) => {
+            sum += data[i][key];
+          })
+          data[i]['all'] = sum;
+        }
+
+        // add to cached data
         let cachedData = this.state.cachedData;
-        cachedData[options.timeOption] = data;
+        cachedData[options.timeOption + this.state.query] = data;
+
         this.setState({
           data: data,
           isLoading: false,
           useTransition: false,
           timeOption: options.timeOption,
-          cachedData: cachedData
-        });
+          cachedData: cachedData,
+        }, this.setKeysColors());
       }
     });
   }
@@ -195,17 +230,35 @@ export class StreamGraphKeywords extends React.Component {
     this.getData(options)
   }
 
-  retrieveKeys(data) {
-    let keys = [];
-    if (this.state.data.length > 0) {
-        keys = Object.keys(this.state.data[0]);
-        keys = keys.filter(item => item !== 'date')
-      }
-    return keys;
+  onChangeQueryField(e) {
+    this.setState({
+      'queryTyped': e.target.value
+    })
+  }
+
+  onSearchSubmit(queryTyped) {
+    this.setState({
+      'query': queryTyped
+    }, () => {
+      const options = this.getTimeOption(this.state.timeOption)
+      this.getData(options);
+    })
+  }
+
+  onKeyDownQueryField(e) {
+    if (e.keyCode === 13) {
+      this.onSearchSubmit(this.state.queryTyped)
+    }
   }
 
   render() {
     let body;
+    let searchbar = <div className="sg-search-query">
+      <div className="sg-search-query-form-group">
+        <input value={this.state.queryTyped} placeholder="Search for a keyword..." type="text" className="form-control" onKeyDown={(e) => this.onKeyDownQueryField(e)} onChange={(e) => this.onChangeQueryField(e)}></input>
+      </div>
+      <button className='btn btn-primary sg-search-query-btn' onClick={() => this.onSearchSubmit(this.state.queryTyped)}>Search</button>
+    </div>
     if (this.state.isLoading) {
       if (this.state.errorNotification == '') {
         body =
@@ -223,29 +276,29 @@ export class StreamGraphKeywords extends React.Component {
         </div>
       }
     } else {
-      let keys = this.retrieveKeys(this.state.data);
       body =
         <div>
-          <div className='stream-graph-btn-group'>
+          <div className='stream-graph-keywords-btn-group'>
             <TimeOptions
               timeOption={this.state.timeOption}
               onChangeOption={(e) => this.onChangeTimeOption(e)}
             />
-              <VizOptions
-                activeOption={this.state.activeVizOption}
-                onChangeOption={(e) => this.onChangeVizOption(e)}
-              />
+            <VizOptions
+              activeOption={this.state.activeVizOption}
+              onChangeOption={(e) => this.onChangeVizOption(e)}
+            />
           </div>
           <D3StreamGraph
             data={this.state.data}
             width={this.state.width}
             height={this.state.height}
-            colors={this.colors}
-            legendPos={this.legendPos}
+            colors={this.state.colors}
             vizOption={this.state.activeVizOption}
             useTransition={this.state.useTransition}
-            keys={keys}
+            queryColor={this.queryColor}
+            keys={this.state.keys}
             device={this.state.device}
+            query={this.query}
           />
           <div className="mt-5 text-light">
             {this.caption}
@@ -255,6 +308,7 @@ export class StreamGraphKeywords extends React.Component {
 
     return (
       <div id="stream-graph-container" ref={(container) => this.container = container}>
+        {searchbar}
         {body}
       </div>
     )

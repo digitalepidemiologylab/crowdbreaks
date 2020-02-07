@@ -27,6 +27,17 @@
   width: 100%;
 }
 
+.stream-graph-keywords-btn-group {
+  position: absolute;
+  float: right;
+  right: 20px;
+  top: 170px;
+  width: 100%;
+  @include media-breakpoint-up(xl) {
+    top: 140px;
+  }
+}
+
 .stream-graph-viz-options-container {
   display: inline-block;
   position: absolute;
@@ -125,6 +136,15 @@
   border-color: transparent transparent transparent black;
 }
 
+.stream-graph-keywords-tooltip {
+  @extend .stream-graph-tooltip;
+  margin-top: 170px;
+}
+.stream-graph-keywords-tooltip:after {
+  margin-top: -45px;
+  top: 70px;
+}
+
 .sg-tooltip-title {
   fill: white;
 }
@@ -132,4 +152,20 @@
   text {
     fill: $gray-400;
   }
+}
+
+.sg-search-query {
+  display: flex;
+  width: 100%;
+  margin-bottom: 80px;
+  @include media-breakpoint-up(xl) {
+    top: 30px;
+  }
+}
+.sg-search-query-form-group {
+  flex-grow: 1;
+  width: 100%;
+}
+.sg-search-query-btn {
+  margin-left: 10px;
 }

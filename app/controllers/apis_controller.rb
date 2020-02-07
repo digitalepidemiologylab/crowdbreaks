@@ -63,28 +63,18 @@ class ApisController < ApplicationController
       start_date: api_params_stream_graph_keywords[:start_date],
       end_date: api_params_stream_graph_keywords[:end_date]
     }
-    queries = api_params_stream_graph_keywords[:queries]
-    all_keywords = []
+    query = api_params_stream_graph_keywords[:query]
     resp = {}
-    if queries.present?
-      queries.each do |query, keywords|
-        _options = options
-        _options[:keywords] = keywords
-        not_keywords = []
-        queries.each do |_query, _keywords|
-          if _query != query
-            not_keywords += _keywords
-          end
-        end
-        _options[:not_keywords] = not_keywords
-        resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], _options, use_cache=true)
-        all_keywords += keywords
-      end
+    if query.present?
+      options[:keywords] = [query]
+      resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options, use_cache=false)
+      # Match all which were not included in previous query
+      options[:not_keywords] = [query]
+      options[:keywords] = []
+      resp['__other'] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
+    else
+      resp['__other'] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
     end
-    # Match all which were not included in previous queries
-    options[:not_keywords] = all_keywords
-    options[:keywords] = []
-    resp['Other'] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
     render json: resp.to_json, status: 200
   end
 
@@ -181,7 +171,7 @@ class ApisController < ApplicationController
   end
 
   def api_params_stream_graph_keywords
-    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :timeOption, :queries => {})
+    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :timeOption, :query)
   end
 
   def api_params_leadline

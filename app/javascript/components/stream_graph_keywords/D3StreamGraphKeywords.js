@@ -9,11 +9,6 @@ export class D3StreamGraph extends React.Component {
     this.height = this.props.height - this.margin.top - this.margin.bottom;
     this.timeFormat = d3.timeFormat("%H:%M");
     this.toolboxTimeFormat = d3.timeFormat("%H:%M %b %d, %Y");
-    this.legendPos = this.props.legendPos;
-    // scale legend pos down a bit on mobile (legend items will appear closer together)
-    if (this.props.device == 'mobile') {
-      this.legendPos = this.props.legendPos.map((i) => i * 1)
-    }
   }
 
   componentDidMount() {
@@ -35,13 +30,9 @@ export class D3StreamGraph extends React.Component {
         "translate(" + this.margin.left + "," + this.margin.top + ")")
       .attr('class', 'figure');
 
-    // plotting area
-    fig.append('g')
+    let stack = d3.select('.figure')
+      .append('g')
       .attr('class', 'stream-data')
-      .selectAll('paths')
-      .data(this.stackedData())
-      .enter()
-      .append("path")
 
     // Add X axis
     fig.append("g")
@@ -53,29 +44,36 @@ export class D3StreamGraph extends React.Component {
       .attr('class', 'stream-graph-axis yaxis')
 
     // legend
-    let legend = svg.append('g').attr('class', 'legend')
-    legend.selectAll('legend-dots')
-      .data(this.props.keys)
-      .enter()
-      .append('circle')
-      .attr('cx', (d, i) => {return this.margin.left + 10 + this.legendPos[i]})
-      .attr('cy', 6)
-      .attr('r', 6)
-      .style('fill', (d) => {return this.color(d)})
-    legend.selectAll('legend-text')
-      .data(this.props.keys)
-      .enter()
-      .append('text')
-      .attr('x', (d, i) => {return this.margin.left + 20 + this.legendPos[i]})
-      .attr('y', 7)
-      .text((d) => {return d})
-      .attr("text-anchor", "left")
-      .style("dominant-baseline", "middle")
+    this.createLegend();
 
     // tooltip
     this.createTooltip();
 
     this.update();
+  }
+
+  createLegend() {
+    // legend
+    let legend = d3.select('svg').append('g').attr('class', 'legend')
+    legend.selectAll('legend-dots')
+      .data(['query'])
+      .enter()
+      .append('circle')
+      .attr('cx', (d, i) => {return this.margin.left + 10})
+      .attr('cy', 6)
+      .attr('r', 6)
+      .style('fill', (d) => {return this.props.queryColor})
+      .attr("id", (d, i) => {return "legend-circle-" + i})
+    legend.selectAll('legend-text')
+      .data(['query'])
+      .enter()
+      .append('text')
+      .attr('x', (d, i) => {return this.margin.left + 25})
+      .attr('y', 7)
+      .text((d) => {return d})
+      .attr("text-anchor", "left")
+      .attr("id", (d, i) => {return "legend-text-" + i})
+      .style("dominant-baseline", "middle")
   }
 
   createTooltip() {
@@ -84,10 +82,10 @@ export class D3StreamGraph extends React.Component {
     // html tooltip
     let tooltip = d3.select('#d3-stream-graph-container')
       .append("div")
-      .attr("class", "stream-graph-tooltip")
+      .attr("class", "stream-graph-keywords-tooltip")
       .style("display", 'none')
-      .style("height", '145px')
-    let tooltipSvg = tooltip.append('svg').attr('width', 190).attr('height', 180)
+      .style("height", '70px')
+    let tooltipSvg = tooltip.append('svg').attr('width', 190).attr('height', 180).attr('class', 'sg-tooltip-svg')
 
     // draw svg within tooltip div
     tooltipSvg
@@ -99,24 +97,34 @@ export class D3StreamGraph extends React.Component {
       .attr('height', 12)
       .attr('width', 100)
       .text('Title')
+  }
+
+  updateTooltip() {
+    let tooltipSvg = d3.select('.sg-tooltip-svg')
+    let tooltipKeys = this.getTooltipKeys()
+    let tooltipContainer = d3.select('.tooltip-container')
+    let tooltip = d3.select('.stream-graph-keywords-tooltip')
+    d3.select('.sg-tooltip-info').remove()
 
     let tooltipInfo = tooltipSvg
       .append('g')
       .attr('class', 'sg-tooltip-info')
       .selectAll('labels')
-      .data(this.props.keys.slice().reverse())
-      .enter()
+      .data(tooltipKeys.slice().reverse())
+
 
     // Symbols in tooltip
     tooltipInfo
+      .enter()
       .append('circle')
       .attr('cx', 6)
       .attr('cy', (d, i) => (i+1)*18 + 8)
       .attr('r', 6)
-      .style('fill', (d) => this.color(d))
+      .style('fill', (d) => this.tooltipColor(d))
 
     // Text in tooltip
     tooltipInfo
+      .enter()
       .append('text')
       .text((d) => d)
       .attr('y', (d, i) => {return (i+1)*18 + 13})
@@ -131,9 +139,10 @@ export class D3StreamGraph extends React.Component {
       .style("opacity", 0);
 
     // activate tooltip once mouse moves into this area
+    d3.selectAll('.tooltip-mouseover').remove()
     let tooltipMouseOver = tooltipContainer
       .append("rect")
-      .attr("id", "tooltip-mousover")
+      .attr("class", "tooltip-mousover")
       .attr("x", this.margin.left)
       .attr("y", this.margin.top)
       .attr("width", this.width)
@@ -167,8 +176,15 @@ export class D3StreamGraph extends React.Component {
         d3.select('.sg-tooltip-title')
           .text(_this.toolboxTimeFormat(focusData.date))
         tooltipInfo
+          .enter()
           .selectAll('text')
-          .text((key) => focusData[key] + ' matches for ' + key)
+          .text((key) => {
+            if (key == 'all') {
+              return focusData[key] + ' total'
+            } else {
+              return focusData[key] + ' matches for ' + key
+            }
+          })
 
       })
       .on("mouseout", function(){
@@ -229,6 +245,33 @@ export class D3StreamGraph extends React.Component {
     return d3.scaleOrdinal().domain(this.props.keys).range(this.props.colors)(d)
   }
 
+  tooltipColor(d) {
+    return d3.scaleOrdinal().domain(this.getTooltipKeys()).range(this.props.colors)(d)
+  }
+
+  getLegendKeys() {
+    // removes __other element from query if present
+    let legendKeys = [];
+    for (let i=0; i < this.props.keys.length; i++) {
+      if (this.props.keys[i] !== '__other') {
+        legendKeys.push(this.props.keys[i])
+      }
+    }
+    return legendKeys
+  }
+
+  getTooltipKeys() {
+    // removes __other element from query if present
+    let tooltipKeys = [];
+    for (let i=0; i < this.props.keys.length; i++) {
+      if (this.props.keys[i] !== '__other') {
+        tooltipKeys.push(this.props.keys[i])
+      }
+    }
+    tooltipKeys.push('all')
+    return tooltipKeys
+  }
+
   stackedData() {
     let offset;
     let order = d3.stackOrderNone;
@@ -263,8 +306,19 @@ export class D3StreamGraph extends React.Component {
       numTicks = 5;
     }
 
-    // Add X axis
+    // Update legend
+    const legendKeys = this.getLegendKeys()
+    if (legendKeys.length == 0) {
+      d3.select('#legend-text-0').text("")
+      d3.select('#legend-circle-0').style('fill', 'white')
+    } else {
+      d3.select('#legend-text-0').data(legendKeys).text((d) => {return d})
+      d3.select('#legend-circle-0').data(legendKeys).style('fill', (d) => this.color(d))
+    }
 
+    this.updateTooltip();
+
+    // Add X axis
     let xaxis = d3.axisBottom(this.xScale())
         .tickSize(15)
         .tickFormat(this.multiFormat)
@@ -296,17 +350,32 @@ export class D3StreamGraph extends React.Component {
       .call(g => g.selectAll(".tick text").attr("x", 0).style("text-anchor", "start"))
       .call(g => g.selectAll(".tick line").remove())
 
-    d3.select('.stream-data')
-      .selectAll('path')
+    // plotting area
+    d3.selectAll('.stream-data-paths').remove()
+    d3.selectAll('.sg-path').remove()
+
+
+    let stack = d3.select('.stream-data')
+      .selectAll('paths')
+      .attr('class', 'stream-data-paths')
       .data(this.stackedData())
+
+    stack
+      .enter()
+      .append("path")
+      .attr('class', 'sg-path')
       .style("fill", function(d) { return _this.color(d.key); })
       .transition(t)
-      .attr("d", d3.area()
+      .attr("d",
+        d3.area()
         .curve(d3.curveBasis)
         .x(function(d, i) { return _this.xScale()(d.data.date); })
-        .y0(function(d) { return _this.yScale()(d[0]); })
+        .y0(function(d) {
+          return _this.yScale()(d[0]);
+        })
         .y1(function(d) { return _this.yScale()(d[1]); })
       )
+    stack.exit().remove()
   }
 
   multiFormat(date) {
