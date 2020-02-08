@@ -37,6 +37,7 @@ export class StreamGraphKeywords extends React.Component {
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.state = {
       isLoading: true,
+      isLoadingQuery: false,
       width: width,
       height: 300,
       activeVizOption: 'zero',
@@ -116,6 +117,7 @@ export class StreamGraphKeywords extends React.Component {
       this.setState({
         data: newData,
         isLoading: false,
+        isLoadingQuery: false,
         useTransition: false,
         timeOption: options.timeOption
       }, this.setKeysColors());
@@ -197,6 +199,7 @@ export class StreamGraphKeywords extends React.Component {
         this.setState({
           data: data,
           isLoading: false,
+          isLoadingQuery: false,
           useTransition: false,
           timeOption: options.timeOption,
           cachedData: cachedData,
@@ -238,7 +241,8 @@ export class StreamGraphKeywords extends React.Component {
 
   onSearchSubmit(queryTyped) {
     this.setState({
-      'query': queryTyped
+      'query': queryTyped,
+      'isLoadingQuery': true
     }, () => {
       const options = this.getTimeOption(this.state.timeOption)
       this.getData(options);
@@ -253,11 +257,17 @@ export class StreamGraphKeywords extends React.Component {
 
   render() {
     let body;
+    let searchBtn;
+    if (this.state.isLoadingQuery) {
+      searchBtn = <div className="spinner-small sg-search-query-btn" style={{"margin-right": "12px", "margin-left": "12px"}}></div>
+    } else {
+      searchBtn = 'Search'
+    }
     let searchbar = <div className="sg-search-query">
       <div className="sg-search-query-form-group">
         <input value={this.state.queryTyped} placeholder="Search for a keyword..." type="text" className="form-control" onKeyDown={(e) => this.onKeyDownQueryField(e)} onChange={(e) => this.onChangeQueryField(e)}></input>
       </div>
-      <button className='btn btn-primary sg-search-query-btn' onClick={() => this.onSearchSubmit(this.state.queryTyped)}>Search</button>
+      <button className='btn btn-primary sg-search-query-btn' onClick={() => this.onSearchSubmit(this.state.queryTyped)}>{searchBtn}</button>
     </div>
     if (this.state.isLoading) {
       if (this.state.errorNotification == '') {
