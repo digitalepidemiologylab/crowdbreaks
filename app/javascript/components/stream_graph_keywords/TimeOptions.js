@@ -11,7 +11,7 @@ export const TimeOptions = (props) => {
     2: {
       alt: 'month',
       className: defaultClass,
-      text: '10d'
+      text: '2w'
     },
     3: {
       alt: 'day',
