@@ -68,7 +68,7 @@ class QuestionSequencesController < ApplicationController
 
     if test_mode
       new_tweet = project.get_tweet(test_mode: true)
-      render json: {tweet_id: new_tweet[:tweet_id]}, status: 200 and return
+      render json: {tweet_id: new_tweet}, status: 200 and return
     end
 
     primary_project = project.primary_project
