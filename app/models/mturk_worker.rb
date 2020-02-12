@@ -56,7 +56,8 @@ class MturkWorker < ApplicationRecord
         Rails.logger.info "Task #{task.id} has been requested by #{worker_id} but has already been completed by the same worker."
         return nil, mturk_notification.already_completed
       else
-        ErrorLogger.error "Task #{task.id} has been requested by #{worker_id} but has already been completed by #{task.mturk_worker.worker_id}."
+        # TODO: Investigate why this error occurs frequently!
+        Rails.logger.error "Task #{task.id} has been requested by #{worker_id} but has already been completed by #{task.mturk_worker.worker_id}."
         return nil, mturk_notification.error
       end
     end

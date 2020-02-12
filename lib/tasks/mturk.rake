@@ -43,7 +43,7 @@ namespace :mturk do
     if yes_no == 'y'
       mturk = Mturk.new(sandbox: mturk_batch_job.sandbox)
       tasks.each_with_index do |rec, ix|
-        mturk.delete_hit(rec.hit_id, expire: expire)
+        resp = rec.delete_hit
         if not resp.nil?
           Rails.logger.info "Successfully deleted HIT #{rec.hit_id}. (#{ix}/#{num_recs})"
         else
