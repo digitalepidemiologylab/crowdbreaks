@@ -263,12 +263,16 @@ export class D3StreamGraph extends React.Component {
   getTooltipKeys() {
     // removes __other element from query if present
     let tooltipKeys = [];
-    for (let i=0; i < this.props.keys.length; i++) {
-      if (this.props.keys[i] !== '__other') {
-        tooltipKeys.push(this.props.keys[i])
+    if (this.props.query) {
+      for (let i=0; i < this.props.keys.length; i++) {
+        if (this.props.keys[i] !== '__other') {
+          tooltipKeys.push(this.props.keys[i])
+        }
       }
+    } else {
+      tooltipKeys.push('all')
     }
-    tooltipKeys.push('all')
+    console.log(this.props);
     return tooltipKeys
   }
 

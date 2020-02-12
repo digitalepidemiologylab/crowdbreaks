@@ -55,7 +55,7 @@ export class StreamGraphKeywords extends React.Component {
 
   getKeys() {
     if (this.state.query.length) {
-      return [this.state.query, this.defaultKey]
+      return [this.state.query]
     }
     return [this.defaultKey]
   }
@@ -69,7 +69,7 @@ export class StreamGraphKeywords extends React.Component {
 
   getColors() {
     if (this.state.query.length) {
-      return [this.queryColor, this.baseColor]
+      return [this.queryColor]
     }
     return [this.baseColor]
   }
@@ -259,7 +259,7 @@ export class StreamGraphKeywords extends React.Component {
     let body;
     let searchBtn;
     if (this.state.isLoadingQuery) {
-      searchBtn = <div className="spinner-small sg-search-query-btn" style={{"margin-right": "12px", "margin-left": "12px"}}></div>
+      searchBtn = <div className="spinner-small sg-search-query-btn" style={{"marginRight": "12px", "marginLeft": "12px"}}></div>
     } else {
       searchBtn = 'Search'
     }
@@ -308,7 +308,7 @@ export class StreamGraphKeywords extends React.Component {
             queryColor={this.queryColor}
             keys={this.state.keys}
             device={this.state.device}
-            query={this.query}
+            query={this.state.query}
           />
           <div className="mt-5 text-light">
             {this.caption}
