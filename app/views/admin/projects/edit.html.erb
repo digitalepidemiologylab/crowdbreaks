@@ -1,6 +1,10 @@
 <% @title ||= 'Edit Project'; title @title %>
+<% if params[:link_from] == 'streaming' %>
+  <%= go_back_btn streaming_path, mb: 'mb-4' %>
+<% else %>
+  <%= go_back_btn admin_projects_path, mb: 'mb-4' %>
+<% end %>
 
-<%= go_back_btn admin_projects_path, mb: 'mb-4' %>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-10 col-lg-8">

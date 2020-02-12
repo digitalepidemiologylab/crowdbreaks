@@ -10,15 +10,15 @@
   <td>
     <span class="no-wrap">
       <% if can? :read, current_project %>
-        <%= link_to fa_icon('eye'), admin_project_path(current_project), title: 'Show' %>
+        <%= link_to fa_icon('eye'), admin_project_path(current_project, link_from: link_from), title: 'Show' %>
       <% end %>
       <% if can? :destroy, current_project %>
-        <%= link_to fa_icon("trash"), admin_project_path(current_project),
+        <%= link_to fa_icon("trash"), admin_project_path(current_project, link_from: link_from),
           method: :delete,
           data: {confirm: "Delete current_project?"} %>
       <% end %>
       <% if can? :update, current_project %>
-        <%= link_to fa_icon("pencil"), edit_admin_project_path(current_project)  %>
+        <%= link_to fa_icon("pencil"), edit_admin_project_path(current_project, link_from: link_from)  %>
       <% end %>
     </span>
   </td>

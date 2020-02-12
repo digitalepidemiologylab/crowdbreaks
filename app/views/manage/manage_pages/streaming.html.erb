@@ -59,7 +59,7 @@
         </tr>
       </thead>
       <tbody>
-        <%= render partial: "current_project", collection: @projects %>
+        <%= render partial: "current_project", collection: @projects, locals: {link_from: 'streaming'} %>
       </tbody>
     </table>
   </div>
