@@ -78,6 +78,14 @@ class ApisController < ApplicationController
     render json: resp.to_json, status: 200
   end
 
+  def get_trending_tweets
+    options = {
+      num_tweets: api_params_stream_graph_keywords[:num_trending_tweets],
+    }
+    resp = @api.get_trending_tweets(api_params_stream_graph_keywords[:project_slug], options)
+    render json: resp.to_json, status: 200
+  end
+
   # Monitor streams
   def stream_data
     authorize! :configure, :stream
@@ -171,7 +179,7 @@ class ApisController < ApplicationController
   end
 
   def api_params_stream_graph_keywords
-    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :timeOption, :query)
+    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :timeOption, :query, :num_trending_tweets, :project_slug)
   end
 
   def api_params_leadline

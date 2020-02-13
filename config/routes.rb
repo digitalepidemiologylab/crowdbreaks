@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       get 'stream_data', action: 'stream_data'
       post 'get_leadline', action: 'get_leadline'
       get 'get_user_activity_data', action: 'get_user_activity_data'
+      post 'get_trending_tweets', action: 'get_trending_tweets'
       post 'get_stream_graph_data', action: 'get_stream_graph_data'
       post 'get_stream_graph_keywords_data', action: 'get_stream_graph_keywords_data'
     end

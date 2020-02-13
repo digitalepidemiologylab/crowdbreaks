@@ -2,6 +2,7 @@
 import React from 'react'
 import { D3StreamGraph } from './D3StreamGraphKeywords';
 import { TimeOptions } from './TimeOptions';
+import { TrendingTweets } from './TrendingTweets';
 import moment from 'moment';
 
 
@@ -35,6 +36,7 @@ export class StreamGraphKeywords extends React.Component {
     this.defaultKey = '__other'
     this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", or \"coronavirus\". Tracking started January 13, 2020. Y-axis shows counts per hour (for the '1m' option counts are per day)."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
+    this.numTrendingTweets = 10;
     this.state = {
       isLoading: true,
       isLoadingQuery: false,
@@ -298,6 +300,11 @@ export class StreamGraphKeywords extends React.Component {
           <div className="mt-5 text-light">
             {this.caption}
           </div>
+          <TrendingTweets
+            dataEndpointTrendingTweets={this.props.dataEndpointTrendingTweets}
+            numTrendingTweets={this.numTrendingTweets}
+            projectSlug={this.props.projectSlug}
+          />
         </div>
     }
 
