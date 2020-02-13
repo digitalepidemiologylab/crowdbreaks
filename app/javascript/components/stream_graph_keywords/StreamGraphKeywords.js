@@ -40,6 +40,10 @@ export class StreamGraphKeywords extends React.Component {
     this.state = {
       isLoading: true,
       isLoadingQuery: false,
+      isLoadingTrendingTweets: true,
+      isLoadingTrendingTweetsByIndex: [],
+      trendingTweets: [],
+      trendingTweetsError: false,
       width: width,
       height: 300,
       errorNotification: '',
@@ -50,7 +54,7 @@ export class StreamGraphKeywords extends React.Component {
       query: '',
       queryTyped: '',
       keys: [],
-      colors: []
+      colors: [],
     };
   }
 
@@ -76,8 +80,11 @@ export class StreamGraphKeywords extends React.Component {
   }
 
   componentDidMount() {
+    // viz data
     const options = this.getTimeOption(this.state.timeOption)
     this.getData(options);
+    // trending tweets
+    this.getTrendingTweets();
   }
 
   getTimeOption(option) {
@@ -209,6 +216,54 @@ export class StreamGraphKeywords extends React.Component {
     });
   }
 
+  getTrendingTweets() {
+    let postData = {
+      'viz': {
+        'num_trending_tweets': this.numTrendingTweets,
+        'project_slug': this.props.projectSlug,
+        'query': this.state.query
+      }
+    }
+    $.ajax({
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      type: "POST",
+      url: this.props.dataEndpointTrendingTweets,
+      data: JSON.stringify(postData),
+      dataType: "json",
+      contentType: "application/json",
+      success: (data) => {
+        let loadingByIndex = new Array(data.length).fill(true);
+        if (data.length > 0) {
+          this.setState({
+            trendingTweets: data,
+            isLoadingTrendingTweetsByIndex: loadingByIndex
+          });
+        } else {
+          this.setState({
+            isLoadingTrendingTweets: false
+          });
+        }
+      },
+      error: (response) => {
+        this.setState({
+          isLoadingTrendingTweets: false,
+          trendingTweetsError: true
+        });
+      }
+    });
+  }
+
+  onTrendingTweetLoad(idx) {
+    console.log(idx);
+    console.log(this.state);
+    let loadingByIndex = this.state.isLoadingTrendingTweetsByIndex;
+    loadingByIndex[idx] = false;
+    this.setState({
+      isLoadingTrendingTweetsByIndex: loadingByIndex,
+      isLoadingTrendingTweets: !loadingByIndex.every((s) => s == false)
+    })
+  }
+
   daterange(startDate, stopDate, frequency='hour') {
     var dateArray = [];
     var currentDate = startDate;
@@ -297,13 +352,14 @@ export class StreamGraphKeywords extends React.Component {
             device={this.state.device}
             query={this.state.query}
           />
-          <div className="mt-5 text-light">
+          <div className="mt-4 text-light">
             {this.caption}
           </div>
           <TrendingTweets
-            dataEndpointTrendingTweets={this.props.dataEndpointTrendingTweets}
-            numTrendingTweets={this.numTrendingTweets}
-            projectSlug={this.props.projectSlug}
+            trendingTweets={this.state.trendingTweets}
+            onTrendingTweetLoad={(idx) => this.onTrendingTweetLoad(idx)}
+            error={this.state.trendingTweetsError}
+            isLoading={this.state.isLoadingTrendingTweets}
           />
         </div>
     }
