@@ -1,7 +1,6 @@
 // React
 import React from 'react'
 import { D3StreamGraph } from './D3StreamGraphKeywords';
-import { VizOptions } from './VizOptions';
 import { TimeOptions } from './TimeOptions';
 import moment from 'moment';
 
@@ -30,6 +29,7 @@ export class StreamGraphKeywords extends React.Component {
       // desktop
       width = 910;
     }
+    this.activeVizOption = 'zero';
     this.baseColor = '#1e9CeA'
     this.queryColor = '#FF9E4B'
     this.defaultKey = '__other'
@@ -40,7 +40,6 @@ export class StreamGraphKeywords extends React.Component {
       isLoadingQuery: false,
       width: width,
       height: 300,
-      activeVizOption: 'zero',
       errorNotification: '',
       useTransition: false,
       timeOption: '2',
@@ -218,13 +217,6 @@ export class StreamGraphKeywords extends React.Component {
     return dateArray;
   }
 
-  onChangeVizOption(option) {
-    this.setState({
-      activeVizOption: option,
-      useTransition: true
-    });
-  }
-
   onChangeTimeOption(option) {
     const options = this.getTimeOption(option)
     this.setState({
@@ -256,8 +248,7 @@ export class StreamGraphKeywords extends React.Component {
   }
 
   render() {
-    let body;
-    let searchBtn;
+    let body, optionBtnGroup, searchBtn;
     if (this.state.isLoadingQuery) {
       searchBtn = <div className="spinner-small sg-search-query-btn" style={{"marginRight": "12px", "marginLeft": "12px"}}></div>
     } else {
@@ -286,24 +277,18 @@ export class StreamGraphKeywords extends React.Component {
         </div>
       }
     } else {
+      optionBtnGroup = <div className='stream-graph-keywords-btn-group'>
+        <TimeOptions timeOption={this.state.timeOption} onChangeOption={(e) => this.onChangeTimeOption(e)} />
+      </div>
       body =
         <div>
-          <div className='stream-graph-keywords-btn-group'>
-            <TimeOptions
-              timeOption={this.state.timeOption}
-              onChangeOption={(e) => this.onChangeTimeOption(e)}
-            />
-            <VizOptions
-              activeOption={this.state.activeVizOption}
-              onChangeOption={(e) => this.onChangeVizOption(e)}
-            />
-          </div>
+          {optionBtnGroup}
           <D3StreamGraph
             data={this.state.data}
             width={this.state.width}
             height={this.state.height}
             colors={this.state.colors}
-            vizOption={this.state.activeVizOption}
+            vizOption={this.activeVizOption}
             useTransition={this.state.useTransition}
             queryColor={this.queryColor}
             keys={this.state.keys}

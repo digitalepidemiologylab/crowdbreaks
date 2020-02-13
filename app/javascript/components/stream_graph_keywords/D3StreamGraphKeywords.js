@@ -272,7 +272,6 @@ export class D3StreamGraph extends React.Component {
     } else {
       tooltipKeys.push('all')
     }
-    console.log(this.props);
     return tooltipKeys
   }
 

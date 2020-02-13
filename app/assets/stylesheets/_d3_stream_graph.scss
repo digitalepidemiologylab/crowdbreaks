@@ -60,9 +60,8 @@
   position: absolute;
   left: 40px;
   @include media-breakpoint-up(xl) {
-    margin-right: -480px;
-    position: relative;
-    display: inline-block;
+    right: 0px;
+    left: initial;
   }
 }
 
