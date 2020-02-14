@@ -65,7 +65,7 @@ class FlaskApi
   end
 
   # elasticsearch - all data
-  def get_all_data(index, options={}, use_cache=false)
+  def get_all_data(index, options={}, use_cache=true)
     cache_key = "get-all-data-#{index}-#{options.to_s}"
     cached(cache_key, use_cache=use_cache) do
       handle_error(error_return_value: []) do
@@ -76,7 +76,7 @@ class FlaskApi
   end
 
   # elasticsearch - sentiment data
-  def get_sentiment_data(value, options={}, use_cache=false)
+  def get_sentiment_data(value, options={}, use_cache=true)
     cache_key = "get-sentiment-data-#{value}-#{options.to_s}"
     cached(cache_key, use_cache=use_cache) do
       handle_error(error_return_value: []) do
