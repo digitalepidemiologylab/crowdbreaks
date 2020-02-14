@@ -81,6 +81,7 @@ class ApisController < ApplicationController
   def get_trending_tweets
     options = {
       num_tweets: api_params_stream_graph_keywords[:num_trending_tweets],
+      query: api_params_stream_graph_keywords[:query]
     }
     resp = @api.get_trending_tweets(api_params_stream_graph_keywords[:project_slug], options)
     render json: resp.to_json, status: 200

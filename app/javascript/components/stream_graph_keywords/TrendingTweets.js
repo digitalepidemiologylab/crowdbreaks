@@ -10,17 +10,23 @@ export const TrendingTweets = (props) => {
     conversation: 'none'
   };
 
-  const body = props.trendingTweets.map(function(item, idx) {
-    return <div className='trending-tweet' key={idx}>
-      <TweetEmbed
-      id={item}
-      key={idx}
-      options={options}
-      onTweetLoadSuccess={() => props.onTrendingTweetLoad(idx)}
-      />
-    </div>
-  });
-  let error = props.error && <div className="alert alert-primary">Couldn't load trending content. Sorry ¯\\_(ツ)_/¯</div>
+  let body;
+  if (props.trendingTweets.length > 0) {
+    body = props.trendingTweets.map(function(item, idx) {
+      return <div className='trending-tweet' key={idx}>
+        <TweetEmbed
+        id={item}
+        key={idx}
+        options={options}
+        onTweetLoadSuccess={() => props.onTrendingTweetLoad(idx)}
+        />
+      </div>
+    });
+  } else if (props.error) {
+    body = <div className="alert alert-primary">Couldn't load trending content. Sorry ¯\\_(ツ)_/¯</div>
+  } else {
+    body = <div className="alert alert-primary">No results for these keywords.</div>
+  }
   let loader = props.isLoading && <div className='row justify-content-center'>
     <div className="col-12">
       <div className="spinner" style={{margin: 'auto'}}></div>
@@ -35,7 +41,6 @@ export const TrendingTweets = (props) => {
       <div className="trending-tweets-container">
         {body}
         {loader}
-        {error}
       </div>
     </div>
   );

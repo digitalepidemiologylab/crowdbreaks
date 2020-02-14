@@ -254,8 +254,6 @@ export class StreamGraphKeywords extends React.Component {
   }
 
   onTrendingTweetLoad(idx) {
-    console.log(idx);
-    console.log(this.state);
     let loadingByIndex = this.state.isLoadingTrendingTweetsByIndex;
     loadingByIndex[idx] = false;
     this.setState({
@@ -291,10 +289,15 @@ export class StreamGraphKeywords extends React.Component {
   onSearchSubmit(queryTyped) {
     this.setState({
       'query': queryTyped,
-      'isLoadingQuery': true
+      'isLoadingQuery': true,
+      'isLoadingTrendingTweets': true,
+      'isLoadingTrendingTweetsByIndex': [],
+      'trendingTweets': [],
+      'trendingTweetsError': false
     }, () => {
       const options = this.getTimeOption(this.state.timeOption)
       this.getData(options);
+      this.getTrendingTweets();
     })
   }
 
