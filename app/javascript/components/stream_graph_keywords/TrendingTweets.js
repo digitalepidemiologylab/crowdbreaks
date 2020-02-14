@@ -24,8 +24,9 @@ export const TrendingTweets = (props) => {
     });
   } else if (props.error) {
     body = <div className="alert alert-primary">Couldn't load trending content. Sorry ¯\\_(ツ)_/¯</div>
-  } else {
-    body = <div className="alert alert-primary">No results for these keywords.</div>
+  } else if (!props.isLoading) {
+    // Has finished loading but couldn't find anything
+    body = <div className="alert alert-primary">No trending content found.</div>
   }
   let loader = props.isLoading && <div className='row justify-content-center'>
     <div className="col-12">
