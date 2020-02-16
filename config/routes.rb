@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     get 'about', to: 'pages#about'
     get 'privacy', to: 'pages#privacy'
     get 'terms_of_use', to: 'pages#terms_of_use'
+    get 'projects/ncov', to: redirect('/projects/covid')
     resources :projects, only: [:show, :index] do
       resource :question_sequence, only: [:show, :create] do
         post 'final'
