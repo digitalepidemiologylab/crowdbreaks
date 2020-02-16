@@ -21,6 +21,7 @@
   </head>
 
   <body class="<%= content_for :body_class %>" <%= content_for :disable_turbolinks %>>
+    <%= render 'layouts/shared/alert_bar' %>
     <%= render 'layouts/shared/navbar' %>
     <%= render 'layouts/shared/toastr_notifications' %>
     <div class="content">

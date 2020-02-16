@@ -1,0 +1,5 @@
+<% unless current_page?(project_path('covid')) or request.fullpath.include? 'manage' %>
+  <div class='alert-bar'>
+    <%= link_to 'COVID-19: Follow live trends here', project_path('covid') %>
+  </div>
+<% end %>
