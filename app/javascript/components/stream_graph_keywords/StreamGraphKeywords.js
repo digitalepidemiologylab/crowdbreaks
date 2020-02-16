@@ -34,9 +34,17 @@ export class StreamGraphKeywords extends React.Component {
     this.baseColor = '#1e9CeA'
     this.queryColor = '#FF9E4B'
     this.defaultKey = '__other'
-    this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", or \"coronavirus\". Tracking started January 13, 2020. Y-axis shows counts per hour (for the '1m' option counts are per day)."
+    this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", \"coronavirus\", or \"covid\". Tracking started January 13, 2020. Y-axis shows counts per hour (for the '1m' option counts are per day)."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.numTrendingTweets = 10;
+    let timeOption = props.timeOption;
+    if (!timeOption) {
+      timeOption = '2'
+    }
+    let query = props.query;
+    if (!query) {
+      query = '';
+    }
     this.state = {
       isLoading: true,
       isLoadingQuery: false,
@@ -48,11 +56,11 @@ export class StreamGraphKeywords extends React.Component {
       height: 300,
       errorNotification: '',
       useTransition: false,
-      timeOption: '2',
+      timeOption: timeOption,
       device: device,
       cachedData: {},
-      query: '',
-      queryTyped: '',
+      query: query,
+      queryTyped: query,
       keys: [],
       colors: [],
     };
@@ -278,6 +286,7 @@ export class StreamGraphKeywords extends React.Component {
       isLoading: true
     })
     this.getData(options)
+    this.setParam('t', options['timeOption'])
   }
 
   onChangeQueryField(e) {
@@ -298,7 +307,17 @@ export class StreamGraphKeywords extends React.Component {
       const options = this.getTimeOption(this.state.timeOption)
       this.getData(options);
       this.getTrendingTweets();
+      this.setParam('q', this.state.query)
     })
+  }
+
+  setParam(key, value) {
+    if (history.pushState) {
+      let searchParams = new URLSearchParams(window.location.search);
+      searchParams.set(key, value);
+      let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString();
+      window.history.pushState({path: newurl}, '', newurl);
+    }
   }
 
   onKeyDownQueryField(e) {

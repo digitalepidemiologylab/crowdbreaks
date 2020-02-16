@@ -34,6 +34,8 @@
           'dataEndpoint': get_stream_graph_keywords_data_path,
           'dataEndpointTrendingTweets': get_trending_tweets_path,
           'project': @project.name,
+          'query': params[:q],
+          'timeOption': params[:t],
           'projectSlug': @project.slug,
           'es_index_name': @project.es_index_name,
         } %>
