@@ -10,7 +10,10 @@ let rollbar = new Rollbar({
   accessToken: '<%= ENV['ROLLBAR_ACCESS_TOKEN_CLIENT'] %>',
   captureUncaught: true,
   captureUnhandledRejections: true,
-  enabled: enableRollbar
+  enabled: enableRollbar,
+  payload: {
+    environment: "<%= ENV['ENVIRONMENT_NAME'] %>"
+  }
 });
 
 window.rollbar = rollbar;
