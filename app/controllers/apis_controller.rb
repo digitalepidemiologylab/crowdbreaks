@@ -123,7 +123,7 @@ class ApisController < ApplicationController
     @projects = Project.all.where(active_stream: true).where.not(es_index_name: nil)
     config = ActiveModelSerializers::SerializableResource.new(@projects).as_json
     resp = @api.set_config(config)
-    respond_with_flash(resp, streaming_path)
+    respond_with_flash(resp, streaming_path, is_json: true)
   end
 
   # front page leadline
@@ -191,15 +191,20 @@ class ApisController < ApplicationController
     @api = FlaskApi.new
   end
 
-  def respond_with_flash(response, redirect_path)
+  def respond_with_flash(response, redirect_path, is_json: false)
+    if is_json
+      flash_notification = response.parsed_response['message']
+    else
+      flash_notification = response.parsed_response
+    end
     if response.success?
       respond_to do |format|
-        flash[:notice] = response.parsed_response
+        flash[:notice] = flash_notification
         format.html { redirect_to redirect_path }
       end
     else
       respond_to do |format|
-        flash[:alert] = response.parsed_response
+        flash[:alert] = flash_notification
         format.html { redirect_to redirect_path }
       end
     end
