@@ -48,6 +48,9 @@
         <%= f.input :compile_trending_tweets, input_html: {class: "mr-2", value: @project.compile_trending_tweets}, hint: "If true, will gather a list of recent popular/relevant tweets for this project", label_html: {class: 'checkbox-inline'} %>
       </div>
       <div class="form-group">
+        <%= f.input :compile_trending_topics, input_html: {class: "mr-2", value: @project.compile_trending_topics}, hint: "If true, will gather a list of recent popular/relevant topics for this project", label_html: {class: 'checkbox-inline'} %>
+      </div>
+      <div class="form-group">
         <%= f.input :active_stream, input_html: {class: "mr-2", value: @project.active_stream}, hint: "Activate stream (if false, won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
       </div>
     </div>
