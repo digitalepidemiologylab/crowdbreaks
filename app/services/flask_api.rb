@@ -64,6 +64,13 @@ class FlaskApi
     end
   end
 
+  def get_trending_topics(project_slug, options={})
+    handle_error(error_return_value: []) do
+      resp = self.class.get('/trending_topics/'+project_slug, body: options.to_json, timeout: 10, headers: JSON_HEADER)
+      resp.parsed_response
+    end
+  end
+
   # elasticsearch - all data
   def get_all_data(index, options={}, use_cache=true)
     cache_key = "get-all-data-#{index}-#{options.to_s}"

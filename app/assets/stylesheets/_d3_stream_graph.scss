@@ -31,7 +31,7 @@
   position: absolute;
   float: right;
   right: 20px;
-  top: 170px;
+  top: 150px;
   width: 100%;
   @include media-breakpoint-up(xl) {
     top: 140px;
@@ -179,4 +179,18 @@
 
 .trending-tweet {
   margin-bottom: 30px;
+}
+
+// trending topics
+.trending-topics-container {
+  text-align: left;
+  position: absolute;
+  top: 110px;
+}
+
+.trending-topics {
+  margin-left: 10px;
+  a {
+    margin-right: 10px;
+  }
 }

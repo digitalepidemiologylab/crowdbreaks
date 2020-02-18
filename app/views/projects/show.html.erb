@@ -33,11 +33,13 @@
         <%= react_component 'StreamGraphKeywords', {
           'dataEndpoint': get_stream_graph_keywords_data_path,
           'dataEndpointTrendingTweets': get_trending_tweets_path,
+          'dataEndpointTrendingTopics': get_trending_topics_path,
           'project': @project.name,
           'query': params[:q],
           'timeOption': params[:t],
           'projectSlug': @project.slug,
           'es_index_name': @project.es_index_name,
+          'activateTrendingTopics': params.include?('activateTrendingTopics')
         } %>
       </div>
     </div>

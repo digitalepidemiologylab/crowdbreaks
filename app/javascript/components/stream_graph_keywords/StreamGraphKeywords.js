@@ -37,6 +37,7 @@ export class StreamGraphKeywords extends React.Component {
     this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", \"coronavirus\", or \"covid\". Tracking started January 13, 2020. Y-axis shows counts per hour (for the '1m' option counts are per day)."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.numTrendingTweets = 10;
+    this.numTrendingTopics = 10;
     let timeOption = props.timeOption;
     if (!timeOption) {
       timeOption = '2'
@@ -45,13 +46,20 @@ export class StreamGraphKeywords extends React.Component {
     if (!query) {
       query = '';
     }
+    this.activateTrendingTopics = false;
+    if (props.activateTrendingTopics) {
+      this.activateTrendingTopics = true;
+    }
     this.state = {
       isLoading: true,
       isLoadingQuery: false,
       isLoadingTrendingTweets: true,
       isLoadingTrendingTweetsByIndex: [],
+      isLoadingTrendingTopics: true,
       trendingTweets: [],
       trendingTweetsError: false,
+      trendingTopics: [],
+      trendingTopicsError: false,
       width: width,
       height: 300,
       errorNotification: '',
@@ -93,6 +101,10 @@ export class StreamGraphKeywords extends React.Component {
     this.getData(options);
     // trending tweets
     this.getTrendingTweets();
+    if (this.activateTrendingTopics) {
+      // trending topics
+      this.getTrendingTopics();
+    }
   }
 
   getTimeOption(option) {
@@ -261,6 +273,41 @@ export class StreamGraphKeywords extends React.Component {
     });
   }
 
+  getTrendingTopics() {
+    let postData = {
+      'viz': {
+        'num_trending_topics': this.numTrendingTopics,
+        'project_slug': this.props.projectSlug,
+      }
+    }
+    $.ajax({
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      type: "POST",
+      url: this.props.dataEndpointTrendingTopics,
+      data: JSON.stringify(postData),
+      dataType: "json",
+      contentType: "application/json",
+      success: (data) => {
+        if (data.length > 0) {
+          this.setState({
+            trendingTopics: data,
+            isLoadingTrendingTopics: false
+          });
+        } else {
+          this.setState({
+            isLoadingTrendingTopics: false
+          });
+        }
+      },
+      error: (response) => {
+        this.setState({
+          isLoadingTrendingTopics: false,
+          trendingTweetsError: true
+        });
+      }
+    });
+  }
+
   onTrendingTweetLoad(idx) {
     let loadingByIndex = this.state.isLoadingTrendingTweetsByIndex;
     loadingByIndex[idx] = false;
@@ -298,6 +345,7 @@ export class StreamGraphKeywords extends React.Component {
   onSearchSubmit(queryTyped) {
     this.setState({
       'query': queryTyped,
+      'queryTyped': queryTyped,
       'isLoadingQuery': true,
       'isLoadingTrendingTweets': true,
       'isLoadingTrendingTweetsByIndex': [],
@@ -326,8 +374,13 @@ export class StreamGraphKeywords extends React.Component {
     }
   }
 
+  onTrendingTopicClick(item) {
+    this.onSearchSubmit(item)
+  }
+
+
   render() {
-    let body, optionBtnGroup, searchBtn;
+    let body, optionBtnGroup, searchBtn, trendingTopics;
     if (this.state.isLoadingQuery) {
       searchBtn = <div className="spinner-small sg-search-query-btn" style={{"marginRight": "12px", "marginLeft": "12px"}}></div>
     } else {
@@ -386,9 +439,21 @@ export class StreamGraphKeywords extends React.Component {
         </div>
     }
 
+
+    const prevThis = this;
+    trendingTopics = !this.state.trendingTopicsError && !this.state.isLoadingTrendingTopics && this.state.trendingTopics.length > 0 && <div className='trending-topics-container'>
+      <span>Trending now:</span>
+      <span className="trending-topics">
+        {this.state.trendingTopics.map((item, i) => {
+          return <button className='btn btn-link' onClick={() => prevThis.onTrendingTopicClick(item)} key={i}>{item}</button>
+        })}
+      </span>
+    </div>
+
     return (
-      <div id="stream-graph-container" ref={(container) => this.container = container}>
+      <div id="stream-keyword-graph-container" ref={(container) => this.container = container}>
         {searchbar}
+        {trendingTopics}
         {body}
       </div>
     )
