@@ -38,8 +38,7 @@
           'query': params[:q],
           'timeOption': params[:t],
           'projectSlug': @project.slug,
-          'es_index_name': @project.es_index_name,
-          'activateTrendingTopics': params.include?('activateTrendingTopics')
+          'es_index_name': @project.es_index_name
         } %>
       </div>
     </div>

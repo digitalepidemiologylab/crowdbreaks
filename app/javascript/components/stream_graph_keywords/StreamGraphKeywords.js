@@ -50,10 +50,6 @@ export class StreamGraphKeywords extends React.Component {
     if (!query) {
       query = '';
     }
-    this.activateTrendingTopics = false;
-    if (props.activateTrendingTopics) {
-      this.activateTrendingTopics = true;
-    }
     this.state = {
       isLoading: true,
       isLoadingQuery: false,
@@ -105,10 +101,8 @@ export class StreamGraphKeywords extends React.Component {
     this.getData(options);
     // trending tweets
     this.getTrendingTweets();
-    if (this.activateTrendingTopics) {
-      // trending topics
-      this.getTrendingTopics();
-    }
+    // trending topics
+    this.getTrendingTopics();
   }
 
   getTimeOption(option) {
