@@ -34,10 +34,14 @@ export class StreamGraphKeywords extends React.Component {
     this.baseColor = '#1e9CeA'
     this.queryColor = '#FF9E4B'
     this.defaultKey = '__other'
-    this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", \"coronavirus\", or \"covid\". Tracking started January 13, 2020. Y-axis shows counts per hour (for the '1m' option counts are per day)."
+    this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", \"coronavirus\", \"covid\", or \"sars-cov-2\". Tracking started January 13, 2020. Y-axis shows counts per hour (for the '1m' option counts are per day)."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.numTrendingTweets = 10;
-    this.numTrendingTopics = 10;
+    if (device == 'mobile') {
+      this.numTrendingTopics = 5;
+    } else {
+      this.numTrendingTopics = 10;
+    }
     let timeOption = props.timeOption;
     if (!timeOption) {
       timeOption = '2'
