@@ -446,7 +446,7 @@ export class StreamGraphKeywords extends React.Component {
       <span>Trending now:</span>
       <span className="trending-topics">
         {this.state.trendingTopics.map((item, i) => {
-          return <button className='btn btn-link' style={{'paddingBottom': '8px'}} onClick={() => prevThis.onTrendingTopicClick(item)} key={i}>{item}</button>
+          return <button className='btn btn-link trending-topic' onClick={() => prevThis.onTrendingTopicClick(item)} key={i}>{item}</button>
         })}
       </span>
     </div>

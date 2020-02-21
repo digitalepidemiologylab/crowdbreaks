@@ -59,9 +59,10 @@
   display: inline-block;
   position: absolute;
   left: 40px;
+  top: 15px;
   @include media-breakpoint-up(xl) {
+    top: 0px;
     right: 0px;
-    top: 15px;
     left: initial;
   }
 }
@@ -194,5 +195,11 @@
   margin-left: 10px;
   a {
     margin-right: 10px;
+  }
+  .trending-topic {
+    padding: 0px;
+    padding-bottom: 3px;
+    margin-left: 6px;
+    margin-right: 6px;
   }
 }
