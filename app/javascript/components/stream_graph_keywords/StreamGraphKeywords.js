@@ -12,23 +12,30 @@ export class StreamGraphKeywords extends React.Component {
   constructor(props) {
     super(props);
     let windowWidth = window.innerWidth;
-    let width;
-    let device = 'desktop';
+    let width, device, numTrendingTopics;
     if (windowWidth < 576) {
       // mobile
-      width = windowWidth - 40;
       device = 'mobile';
+      width = windowWidth - 40;
+      numTrendingTopics = 5;
     } else if (windowWidth < 768) {
-      // tablet
-      width = 500;
+      // tablets
       device = 'tablet';
+      width = 500;
+      numTrendingTopics = 5;
     } else if (windowWidth < 992) {
+      device = 'tablet';
       width = 560;
+      numTrendingTopics = 5;
     } else if (windowWidth < 1200) {
+      device = 'tablet';
       width = 760;
+      numTrendingTopics = 8;
     } else {
       // desktop
+      device = 'desktop';
       width = 910;
+      numTrendingTopics = 10;
     }
     this.activeVizOption = 'zero';
     this.baseColor = '#1e9CeA'
@@ -37,11 +44,7 @@ export class StreamGraphKeywords extends React.Component {
     this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", \"coronavirus\", \"covid\", or \"sars-cov-2\". Tracking started January 13, 2020. Y-axis shows counts per hour (for the '1m' option counts are per day)."
     this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
     this.numTrendingTweets = 10;
-    if (device == 'mobile') {
-      this.numTrendingTopics = 5;
-    } else {
-      this.numTrendingTopics = 10;
-    }
+    this.numTrendingTopics = numTrendingTopics;
     let timeOption = props.timeOption;
     if (!timeOption) {
       timeOption = '2'
@@ -443,7 +446,7 @@ export class StreamGraphKeywords extends React.Component {
       <span>Trending now:</span>
       <span className="trending-topics">
         {this.state.trendingTopics.map((item, i) => {
-          return <button className='btn btn-link' onClick={() => prevThis.onTrendingTopicClick(item)} key={i}>{item}</button>
+          return <button className='btn btn-link' style={{'paddingBottom': '8px'}} onClick={() => prevThis.onTrendingTopicClick(item)} key={i}>{item}</button>
         })}
       </span>
     </div>
