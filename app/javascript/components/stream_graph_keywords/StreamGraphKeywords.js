@@ -389,7 +389,7 @@ export class StreamGraphKeywords extends React.Component {
     }
     let searchbar = <div className="sg-search-query">
       <div className="sg-search-query-form-group">
-        <input value={this.state.queryTyped} placeholder="Search for a keyword..." type="text" className="form-control" onKeyDown={(e) => this.onKeyDownQueryField(e)} onChange={(e) => this.onChangeQueryField(e)}></input>
+        <input value={this.state.queryTyped} placeholder="Search for a keyword..." type="search" className="form-control"  onKeyDown={(e) => this.onKeyDownQueryField(e)} onChange={(e) => this.onChangeQueryField(e)}></input>
       </div>
       <button className='btn btn-primary sg-search-query-btn' onClick={() => this.onSearchSubmit(this.state.queryTyped)}>{searchBtn}</button>
     </div>
@@ -439,7 +439,6 @@ export class StreamGraphKeywords extends React.Component {
           />
         </div>
     }
-
 
     const prevThis = this;
     trendingTopics = !this.state.trendingTopicsError && !this.state.isLoadingTrendingTopics && this.state.trendingTopics.length > 0 && <div className='trending-topics-container'>

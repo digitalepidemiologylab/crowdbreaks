@@ -58,11 +58,10 @@
 .stream-graph-keywords-time-options-container {
   display: inline-block;
   position: absolute;
-  left: 40px;
   top: 15px;
+  right: 0px;
   @include media-breakpoint-up(xl) {
     top: 0px;
-    right: 0px;
     left: initial;
   }
 }
@@ -158,10 +157,7 @@
 .sg-search-query {
   display: flex;
   width: 100%;
-  margin-bottom: 80px;
-  @include media-breakpoint-up(xl) {
-    top: 30px;
-  }
+  margin-bottom: 70px;
 }
 .sg-search-query-form-group {
   flex-grow: 1;
