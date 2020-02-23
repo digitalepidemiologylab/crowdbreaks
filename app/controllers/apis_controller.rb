@@ -67,11 +67,7 @@ class ApisController < ApplicationController
     resp = {}
     if query.present?
       options[:keywords] = [query]
-      resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options, use_cache=false)
-      # Match all which were not included in previous query
-      options[:not_keywords] = [query]
-      options[:keywords] = []
-      resp['__other'] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
+      resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
     else
       resp['__other'] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
     end
@@ -104,7 +100,7 @@ class ApisController < ApplicationController
     end
     past_minutes = api_params.fetch(:past_minutes, 30)
     options = {interval: api_params[:interval], start_date: "now-#{past_minutes}m", end_date: 'now'}
-    resp =  @api.get_all_data(api_params[:es_index_name], options)
+    resp =  @api.get_all_data(api_params[:es_index_name], options, use_cache=false)
     render json: resp.to_json, status: 200
   end
 
