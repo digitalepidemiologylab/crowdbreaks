@@ -137,6 +137,11 @@ fieldset[disabled] a.btn {
   }
 }
 
+.btn-link-no-pad {
+  @extend .btn-link;
+  padding: 0px;
+}
+
 
 //
 // Button Sizes

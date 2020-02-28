@@ -169,6 +169,72 @@ class ApisController < ApplicationController
     render json: {'counts': counts, 'leaderboard': leaderboard}.to_json, status: 200
   end
 
+  def list_ml_models
+    authorize! :view, :ml
+    models = @api.list_model_endpoints(use_cache: api_params_ml['use_cache'])
+    resp = []
+    models.each do |model|
+      model['ActiveEndpoint'] = false
+      if model['Tags'].present?
+        if model['Tags']['project_name'].present?
+          project_name = model['Tags']['project_name']
+          p project_name
+          model['ActiveEndpoint'] = Project.by_name(project_name).has_endpoint(model['ModelName'])
+          p model['ActiveEndpoint']
+          resp.push(model)
+        end
+      end
+    end
+    render json: resp.to_json, status: 200
+  end
+
+  def update_ml_models
+    authorize! :view, :ml
+    action = api_params_ml_update['action']
+    model_name = api_params_ml_update['model_name']
+    project_name = api_params_ml_update['project_name']
+    if action == 'create_endpoint'
+      resp = @api.create_endpoint(model_name)
+      if resp
+        render json: {message: 'Endpoint successfully created'}.to_json, status: 200 and return
+      else
+        render json: {message: 'Something went wrong when creating endpoint'}.to_json, status: 400 and return
+      end
+    elsif action == 'delete_endpoint'
+      resp = @api.delete_endpoint(model_name)
+      if resp
+        render json: {message: 'Endpoint successfully deleted'}.to_json, status: 200 and return
+      else
+        render json: {message: 'Something went wrong when deleting endpoint'}.to_json, status: 400 and return
+      end
+    else
+      project = Project.by_name(project_name)
+      if project.nil?
+        msg = "Project #{project_name} could not be found."
+        render json: {message: msg}.to_json, status: 400 and return
+      end
+      if action == 'activate_endpoint'
+        project.add_endpoint(model_name)
+        if project.has_endpoint(model_name)
+          msg = 'Successfully activated endpoint. Restart stream for changes to be active.'
+          render json: {message: msg}.to_json, status: 200 and return
+        else
+          msg = 'Something went wrong when trying to activate endpoint.'
+          render json: {message: msg}.to_json, status: 400 and return
+        end
+      elsif action == 'deactivate_endpoint'
+        project.remove_endpoint(model_name)
+        if not project.has_endpoint(model_name)
+          msg = 'Successfully deactivated endpoint. Restart stream for changes to be active.'
+          render json: {message: msg}.to_json, status: 200 and return
+        else
+          msg = 'Something went wrong when trying to deactivate endpoint.'
+          render json: {message: msg}.to_json, status: 400 and return
+        end
+      end
+    end
+  end
+
   private
 
   def api_params_user_activity
@@ -189,6 +255,14 @@ class ApisController < ApplicationController
 
   def api_params_leadline
     params.require(:leadline).permit(:since, :num_new_entries, :exclude_tweet_ids => [], :exclude_usernames => [])
+  end
+
+  def api_params_ml
+    params.require(:ml).permit(:use_cache)
+  end
+
+  def api_params_ml_update
+    params.require(:ml).permit(:model_name, :action, :project_name)
   end
 
   def api_init

@@ -16,22 +16,13 @@ module Ml
 
   def list_model_endpoints(use_cache: true)
     cache_key = "list_model_endpoints_response"
-    if use_cache
-      if Rails.cache.exist?(cache_key)
-        return Rails.cache.read(cache_key)
+    cached(cache_key, use_cache=use_cache, cache_duration=10.minutes) do
+      avoid_duplicate_requests(__method__.to_s) do
+        handle_error(error_return_value: []) do
+          resp = self.class.get("/#{PREFIX}/list_model_endpoints", timeout: 20)
+          resp.parsed_response
+        end
       end
-    end
-    resp = avoid_duplicate_requests(__method__.to_s) do
-      _list_model_endpoints
-    end
-    return [] if resp.nil?
-    Rails.cache.write(cache_key, resp.as_json, expires_in: 20.seconds)
-    return resp
-  end
-
-  def _list_model_endpoints
-    handle_error(error_return_value: []) do
-      self.class.get("/#{PREFIX}/list_model_endpoints", timeout: 20)
     end
   end
 

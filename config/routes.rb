@@ -29,6 +29,8 @@ Rails.application.routes.draw do
       post 'get_trending_topics', action: 'get_trending_topics'
       post 'get_stream_graph_data', action: 'get_stream_graph_data'
       post 'get_stream_graph_keywords_data', action: 'get_stream_graph_keywords_data'
+      post 'list_ml_models', action: 'list_ml_models'
+      post 'update_ml_models', action: 'update_ml_models'
     end
   end
 
@@ -64,14 +66,8 @@ Rails.application.routes.draw do
       get 'sentiment_analysis_map', to: 'manage_pages#sentiment_analysis_map'
       get 'user_activity', to: 'manage_pages#user_activity'
 
-
       resources :ml_resources do
-        get 'list_endpoints', on: :collection
-        get 'list_models', on: :collection
-        post 'create_endpoint', on: :collection
-        post 'delete_endpoint', on: :collection
-        post 'activate_endpoint', on: :collection
-        post 'deactivate_endpoint', on: :collection
+        get 'list_ml_models', on: :collection
       end
 
       # mturk

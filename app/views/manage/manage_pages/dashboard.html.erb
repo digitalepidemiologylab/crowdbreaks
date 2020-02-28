@@ -43,8 +43,7 @@
   <div class="col-lg-6 text-center">
     <h4 class="and-divider mb-4"><span>ML</span></h4>
     <% if can? :view, :ml %>
-      <%= link_to 'Endpoints', list_endpoints_ml_resources_path, class: 'btn btn-primary btn-lg btn-block'%>
-      <%= link_to 'Models', list_models_ml_resources_path, class: 'btn btn-primary btn-lg btn-block'%>
+      <%= link_to 'Models', list_ml_models_ml_resources_path, class: 'btn btn-primary btn-lg btn-block', data: {turbolinks: false}%>
     <% end %>
   </div>
   <div class="col-lg-6 text-center mt-4 mt-lg-0">

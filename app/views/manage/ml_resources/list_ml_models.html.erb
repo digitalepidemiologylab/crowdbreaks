@@ -1,0 +1,23 @@
+<% @title ||= 'ML models'; title @title %>
+<%= go_back_btn dashboard_path, mb: 'mb-6' %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>ML Models</h2>
+  </div>
+</div>
+
+<div class="row">
+  <% if @api_ready %>
+    <div class="col-12">
+      <%= react_component('MlModels', {
+        listMlModelsEndpoint: list_ml_models_path,
+        updateMlModelsEndpoint: update_ml_models_path
+        }) %>
+    </div>
+  <% else %>
+    <div class="col-12">
+      <div class="alert alert-primary">Could not reach API.</div>
+    </div>
+  <% end %>
+</div>
