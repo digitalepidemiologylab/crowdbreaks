@@ -254,7 +254,7 @@ export class StreamGraphKeywords extends React.Component {
       contentType: "application/json",
       success: (data) => {
         let loadingByIndex = new Array(data.length).fill(true);
-        if (data.length > 0) {
+        if (data.length > 0 && Array.isArray(data)) {
           this.setState({
             trendingTweets: data,
             isLoadingTrendingTweetsByIndex: loadingByIndex
