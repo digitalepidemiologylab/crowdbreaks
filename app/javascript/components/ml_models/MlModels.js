@@ -14,12 +14,13 @@ export class MlModels extends React.Component {
 
     this.state = {
       data: [],
-      isLoadingData: true
+      isLoadingData: true,
+      isLoadingEndpoint: []
     };
   }
 
   componentDidMount() {
-    this.getData(false)
+    this.getData(true)
   }
 
   getData(useCache) {
@@ -37,9 +38,11 @@ export class MlModels extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (data) => {
+        const isLoadingEndpoint = new Array(data.length).fill(false);
         this.setState({
           isLoadingData: false,
-          data: data
+          data: data,
+          isLoadingEndpoint: isLoadingEndpoint
         });
       }
     });
@@ -55,6 +58,11 @@ export class MlModels extends React.Component {
       contentType: "application/json",
       error: (data) => {
         toastr.error(data['message'])
+        const isLoadingEndpoint = new Array(data.length).fill(false);
+        this.setState({
+          isLoadingData: false,
+          isLoadingEndpoint: isLoadingEndpoint
+        });
       },
       success: (data) => {
         toastr.success(data['message'])
@@ -83,6 +91,13 @@ export class MlModels extends React.Component {
         'model_name': modelName,
         'project_name': projectName,
       }
+    }
+    if (['create_endpoint', 'delete_endpoint'].includes(action)) {
+      let isLoadingEndpoint = this.state.isLoadingEndpoint;
+      isLoadingEndpoint[idx] = true;
+      this.setState({
+        isLoadingEndpoint: isLoadingEndpoint
+      })
     }
     this.update(updateData, idx)
   }
@@ -129,6 +144,7 @@ export class MlModels extends React.Component {
                   modelName={item['ModelName']}
                   projectName={item['Tags']['project_name']}
                   onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
+                  isLoadingEndpoint={this.state.isLoadingEndpoint[i]}
                 />
               </td>
               <td>

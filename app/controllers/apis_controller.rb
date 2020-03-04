@@ -179,7 +179,6 @@ class ApisController < ApplicationController
         if model['Tags']['project_name'].present?
           project_name = model['Tags']['project_name']
           model['ActiveEndpoint'] = Project.by_name(project_name).has_endpoint(model['ModelName'])
-          p model['ActiveEndpoint']
           resp.push(model)
         end
       end
@@ -230,6 +229,9 @@ class ApisController < ApplicationController
           msg = 'Something went wrong when trying to deactivate endpoint.'
           render json: {message: msg}.to_json, status: 400 and return
         end
+      else
+        msg = "Update action #{action} is not known."
+        render json: {message: msg}.to_json, status: 400 and return
       end
     end
   end
