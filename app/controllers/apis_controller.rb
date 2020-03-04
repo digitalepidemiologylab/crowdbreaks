@@ -178,7 +178,6 @@ class ApisController < ApplicationController
       if model['Tags'].present?
         if model['Tags']['project_name'].present?
           project_name = model['Tags']['project_name']
-          p project_name
           model['ActiveEndpoint'] = Project.by_name(project_name).has_endpoint(model['ModelName'])
           p model['ActiveEndpoint']
           resp.push(model)

@@ -1,13 +1,14 @@
 import React from 'react';
 
 export const PipelineAction = (props) => {
-  let checkbox, body;
+  let checkbox, body, actionName;
   if (props.status == 'InService') {
     if (props.activeEndpoint) {
-      checkbox = <input type='checkbox' defaultChecked={props.activeEndpoint} onClick={() => props.onUpdateAction('deactivate_endpoint', props.modelName, props.projectName)}/>
+      actionName = 'deactivate_endpoint'
     } else {
-      checkbox = <input type='checkbox' defaultChecked={props.activeEndpoint} onClick={() => props.onUpdateAction('activate_endpoint', props.modelName, props.projectName)}/>
+      actionName = 'activate_endpoint'
     }
+    checkbox = <input type='checkbox' checked={props.activeEndpoint} onChange={() => props.onUpdateAction(actionName, props.modelName, props.projectName)}/>
     body = <label className='switch'>
       {checkbox}
       <span className='slider round'></span>

@@ -19,7 +19,7 @@ export class MlModels extends React.Component {
   }
 
   componentDidMount() {
-    this.getData(true)
+    this.getData(false)
   }
 
   getData(useCache) {
@@ -37,16 +37,15 @@ export class MlModels extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (data) => {
-        console.log(data);
         this.setState({
-          data: data,
-          isLoadingData: false
+          isLoadingData: false,
+          data: data
         });
       }
     });
   }
 
-  update(updateAction) {
+  update(updateAction, idx) {
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       type: "POST",
@@ -59,12 +58,25 @@ export class MlModels extends React.Component {
       },
       success: (data) => {
         toastr.success(data['message'])
-        this.getData(true)
+        let action = updateAction['ml']['action']
+        if (!['activate_endpoint', 'deactivate_endpoint'].includes(action)) {
+          this.getData(false)
+        } else {
+          this.toggleActivateEndpoint(idx);
+        }
       }
     });
   }
 
-  onUpdateAction(action, modelName, projectName) {
+  toggleActivateEndpoint(idx) {
+    let data = this.state.data;
+    data[idx]['ActiveEndpoint'] = !data[idx]['ActiveEndpoint']
+    this.setState({
+      data: data
+    })
+  }
+
+  onUpdateAction(action, modelName, projectName, idx) {
     const updateData = {
       'ml': {
         'action': action,
@@ -72,10 +84,8 @@ export class MlModels extends React.Component {
         'project_name': projectName,
       }
     }
-    console.log(updateData);
-    this.update(updateData)
+    this.update(updateData, idx)
   }
-
 
   render() {
     let prevThis = this
@@ -118,7 +128,7 @@ export class MlModels extends React.Component {
                   status={item['EndpointStatus']}
                   modelName={item['ModelName']}
                   projectName={item['Tags']['project_name']}
-                  onUpdateAction={(...e) => prevThis.onUpdateAction(...e)}
+                  onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
                 />
               </td>
               <td>
@@ -127,7 +137,7 @@ export class MlModels extends React.Component {
                   activeEndpoint={item['ActiveEndpoint']}
                   modelName={item['ModelName']}
                   projectName={item['Tags']['project_name']}
-                  onUpdateAction={(...e) => prevThis.onUpdateAction(...e)}
+                  onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
                 />
               </td>
             </tr>
