@@ -6,7 +6,13 @@
     <h2 class='mb-4'>Create new Elasticsearch index</h2>
     <%= simple_form_for :elasticsearch_index, url: elasticsearch_indexes_path do |f| %>
       <div class="form-group">
-        <%= f.input :name, as: :string, hint: "Start name with project_* in order to use the Elasticsearch project template." %>
+        <%= f.input :name, as: :string, input_html: {value: 'project_'}, hint: "Start name with project_* in order to use the Elasticsearch project template." %>
+      </div>
+      <div class="form-group">
+        <%= f.input :number_of_shards, as: :integer, input_html: {value: 1}, hint: "Number of shards" %>
+      </div>
+      <div class="form-group">
+        <%= f.input :number_of_replicas, as: :integer, input_html: {value: Rails.env.development? ? 0 : 1}, hint: "Number of replica shards. Defaults to 0 in development since we are running a single node setup." %>
       </div>
       <div class="form-actions" style="margin-top:25px;">
         <%= f.button :submit, class: 'btn btn-primary btn-lg' %>

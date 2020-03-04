@@ -12,13 +12,13 @@ module Manage
       @indexes = []
       stats.each_pair do |k, v|
         unless k.starts_with?('.')
-          @indexes << {'name': k, num_docs: v['total']['docs']['count'], size_bytes: v['total']['store']['size_in_bytes']} 
+          @indexes << {'name': k, num_docs: v['total']['docs']['count'], size_bytes: v['total']['store']['size_in_bytes']}
         end
       end
     end
 
     def create
-      response = @api.create_index(elasticsearch_indexes_params[:name])
+      response = @api.create_index(elasticsearch_indexes_params)
       respond_with_flash(response, elasticsearch_indexes_path)
     end
 
@@ -29,7 +29,7 @@ module Manage
     end
 
     def elasticsearch_indexes_params
-      params.require(:elasticsearch_index).permit(:name)
+      params.require(:elasticsearch_index).permit(:name, :number_of_shards, :number_of_replicas)
     end
 
     def respond_with_flash(response, redirect_path)
