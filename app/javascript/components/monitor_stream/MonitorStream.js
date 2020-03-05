@@ -3,6 +3,9 @@ import React from 'react'
 import { Bar, defaults } from 'react-chartjs-2';
 let moment = require('moment');
 
+defaults.global.defaultFontFamily = "'Roboto', sans-serif";
+defaults.global.defaultFontColor = '#333';
+
 export class MonitorStream extends React.Component {
   constructor(props) {
     super(props);
@@ -61,7 +64,6 @@ export class MonitorStream extends React.Component {
       },
       animation: false
     };
-    defaults.global.defaultFontFamily = 'Roboto';
   }
 
   componentDidMount() {

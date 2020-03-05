@@ -1,0 +1,16 @@
+<%= go_back_btn dashboard_path, mb: 'mb-4' %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <h2 class='mb-4'>Playground</h2>
+  </div>
+</div>
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <%= react_component 'MlPlayground', {
+      listMlModelsEndpoint: list_ml_models_path,
+      predictMlModelsEndpoint: predict_ml_models_path,
+    }
+    %>
+  </div>
+</div>

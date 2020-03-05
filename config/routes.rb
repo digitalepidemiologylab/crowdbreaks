@@ -17,7 +17,6 @@ Rails.application.routes.draw do
 
   scope :api do
     controller :apis do
-      post 'vaccine_sentiment', action: 'vaccine_sentiment'
       post 'update_visualization', action: 'update_visualization'
       post 'update_sentiment_map', action: 'update_sentiment_map'
       get 'set_config', action: 'set_config'
@@ -29,6 +28,7 @@ Rails.application.routes.draw do
       post 'get_trending_topics', action: 'get_trending_topics'
       post 'get_stream_graph_data', action: 'get_stream_graph_data'
       post 'get_stream_graph_keywords_data', action: 'get_stream_graph_keywords_data'
+      post 'predict_ml_models', action: 'predict_ml_models'
       post 'list_ml_models', action: 'list_ml_models'
       post 'update_ml_models', action: 'update_ml_models'
     end
@@ -68,6 +68,7 @@ Rails.application.routes.draw do
 
       resources :ml_resources do
         get 'list_ml_models', on: :collection
+        get 'ml_playground', on: :collection
       end
 
       # mturk

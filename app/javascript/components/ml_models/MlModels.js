@@ -113,6 +113,14 @@ export class MlModels extends React.Component {
     this.update(updateData, idx)
   }
 
+  onRefresh() {
+    this.setState({
+      isLoadingData: true
+    }, () => {
+      this.getData(false);
+    })
+  }
+
   render() {
     let prevThis = this
     let body;
@@ -180,10 +188,14 @@ export class MlModels extends React.Component {
             </tr>
           })}
         </tbody>
-        body = <table className="table">
-          {thead}
-          {tbody}
-        </table>
+        let refreshBtn = <button className='btn btn-secondary mb-4' onClick={() => this.onRefresh()}><i className='fa fa-refresh'></i>&ensp;Refresh</button>
+        body = <div>
+          {refreshBtn}
+          <table className="table">
+            {thead}
+            {tbody}
+          </table>
+        </div>
       } else {
         body = <div className="alert alert-primary">No models could be found</div>
       }

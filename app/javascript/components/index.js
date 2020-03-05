@@ -16,6 +16,7 @@ import { Assignment } from './mturk_worker/Assignment';
 import { StreamGraph } from './stream_graph/StreamGraph';
 import { StreamGraphKeywords } from './stream_graph_keywords/StreamGraphKeywords';
 import { MlModels } from './ml_models/MlModels';
+import { MlPlayground } from './ml_playground/MlPlayground';
 
 // Register components using Webpacker-react
 WebpackerReact.setup({
@@ -33,7 +34,8 @@ WebpackerReact.setup({
   Assignment,
   StreamGraph,
   StreamGraphKeywords,
-  MlModels
+  MlModels,
+  MlPlayground
 })
 
 // This is needed for components to properly unmount and not being cached

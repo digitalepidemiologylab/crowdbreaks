@@ -45,6 +45,9 @@
     <% if can? :view, :ml %>
       <%= link_to 'Models', list_ml_models_ml_resources_path, class: 'btn btn-primary btn-lg btn-block', data: {turbolinks: false}%>
     <% end %>
+    <% if can? :view, :ml %>
+      <%= link_to 'Playground', ml_playground_ml_resources_path, class: 'btn btn-primary btn-lg btn-block', data: {turbolinks: false}%>
+    <% end %>
   </div>
   <div class="col-lg-6 text-center mt-4 mt-lg-0">
     <h4 class="and-divider mb-4"><span>Other</span></h4>
@@ -53,7 +56,6 @@
         Sentiment analysis
       </button>
       <div class="collapse mb-2" id="manage-sentiment-menu">
-        <%= link_to 'Playground', sentiment_analysis_playground_path, class: 'btn btn-secondary btn-lg btn-block', data: {turbolinks: false} %>
         <%= link_to 'Chart', sentiment_analysis_chart_path, class: 'btn btn-secondary btn-lg btn-block', data: {turbolinks: false} %>
         <%= link_to 'Map', sentiment_analysis_map_path, class: 'btn btn-secondary btn-lg btn-block', data: {turbolinks: false}%>
       </div>

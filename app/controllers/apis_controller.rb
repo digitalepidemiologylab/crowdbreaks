@@ -1,13 +1,6 @@
 class ApisController < ApplicationController
   before_action :api_init
 
-  # Sentiment text box
-  def vaccine_sentiment
-    authorize! :access, :sentiment_visualization
-    resp = @api.get_vaccine_sentiment(api_params[:text])
-    render json: resp.parsed_response.to_json, status: 200
-  end
-
   # Sentiment visualization
   def update_visualization
     authorize! :access, :sentiment_visualization
@@ -169,6 +162,12 @@ class ApisController < ApplicationController
     render json: {'counts': counts, 'leaderboard': leaderboard}.to_json, status: 200
   end
 
+  def predict_ml_models
+    authorize! :view, :ml
+    resp = @api.predict(text: api_params_ml_predict['text'], endpoint: api_params_ml_predict['endpoint'])
+    render json: resp.to_json, status: 200
+  end
+
   def list_ml_models
     authorize! :view, :ml
     models = @api.list_model_endpoints(use_cache: api_params_ml['use_cache'])
@@ -267,6 +266,10 @@ class ApisController < ApplicationController
 
   def api_params_ml
     params.require(:ml).permit(:use_cache)
+  end
+
+  def api_params_ml_predict
+    params.require(:ml).permit(:text, :endpoint)
   end
 
   def api_params_ml_update

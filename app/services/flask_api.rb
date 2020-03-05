@@ -100,13 +100,6 @@ class FlaskApi
     end
   end
 
-  def get_vaccine_sentiment(text)
-    data = {'text': text, model_endpoint: 'crowdbreaks-2da2332569'}
-    handle_error do
-      self.class.post('/ml/predict', body: data.to_json, headers: JSON_HEADER)
-    end
-  end
-
   def get_geo_sentiment(options={})
     handle_error(error_return_value: []) do
       resp = self.class.get('/sentiment/geo', query: options, timeout: 20)
@@ -133,7 +126,13 @@ class FlaskApi
         return Rails.cache.read(cache_key)
       else
         resp = yield
-        unless resp.nil? or resp == [] or resp == {}
+        has_error = false
+        if resp.is_a? Hash
+          if resp.key?('succes')
+            has_error = !resp['success']
+          end
+        end
+        unless resp.nil? or resp == [] or resp == {} or has_error
           Rails.logger.info("Setting cache key #{cache_key}")
           Rails.cache.write(cache_key, resp, expires_in: cache_duration)
         end
