@@ -205,6 +205,13 @@ class ApisController < ApplicationController
       else
         render json: {message: 'Something went wrong when deleting endpoint'}.to_json, status: 400 and return
       end
+    elsif action == 'delete_model'
+      resp = @api.delete_model(model_name)
+      if resp
+        render json: {message: 'Model successfully deleted'}.to_json, status: 200 and return
+      else
+        render json: {message: 'Something went wrong when deleting model'}.to_json, status: 400 and return
+      end
     else
       project = Project.by_name(project_name)
       if project.nil?

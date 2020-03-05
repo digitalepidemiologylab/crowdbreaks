@@ -26,6 +26,11 @@ module Ml
     end
   end
 
+  def delete_model(model_name)
+    data = {'model_name': model_name}
+    self.class.post("/#{PREFIX}/delete_model", body: data.to_json, headers: FlaskApi::JSON_HEADER)
+  end
+
   def create_endpoint(model_name)
     data = {'model_name': model_name}
     self.class.post("/#{PREFIX}/create_endpoint", body: data.to_json, headers: FlaskApi::JSON_HEADER)

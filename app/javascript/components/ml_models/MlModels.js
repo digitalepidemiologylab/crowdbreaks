@@ -5,6 +5,7 @@ import React from 'react';
 import { EndpointStatus } from './EndpointStatus';
 import { EndpointAction } from './EndpointAction';
 import { PipelineAction } from './PipelineAction';
+import { Actions } from './Actions';
 
 let moment = require('moment');
 
@@ -15,7 +16,8 @@ export class MlModels extends React.Component {
     this.state = {
       data: [],
       isLoadingData: true,
-      isLoadingEndpoint: []
+      isLoadingEndpointAction: [],
+      isLoadingActions: []
     };
   }
 
@@ -38,11 +40,12 @@ export class MlModels extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (data) => {
-        const isLoadingEndpoint = new Array(data.length).fill(false);
+        const loadingActions = new Array(data.length).fill(false);
         this.setState({
           isLoadingData: false,
           data: data,
-          isLoadingEndpoint: isLoadingEndpoint
+          isLoadingEndpointAction: loadingActions,
+          isLoadingActions: [...loadingActions]
         });
       }
     });
@@ -58,29 +61,31 @@ export class MlModels extends React.Component {
       contentType: "application/json",
       error: (data) => {
         toastr.error(data['message'])
-        const isLoadingEndpoint = new Array(data.length).fill(false);
+        const loadingActions = new Array(data.length).fill(false);
         this.setState({
           isLoadingData: false,
-          isLoadingEndpoint: isLoadingEndpoint
+          isLoadingEndpointAction: loadingActions,
+          isLoadingActions: [...loadingActions]
         });
       },
       success: (data) => {
-        toastr.success(data['message'])
         let action = updateAction['ml']['action']
-        if (!['activate_endpoint', 'deactivate_endpoint'].includes(action)) {
-          this.getData(false)
+        if (['activate_endpoint', 'deactivate_endpoint'].includes(action)) {
+          this.toggleActivateEndpoint(idx, data['message']);
         } else {
-          this.toggleActivateEndpoint(idx);
+          this.getData(false)
         }
       }
     });
   }
 
-  toggleActivateEndpoint(idx) {
+  toggleActivateEndpoint(idx, message) {
     let data = this.state.data;
     data[idx]['ActiveEndpoint'] = !data[idx]['ActiveEndpoint']
     this.setState({
       data: data
+    }, () => {
+      toastr.success(message)
     })
   }
 
@@ -93,10 +98,16 @@ export class MlModels extends React.Component {
       }
     }
     if (['create_endpoint', 'delete_endpoint'].includes(action)) {
-      let isLoadingEndpoint = this.state.isLoadingEndpoint;
-      isLoadingEndpoint[idx] = true;
+      let isLoadingEndpointAction = this.state.isLoadingEndpointAction;
+      isLoadingEndpointAction[idx] = true;
       this.setState({
-        isLoadingEndpoint: isLoadingEndpoint
+        isLoadingEndpointAction: isLoadingEndpointAction
+      })
+    } else if (action == 'delete_model') {
+      let isLoadingActions = this.state.isLoadingActions;
+      isLoadingActions[idx] = true;
+      this.setState({
+        isLoadingActions: isLoadingActions
       })
     }
     this.update(updateData, idx)
@@ -122,8 +133,9 @@ export class MlModels extends React.Component {
             <th>Project</th>
             <th>Question tag</th>
             <th>Endpoint status</th>
-            <th>Endpiont action</th>
+            <th>Modify endpoint</th>
             <th>Use in pipeline?</th>
+            <th>Actions</th>
           </tr>
         </thead>
         const tbody = <tbody>
@@ -144,7 +156,7 @@ export class MlModels extends React.Component {
                   modelName={item['ModelName']}
                   projectName={item['Tags']['project_name']}
                   onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
-                  isLoadingEndpoint={this.state.isLoadingEndpoint[i]}
+                  isLoadingEndpointAction={this.state.isLoadingEndpointAction[i]}
                 />
               </td>
               <td>
@@ -154,6 +166,15 @@ export class MlModels extends React.Component {
                   modelName={item['ModelName']}
                   projectName={item['Tags']['project_name']}
                   onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
+                />
+              </td>
+              <td>
+                <Actions
+                  onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
+                  modelName={item['ModelName']}
+                  projectName={item['Tags']['project_name']}
+                  isLoadingActions={this.state.isLoadingActions[i]}
+                  status={item['EndpointStatus']}
                 />
               </td>
             </tr>

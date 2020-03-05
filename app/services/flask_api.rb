@@ -127,19 +127,22 @@ class FlaskApi
   private
 
   def cached(cache_key, use_cache=false, cache_duration=5.minutes)
-    # by default don't use cache
-    return yield unless use_cache
-    # use cache
-    if Rails.cache.exist?(cache_key)
-      Rails.logger.info("Reading from cache key #{cache_key}")
-      return Rails.cache.read(cache_key)
-    else
-      resp = yield
-      unless resp.nil? or resp == [] or resp == {}
-        Rails.logger.info("Setting cache key #{cache_key}")
-        Rails.cache.write(cache_key, resp, expires_in: cache_duration)
+    if use_cache
+      if Rails.cache.exist?(cache_key)
+        Rails.logger.info("Reading from cache key #{cache_key}")
+        return Rails.cache.read(cache_key)
+      else
+        resp = yield
+        unless resp.nil? or resp == [] or resp == {}
+          Rails.logger.info("Setting cache key #{cache_key}")
+          Rails.cache.write(cache_key, resp, expires_in: cache_duration)
+        end
+        return resp
       end
-      resp
+    else
+      # invalidate previous cache
+      Rails.cache.delete(cache_key)
+      return yield
     end
   end
 
