@@ -41,3 +41,8 @@
 .text-lighter { color: $gray-400 !important; }
 .text-light 	{ color: $gray-500 !important; }
 .text-muted 	{ color: $text-muted !important; }
+
+.text-light-sm {
+  color: $gray-500 !important;
+  font-size: $font-size-sm;
+}

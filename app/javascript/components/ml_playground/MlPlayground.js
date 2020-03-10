@@ -16,7 +16,8 @@ export class MlPlayground extends React.Component {
       endpointData: [],
       labels: [],
       probabilities: [],
-      currentEndpoint: ''
+      currentEndpoint: '',
+      durationMs: null
     };
 
     this.options = {
@@ -73,6 +74,7 @@ export class MlPlayground extends React.Component {
       success: (data) => {
         let labels = [];
         let probabilities = [];
+        let durationMs = null;
         if ('prediction' in data) {
           if ('labels_fixed' in data['prediction'] && 'probabilities_fixed' in data['prediction']) {
             labels = data['prediction']['labels_fixed'];
@@ -81,11 +83,15 @@ export class MlPlayground extends React.Component {
             labels = data['prediction']['labels'];
             probabilities = data['prediction']['probabilities'];
           }
+          if ('duration_ms' in data['prediction']) {
+            durationMs = data['prediction']['duration_ms']
+          }
         }
         console.log(data);
         this.setState({
           labels: labels,
-          probabilities: probabilities
+          probabilities: probabilities,
+          durationMs: durationMs
         })
       }
     })
@@ -113,6 +119,7 @@ export class MlPlayground extends React.Component {
               'question': item['Tags']['question_tag'],
               'project': item['Tags']['project_name'],
               'modelType': item['Tags']['model_type'],
+              'runName': item['Tags']['run_name'],
               'name': item['ModelName']
             })
           }
@@ -131,7 +138,7 @@ export class MlPlayground extends React.Component {
   }
 
   optionName(item) {
-    return item['name'] + ' (' + item['project'] + ' - ' + item['question'] + ')'
+    return item['name'] + ' (' + item['project'] + ' - ' + item['question'] + ' - ' + item['runName'] + ')'
   }
 
   onTextChange(value) {
@@ -195,12 +202,17 @@ export class MlPlayground extends React.Component {
             onChange={e => this.onTextChange(e.target.value)}
             className="form-control"
           />
+    let inferenceTime = <div className='mt-2 text-light-sm'>
+      <span>Inference time:&nbsp;</span>
+      {this.state.durationMs && <span>{Math.round(this.state.durationMs * 100)/100}&nbsp;ms</span>}
+    </div>
 
     return(
       <div>
-        <div className="mb-5">
+        <div className="mb-2">
           {input}
           {textarea}
+          {inferenceTime}
         </div>
         <div>
           {barChart}
