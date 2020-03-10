@@ -138,6 +138,7 @@ export class MlModels extends React.Component {
           <tr className='no-wrap'>
             <th>Name</th>
             <th>Created at</th>
+            <th>Run name</th>
             <th>Project</th>
             <th>Question tag</th>
             <th>Endpoint status</th>
@@ -155,6 +156,7 @@ export class MlModels extends React.Component {
                   {moment(item['CreationTime']).fromNow()}
                 </div>
               </td>
+              <td>{item['Tags']['run_name']}</td>
               <td>{item['Tags']['project_name']}</td>
               <td>{item['Tags']['question_tag']}</td>
               <td><EndpointStatus status={item['EndpointStatus']} /></td>

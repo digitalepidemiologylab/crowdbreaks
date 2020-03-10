@@ -74,9 +74,9 @@ export class MlPlayground extends React.Component {
         let labels = [];
         let probabilities = [];
         if ('prediction' in data) {
-          if ('labels_ordered' in data['prediction'] && 'probabilities_ordered' in data['prediction']) {
-            labels = data['prediction']['labels_ordered'];
-            probabilities = data['prediction']['probabilities_ordered'];
+          if ('labels_fixed' in data['prediction'] && 'probabilities_fixed' in data['prediction']) {
+            labels = data['prediction']['labels_fixed'];
+            probabilities = data['prediction']['probabilities_fixed'];
           } else if ('labels' in data['prediction'] && 'probabilities' in data['prediction']) {
             labels = data['prediction']['labels'];
             probabilities = data['prediction']['probabilities'];
