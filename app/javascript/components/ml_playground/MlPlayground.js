@@ -75,16 +75,19 @@ export class MlPlayground extends React.Component {
         let labels = [];
         let probabilities = [];
         let durationMs = null;
-        if ('prediction' in data) {
-          if ('labels_fixed' in data['prediction'] && 'probabilities_fixed' in data['prediction']) {
-            labels = data['prediction']['labels_fixed'];
-            probabilities = data['prediction']['probabilities_fixed'];
-          } else if ('labels' in data['prediction'] && 'probabilities' in data['prediction']) {
-            labels = data['prediction']['labels'];
-            probabilities = data['prediction']['probabilities'];
-          }
-          if ('duration_ms' in data['prediction']) {
-            durationMs = data['prediction']['duration_ms']
+        if ('predictions' in data) {
+          if (data['predictions'].length == 1) {
+            let prediction = data['predictions'][0]
+            if ('labels_fixed' in prediction && 'probabilities_fixed' in prediction) {
+              labels = prediction['labels_fixed'];
+              probabilities = prediction['probabilities_fixed'];
+            } else if ('labels' in prediction && 'probabilities' in prediction) {
+              labels = prediction['labels'];
+              probabilities = prediction['probabilities'];
+            }
+            if ('duration_ms' in data['predictions']) {
+              durationMs = data['predictions']['duration_ms']
+            }
           }
         }
         console.log(data);

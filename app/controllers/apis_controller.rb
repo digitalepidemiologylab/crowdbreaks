@@ -173,11 +173,13 @@ class ApisController < ApplicationController
     models = @api.list_model_endpoints(use_cache: api_params_ml['use_cache'])
     resp = []
     models.each do |model|
-      model['ActiveEndpoint'] = false
       if model['Tags'].present?
         if model['Tags']['project_name'].present?
           project_name = model['Tags']['project_name']
-          model['ActiveEndpoint'] = Project.by_name(project_name).has_endpoint(model['ModelName'])
+          model_name = model['ModelName']
+          question_tag = model['Tags']['question_tag']
+          model['ActiveEndpoint'] = Project.by_name(project_name).has_endpoint_for_question_tag(model_name, question_tag)
+          model['IsPrimaryEndpoint'] = Project.by_name(project_name).is_primary_endpoint_for_question_tag(model_name, question_tag)
           resp.push(model)
         end
       end
@@ -190,6 +192,12 @@ class ApisController < ApplicationController
     action = api_params_ml_update['action']
     model_name = api_params_ml_update['model_name']
     project_name = api_params_ml_update['project_name']
+    question_tag = api_params_ml_update['question_tag']
+    project = Project.by_name(project_name)
+    if project.nil?
+      msg = "Project #{project_name} could not be found."
+      render json: {message: msg}.to_json, status: 400 and return
+    end
     if action == 'create_endpoint'
       resp = @api.create_endpoint(model_name)
       if resp
@@ -212,14 +220,9 @@ class ApisController < ApplicationController
         render json: {message: 'Something went wrong when deleting model'}.to_json, status: 400 and return
       end
     else
-      project = Project.by_name(project_name)
-      if project.nil?
-        msg = "Project #{project_name} could not be found."
-        render json: {message: msg}.to_json, status: 400 and return
-      end
       if action == 'activate_endpoint'
-        project.add_endpoint(model_name)
-        if project.has_endpoint(model_name)
+        project.add_endpoint(model_name, question_tag)
+        if project.has_endpoint_for_question_tag(model_name, question_tag)
           msg = 'Successfully activated endpoint. Restart stream for changes to be active.'
           render json: {message: msg}.to_json, status: 200 and return
         else
@@ -227,12 +230,21 @@ class ApisController < ApplicationController
           render json: {message: msg}.to_json, status: 400 and return
         end
       elsif action == 'deactivate_endpoint'
-        project.remove_endpoint(model_name)
-        if not project.has_endpoint(model_name)
+        project.remove_endpoint(model_name, question_tag)
+        if not project.has_endpoint_for_question_tag(model_name, question_tag)
           msg = 'Successfully deactivated endpoint. Restart stream for changes to be active.'
           render json: {message: msg}.to_json, status: 200 and return
         else
           msg = 'Something went wrong when trying to deactivate endpoint.'
+          render json: {message: msg}.to_json, status: 400 and return
+        end
+      elsif action == 'make_primary'
+        project.make_primary_endpoint(model_name, question_tag)
+        if project.is_primary_endpoint_for_question_tag(model_name, question_tag)
+          msg = 'Successfully set endpoint as primary. Restart stream for changes to be active.'
+          render json: {message: msg}.to_json, status: 200 and return
+        else
+          msg = 'Something went wrong when trying to set endpoint to primary.'
           render json: {message: msg}.to_json, status: 400 and return
         end
       else
@@ -273,7 +285,7 @@ class ApisController < ApplicationController
   end
 
   def api_params_ml_update
-    params.require(:ml).permit(:model_name, :action, :project_name)
+    params.require(:ml).permit(:action, :model_name, :project_name, :question_tag, :run_name)
   end
 
   def api_init

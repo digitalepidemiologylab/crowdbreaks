@@ -169,7 +169,7 @@ class Project < ApplicationRecord
         return false if p[prop].nil? or c[prop].nil?
         return false if p[prop].sort != c[prop].sort
       end
-      ['es_index_name', 'storage_mode', 'image_storage_mode', 'compile_trending_tweets', 'compile_trending_topics'].each do |prop|
+      ['es_index_name', 'storage_mode', 'image_storage_mode', 'compile_trending_tweets', 'compile_trending_topics', 'primary_model_endpoint'].each do |prop|
         return false if p[prop].nil? or c[prop].nil?
         return false if p[prop] != c[prop]
       end
@@ -243,20 +243,59 @@ class Project < ApplicationRecord
     return tweet_id
   end
 
-  def add_endpoint(endpoint_name)
-    return if has_endpoint(endpoint_name) or endpoint_name.nil?
-    model_endpoints << endpoint_name
+  def add_endpoint(endpoint_name, question_tag)
+    return if endpoint_name.nil?
+    return if has_endpoint_for_question_tag(endpoint_name, question_tag)
+    existing_endpoints = active_endpoints(question_tag)
+    existing_endpoints.push(endpoint_name)
+    if existing_endpoints.length == 1
+      # first time we add an endpoint -> make it primary
+      model_endpoints[question_tag] = {'active': existing_endpoints, 'primary': existing_endpoints[0]}
+    else
+      model_endpoints[question_tag]['active'] = existing_endpoints
+    end
     save
   end
 
-  def remove_endpoint(endpoint_name)
-    return unless has_endpoint(endpoint_name) or endpoint_name.nil?
-    model_endpoints.delete(endpoint_name)
+  def remove_endpoint(endpoint_name, question_tag)
+    return if endpoint_name.nil?
+    return unless has_endpoint_for_question_tag(endpoint_name, question_tag)
+    existing_endpoints = active_endpoints(question_tag)
+    existing_endpoints.delete(endpoint_name)
+    model_endpoints[question_tag]['active'] = existing_endpoints
+    if model_endpoints[question_tag]['primary'] == endpoint_name
+      # removed endpoint was primary endpoint
+      if existing_endpoints.length == 0
+        model_endpoints[question_tag]['primary'] = ''
+      else
+        # set other endpoint to active
+        model_endpoints[question_tag]['primary'] = existing_endpoints[0]
+      end
+    end
     save
   end
 
-  def has_endpoint(endpoint_name)
-    model_endpoints.include?(endpoint_name)
+  def active_endpoints(question_tag)
+    return [] if model_endpoints[question_tag].nil?
+    return [] if model_endpoints[question_tag]['active'].nil?
+    model_endpoints[question_tag]['active']
+  end
+
+  def has_endpoint_for_question_tag(endpoint_name, question_tag)
+    return false unless model_endpoints.key?(question_tag)
+    return false unless model_endpoints[question_tag].key?('active')
+    return false unless model_endpoints[question_tag]['active'].include?(endpoint_name)
+    true
+  end
+
+  def is_primary_endpoint_for_question_tag(endpoint_name, question_tag)
+    return false unless has_endpoint_for_question_tag(endpoint_name, question_tag)
+    model_endpoints[question_tag]['primary'] == endpoint_name
+  end
+
+  def make_primary_endpoint(endpoint_name, question_tag)
+    model_endpoints[question_tag]['primary'] = endpoint_name
+    save
   end
 
   private

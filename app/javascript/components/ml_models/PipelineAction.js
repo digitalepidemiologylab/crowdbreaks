@@ -8,7 +8,7 @@ export const PipelineAction = (props) => {
     } else {
       actionName = 'activate_endpoint'
     }
-    checkbox = <input type='checkbox' checked={props.activeEndpoint} onChange={() => props.onUpdateAction(actionName, props.modelName, props.projectName)}/>
+    checkbox = <input type='checkbox' checked={props.activeEndpoint} onChange={() => props.onUpdateAction(actionName)}/>
     body = <label className='switch' style={{marginBottom: '0px'}}>
       {checkbox}
       <span className='slider round'></span>

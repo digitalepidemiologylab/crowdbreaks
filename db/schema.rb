@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_17_080838) do
+ActiveRecord::Schema.define(version: 2020_03_11_094137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -174,10 +174,10 @@ ActiveRecord::Schema.define(version: 2020_02_17_080838) do
     t.integer "image_storage_mode", default: 0, null: false
     t.string "accessible_by_email_pattern", default: [], array: true
     t.integer "annotation_mode", default: 0, null: false
-    t.string "model_endpoints", default: [], array: true
     t.integer "active_question_sequence_id", default: 0
     t.boolean "compile_trending_tweets", default: false
     t.boolean "compile_trending_topics", default: false, null: false
+    t.jsonb "model_endpoints", default: {}, null: false
     t.index ["es_index_name"], name: "index_projects_on_es_index_name", unique: true
     t.index ["slug"], name: "index_projects_on_slug"
   end
