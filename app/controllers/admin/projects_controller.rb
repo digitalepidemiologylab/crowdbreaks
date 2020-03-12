@@ -65,7 +65,7 @@ module Admin
     def project_params
       params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales},
                                       :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode,
-                                      :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :model_endpoints, :active_question_sequence_id,
+                                      :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :active_question_sequence_id,
                                       :compile_trending_tweets, :compile_trending_topics)
     end
 
@@ -82,7 +82,6 @@ module Admin
       sanitized_params[:lang] = array_from_string(project_params[:lang], downcase: true)
       sanitized_params[:locales] = array_from_string(project_params[:locales], downcase: true)
       sanitized_params[:accessible_by_email_pattern] = array_from_string(project_params[:accessible_by_email_pattern], downcase: true)
-      sanitized_params[:model_endpoints] = array_from_string(project_params[:model_endpoints])
       sanitized_params[:storage_mode] = sanitized_params[:storage_mode].to_i
       sanitized_params[:image_storage_mode] = sanitized_params[:image_storage_mode].to_i
       sanitized_params[:annotation_mode] = sanitized_params[:annotation_mode].to_i

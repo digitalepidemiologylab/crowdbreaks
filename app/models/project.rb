@@ -165,11 +165,11 @@ class Project < ApplicationRecord
     remote_config.each do |c|
       p = Project.find_by(slug: c['slug'])
       return false if p.nil?
-      ['keywords', 'lang', 'model_endpoints', 'locales'].each do |prop|
+      ['keywords', 'lang', 'locales'].each do |prop|
         return false if p[prop].nil? or c[prop].nil?
         return false if p[prop].sort != c[prop].sort
       end
-      ['es_index_name', 'storage_mode', 'image_storage_mode', 'compile_trending_tweets', 'compile_trending_topics', 'primary_model_endpoint'].each do |prop|
+      ['es_index_name', 'storage_mode', 'image_storage_mode', 'compile_trending_tweets', 'compile_trending_topics', 'model_endpoints'].each do |prop|
         return false if p[prop].nil? or c[prop].nil?
         return false if p[prop] != c[prop]
       end

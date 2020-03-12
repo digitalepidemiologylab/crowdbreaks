@@ -5,7 +5,6 @@
   <td><%= current_project&.lang&.join(', ') %></td>
   <td><%= current_project.storage_mode %></td>
   <td><%= current_project.image_storage_mode %></td>
-  <td><%= truncate(current_project.model_endpoints&.join(', ')) %></td>
   <td><%= status_yes_no(current_project.active_stream?) %></td>
   <td>
     <span class="no-wrap">
