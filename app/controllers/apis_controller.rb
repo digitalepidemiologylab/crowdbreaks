@@ -193,6 +193,8 @@ class ApisController < ApplicationController
     model_name = api_params_ml_update['model_name']
     project_name = api_params_ml_update['project_name']
     question_tag = api_params_ml_update['question_tag']
+    model_type = api_params_ml_update['model_type']
+    run_name = api_params_ml_update['run_name']
     project = Project.by_name(project_name)
     if project.nil?
       msg = "Project #{project_name} could not be found."
@@ -221,7 +223,7 @@ class ApisController < ApplicationController
       end
     else
       if action == 'activate_endpoint'
-        project.add_endpoint(model_name, question_tag)
+        project.add_endpoint(model_name, question_tag, model_type, run_name)
         if project.has_endpoint_for_question_tag(model_name, question_tag)
           msg = 'Successfully activated endpoint. Restart stream for changes to be active.'
           render json: {message: msg}.to_json, status: 200 and return
@@ -285,7 +287,7 @@ class ApisController < ApplicationController
   end
 
   def api_params_ml_update
-    params.require(:ml).permit(:action, :model_name, :project_name, :question_tag, :run_name)
+    params.require(:ml).permit(:action, :model_name, :project_name, :question_tag, :run_name, :model_type, :run_name)
   end
 
   def api_init

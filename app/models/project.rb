@@ -243,14 +243,14 @@ class Project < ApplicationRecord
     return tweet_id
   end
 
-  def add_endpoint(endpoint_name, question_tag)
+  def add_endpoint(endpoint_name, question_tag, model_type, run_name)
     return if endpoint_name.nil?
     return if has_endpoint_for_question_tag(endpoint_name, question_tag)
     existing_endpoints = active_endpoints(question_tag)
-    existing_endpoints.push(endpoint_name)
+    existing_endpoints[endpoint_name] = {'model_type': model_type, 'run_name': run_name}
     if existing_endpoints.length == 1
       # first time we add an endpoint -> make it primary
-      model_endpoints[question_tag] = {'active': existing_endpoints, 'primary': existing_endpoints[0]}
+      model_endpoints[question_tag] = {'active': existing_endpoints, 'primary': endpoint_name}
     else
       model_endpoints[question_tag]['active'] = existing_endpoints
     end
@@ -269,15 +269,15 @@ class Project < ApplicationRecord
         model_endpoints[question_tag]['primary'] = ''
       else
         # set other endpoint to active
-        model_endpoints[question_tag]['primary'] = existing_endpoints[0]
+        model_endpoints[question_tag]['primary'] = existing_endpoints.keys[0]
       end
     end
     save
   end
 
   def active_endpoints(question_tag)
-    return [] if model_endpoints[question_tag].nil?
-    return [] if model_endpoints[question_tag]['active'].nil?
+    return {} if model_endpoints[question_tag].nil?
+    return {} if model_endpoints[question_tag]['active'].nil?
     model_endpoints[question_tag]['active']
   end
 

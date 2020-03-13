@@ -121,6 +121,8 @@ export class MlModels extends React.Component {
         'project_name': this.state.data[idx]['Tags']['project_name'],
         'question_tag': this.state.data[idx]['Tags']['question_tag'],
         'run_name': this.state.data[idx]['Tags']['run_name'],
+        'model_type': this.state.data[idx]['Tags']['model_type'],
+        'run_name': this.state.data[idx]['Tags']['run_name'],
       }
     }
     console.log(updateData);
