@@ -13,7 +13,7 @@
       resultsPath: project_question_sequence_path(@project.active_question_sequence_project),
       endQuestionSequencePath: final_project_question_sequence_path(@project.active_question_sequence_project),
       userId: @user_id,
-      projectId: @project.active_question_sequence_id,
+      projectId: @project.active_question_sequence,
       numTransitions: @question_sequence[:num_transitions],
       colorOptions: Answer::COLORS,
       captchaSiteKey: ENV['RECAPTCHA_SITEKEY'],
