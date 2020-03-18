@@ -79,19 +79,32 @@ export class MlModels extends React.Component {
           this.toggleActivateEndpoint(idx, data['message']);
           // make sure correct primary index is shown (done here by modifying the state instead of reloading the data)
           let currentData = this.state.data;
+          const currentTags = currentData[idx]['Tags']
+
           if (action == 'deactivate_endpoint' && currentData[idx]['IsPrimaryEndpoint']) {
             currentData[idx]['IsPrimaryEndpoint'] = false;
-          } else if (action == 'activate_endpoint') {
             for (let i=0; i<currentData.length; i++) {
               if (i != idx) {
-                if (currentData[idx]['Tags']['question_tag'] == currentData[i]['Tags']['question_tag'] && currentData[i]['IsPrimaryEndpoint']) {
-                  return
+                if (currentTags['project_name'] == currentData[i]['Tags']['project_name'] && currentTags['question_tag'] == currentData[i]['Tags']['question_tag'] && currentData[i]['ActiveEndpoint']) {
+                  console.log('setting:');
+                  console.log(currentData[idx]);
+                  currentData[i]['IsPrimaryEndpoint'] = true;
+                  break;
                 }
               }
-              currentData[idx]['IsPrimaryEndpoint'] = true;
             }
           } else {
-            return
+            // activate, set as primary if it is the only endpoint for that question
+            let foundOtherEndpoint = false;
+            for (let i=0; i<currentData.length; i++) {
+              if (idx != i && currentTags['project_name'] == currentData[i]['Tags']['project_name'] && currentTags['question_tag'] == currentData[i]['Tags']['question_tag'] && currentData[i]['ActiveEndpoint']) {
+                foundOtherEndpoint = true;
+                break;
+              }
+            }
+            if (!foundOtherEndpoint) {
+              currentData[idx]['IsPrimaryEndpoint'] = true;
+            }
           }
           this.setState({
             data: currentData

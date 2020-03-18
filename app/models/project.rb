@@ -262,13 +262,12 @@ class Project < ApplicationRecord
     return unless has_endpoint_for_question_tag(endpoint_name, question_tag)
     existing_endpoints = active_endpoints(question_tag)
     existing_endpoints.delete(endpoint_name)
-    model_endpoints[question_tag]['active'] = existing_endpoints
-    if model_endpoints[question_tag]['primary'] == endpoint_name
-      # removed endpoint was primary endpoint
-      if existing_endpoints.length == 0
-        model_endpoints[question_tag]['primary'] = ''
-      else
-        # set other endpoint to active
+    if existing_endpoints.length == 0
+      model_endpoints.delete(question_tag)
+    else
+      model_endpoints[question_tag]['active'] = existing_endpoints
+      if model_endpoints[question_tag]['primary'] == endpoint_name
+        # removed endpoint was primary endpoint, set to different endpoint
         model_endpoints[question_tag]['primary'] = existing_endpoints.keys[0]
       end
     end
