@@ -50,7 +50,7 @@ export class D3StreamGraph extends React.Component {
     // legend
     let legend = svg.append('g').attr('class', 'legend')
     let legendItemPos = this.props.keys.map((key) => {
-      return key.length*10;
+      return this.props.keysToLegend[key].length*10;
     });
     legendItemPos.unshift(0);
     legendItemPos.reduce((a, b, i) => {
@@ -70,7 +70,7 @@ export class D3StreamGraph extends React.Component {
       .append('text')
       .attr('x', (d, i) => {return this.margin.left + 20 + legendItemPos[i]})
       .attr('y', 7)
-      .text((d) => {return d})
+      .text((d) => {return this.props.keysToLegend[d]})
       .attr("text-anchor", "left")
       .style("dominant-baseline", "middle")
 

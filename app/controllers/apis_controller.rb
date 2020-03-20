@@ -16,8 +16,8 @@ class ApisController < ApplicationController
     end
     resp = {
       "all_data": @api.get_sentiment_data('*', options),
-      "pro_data": @api.get_sentiment_data('pro-vaccine', options),
-      "anti_data": @api.get_sentiment_data('anti-vaccine', options),
+      "pro_data": @api.get_sentiment_data('positive', options),
+      "anti_data": @api.get_sentiment_data('negative', options),
       "neutral_data": @api.get_sentiment_data('neutral', options),
       "avg_sentiment": @api.get_avg_sentiment(options)
     }
@@ -41,12 +41,9 @@ class ApisController < ApplicationController
       interval: api_params_viz[:interval],
       start_date: api_params_viz[:start_date],
       end_date: api_params_viz[:end_date],
+      include_retweets: true
     }
-    resp = {
-      "Pro-vaccine": @api.get_sentiment_data('pro-vaccine', options, use_cache=true),
-      "Anti-vaccine": @api.get_sentiment_data('anti-vaccine', options, use_cache=true),
-      "Neutral": @api.get_sentiment_data('neutral', options, use_cache=true),
-    }
+    resp = @api.get_predictions('project_vaccine_sentiment', 'sentiment', ['positive', 'negative', 'neutral'], options, use_cache=false)
     render json: resp.to_json, status: 200
   end
 

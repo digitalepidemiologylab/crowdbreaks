@@ -83,11 +83,16 @@ class FlaskApi
   end
 
   # elasticsearch - sentiment data
-  def get_sentiment_data(value, options={}, use_cache=true)
-    cache_key = "get-sentiment-data-#{value}-#{options.to_s}"
+  def get_predictions(index, question_tag, answer_tags, options={}, use_cache=true)
+    cache_key = "get-predictions-#{index}-#{question_tag}-#{answer_tags.join('_')}-#{options.to_s}"
+    body = {
+      question_tag: question_tag,
+      answer_tags: answer_tags,
+      **options
+    }
     cached(cache_key, use_cache=use_cache) do
       handle_error(error_return_value: []) do
-        resp = self.class.get('/sentiment/data/'+value, query: options, timeout: 20)
+        resp = self.class.post('/data/predictions/'+index, body: body.to_json, timeout: 20, headers: JSON_HEADER)
         JSON.parse(resp)
       end
     end

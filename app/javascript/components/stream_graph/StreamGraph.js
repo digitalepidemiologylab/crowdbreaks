@@ -31,7 +31,8 @@ export class StreamGraph extends React.Component {
       width = 910;
     }
     this.colors = ['#68AA43', '#FF9E4B', '#CD5050']; // green, orange, red
-    this.keys = ['Pro-vaccine', 'Neutral', 'Anti-vaccine'];
+    this.keys = ['positive', 'neutral', 'negative'];
+    this.keysToLegend = {'positive': 'Pro-vaccine', 'neutral': 'Neutral', 'negative': 'Anti-vaccine'}
     this.caption = "Real-time predictions of vaccination sentiment based on tweets in English language visualized as a stream graph.\
       No country-specific filtering has been applied.\
       Switch between temporal options (1 year, 3 month and 1 day) and representation options (area, wiggle, normalized) in order to explore the data."
@@ -101,12 +102,12 @@ export class StreamGraph extends React.Component {
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       type: "POST",
-      crossDomain: true,
       url: this.props.dataEndpoint,
       data: JSON.stringify(params),
       dataType: "json",
       contentType: "application/json",
       success: (result) => {
+        console.log(result);
         const arrayLengths = this.keys.map((key) => result[key].length)
         const maxLengthKey = this.keys[arrayLengths.indexOf(Math.max(...arrayLengths))]
         let data = [];
@@ -241,6 +242,7 @@ export class StreamGraph extends React.Component {
             vizOption={this.state.activeVizOption}
             useTransition={this.state.useTransition}
             keys={keys}
+            keysToLegend={this.keysToLegend}
             device={this.state.device}
           />
           <div className="mt-5 text-light">
