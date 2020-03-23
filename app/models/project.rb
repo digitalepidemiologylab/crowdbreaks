@@ -274,6 +274,35 @@ class Project < ApplicationRecord
     save
   end
 
+  def sync_with_remote(resp)
+    # Check if model has been removed remotely and remove it locally
+    models_remote = []
+    resp.each do |r|
+      if r['Tags']['project_name'] == es_index_name
+        models_remote.push(r['ModelName'])
+      end
+    end
+    resp_model_endpoints = {}
+    found_change = false
+    model_endpoints.each do |question_tag, active_endpoints|
+      _active_endpoints = active_endpoints['active']
+      primary_endpoint = active_endpoints['primary']
+      _active_endpoints.each do |model_name, model_info_obj|
+        if not models_remote.include?(model_name)
+          # remote model was removed, update local config
+          _active_endpoints.delete(model_name)
+          found_change = true
+          if model_name == primary_endpoint
+            primary_endpoint = ''
+          end
+        end
+      end
+      model_endpoints[question_tag]['active'] = _active_endpoints
+      model_endpoints[question_tag]['primary'] = primary_endpoint
+    end
+    save if found_change
+  end
+
   def active_endpoints(question_tag)
     return {} if model_endpoints[question_tag].nil?
     return {} if model_endpoints[question_tag]['active'].nil?

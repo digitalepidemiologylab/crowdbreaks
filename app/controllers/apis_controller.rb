@@ -173,13 +173,18 @@ class ApisController < ApplicationController
       if model['Tags'].present?
         if model['Tags']['project_name'].present?
           project_name = model['Tags']['project_name']
+          project = Project.by_name(project_name)
+          next if project.nil?
           model_name = model['ModelName']
           question_tag = model['Tags']['question_tag']
-          model['ActiveEndpoint'] = Project.by_name(project_name).has_endpoint_for_question_tag(model_name, question_tag)
-          model['IsPrimaryEndpoint'] = Project.by_name(project_name).is_primary_endpoint_for_question_tag(model_name, question_tag)
+          model['ActiveEndpoint'] = project.has_endpoint_for_question_tag(model_name, question_tag)
+          model['IsPrimaryEndpoint'] = project.is_primary_endpoint_for_question_tag(model_name, question_tag)
           resp.push(model)
         end
       end
+    end
+    Project.where.not('model_endpoints': {}).each do |project|
+      project.sync_with_remote(resp)
     end
     render json: resp.to_json, status: 200
   end
