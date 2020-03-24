@@ -17,7 +17,7 @@ Rails.application.routes.draw do
 
   scope :api do
     controller :apis do
-      post 'update_visualization', action: 'update_visualization'
+      post 'get_predictions', action: 'get_predictions'
       post 'update_sentiment_map', action: 'update_sentiment_map'
       get 'set_config', action: 'set_config'
       get 'stream_status', action: 'stream_status'
@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       post 'predict_ml_models', action: 'predict_ml_models'
       post 'list_ml_models', action: 'list_ml_models'
       post 'update_ml_models', action: 'update_ml_models'
+      post 'endpoint_info', action: 'endpoint_info'
     end
   end
 
@@ -69,6 +70,7 @@ Rails.application.routes.draw do
       resources :ml_resources do
         get 'list_ml_models', on: :collection
         get 'ml_playground', on: :collection
+        get 'ml_predictions', on: :collection
       end
 
       # mturk

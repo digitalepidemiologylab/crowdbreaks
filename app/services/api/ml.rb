@@ -37,6 +37,18 @@ module Ml
     end
   end
 
+  def endpoint_config(model_name)
+    data = {'model_endpoint': model_name}
+    self.class.post("/#{PREFIX}/endpoint_config", body: data.to_json, headers: FlaskApi::JSON_HEADER)
+  end
+
+  def endpoint_labels(model_name)
+    data = {'model_endpoint': model_name}
+    resp = self.class.post("/#{PREFIX}/endpoint_labels", body: data.to_json, headers: FlaskApi::JSON_HEADER)
+    resp.parsed_response
+  end
+
+
   def delete_model(model_name)
     data = {'model_name': model_name}
     self.class.post("/#{PREFIX}/delete_model", body: data.to_json, headers: FlaskApi::JSON_HEADER)

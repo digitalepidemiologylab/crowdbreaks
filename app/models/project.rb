@@ -274,8 +274,8 @@ class Project < ApplicationRecord
     save
   end
 
-  def sync_with_remote(resp)
-    # Check if model has been removed remotely and remove it locally
+  def sync_endpoints_with_remote(resp)
+    # If endpoint has been removed remotely (e.g. through dev/stg), remove it from projects
     models_remote = []
     resp.each do |r|
       if r['Tags']['project_name'] == es_index_name
@@ -293,12 +293,20 @@ class Project < ApplicationRecord
           _active_endpoints.delete(model_name)
           found_change = true
           if model_name == primary_endpoint
-            primary_endpoint = ''
+            # deleted model was primary endpoint
+            if _active_endpoints.length > 0
+              # assign "next" active endpoint as primary endpoint
+              primary_endpoint = _active_endpoints.keys[0]
+            end
           end
         end
       end
-      model_endpoints[question_tag]['active'] = _active_endpoints
-      model_endpoints[question_tag]['primary'] = primary_endpoint
+      if _active_endpoints.length > 0
+        model_endpoints[question_tag]['active'] = _active_endpoints
+        model_endpoints[question_tag]['primary'] = primary_endpoint
+      else
+        model_endpoints.delete(question_tag)
+      end
     end
     save if found_change
   end
@@ -325,6 +333,7 @@ class Project < ApplicationRecord
     model_endpoints[question_tag]['primary'] = endpoint_name
     save
   end
+
 
   private
 

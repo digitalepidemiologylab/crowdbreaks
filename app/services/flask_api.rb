@@ -83,11 +83,12 @@ class FlaskApi
   end
 
   # elasticsearch - sentiment data
-  def get_predictions(index, question_tag, answer_tags, options={}, use_cache=true)
-    cache_key = "get-predictions-#{index}-#{question_tag}-#{answer_tags.join('_')}-#{options.to_s}"
+  def get_predictions(index, question_tag, answer_tags, run_name='', options={}, use_cache=true)
+    cache_key = "get-predictions-#{index}-#{question_tag}-#{run_name}-#{answer_tags.join('_')}-#{options.to_s}"
     body = {
       question_tag: question_tag,
       answer_tags: answer_tags,
+      run_name: run_name,
       **options
     }
     cached(cache_key, use_cache=use_cache) do

@@ -1,33 +1,46 @@
 class ApisController < ApplicationController
   before_action :api_init
 
-  # Sentiment visualization
-  def update_visualization
-    authorize! :access, :sentiment_visualization
+  def get_predictions
+    authorize! :view, :ml
     options = {
-      interval: api_params_viz[:interval],
-      start_date: api_params_viz[:start_date],
-      end_date: api_params_viz[:end_date],
-      include_retweets: api_params_viz[:include_retweets]
+      interval: api_params_predictions[:interval],
+      start_date: api_params_predictions[:start_date],
+      end_date: api_params_predictions[:end_date],
+      include_retweets: api_params_predictions[:include_retweets]
     }
-    if not api_params_viz[:es_index_name].present?
-      render json: {'errors': ['es_index_name needs to be present']}, status: 400
-      return
-    end
-    resp = {
-      "all_data": @api.get_sentiment_data('*', options),
-      "pro_data": @api.get_sentiment_data('positive', options),
-      "anti_data": @api.get_sentiment_data('negative', options),
-      "neutral_data": @api.get_sentiment_data('neutral', options),
-      "avg_sentiment": @api.get_avg_sentiment(options)
-    }
+    resp = @api.get_predictions(api_params_predictions[:es_index_name],
+                                api_params_predictions[:question_tag],
+                                api_params_predictions[:answer_tags],
+                                run_name=api_params_predictions[:run_name],
+                                options=options,
+                                use_cache=api_params_predictions[:use_cache])
     render json: resp.to_json, status: 200
+  end
+
+  def endpoint_info
+    model_endpoints = Project.where.not(model_endpoints: {}).pluck(:model_endpoints, :es_index_name)
+    endpoint_info = {}
+    model_endpoints.each do |endpoint, es_index_name|
+      _project_endpoints = {}
+      endpoint.each do |question_tag, question_tag_endpoints|
+        labels = @api.endpoint_labels(question_tag_endpoints['primary'])
+        _endpoints = []
+        question_tag_endpoints['active'].each do |endpoint_name, endpoint_obj|
+          is_primary = endpoint_name == question_tag_endpoints['primary']
+          _endpoints.push({is_primary: is_primary, endpoint_name: endpoint_name, run_name: endpoint_obj['run_name']})
+        end
+        _project_endpoints[question_tag] = {endpoints: _endpoints, **labels.symbolize_keys}
+      end
+      endpoint_info[es_index_name] = _project_endpoints
+    end
+    render json: endpoint_info.to_json, status: 200
   end
 
   def update_sentiment_map
     authorize! :access, :sentiment_visualization
-    options = {start_date: api_params_viz[:start_date], end_date: api_params_viz[:end_date]}
-    if not api_params_viz[:es_index_name].present?
+    options = {start_date: api_params_predictions[:start_date], end_date: api_params_predictions[:end_date]}
+    if not api_params_predictions[:es_index_name].present?
       render json: {'errors': ['es_index_name needs to be present']}, status: 400
       return
     end
@@ -38,12 +51,18 @@ class ApisController < ApplicationController
 
   def get_stream_graph_data
     options = {
-      interval: api_params_viz[:interval],
-      start_date: api_params_viz[:start_date],
-      end_date: api_params_viz[:end_date],
+      interval: api_params_predictions[:interval],
+      start_date: api_params_predictions[:start_date],
+      end_date: api_params_predictions[:end_date],
       include_retweets: true
     }
-    resp = @api.get_predictions('project_vaccine_sentiment', 'sentiment', ['positive', 'negative', 'neutral'], options, use_cache=false)
+    resp = @api.get_predictions(
+      'project_vaccine_sentiment',
+      'sentiment',
+      ['positive', 'negative', 'neutral'],
+      run_name='',
+      options=options,
+      use_cache=false)
     render json: resp.to_json, status: 200
   end
 
@@ -184,7 +203,7 @@ class ApisController < ApplicationController
       end
     end
     Project.where.not('model_endpoints': {}).each do |project|
-      project.sync_with_remote(resp)
+      project.sync_endpoints_with_remote(resp)
     end
     render json: resp.to_json, status: 200
   end
@@ -268,8 +287,8 @@ class ApisController < ApplicationController
     params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes)
   end
 
-  def api_params_viz
-    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :include_retweets, :timeOption)
+  def api_params_predictions
+    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :include_retweets, :question_tag, :use_cache, :run_name, :answer_tags => [])
   end
 
   def api_params_stream_graph_keywords

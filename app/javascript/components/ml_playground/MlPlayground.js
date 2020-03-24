@@ -170,7 +170,7 @@ export class MlPlayground extends React.Component {
     } else {
       if (this.state.currentEndpoint) {
         // We have at least found one valid endpoint
-        selectEndpoint = <select name="endpoint-select" selected={this.state.currentEndpoint} className='select form-control mb-3' onChange={(e) => this.onSelectEndpoint(e.target.value)}>
+        selectEndpoint = <select name="endpoint-select" value={this.state.currentEndpoint} className='select form-control mb-3' onChange={(e) => this.onSelectEndpoint(e.target.value)}>
         {this.state.endpointData.map((item, i) => {
           return <option key={i} value={item['name']}>{prevThis.optionName(item)}</option>
         })}

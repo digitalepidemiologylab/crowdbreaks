@@ -17,6 +17,7 @@ import { StreamGraph } from './stream_graph/StreamGraph';
 import { StreamGraphKeywords } from './stream_graph_keywords/StreamGraphKeywords';
 import { MlModels } from './ml_models/MlModels';
 import { MlPlayground } from './ml_playground/MlPlayground';
+import { PredictViz } from './predict_viz/PredictViz';
 
 // Register components using Webpacker-react
 WebpackerReact.setup({
@@ -35,7 +36,8 @@ WebpackerReact.setup({
   StreamGraph,
   StreamGraphKeywords,
   MlModels,
-  MlPlayground
+  MlPlayground,
+  PredictViz
 })
 
 // This is needed for components to properly unmount and not being cached

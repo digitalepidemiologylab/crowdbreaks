@@ -48,6 +48,9 @@
     <% if can? :view, :ml %>
       <%= link_to 'Playground', ml_playground_ml_resources_path, class: 'btn btn-primary btn-lg btn-block', data: {turbolinks: false}%>
     <% end %>
+    <% if can? :view, :ml %>
+      <%= link_to 'Predictions', ml_predictions_ml_resources_path, class: 'btn btn-primary btn-lg btn-block', data: {turbolinks: false}%>
+    <% end %>
   </div>
   <div class="col-lg-6 text-center mt-4 mt-lg-0">
     <h4 class="and-divider mb-4"><span>Other</span></h4>

@@ -97,7 +97,11 @@ export class StreamGraph extends React.Component {
       return
     }
     const params = {
-      viz: options
+      viz: {
+        start_date: options.start_date,
+        end_date: options.end_date,
+        interval: options.interval
+      }
     };
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},

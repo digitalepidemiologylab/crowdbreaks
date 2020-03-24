@@ -8,6 +8,14 @@ module Manage
       @api_ready = @api.ping
     end
 
+    def ml_playground
+      authorize! :view, :ml
+    end
+
+    def ml_predictions
+      authorize! :view, :ml
+    end
+
     private
 
     def api_init
