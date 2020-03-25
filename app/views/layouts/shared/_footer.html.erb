@@ -4,6 +4,7 @@
       <li class="logomark-crowdbreaks"><span>Crowdbreaks</span></li>
       <li><%= link_to t('footer.privacy'), privacy_path %></li>
       <li><%= link_to t('footer.terms'), terms_of_use_path %></li>
+      <li><%= link_to t('footer.data_sharing'), data_sharing_path %></li>
     <ul>
   </div>
 
@@ -11,9 +12,7 @@
     <span class="no-wrap">
       <%= t('footer.developed_by_html',
             href_del: link_to('Digital Epidemiology Lab', 'http://www.digitalepidemiologylab.org', target: '_blank'),
-            href_epfl: link_to('EPFL', 'https://www.epfl.ch/en/home/', target: '_blank')) 
-          %>
-
+            href_epfl: link_to('EPFL', 'https://www.epfl.ch/en/home/', target: '_blank')) %>
       <%= link_to 'https://www.epfl.ch/en/home/', 'target': '_blank' do %>
         <img src=<%= image_url('logo-epfl.svg') %> class="logo-epfl pb-1" alt="EPFL">
       <% end %>

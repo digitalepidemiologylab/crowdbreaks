@@ -1,0 +1,7 @@
+en:
+  pages:
+    data_sharing:
+      title: Data sharing
+      public_repo_text: here
+      subtext1_html: You can find data to our projects below. The data we are sharing contain tweet IDs. From the IDs the full tweets can be obtained using a script and explanations provided %{public_repo}. Thank you for giving attribution if you end up using the data.
+      subtext2_html: Should you have requests for only a subset of the data (or any kind of aggregate data), please get in touch through %{mail}.

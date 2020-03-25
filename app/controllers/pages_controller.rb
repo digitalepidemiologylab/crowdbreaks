@@ -23,6 +23,10 @@ class PagesController < ApplicationController
   def about
   end
 
+  def data_sharing
+    @projects = Project.order(created_at: :desc).where(public: true).where("'#{I18n.locale.to_s}' = ANY (locales)").accessible_by_user(current_user)
+  end
+
   def privacy
   end
 

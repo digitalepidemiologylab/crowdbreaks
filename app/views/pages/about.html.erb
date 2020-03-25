@@ -4,9 +4,9 @@
   <div class="col-12 col-md-10 col-lg-8 text-center">
     <h1 class='mb-5'><%= t('.about_crowdbreaks_title') %></h1>
     <p class="large text-light text-left mb-5">
-      <%= t('.about_crowdbreaks_html', 
+      <%= t('.about_crowdbreaks_html',
             href_group: link_to('Digital Epidemiology Lab', 'https://www.digitalepidemiologylab.org/', target: '_blank'),
-            href_EPFL: link_to('EPFL', 'https://www.epfl.ch/', target: '_blank')) %> 
+            href_EPFL: link_to('EPFL', 'https://www.epfl.ch/', target: '_blank')) %>
     </p>
     <h4 class="and-divider mb-4">
       <span>
@@ -20,6 +20,10 @@
 
     <h4 class="and-divider mb-4"><span><%= t('.why_crowdsourcing_title') %></span></h4>
     <p class="large text-light text-left mb-5"><%= t('.why_crowdsourcing_html') %></p>
+
+    <h4 class="and-divider mb-4"><span><%= t('.data_sharing') %></span></h4>
+    <p class="large text-light text-left mb-5"><%= t('.data_sharing_html', href_data_sharing: link_to(t('.data_sharing_link'), data_sharing_path)) %></p>
+
 
     <h4 class="and-divider mb-4"><span><%= t('.help_title') %></span></h4>
     <p class="large text-light text-left mb-5"><%= t('.help_html', mail: mail_to("info@crowdbreaks.org"), projects_section: link_to(t('.projects_link'), projects_path)) %></p>
