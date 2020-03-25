@@ -45,13 +45,16 @@
         <%= f.input :image_storage_mode, collection: Project.image_storage_modes, include_blank: false, selected: @project.read_attribute_before_type_cast(:image_storage_mode), hint: 'Download images (includes video thumbnails, gifs) to S3. Active: Download everything. Avoid possibly sensitive: Do not download if tweet was flagged as sensitive.' %>
       </div>
       <div class="form-group">
-        <%= f.input :compile_trending_tweets, input_html: {class: "mr-2", value: @project.compile_trending_tweets}, hint: "If true, will gather a list of recent popular/relevant tweets for this project", label_html: {class: 'checkbox-inline'} %>
+        <%= toggle_switch(@project.compile_trending_tweets, 'Compile trending tweets', 'project[compile_trending_tweets]', hint: "If true, will gather a list of recent popular/relevant tweets for this project") %>
       </div>
       <div class="form-group">
-        <%= f.input :compile_trending_topics, input_html: {class: "mr-2", value: @project.compile_trending_topics}, hint: "If true, will gather a list of recent popular/relevant topics for this project", label_html: {class: 'checkbox-inline'} %>
+        <%= toggle_switch(@project.compile_trending_topics, 'Compile trending topics', 'project[compile_trending_topics]', hint: "If true, will gather a list of recent popular/relevant topics for this project") %>
       </div>
       <div class="form-group">
-        <%= f.input :active_stream, input_html: {class: "mr-2", value: @project.active_stream}, hint: "Activate stream (if false, won't stream data for this project)", label_html: {class: 'checkbox-inline'} %>
+        <%= toggle_switch(@project.active_stream, 'Active stream', 'project[active_stream]', hint: "Activate stream (if false, won't stream data for this project)") %>
+      </div>
+      <div class="form-group">
+        <%= toggle_switch(@project.compile_data_dump_ids, 'Compile dump of Ids', 'project[compile_data_dump_ids]', hint: 'Compile daily S3 data dump with tweet IDs.') %>
       </div>
     </div>
   </div>
@@ -85,7 +88,7 @@
   <div class="mb-5">
     <h4>Accessibility options</h4>
     <div class="form-group">
-      <%= f.input :public, label: "Make public", input_html: {class: "mr-2", value: @project.public || false}, hint: 'List project under /projects publicly, else project is private', label_html: {class: 'label-inline'} %>
+      <%= toggle_switch(@project.public, 'Make public', 'project[public]', hint: 'List project under /projects publicly, else project is private') %>
     </div>
     <div class="form-group">
       <%= f.input :accessible_by_email_pattern, as: :string, hint: 'Restrict access to users with an account registered with a certain email pattern. Leave empty for no restriction. The project can be set to private with "\w@\w" as the pattern, which will allow access to all registered users without showing the project under /projects. Seperate multiple regex patterns by commas: E.g. "\w@epfl\.ch, \w@ethz\.ch, other@user.com"', :input_html => { value: @project.accessible_by_email_pattern&.join(', ') || '' } %>

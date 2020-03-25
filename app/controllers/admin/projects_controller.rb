@@ -66,7 +66,7 @@ module Admin
       params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales},
                                       :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode,
                                       :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :active_question_sequence_id,
-                                      :compile_trending_tweets, :compile_trending_topics)
+                                      :compile_trending_tweets, :compile_trending_topics, :compile_data_dump_ids)
     end
 
     def generate_question_sequence_project(project)

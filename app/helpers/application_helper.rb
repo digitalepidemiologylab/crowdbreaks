@@ -82,12 +82,18 @@ module ApplicationHelper
     number_with_delimiter(num, delimiter: "\u202F").html_safe
   end
 
-  def toggle_switch(instance_var, label, name, color: nil)
-    content_tag :div do
-      content_tag :label, class: 'switch' do
+  def toggle_switch(instance_var, label, name, color: nil, hint: nil)
+    class_name = hint.nil? ? '' : 'input field_with_hint'
+    content_tag :div, class: class_name do
+      output = content_tag :label, class: 'switch' do
         concat check_box_tag(name, 'checkbox', instance_var, class: name)
         concat tag.span(class: "slider round#{color.nil? ? '' : " slider-#{color}"}")
         concat tag.span(label, class: 'switch-label')
+      end
+      if hint.nil?
+        output
+      else
+        output += tag.p(hint, class: 'help-block')
       end
     end
   end
