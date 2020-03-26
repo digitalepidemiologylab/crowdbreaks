@@ -1,9 +1,10 @@
 <div class="row justify-content-center">
-  <div class="col-12 col-md-10 col-lg-8 text-center">
+  <div class="col-12 col-md-10 col-lg-8 text-center mb-5">
     <h1 class="mb-5"><%= t('.title') %></h1>
     <p class="large text-light text-left"><%= t('.subtext1_html', public_repo: link_to(t('.public_repo_text'), 'https://github.com/salathegroup/crowdbreaks-paper', 'target': '_blank')) %></p>
+    <p class="large text-light text-left"><%= t('.subtext2_html', mail: mail_to("info@crowdbreaks.org"), public_repo: link_to(t('.public_repo_text'), 'https://github.com/salathegroup/crowdbreaks-paper', 'target': '_blank')) %></p>
+    <p class="large text-light text-left"><%= t('.subtext3_html') %></p>
     <p class="large text-light text-left font-italic">Müller, Martin M., and Marcel Salathé. "Crowdbreaks: Tracking Health Trends Using Public Social Media Data and Crowdsourcing." Frontiers in public health 7 (2019).</p>
-    <p class="large text-light text-left mb-5"><%= t('.subtext2_html', mail: mail_to("info@crowdbreaks.org")) %></p>
   </div>
 </div>
 
@@ -16,10 +17,12 @@
         <p class='mb-0'>Languages: <%= project.lang.join(', ') %></p>
         <p class='mb-0'>Created: <%= project.created_at.strftime('%F') %></p>
       </div>
-      <%= react_component('DownloadResource', {
-        project: project.slug,
-        downloadResourceInfoPath: download_resource_info_path,
-      }) %>
+      <div>
+        <%= react_component('DownloadResource', {
+          project: project.slug,
+          downloadResourceInfoPath: download_resource_info_path,
+        }) %>
+      </div>
     </div>
   </div>
 <% end %>

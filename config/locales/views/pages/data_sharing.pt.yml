@@ -3,5 +3,6 @@ pt:
     data_sharing:
       title: Partilha de dados
       public_repo_text: aqui
-      subtext1_html: Você pode encontrar dados para os nossos projetos abaixo. Os dados que estamos compartilhando contêm tweet IDs. A partir dos IDs os tweets completos podem ser obtidos usando um script e explicações fornecidas %{public_repo}. Obrigado por dar a atribuição se você acabar usando os dados.
-      subtext2_html: Caso você tenha pedidos para apenas um subconjunto dos dados (ou qualquer tipo de dados agregados), entre em contato através de %{mail}.
+      subtext1_html: Você pode encontrar dados para os nossos projetos abaixo. Os dados que estamos compartilhando contêm tweet IDs. Dos IDs os tweets completos podem ser obtidos usando um script e explicações fornecidas %{public_repo}.
+      subtext2_html: Os dados foram coletados através da API do fluxo de filtros do Twitter usando uma lista de palavras-chave e idiomas (fornecida abaixo).  Note que em alguns casos as palavras-chave/idiomas tiveram que ser atualizadas após algum tempo (por exemplo, à medida que novos termos surgiram).  Caso você tenha pedidos para apenas um subconjunto dos dados (ou qualquer tipo de dados agregados), por favor entre em contato através de %{mail}.
+      subtext3_html: Obrigado por dar a atribuição se você acabar usando os dados.

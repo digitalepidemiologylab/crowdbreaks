@@ -13,5 +13,8 @@ en:
       data_sharing: I'm interested in the data
       data_sharing_html: We're happy to share the data with you. Please find all the relevant information %{href_data_sharing}.
       data_sharing_link: here
+      code_sharing: I'm interested in the code
+      code_sharing_html: The platform is fully open source under MIT license. Feel free to check out our %{href_github} - Any contributions are welcome!
+      github_link: Github repo
       why_crowdsourcing_html: Millions of people use social media every day to share how they feel, both good and bad. This is, in a sense, like having millions of sensors which can help us understand the health situation in real-time. By asking people to help make sense of the reported data, we invoke the wisdom of the crowd to help us separate signal from noise. We also hope to engage the public in public health and try to show the importance of these issues.
       why_crowdsourcing_title: Why crowdsourcing?

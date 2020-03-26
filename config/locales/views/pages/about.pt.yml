@@ -12,3 +12,9 @@ pt:
       projects_link: Seção de projetos
       why_crowdsourcing_html: Milhões de pessoas usam as mídias sociais todos os dias para compartilhar como se sentem, tanto boas quanto ruins. Isto é, em certo sentido, como ter milhões de sensores que podem nos ajudar a entender a situação da saúde em tempo real. Ao pedir às pessoas que ajudem a entender os dados relatados, nós invocamos a sabedoria da multidão para nos ajudar a separar o sinal do ruído. Também esperamos envolver o público na saúde pública e tentar mostrar a importância dessas questões.
       why_crowdsourcing_title: Por que crowdsourcing?
+      data_sharing: Estou interessado nos dados
+      data_sharing_html: Estamos felizes em compartilhar os dados com você. Por favor, encontre toda a informação relevante %{href_data_sharing}.
+      data_sharing_link: aqui
+      code_sharing: Estou interessado no código
+      code_sharing_html: A plataforma é totalmente open source sob licença do MIT. Sinta-se à vontade para conferir nosso %{href_github} - Qualquer contribuição é bem-vinda!
+      github_link: repo de Github
