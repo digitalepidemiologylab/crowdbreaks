@@ -11,6 +11,11 @@
   <div class="row justify-content-center">
     <div class="col-12 col-md-10 col-lg-8 text-center">
       <h4 class='and-divider mb-4'><span><%= project.title %></span></h4>
+      <div class='mb-3'>
+        <p class='mb-0'>Keywords: <%= project.keywords.join(', ') %></p>
+        <p class='mb-0'>Languages: <%= project.lang.join(', ') %></p>
+        <p class='mb-0'>Created: <%= project.created_at.strftime('%F') %></p>
+      </div>
       <%= react_component('DownloadResource', {
         project: project.slug,
         downloadResourceInfoPath: download_resource_info_path,
