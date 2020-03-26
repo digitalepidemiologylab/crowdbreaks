@@ -293,9 +293,9 @@ class ApisController < ApplicationController
     client = AwsS3.new(bucket: 'crowdbreaks-public')
     project = api_params_download_resource[:project]
     key = "data_dump/#{project}/data_dump_ids_#{project}.txt.gz"
-    if not client.exists?(key)
-      render json: {message: 'File does not exist.'}.to_json, status: 404 and return
-    end
+    # if not client.exists?(key)
+    #   render json: {message: 'File does not exist.'}.to_json, status: 404 and return
+    # end
     resp = client.head(key)
     resp = {last_modified: resp['last_modified'], size: resp['content_length']}
     render json: resp.to_json, status: 200
