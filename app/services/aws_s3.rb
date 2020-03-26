@@ -1,9 +1,13 @@
 class AwsS3
   attr_reader :client, :bucket
 
-  def initialize
+  def initialize(bucket: nil)
     @client = Aws::S3::Client.new
-    @bucket_name = ENV['S3_BUCKET_NAME'] || 'crowdbreaks-dev'
+    if bucket.nil?
+      @bucket_name = ENV['S3_BUCKET_NAME'] || 'crowdbreaks-dev'
+    else
+      @bucket_name = bucket
+    end
     @signer = Aws::S3::Presigner.new
     if @bucket_name.present?
       s3 = Aws::S3::Resource.new
@@ -55,5 +59,9 @@ class AwsS3
   def remove(target_key)
     obj = @bucket.object(target_key)
     obj.delete
+  end
+
+  def head(filepath)
+    @client.get_object(bucket: @bucket_name, key: filepath)
   end
 end

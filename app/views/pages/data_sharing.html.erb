@@ -11,19 +11,10 @@
   <div class="row justify-content-center">
     <div class="col-12 col-md-10 col-lg-8 text-center">
       <h4 class='and-divider mb-4'><span><%= project.title %></span></h4>
-      <div class='mb-5'>
-        <%= link_to root_path, class: 'btn btn-secondary btn-lg' do %>
-          <%= tag.span id: "data-sharing-#{project.id}-icon" do %>
-            <%= fa_icon('download') %>&emsp;Download
-          <% end %>
-          <%= tag.span id: "data-sharing-#{project.id}-spinner", style:'display:none;' do %>
-            <%= tag.span class: "spinner-small", style: 'position:absolute;'  %>
-            <%= tag.span class: 'ml-4' do %>
-              &emsp;Download
-            <% end %>
-          <% end %>
-        <% end %>
-      </div>
+      <%= react_component('DownloadResource', {
+        project: project.slug,
+        downloadResourceInfoPath: download_resource_info_path,
+      }) %>
     </div>
   </div>
 <% end %>

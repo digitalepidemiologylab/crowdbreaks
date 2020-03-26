@@ -109,6 +109,17 @@
   }
 }
 
+.loading-notification-container-sm {
+  height: 50px;
+  position: relative;
+  .loading-notification {
+    position: absolute;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+  }
+}
+
 
 .stream-graph-tooltip {
   position: absolute;

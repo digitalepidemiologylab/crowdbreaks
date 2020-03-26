@@ -277,6 +277,18 @@ class ApisController < ApplicationController
     end
   end
 
+  def download_resource_info
+    client = AwsS3.new(bucket: 'crowdbreaks-public')
+    project = api_params_download_resource[:project]
+    key = "data_dump/#{project}/data_dump_ids_#{project}.txt.gz"
+    if not client.exists?(key)
+      render json: {message: 'File does not exist.'}.to_json, status: 404 and return
+    end
+    resp = client.head(key)
+    resp = {last_modified: resp['last_modified'], size: resp['content_length']}
+    render json: resp.to_json, status: 200
+  end
+
   private
 
   def api_params_user_activity
@@ -285,6 +297,10 @@ class ApisController < ApplicationController
 
   def api_params
     params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes)
+  end
+
+  def api_params_download_resource
+    params.require(:download_resource).permit(:project)
   end
 
   def api_params_predictions

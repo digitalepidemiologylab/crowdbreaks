@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       post 'list_ml_models', action: 'list_ml_models'
       post 'update_ml_models', action: 'update_ml_models'
       post 'endpoint_info', action: 'endpoint_info'
+      post 'download_resource_info', action: 'download_resource_info'
     end
   end
 
