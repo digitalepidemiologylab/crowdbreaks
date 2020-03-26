@@ -62,6 +62,6 @@ class AwsS3
   end
 
   def head(filepath)
-    @client.get_object(bucket: @bucket_name, key: filepath)
+    @client.head_object(bucket: @bucket_name, key: filepath)
   end
 end

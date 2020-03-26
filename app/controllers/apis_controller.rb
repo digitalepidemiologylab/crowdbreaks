@@ -7,14 +7,26 @@ class ApisController < ApplicationController
       interval: api_params_predictions[:interval],
       start_date: api_params_predictions[:start_date],
       end_date: api_params_predictions[:end_date],
-      include_retweets: api_params_predictions[:include_retweets]
+      include_retweets: api_params_predictions[:include_retweets],
     }
-    resp = @api.get_predictions(api_params_predictions[:es_index_name],
-                                api_params_predictions[:question_tag],
-                                api_params_predictions[:answer_tags],
-                                run_name=api_params_predictions[:run_name],
+    es_index_name = api_params_predictions[:es_index_name]
+    question_tag = api_params_predictions[:question_tag]
+    answer_tags = api_params_predictions[:answer_tags]
+    run_name = api_params_predictions[:run_name] || ''
+    use_cache = api_params_predictions[:use_cache]
+    average_label_val = api_params_predictions[:average_label_val].nil? ? false : true
+    resp = {}
+    resp['predictions'] = @api.get_predictions(es_index_name,
+                                question_tag,
+                                answer_tags,
+                                run_name=run_name,
                                 options=options,
-                                use_cache=api_params_predictions[:use_cache])
+                                use_cache=use_cache)
+    if average_label_val
+      resp['avg_label_vals'] = @api.get_avg_label_val(es_index_name, question_tag, run_name=run_name, options=options, use_cache=use_cache)
+    else
+      resp['avg_label_vals'] = []
+    end
     render json: resp.to_json, status: 200
   end
 
@@ -304,7 +316,7 @@ class ApisController < ApplicationController
   end
 
   def api_params_predictions
-    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :include_retweets, :question_tag, :use_cache, :run_name, :answer_tags => [])
+    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :include_retweets, :question_tag, :use_cache, :run_name, :average_label_val, :answer_tags => [])
   end
 
   def api_params_stream_graph_keywords
