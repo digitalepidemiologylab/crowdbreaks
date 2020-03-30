@@ -114,7 +114,7 @@ export class PredictViz extends React.Component {
             }
           });
           // fetch label val data
-          if ('key_as_string' in currentDate && avg[i].key_as_string === currentDate) {
+          if ('key_as_string' in avg[i] && avg[i].key_as_string === currentDate) {
             if ('mean_label_val' in avg[i]) {
               d['avg_label_val'] = avg[i]['mean_label_val']['value'];
             } else {
