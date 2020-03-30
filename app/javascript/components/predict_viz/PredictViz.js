@@ -104,11 +104,21 @@ export class PredictViz extends React.Component {
               d[label] = 0;
             }
           });
-          // sanity check to make sure date from avg is the same as from counts
+          // fetch label val data
           if (avg[i].key_as_string == currentDate) {
-            d['avg_label_val'] = avg[i]['mean_label_val']['value']
+            if ('mean_label_val' in avg[i]) {
+              d['avg_label_val'] = avg[i]['mean_label_val']['value']
+            } else {
+              d['avg_label_val'] = null;
+            }
+            if ('mean_label_val_moving_average' in avg[i]) {
+              d['avg_label_val_moving_average'] = avg[i]['mean_label_val_moving_average']['value']
+            } else {
+              d['avg_label_val_moving_average'] = null;
+            }
           } else {
             d['avg_label_val'] = null;
+            d['avg_label_val_moving_average'] = null;
           }
           data.push(d);
         }
@@ -269,7 +279,7 @@ export class PredictViz extends React.Component {
 
   getSelectEndpoint() {
     let prevThis = this;
-    let selectEndpoint = <select name="endpoint-select" value={this.state.runName} className='select form-control mb-3' onChange={(e) => this.onSelectEndpoint(e.target.value)}>
+    let selectEndpoint = <select name="endpoint-select" value={this.state.runName} className='select form-control' onChange={(e) => this.onSelectEndpoint(e.target.value)}>
     {this.state.endpointInfo[this.state.project][this.state.questionTag]['endpoints'].map((item, i) => {
       return <option key={i} value={item['run_name']}>{prevThis.optionName(item)}</option>
     })}
@@ -279,7 +289,7 @@ export class PredictViz extends React.Component {
 
   getSelectProject() {
     let prevThis = this;
-    let selectProject = <select name="endpoint-select" value={this.state.project} className='select form-control mb-3' onChange={(e) => this.onSelectProject(e.target.value)}>
+    let selectProject = <select name="endpoint-select" value={this.state.project} className='select form-control' onChange={(e) => this.onSelectProject(e.target.value)}>
       {Object.keys(this.state.endpointInfo).map((item, i) => {
         return <option key={i} value={item}>{item}</option>
       })}
@@ -289,7 +299,7 @@ export class PredictViz extends React.Component {
 
   getSelectQuestion() {
     let prevThis = this;
-    let selectQuestion = <select name="endpoint-select" value={this.state.questionTag} className='select form-control mb-3' onChange={(e) => this.onSelectQuestion(e.target.value)}>
+    let selectQuestion = <select name="endpoint-select" value={this.state.questionTag} className='select form-control' onChange={(e) => this.onSelectQuestion(e.target.value)}>
       {Object.keys(this.state.endpointInfo[this.state.project]).map((item, i) => {
         return <option key={i} value={item}>{item}</option>
       })}
@@ -320,11 +330,20 @@ export class PredictViz extends React.Component {
       label: 'index',
       yAxisID: 'index',
       borderColor: '#657786',
-      borderDash: [10, 10],
       backgroundColor: '#657786',
-      // pointRadius: 3,
-      showLine: true,
+      pointRadius: 2,
+      showLine: false,
       data: this.state.data.map((d) => d['avg_label_val'])
+    })
+    datasets.push({
+      label: 'index (moving average)',
+      yAxisID: 'index',
+      borderColor: '#657786',
+      backgroundColor: '#657786',
+      spanGaps: true,
+      borderWidth: 4,
+      pointRadius: 0,
+      data: this.state.data.map((d) => d['avg_label_val_moving_average'])
     })
     const data = {
       labels: this.state.data.map((d) => d['date']),
@@ -418,6 +437,7 @@ export class PredictViz extends React.Component {
       startDate: this.state.startDateValue,
       endDate: this.state.endDateValue,
       interval: this.state.intervalValue,
+      isLoadingPredictions: true
     }, () => this.getPredictions())
   }
 
@@ -436,15 +456,15 @@ export class PredictViz extends React.Component {
         let selectQuestion = this.getSelectQuestion();
         let selectProject = this.getSelectProject();
         input = <div>
-          <div className='form-group'>
+          <div className='form-group mb-3'>
             <label>Projects</label>
             {selectProject}
           </div>
-          <div className='form-group'>
+          <div className='form-group mb-3'>
             <label>Questions</label>
             {selectQuestion}
           </div>
-          <div className='form-group'>
+          <div className='form-group mb-3'>
             <label>Endpoints</label>
             {selectEndpoint}
           </div>
