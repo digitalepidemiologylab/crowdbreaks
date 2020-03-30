@@ -12,7 +12,7 @@ export class PredictViz extends React.Component {
     this.state = {
       data: {},
       average_label_vals: [],
-      startDate: 'now-10d',
+      startDate: 'now-3M',
       endDate: 'now',
       dropdownOpen: false,
       includeRetweets: true,
@@ -33,7 +33,7 @@ export class PredictViz extends React.Component {
     this.state['startDateValue'] = this.state.startDate;
     this.state['endDateValue'] = this.state.endDate;
     this.state['intervalValue'] = this.state.interval;
-    this.intervalOptions = ['1h', '2h', '3h', '6h', '12h', '24h'];
+    this.intervalOptions = ['1h', '2h', '3h', '6h', '12h', '24h', '3d', '7d'];
   }
 
   componentDidMount() {
@@ -212,7 +212,6 @@ export class PredictViz extends React.Component {
     while (currentDate < stopDate) {
       dateArray.push(new Date(currentDate))
       currentDate = moment(currentDate).add(1, frequency);
-      console.log(currentDate);
     }
     return dateArray;
   }
@@ -253,22 +252,11 @@ export class PredictViz extends React.Component {
     })
   }
 
-  onSelectEndpoint(runName) {
-    this.setState({
-      runName: runName
-    }, () => this.getPredictions())
-  }
-
-  onSelectProject(project) {
-    this.setState({
-      project: project
-    })
-  }
-
-  onSelectQuestion(question) {
-    this.setState({
-      question_tag: question
-    })
+  onSelectField(field, value) {
+    let currentState = this.state;
+    currentState[field] = value;
+    currentState['isLoadingPredictions'] = true;
+    this.setState(currentState, () => this.getPredictions())
   }
 
   optionName(item) {
@@ -281,7 +269,7 @@ export class PredictViz extends React.Component {
 
   getSelectEndpoint() {
     let prevThis = this;
-    let selectEndpoint = <select name="endpoint-select" value={this.state.runName} className='select form-control' onChange={(e) => this.onSelectEndpoint(e.target.value)}>
+    let selectEndpoint = <select name="endpoint-select" value={this.state.runName} className='select form-control' onChange={(e) => this.onSelectField('runName', e.target.value)}>
     {this.state.endpointInfo[this.state.project][this.state.questionTag]['endpoints'].map((item, i) => {
       return <option key={i} value={item['run_name']}>{prevThis.optionName(item)}</option>
     })}
@@ -291,7 +279,7 @@ export class PredictViz extends React.Component {
 
   getSelectProject() {
     let prevThis = this;
-    let selectProject = <select name="endpoint-select" value={this.state.project} className='select form-control' onChange={(e) => this.onSelectProject(e.target.value)}>
+    let selectProject = <select name="endpoint-select" value={this.state.project} className='select form-control' onChange={(e) => this.onSelectField('project', e.target.value)}>
       {Object.keys(this.state.endpointInfo).map((item, i) => {
         return <option key={i} value={item}>{item}</option>
       })}
@@ -301,7 +289,7 @@ export class PredictViz extends React.Component {
 
   getSelectQuestion() {
     let prevThis = this;
-    let selectQuestion = <select name="endpoint-select" value={this.state.questionTag} className='select form-control' onChange={(e) => this.onSelectQuestion(e.target.value)}>
+    let selectQuestion = <select name="endpoint-select" value={this.state.questionTag} className='select form-control' onChange={(e) => this.onSelectField('questionTag', e.target.value)}>
       {Object.keys(this.state.endpointInfo[this.state.project]).map((item, i) => {
         return <option key={i} value={item}>{item}</option>
       })}
@@ -470,17 +458,19 @@ export class PredictViz extends React.Component {
             <label>Endpoints</label>
             {selectEndpoint}
           </div>
-          <div className="row">
+          <div className="row mb-3">
             <div className="col-xs-12 col-lg-3">
-              <div className='form-group'>
+              <div className='form-group field_with_hint mb-0'>
                 <label>Start</label>
                 <input className='form-control' type="text" value={this.state.startDateValue} onChange={(e) => this.onChangeInputFields('startDateValue', e)}/>
+                <p className='help-block'>YYYY-MM-dd HH:mm:ss</p>
               </div>
             </div>
             <div className="col-xs-12 col-lg-3">
-              <div className='form-group'>
+              <div className='form-group field_with_hint mb-0'>
                 <label>End</label>
                 <input className='form-control' type="text" value={this.state.endDateValue} onChange={(e) => this.onChangeInputFields('endDateValue', e)}/>
+                <p className='help-block'>YYYY-MM-dd HH:mm:ss</p>
               </div>
             </div>
             <div className="col-xs-12 col-lg-3">
@@ -496,7 +486,7 @@ export class PredictViz extends React.Component {
               </div>
             </div>
             <div className='col-xs-12 col-lg-3'>
-              <button className='btn btn-primary' style={{marginTop: '33px'}} onClick={() => this.refresh()}>Refresh</button>
+              <button className='btn btn-secondary' style={{marginTop: '33px'}} onClick={() => this.refresh()}>Refresh&ensp;<i className='fa fa-refresh'></i></button>
             </div>
           </div>
         </div>
