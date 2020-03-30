@@ -36,13 +36,16 @@ class ApisController < ApplicationController
     model_endpoints.each do |endpoint, es_index_name|
       _project_endpoints = {}
       endpoint.each do |question_tag, question_tag_endpoints|
-        labels = @api.endpoint_labels(question_tag_endpoints['primary'])
+        resp = @api.endpoint_labels(question_tag_endpoints['primary'])
+        if not resp['success'].nil? and not resp['success']
+          render json: resp.to_json, status: resp['status']
+        end
         _endpoints = []
         question_tag_endpoints['active'].each do |endpoint_name, endpoint_obj|
           is_primary = endpoint_name == question_tag_endpoints['primary']
           _endpoints.push({is_primary: is_primary, endpoint_name: endpoint_name, run_name: endpoint_obj['run_name']})
         end
-        _project_endpoints[question_tag] = {endpoints: _endpoints, **labels.symbolize_keys}
+        _project_endpoints[question_tag] = {endpoints: _endpoints, **resp.symbolize_keys}
       end
       endpoint_info[es_index_name] = _project_endpoints
     end
@@ -293,9 +296,9 @@ class ApisController < ApplicationController
     client = AwsS3.new(bucket: 'crowdbreaks-public')
     project = api_params_download_resource[:project]
     key = "data_dump/#{project}/data_dump_ids_#{project}.txt.gz"
-    # if not client.exists?(key)
-    #   render json: {message: 'File does not exist.'}.to_json, status: 404 and return
-    # end
+    if not client.exists?(key)
+      render json: {message: 'File does not exist.'}.to_json, status: 404 and return
+    end
     resp = client.head(key)
     resp = {last_modified: resp['last_modified'], size: resp['content_length']}
     render json: resp.to_json, status: 200

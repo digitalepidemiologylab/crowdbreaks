@@ -99,10 +99,18 @@ class FlaskApi
     end
   end
 
-  def get_avg_sentiment(options={})
-    handle_error(error_return_value: []) do
-      resp = self.class.get('/sentiment/average', query: options, timeout: 20)
-      JSON.parse(resp)
+  def get_avg_label_val(index, question_tag, run_name='', options={}, use_cache=true)
+    cache_key = "get-avg-label-val-#{index}-#{question_tag}-#{run_name}-#{options.to_s}"
+    body = {
+      question_tag: question_tag,
+      run_name: run_name,
+      **options
+    }
+    cached(cache_key, use_cache=use_cache) do
+      handle_error(error_return_value: []) do
+        resp = self.class.post('/data/average_label_val/'+index, body: body.to_json, timeout: 20, headers: JSON_HEADER)
+        JSON.parse(resp)
+      end
     end
   end
 

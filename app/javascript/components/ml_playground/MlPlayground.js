@@ -85,8 +85,8 @@ export class MlPlayground extends React.Component {
               labels = prediction['labels'];
               probabilities = prediction['probabilities'];
             }
-            if ('duration_ms' in data['predictions']) {
-              durationMs = data['predictions']['duration_ms']
+            if ('duration_ms' in data) {
+              durationMs = data['duration_ms'];
             }
           }
         }
