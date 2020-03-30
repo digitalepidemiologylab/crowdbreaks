@@ -89,7 +89,16 @@ export class PredictViz extends React.Component {
           counters[label] = 0;
         });
         for (let i=0; i < predictions[maxLengthKey].length; i++) {
-          const currentDate = predictions[maxLengthKey][i].key_as_string;
+          const currentDate = null;
+          for (let j=0; j<this.state.labels.length; j++) {
+            if ('key_as_string' in predictions[this.state.labels[j]][i]) {
+              currentDate = predictions[this.state.labels[j]][i].key_as_string;
+              break;
+            }
+          }
+          if (currentDate === null) {
+            continue;
+          }
           let d = {'date': new Date(moment.utc(currentDate))}
           this.state.labels.forEach((label) => {
             if (predictions[label][counters[label]] && predictions[label][counters[label]].key_as_string === currentDate) {
