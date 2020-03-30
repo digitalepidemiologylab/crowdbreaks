@@ -49,7 +49,13 @@ class AwsS3
   end
 
   def exists?(filepath)
-    @bucket.object(filepath).exists?
+    begin
+      head(filepath)
+    rescue Aws::S3::Errors::NotFound
+      return false
+    else
+      return true
+    end
   end
 
   def list_dir(prefix)
