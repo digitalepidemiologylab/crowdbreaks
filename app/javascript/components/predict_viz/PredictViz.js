@@ -114,14 +114,14 @@ export class PredictViz extends React.Component {
             }
           });
           // fetch label val data
-          if (avg[i].key_as_string == currentDate) {
+          if ('key_as_string' in currentDate && avg[i].key_as_string === currentDate) {
             if ('mean_label_val' in avg[i]) {
-              d['avg_label_val'] = avg[i]['mean_label_val']['value']
+              d['avg_label_val'] = avg[i]['mean_label_val']['value'];
             } else {
               d['avg_label_val'] = null;
             }
             if ('mean_label_val_moving_average' in avg[i]) {
-              d['avg_label_val_moving_average'] = avg[i]['mean_label_val_moving_average']['value']
+              d['avg_label_val_moving_average'] = avg[i]['mean_label_val_moving_average']['value'];
             } else {
               d['avg_label_val_moving_average'] = null;
             }
@@ -146,10 +146,16 @@ export class PredictViz extends React.Component {
           data[i]['all'] = sum;
         }
         // get min/max of index value and
-        let minIndexVal = Math.min(...data.filter((d) => d['avg_label_val'] != null).map(d => d['avg_label_val'])) * 0.7;
-        let maxIndexVal = Math.max(...data.filter((d) => d['avg_label_val'] != null).map(d => d['avg_label_val'])) * 1.3;
-        // move curve up a bit
-        minIndexVal -= 2*(maxIndexVal - minIndexVal)
+        let minIndexVal = this.state.minIndexVal;
+        let maxIndexVal = this.state.maxIndexVal;
+        const indexValNotNull = data.filter((d) => d['avg_label_val'] !== null);
+        if (indexValNotNull.length > 0) {
+          // find min/max and give some margin
+          minIndexVal = Math.min(...indexValNotNull.map(d => d['avg_label_val'])) * 0.7;
+          maxIndexVal = Math.max(...indexValNotNull.map(d => d['avg_label_val'])) * 1.3;
+          // move curve up a bit
+          minIndexVal -= 2*(maxIndexVal - minIndexVal)
+        }
         this.setState({
           data: data,
           isLoadingPredictions: false,
