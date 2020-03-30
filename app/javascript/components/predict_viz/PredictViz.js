@@ -28,7 +28,7 @@ export class PredictViz extends React.Component {
       interval: '24h',
       timeAxis: [],
       minIndexVal: -1,
-      maxIndexVal: 1,
+      maxIndexVal: 1
     };
     this.state['startDateValue'] = this.state.startDate;
     this.state['endDateValue'] = this.state.endDate;
@@ -137,8 +137,10 @@ export class PredictViz extends React.Component {
           data[i]['all'] = sum;
         }
         // get min/max of index value and
-        const minIndexVal = Math.min(...data.filter((d) => d['avg_label_val'] != null).map(d => d['avg_label_val'])) * 0.7;
-        const maxIndexVal = Math.max(...data.filter((d) => d['avg_label_val'] != null).map(d => d['avg_label_val'])) * 1.3;
+        let minIndexVal = Math.min(...data.filter((d) => d['avg_label_val'] != null).map(d => d['avg_label_val'])) * 0.7;
+        let maxIndexVal = Math.max(...data.filter((d) => d['avg_label_val'] != null).map(d => d['avg_label_val'])) * 1.3;
+        // move curve up a bit
+        minIndexVal -= 2*(maxIndexVal - minIndexVal)
         this.setState({
           data: data,
           isLoadingPredictions: false,
@@ -507,9 +509,8 @@ export class PredictViz extends React.Component {
     if (this.state.isLoadingPredictions) {
       graph =
           <div className='loading-notification-container'>
-            <div className="loading-notification">
-              <div className="spinner spinner-with-text"></div>
-              <div className='spinner-text'>Loading predictions...</div>
+            <div className='loading-notification'>
+              <div className='spinner'></div>
             </div>
           </div>
     } else {
