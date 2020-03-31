@@ -77,7 +77,7 @@ class FlaskApi
     cached(cache_key, use_cache=use_cache) do
       handle_error(error_return_value: []) do
         resp = self.class.get('/data/all/'+index, body: options.to_json, timeout: 20, headers: JSON_HEADER)
-        JSON.parse(resp)
+        resp.parsed_response
       end
     end
   end
