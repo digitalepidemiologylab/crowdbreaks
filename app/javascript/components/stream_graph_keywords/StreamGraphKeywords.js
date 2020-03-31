@@ -163,6 +163,11 @@ export class StreamGraphKeywords extends React.Component {
       data: JSON.stringify(params),
       dataType: "json",
       contentType: "application/json",
+      error: (result) => {
+        this.setState({
+          errorNotification: "Something went wrong when trying to load the data. Sorry ¯\\_(ツ)_/¯"
+        })
+      },
       success: (result) => {
         const keys = this.getKeys()
         const arrayLengths = keys.map((key) => result[key].length)

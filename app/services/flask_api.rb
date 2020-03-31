@@ -58,27 +58,21 @@ class FlaskApi
   end
 
   def get_trending_tweets(project_slug, options={})
-    handle_error(error_return_value: []) do
-      resp = self.class.get('/trending_tweets/'+project_slug, body: options.to_json, timeout: 10, headers: JSON_HEADER)
-      resp.parsed_response
-    end
+    resp = self.class.get('/trending_tweets/'+project_slug, body: options.to_json, timeout: 10, headers: JSON_HEADER)
+    resp.parsed_response
   end
 
   def get_trending_topics(project_slug, options={})
-    handle_error(error_return_value: []) do
-      resp = self.class.get('/trending_topics/'+project_slug, body: options.to_json, timeout: 10, headers: JSON_HEADER)
-      resp.parsed_response
-    end
+    resp = self.class.get('/trending_topics/'+project_slug, body: options.to_json, timeout: 10, headers: JSON_HEADER)
+    resp.parsed_response
   end
 
   # elasticsearch - all data
   def get_all_data(index, options={}, use_cache=true)
     cache_key = "get-all-data-#{index}-#{options.to_s}"
     cached(cache_key, use_cache=use_cache) do
-      handle_error(error_return_value: []) do
-        resp = self.class.get('/data/all/'+index, body: options.to_json, timeout: 20, headers: JSON_HEADER)
-        resp.parsed_response
-      end
+      resp = self.class.get('/data/all/'+index, body: options.to_json, timeout: 20, headers: JSON_HEADER)
+      resp.parsed_response
     end
   end
 
@@ -92,10 +86,8 @@ class FlaskApi
       **options
     }
     cached(cache_key, use_cache=use_cache) do
-      handle_error(error_return_value: []) do
-        resp = self.class.post('/data/predictions/'+index, body: body.to_json, timeout: 20, headers: JSON_HEADER)
-        resp.parsed_response
-      end
+      resp = self.class.post('/data/predictions/'+index, body: body.to_json, timeout: 60, headers: JSON_HEADER)
+      resp.parsed_response
     end
   end
 
@@ -107,10 +99,8 @@ class FlaskApi
       **options
     }
     cached(cache_key, use_cache=use_cache) do
-      handle_error(error_return_value: []) do
-        resp = self.class.post('/data/average_label_val/'+index, body: body.to_json, timeout: 20, headers: JSON_HEADER)
-        resp.parsed_response
-      end
+      resp = self.class.post('/data/average_label_val/'+index, body: body.to_json, timeout: 60, headers: JSON_HEADER)
+      resp.parsed_response
     end
   end
 

@@ -72,13 +72,17 @@ class ApisController < ApplicationController
       include_retweets: true
     }
     resp = @api.get_predictions(
-      'project_vaccine_sentiment',
-      'sentiment',
-      ['positive', 'negative', 'neutral'],
-      run_name='',
-      options=options,
-      use_cache=false)
-    render json: resp.to_json, status: 200
+        'project_vaccine_sentiment',
+        'sentiment',
+        ['positive', 'negative', 'neutral'],
+        run_name='',
+        options=options,
+        use_cache=false)
+    if resp.has_key?('success') and not resp['success']
+      render json: resp.to_json, status: resp['status']
+    else
+      render json: resp.to_json, status: 200
+    end
   end
 
   def get_stream_graph_keywords_data
@@ -91,9 +95,16 @@ class ApisController < ApplicationController
     resp = {}
     if query.present?
       options[:keywords] = [query]
-      resp[query] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
+    end
+    _resp = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
+    if _resp.is_a?(Hash) and _resp.has_key?('success') and not _resp['success']
+      render json: _resp.to_json, status: _resp['status'] and return
     else
-      resp['__other'] = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
+      if query.present?
+        resp[query] = _resp
+      else
+        resp['__other'] = _resp
+      end
     end
     render json: resp.to_json, status: 200
   end
@@ -104,7 +115,11 @@ class ApisController < ApplicationController
       query: api_params_stream_graph_keywords[:query]
     }
     resp = @api.get_trending_tweets(api_params_stream_graph_keywords[:project_slug], options)
-    render json: resp.to_json, status: 200
+    if resp.is_a?(Hash) and resp.has_key?('success') and not resp['success']
+      render json: resp.to_json, status: resp['status'] and return
+    else
+      render json: resp.to_json, status: 200
+    end
   end
 
   def get_trending_topics
@@ -112,7 +127,11 @@ class ApisController < ApplicationController
       num_topics: api_params_stream_graph_keywords[:num_trending_topics],
     }
     resp = @api.get_trending_topics(api_params_stream_graph_keywords[:project_slug], options)
-    render json: resp.to_json, status: 200
+    if resp.is_a?(Hash) and resp.has_key?('success') and not resp['success']
+      render json: resp.to_json, status: resp['status'] and return
+    else
+      render json: resp.to_json, status: 200
+    end
   end
 
   # Monitor streams

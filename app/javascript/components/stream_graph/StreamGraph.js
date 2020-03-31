@@ -110,6 +110,12 @@ export class StreamGraph extends React.Component {
       data: JSON.stringify(params),
       dataType: "json",
       contentType: "application/json",
+      error: (result) => {
+        this.setState({
+          errorNotification: "Something went wrong when trying to load the data. Sorry ¯\\_(ツ)_/¯"
+        })
+        return
+      },
       success: (result) => {
         console.log(result);
         const arrayLengths = this.keys.map((key) => result[key].length)
