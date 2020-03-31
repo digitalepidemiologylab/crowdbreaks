@@ -1,8 +1,10 @@
 // React
 import React from 'react'
 import { Bar, defaults } from 'react-chartjs-2';
-import { Input, Col, Row, FormText, Table } from 'reactstrap';
 let moment = require('moment');
+
+defaults.global.defaultFontFamily = "'Roboto', sans-serif";
+defaults.global.defaultFontColor = '#333';
 
 export class UserActivity extends React.Component {
   constructor(props) {
@@ -51,7 +53,6 @@ export class UserActivity extends React.Component {
       },
       animation: false
     };
-    defaults.global.defaultFontFamily = 'Roboto';
   }
 
   componentDidMount() {
@@ -156,43 +157,30 @@ export class UserActivity extends React.Component {
 
     return(
       <div>
-        <Row className="mb-4">
-          <Col>
-            <Row>
-              <Col xs="12" md="6">
-                <div className="form-group">
-                  <label className="label-form-control">Start</label>
-                  <Input type="text" name="start_date" onChange={(ev) => this.handleChangeStart(ev)} value={this.state.start_date}/>
-                  <FormText color="muted">Format: {dateFormat}</FormText>
-                </div>
-              </Col>
-              <Col xs="12" md="6">
-                <div className="form-group">
-                  <label className="label-form-control">End</label>
-                  <Input type="text" name="end_date" onChange={(ev) => this.handleChangeEnd(ev)} value={this.state.end_date}/>
-                  <FormText color="muted">Format: {dateFormat}</FormText>
-                </div>
-              </Col>
-            </Row>
-            <button className="btn btn-primary" onClick={() => this.refresh()}>Refresh</button>
-          </Col>
-        </Row>
-
-        <Row className='mb-6'>
-          <Col>
-            <Bar data={data} height={250} options={this.options} />
-          </Col>
-        </Row>
-
-        <Row>
-          <Col>
-            <h3 className="mb-4">Leaderboard</h3>
-            <Table>
-              {leaderboard_header}
-              {leaderboard}
-            </Table>
-          </Col>
-        </Row>
+        <div className='row'>
+          <div className='col-xs-12 col-md-6'>
+            <div className="form-group field_with_hint">
+              <label>Start</label>
+              <input className='form-control'type="text" name="start_date" onChange={(ev) => this.handleChangeStart(ev)} value={this.state.start_date}/>
+              <p className="help-block">Format: {dateFormat}</p>
+            </div>
+          </div>
+          <div className='col-xs-12 col-md-6'>
+            <div className="form-group field_with_hint">
+              <label>End</label>
+              <input className='form-control'type="text" name="end_date" onChange={(ev) => this.handleChangeStart(ev)} value={this.state.end_date}/>
+              <p className="help-block">Format: {dateFormat}</p>
+            </div>
+          </div>
+        </div>
+        <button className="btn btn-primary" onClick={() => this.refresh()}>Refresh</button>
+        <div className='mb-5'>
+          <Bar data={data} height={250} options={this.options} />
+        </div>
+        <table className='table'>
+          {leaderboard_header}
+          {leaderboard}
+        </table>
       </div>
     )
   }

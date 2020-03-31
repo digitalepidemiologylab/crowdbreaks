@@ -64,7 +64,7 @@
       </div>
     <% end %>
     <% if can? :view, :user_activity %>
-      <%= link_to 'User activity', user_activity_path, class: 'btn btn-primary btn-lg btn-block'%>
+      <%= link_to 'User activity', user_activity_path, class: 'btn btn-primary btn-lg btn-block', data: {turbolinks: false} %>
     <% end %>
     <% if can? :read, :elasticsearch_index %>
       <%= link_to 'Elasticsearch', elasticsearch_indexes_path, class: 'btn btn-primary btn-lg btn-block' %>

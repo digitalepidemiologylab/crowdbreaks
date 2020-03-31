@@ -182,8 +182,8 @@ class ApisController < ApplicationController
     authorize! :access, :user_activity_data
     start_date = Time.parse(api_params_user_activity.fetch(:start_date, 30.days.ago.to_s))
     end_date = Time.parse(api_params_user_activity.fetch(:end_date, Time.current.to_s))
-    counts = Result.where("created_at > ?", start_date).where("created_at < ?", end_date).group('created_at::date').count
-    leaderboard = Result.where("results.created_at > ?", start_date).where("results.created_at < ?", end_date).joins(:user).group('users.email').count
+    counts = Result.public_res_type.where("created_at > ?", start_date).where("created_at < ?", end_date).group('created_at::date').count
+    leaderboard = Result.public_res_type.where("results.created_at > ?", start_date).where("results.created_at < ?", end_date).joins(:user).group('users.email').count
     leaderboard = leaderboard.sort_by { |k, v| v }.reverse!.first(30)
     # Get username
     usernames = User.where(email: leaderboard.map(&:first)).pluck(:email, :username).to_h
