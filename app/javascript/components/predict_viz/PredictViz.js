@@ -63,7 +63,7 @@ export class PredictViz extends React.Component {
         question_tag: this.state.questionTag,
         answer_tags: this.state.labels,
         average_label_val: true,
-        use_cache: true
+        use_cache: this.props.env !== 'development'
       }
     }
     $.ajax({
@@ -284,6 +284,7 @@ export class PredictViz extends React.Component {
     } else if (field == 'questionTag') {
       currentState['runName'] = this.getPrimaryEndpoint(this.state.project, value)
     }
+    currentState['labels'] = this.state.endpointInfo[currentState['project']][currentState['questionTag']]['labels'];
     currentState['isLoadingPredictions'] = true;
     this.setState(currentState, () => this.getPredictions())
   }
@@ -374,10 +375,10 @@ export class PredictViz extends React.Component {
   getColor(label, i) {
     const defaultColors = [
       '#1e9CeA', // blue
-      '#db4457', // red
-      '#fd7e14', // orange
+      '#5bb12a', // green
       '#ffc107', // yellow
-      '#5bb12a' // green
+      '#fd7e14', // orange
+      '#db4457', // red
     ];
 
     if (label === 'positive') {

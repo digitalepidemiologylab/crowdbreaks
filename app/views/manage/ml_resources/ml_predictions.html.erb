@@ -9,7 +9,8 @@
   <div class="col-12">
     <%= react_component 'PredictViz', {
       getPredictionsPath: get_predictions_path,
-      endpointInfoPath: endpoint_info_path
+      endpointInfoPath: endpoint_info_path,
+      env: Rails.env
     } %>
   </div>
 </div>
