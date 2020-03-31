@@ -12,7 +12,7 @@ export class PredictViz extends React.Component {
     this.state = {
       data: {},
       average_label_vals: [],
-      startDate: 'now-3M',
+      startDate: 'now-1M',
       endDate: 'now',
       dropdownOpen: false,
       includeRetweets: true,
@@ -63,7 +63,7 @@ export class PredictViz extends React.Component {
         question_tag: this.state.questionTag,
         answer_tags: this.state.labels,
         average_label_val: true,
-        use_cache: false
+        use_cache: true
       }
     }
     $.ajax({
@@ -249,13 +249,7 @@ export class PredictViz extends React.Component {
           let questionTag = Object.keys(endpointInfo[project])[0]
           let endpoints = endpointInfo[project][questionTag]['endpoints']
           let labels = endpointInfo[project][questionTag]['labels']
-          let runName = ''
-          for (let i=0; i < endpoints.length; i++) {
-            if (endpoints[i]['is_primary']) {
-              runName = endpoints[i]['run_name'];
-              break;
-            }
-          }
+          let runName = this.getPrimaryEndpoint(project, questionTag, endpointInfo)
           stateUpdate['project'] = project
           stateUpdate['questionTag'] = questionTag
           stateUpdate['runName'] = runName
@@ -267,9 +261,29 @@ export class PredictViz extends React.Component {
     })
   }
 
+  getPrimaryEndpoint(project, questionTag, endpointInfo=null) {
+    let endpoints;
+    if (endpointInfo === null) {
+      endpoints = this.state.endpointInfo[project][questionTag]['endpoints']
+    } else {
+      endpoints = endpointInfo[project][questionTag]['endpoints']
+    }
+    for (let i=0; i<endpoints.length; i++) {
+      if (endpoints[i]['is_primary']) {
+        return endpoints[i]['run_name']
+      }
+    }
+  }
+
   onSelectField(field, value) {
     let currentState = this.state;
     currentState[field] = value;
+    if (field == 'project') {
+      currentState['questionTag'] = Object.keys(this.state.endpointInfo[value])[0];
+      currentState['runName'] = this.getPrimaryEndpoint(value, currentState['questionTag'])
+    } else if (field == 'questionTag') {
+      currentState['runName'] = this.getPrimaryEndpoint(this.state.project, value)
+    }
     currentState['isLoadingPredictions'] = true;
     this.setState(currentState, () => this.getPredictions())
   }
