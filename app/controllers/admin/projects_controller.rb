@@ -78,13 +78,15 @@ module Admin
 
     def sanitized_projects_params
       sanitized_params = project_params
-      sanitized_params[:keywords] = array_from_string(project_params[:keywords], downcase: true)
-      sanitized_params[:lang] = array_from_string(project_params[:lang], downcase: true)
-      sanitized_params[:locales] = array_from_string(project_params[:locales], downcase: true)
-      sanitized_params[:accessible_by_email_pattern] = array_from_string(project_params[:accessible_by_email_pattern], downcase: true)
-      sanitized_params[:storage_mode] = sanitized_params[:storage_mode].to_i
-      sanitized_params[:image_storage_mode] = sanitized_params[:image_storage_mode].to_i
-      sanitized_params[:annotation_mode] = sanitized_params[:annotation_mode].to_i
+      [:keywords, :lang, :locales, :accessible_by_email_pattern].each do |item|
+        sanitized_params[item] = array_from_string(project_params[item], downcase: true)
+      end
+      [:image_storage_mode, :annotation_mode, :storage_mode].each do |item|
+        sanitized_params[item] = sanitized_params[item].to_i
+      end
+      [:active_stream, :compile_trending_tweets, :compile_trending_topics, :compile_data_dump_ids, :public].each do |item|
+        sanitized_params[item] = sanitized_params[item] == 'true'
+      end
       sanitized_params
     end
 

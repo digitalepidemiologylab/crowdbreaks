@@ -86,7 +86,7 @@ module ApplicationHelper
     class_name = hint.nil? ? '' : 'input field_with_hint'
     content_tag :div, class: class_name do
       output = content_tag :label, class: 'switch' do
-        concat check_box_tag(name, 'checkbox', instance_var, class: name)
+        concat check_box_tag(name, value=instance_var, checked=instance_var, class: name)
         concat tag.span(class: "slider round#{color.nil? ? '' : " slider-#{color}"}")
         concat tag.span(label, class: 'switch-label')
       end
