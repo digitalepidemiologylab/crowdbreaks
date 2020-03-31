@@ -42,10 +42,13 @@ module Ml
     self.class.post("/#{PREFIX}/endpoint_config", body: data.to_json, headers: FlaskApi::JSON_HEADER)
   end
 
-  def endpoint_labels(model_name)
-    data = {'model_endpoint': model_name}
-    resp = self.class.post("/#{PREFIX}/endpoint_labels", body: data.to_json, headers: FlaskApi::JSON_HEADER)
-    resp.parsed_response
+  def endpoint_labels(model_name, use_cache: true)
+    cache_key = "endpoint_labels-#{model_name}"
+    cached(cache_key, use_cache=use_cache, cache_duration=1.hour) do
+      data = {'model_endpoint': model_name}
+      resp = self.class.post("/#{PREFIX}/endpoint_labels", body: data.to_json, headers: FlaskApi::JSON_HEADER)
+      resp.parsed_response
+    end
   end
 
 

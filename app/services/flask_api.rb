@@ -84,7 +84,7 @@ class FlaskApi
 
   # elasticsearch - sentiment data
   def get_predictions(index, question_tag, answer_tags, run_name='', options={}, use_cache=true)
-    cache_key = "get-predictions-#{index}-#{question_tag}-#{run_name}-#{answer_tags.join('_')}-#{options.to_s}"
+    cache_key = "get-predictions-#{index}-#{question_tag}-#{run_name}-#{answer_tags&.join('_')}-#{options.to_s}"
     body = {
       question_tag: question_tag,
       answer_tags: answer_tags,
@@ -142,7 +142,7 @@ class FlaskApi
         resp = yield
         has_error = false
         if resp.is_a? Hash
-          if resp.key?('succes')
+          if resp.key?('success')
             has_error = !resp['success']
           end
         end

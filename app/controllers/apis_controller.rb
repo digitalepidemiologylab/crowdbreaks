@@ -38,7 +38,7 @@ class ApisController < ApplicationController
       endpoint.each do |question_tag, question_tag_endpoints|
         resp = @api.endpoint_labels(question_tag_endpoints['primary'])
         if not resp['success'].nil? and not resp['success']
-          render json: resp.to_json, status: resp['status']
+          render json: resp.to_json, status: resp['status'] and return
         end
         _endpoints = []
         question_tag_endpoints['active'].each do |endpoint_name, endpoint_obj|
