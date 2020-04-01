@@ -8,9 +8,13 @@ export class DownloadResource extends React.Component {
     this.state = {
       isLoading: true,
       isLoadingError: false,
-      size: null,
-      lastUpdated: null
+      data: null
     }
+    this.modes = [
+      {name: 'all', prefix: '', title: 'All'},
+      {name: 'place', prefix: '_has_place', title: 'Place'},
+      {name: 'coordinates', prefix: '_has_coordinates', title: 'Exact location'}
+    ];
   }
 
 
@@ -28,19 +32,26 @@ export class DownloadResource extends React.Component {
       dataType: "json",
       contentType: "application/json",
       success: (data) => {
-        console.log(data);
-        this.setState({
-          lastUpdated: moment(data['last_modified']).calendar(),
-          size: this.parseSize(data['size']),
-          isLoading: false
-        })
+        const noneExist = this.modes.every((d) => data[d.name].exists === false)
+        if (noneExist) {
+          this.switchToErrorState()
+        } else {
+          this.setState({
+            isLoading: false,
+            data: data
+          })
+        }
       },
       error: (data) => {
-        this.setState({
-          isLoading: false,
-          isLoadingError: true
-        })
+        this.switchToErrorState()
       }
+    })
+  }
+
+  switchToErrorState() {
+    this.setState({
+      isLoading: false,
+      isLoadingError: true
     })
   }
 
@@ -59,11 +70,12 @@ export class DownloadResource extends React.Component {
   }
 
 
-  getUrl() {
+  getUrl(prefix) {
     return 'https://crowdbreaks-public.s3.eu-central-1.amazonaws.com/data_dump/' +
       this.props.project +
       '/data_dump_ids_' +
       this.props.project +
+      prefix +
       '.txt.gz'
   }
 
@@ -79,16 +91,24 @@ export class DownloadResource extends React.Component {
           </div>
       } else {
         body = <div>
-          <a href={this.getUrl()} _target='_blank' className='btn btn-secondary mb-2'>
-            <i className='fa fa-download'></i>
-            &ensp;Download
-          </a>
-          <div className='text-light-sm'>
-            Size: {this.state.size}
-          </div>
-          <div className='text-light-sm'>
-            Last updated: {this.state.lastUpdated}
-          </div>
+          {
+            this.modes.map((mode, i) => {
+              if (this.state.data[mode.name].exists) {
+                return <div key={i} className='mb-3'>
+                  <a href={this.getUrl(mode['prefix'])} _target='_blank' className='btn btn-secondary mb-2'>
+                    <i className='fa fa-download'></i>
+                    &ensp;{mode.title}
+                  </a>
+                  <div className='text-light-sm'>
+                    Size: {this.parseSize(this.state.data[mode.name].size)}
+                  </div>
+                  <div className='text-light-sm'>
+                    Last updated: {moment(this.state.data[mode.name].last_modified).calendar()}
+                  </div>
+                </div>
+              }
+          })
+        }
         </div>
       }
     } else {
