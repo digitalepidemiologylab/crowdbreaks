@@ -84,9 +84,6 @@ module Admin
       [:image_storage_mode, :annotation_mode, :storage_mode].each do |item|
         sanitized_params[item] = sanitized_params[item].to_i
       end
-      [:active_stream, :compile_trending_tweets, :compile_trending_topics, :compile_data_dump_ids, :public].each do |item|
-        sanitized_params[item] = sanitized_params[item] == 'true'
-      end
       sanitized_params
     end
 
