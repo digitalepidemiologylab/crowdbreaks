@@ -1,7 +1,7 @@
 ---
 en:
   footer:
+    data_sharing: Data sharing
     developed_by_html: A project by the %{href_del} at %{href_epfl}
     privacy: Privacy
     terms: Terms of Use
-    data_sharing: Data sharing

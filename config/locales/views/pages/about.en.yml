@@ -4,17 +4,17 @@ en:
     about:
       about_crowdbreaks_html: Crowdbreaks is a health trend tracking system, currently developed by the %{href_group} at %{href_EPFL} in Switzerland. The system is designed to track trends about health and disease-related issues in real-time across different countries. By obtaining feedback from users the system will eventually improve and be able to draw more accurate conclusions about these issues.
       about_crowdbreaks_title: About Crowdbreaks
+      code_sharing: I'm interested in the code
+      code_sharing_html: The platform is fully open source under MIT license. Feel free to check out our %{href_github} - Any contributions are welcome!
+      data_sharing: I'm interested in the data
+      data_sharing_html: We're happy to share the data with you. Please find all the relevant information %{href_data_sharing}.
+      data_sharing_link: here
+      github_link: Github repo
       help_html: You can help us by answering the questions in the %{projects_section}. Feel free to create an account if you want to keep track of your efforts. You can also provide any other feedback by writing to us %{mail}.
       help_title: Get involved
       how_does_it_work_html: 'Crowdbreaks collects tweets with keywords that might be related to specific health topics. By using natural language processing and machine learning techniques the system tries to filter relevant from non-relevant content. By providing more meta information (labelling) of the tweets, these algorithms will continuously improve to detect tweets which are truly relevant and understand their content. For a more in-depth explanation of the inner workings of the platform, please refer to our %{href_crowdbreaks_paper}:'
       how_does_it_work_title: How does it work?
       latest_work_link: latest work
       projects_link: projects section
-      data_sharing: I'm interested in the data
-      data_sharing_html: We're happy to share the data with you. Please find all the relevant information %{href_data_sharing}.
-      data_sharing_link: here
-      code_sharing: I'm interested in the code
-      code_sharing_html: The platform is fully open source under MIT license. Feel free to check out our %{href_github} - Any contributions are welcome!
-      github_link: Github repo
       why_crowdsourcing_html: Millions of people use social media every day to share how they feel, both good and bad. This is, in a sense, like having millions of sensors which can help us understand the health situation in real-time. By asking people to help make sense of the reported data, we invoke the wisdom of the crowd to help us separate signal from noise. We also hope to engage the public in public health and try to show the importance of these issues.
       why_crowdsourcing_title: Why crowdsourcing?

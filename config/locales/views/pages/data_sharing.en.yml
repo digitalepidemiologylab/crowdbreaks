@@ -1,8 +1,9 @@
+---
 en:
   pages:
     data_sharing:
-      title: Data sharing
       public_repo_text: here
-      subtext1_html: "You can find data to our projects below). The data we are sharing contain tweet IDs for three categories: \"All\", \"place\" (tweets which mention a place, which includes a geo bounding box), and \"exact location\" (tweets which contain latitude/longitude pairs). From the IDs the full tweets can be obtained using a script and xplanations provided %{public_repo}."
-      subtext2_html: "The data has been collected through the Twitter filter stream API using a list of keywords and languages (provided below).  Note that in some cases the keywords/languages had to be updated after a while (e.g. as new terms emerged).  Should you have requests for only a subset of the data (or any kind of aggregate data), please get in touch through %{mail}. IMPORTANT: Due to the high volume of messages collected through the COVID-19 stream, data collected after February 25 is incomplete and and will only contain a sampled subset of all messages posted on Twitter. If you plan to use this data for research purposes, please be aware of the potential biases this induces."
+      subtext1_html: 'You can find data to our projects below). The data we are sharing contain tweet IDs for three categories: "All", "place" (tweets which mention a place, which includes a geo bounding box), and "exact location" (tweets which contain latitude/longitude pairs). From the IDs the full tweets can be obtained using a script and xplanations provided %{public_repo}.'
+      subtext2_html: 'The data has been collected through the Twitter filter stream API using a list of keywords and languages (provided below).  Note that in some cases the keywords/languages had to be updated after a while (e.g. as new terms emerged).  Should you have requests for only a subset of the data (or any kind of aggregate data), please get in touch through %{mail}. IMPORTANT: Due to the high volume of messages collected through the COVID-19 stream, data collected after February 25 is incomplete and and will only contain a sampled subset of all messages posted on Twitter. If you plan to use this data for research purposes, please be aware of the potential biases this induces.'
       subtext3_html: Thank you for giving attribution if you end up using the data.
+      title: Data sharing
