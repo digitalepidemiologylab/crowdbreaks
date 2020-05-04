@@ -23,8 +23,9 @@ class LocalBatchJob < ApplicationRecord
 
   def progress_by_user(user)
     return 0 unless users.where(id: user.id).exists?
-    user_count = results.counts_by_user(user.id)
     total_count = local_tweets.may_be_available.count
+    return 0 if total_count == 0
+    user_count = results.counts_by_user(user.id)
     (100*user_count/total_count).to_i
   end
 

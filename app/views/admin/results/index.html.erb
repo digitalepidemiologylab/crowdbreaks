@@ -9,16 +9,16 @@
       <div class="card-body">
         <h4 class="card-title">Filters</h4>
         <div class='mb-3'>
-          <%= toggle_switch(@group_by_qs, 'Group by question sequence', 'groupby-qs') %>
+          <%= simple_toggle_switch(@group_by_qs, 'Group by question sequence', 'groupby-qs') %>
         </div>
         <div class='mb-3'>
           <label>Result type</label>
-          <%= select('res_type', 'res_type', Result.res_types, {selected: @res_type_filter, include_blank: true}, 
+          <%= select('res_type', 'res_type', Result.res_types, {selected: @res_type_filter, include_blank: true},
                      {id: 'results-res-type-filterfilter', class: 'select form-control'}) %>
         </div>
         <div >
           <label>Project</label>
-          <%= select('project', 'project_id', Project.all.collect{|p| [p.title, p.id]}, {selected: @project_id_filter, include_blank: true}, 
+          <%= select('project', 'project_id', Project.all.collect{|p| [p.title, p.id]}, {selected: @project_id_filter, include_blank: true},
                      {id: 'results-select-project-filter', class: 'select form-control'}) %>
         </div>
       </div>

@@ -82,10 +82,10 @@ module ApplicationHelper
     number_with_delimiter(num, delimiter: "\u202F").html_safe
   end
 
-  def simple_toggle_switch(checked, label, id, color: nil)
+  def simple_toggle_switch(checked, label, class_name, color: nil)
     content_tag :div do
-      content_tag :label, class: 'switch' do
-        concat tag.input(type: 'checkbox', checked: checked, id: id)
+      content_tag :label, class: "switch" do
+        concat tag.input(type: 'checkbox', checked: checked, class: class_name)
         concat tag.span(class: "slider round#{color.nil? ? '' : " slider-#{color}"}")
         concat tag.span(label, class: 'switch-label')
       end

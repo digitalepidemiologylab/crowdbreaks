@@ -6,14 +6,14 @@
   <td>
     <% if can? :update, mturk_worker and not mturk_worker.blocked_status? %>
       <%= link_to blacklist_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Blacklist worker', method: :post do %>
-        <%= toggle_switch(mturk_worker.blacklisted_status?, '', '', color: 'red') %>
+        <%= simple_toggle_switch(mturk_worker.blacklisted_status?, '', '', color: 'red') %>
       <% end %>
     <% end %>
   </td>
   <td>
     <% if can? :update, mturk_worker %>
       <%= link_to manual_review_status_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Worker has been reviewed', method: :post do %>
-        <%= toggle_switch(mturk_worker.manually_reviewed, '', '') %>
+        <%= simple_toggle_switch(mturk_worker.manually_reviewed, '', '') %>
       <% end %>
     <% end %>
   </td>

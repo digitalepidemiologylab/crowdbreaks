@@ -12,9 +12,9 @@
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Filters</h4>
-        <%= toggle_switch(@show_blacklisted, 'Blacklisted', 'mturk-worker-blacklisted-checkbox') %>
-        <%= toggle_switch(@show_reviewed, 'Reviewed', 'mturk-worker-reviewed-checkbox') %>
-        <%= toggle_switch(@show_blocked, 'Blocked', 'mturk-worker-blocked-checkbox') %>
+        <%= simple_toggle_switch(@show_blacklisted, 'Blacklisted', 'mturk-worker-blacklisted-checkbox') %>
+        <%= simple_toggle_switch(@show_reviewed, 'Reviewed', 'mturk-worker-reviewed-checkbox') %>
+        <%= simple_toggle_switch(@show_blocked, 'Blocked', 'mturk-worker-blocked-checkbox') %>
       </div>
     </div>
   </div>

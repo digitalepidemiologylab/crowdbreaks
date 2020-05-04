@@ -20,13 +20,13 @@
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Filters</h4>
-        <%= toggle_switch(!@sandbox, 'Production', 'production-checkbox') %>
-        <%= toggle_switch(@platform_only, 'Platform only', 'platform_only-hits-checkbox') %>
+        <%= simple_toggle_switch(!@sandbox, 'Production', 'production-checkbox') %>
+        <%= simple_toggle_switch(@platform_only, 'Platform only', 'platform_only-hits-checkbox') %>
         <h4 class="card-title mt-3">HIT status</h4>
-        <%= toggle_switch(@show_assignable, "Assignable (#{@num_assignable})", 'assignable-hits-checkbox') %>
-        <%= toggle_switch(@show_unassignable, "Unassignable (#{@num_unassignable})", 'unassignable-hits-checkbox') %>
-        <%= toggle_switch(@show_reviewable, "Reviewable (#{@num_reviewable})", 'reviewable-hits-checkbox') %>
-        <%= toggle_switch(@show_reviewing, "Reviewing (#{@num_reviewing})", 'reviewing-hits-checkbox') %>
+        <%= simple_toggle_switch(@show_assignable, "Assignable (#{@num_assignable})", 'assignable-hits-checkbox') %>
+        <%= simple_toggle_switch(@show_unassignable, "Unassignable (#{@num_unassignable})", 'unassignable-hits-checkbox') %>
+        <%= simple_toggle_switch(@show_reviewable, "Reviewable (#{@num_reviewable})", 'reviewable-hits-checkbox') %>
+        <%= simple_toggle_switch(@show_reviewing, "Reviewing (#{@num_reviewing})", 'reviewing-hits-checkbox') %>
       </div>
     </div>
   </div>
