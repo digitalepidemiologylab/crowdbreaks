@@ -205,18 +205,18 @@ GEM
     json_translate (4.0.0)
       activerecord (>= 4.2.0)
     jsonapi-renderer (0.2.2)
-    kaminari (1.0.1)
+    kaminari (1.2.1)
       activesupport (>= 4.1.0)
-      kaminari-actionview (= 1.0.1)
-      kaminari-activerecord (= 1.0.1)
-      kaminari-core (= 1.0.1)
-    kaminari-actionview (1.0.1)
+      kaminari-actionview (= 1.2.1)
+      kaminari-activerecord (= 1.2.1)
+      kaminari-core (= 1.2.1)
+    kaminari-actionview (1.2.1)
       actionview
-      kaminari-core (= 1.0.1)
-    kaminari-activerecord (1.0.1)
+      kaminari-core (= 1.2.1)
+    kaminari-activerecord (1.2.1)
       activerecord
-      kaminari-core (= 1.0.1)
-    kaminari-core (1.0.1)
+      kaminari-core (= 1.2.1)
+    kaminari-core (1.2.1)
     launchy (2.5.0)
       addressable (~> 2.7)
     letter_opener (1.7.0)
@@ -496,7 +496,7 @@ DEPENDENCIES
   i18n-tasks
   jbuilder (~> 2.5)
   json_translate
-  kaminari (~> 1.0.1)
+  kaminari (~> 1.2.0)
   letter_opener
   listen (~> 3.0.5)
   mandrill-api

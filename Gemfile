@@ -28,7 +28,7 @@ gem 'cancancan', '~> 2.0'
 # font icons
 gem 'font-awesome-rails', '~> 4.7.0.1'
 # Pagination
-gem 'kaminari', '~> 1.0.1'
+gem 'kaminari', '~> 1.2.0'
 # Forms
 gem 'simple_form'
 # Bootstrap
