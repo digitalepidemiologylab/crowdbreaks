@@ -27,7 +27,7 @@ export class QuestionInstructions extends React.Component {
     const windowWidth = window.innerWidth;
     if (windowWidth > 768) {
       // desktop
-      modalWidth = '50%'   // values denote the 'right' property of the content style
+      modalWidth = '40%'   // values denote the 'right' property of the content style
     } else if (windowWidth > 576) {
       // tablet
       modalWidth = '30%'
@@ -54,7 +54,7 @@ export class QuestionInstructions extends React.Component {
         bottom                : 'auto',
         marginRight           : '-50%',
         transform             : 'translate(-50%, -50%)',
-        maxWidth              : '500px',
+        maxWidth              : '900px',
         borderColor           : '#ced7de',
         padding               : '35px',
         paddingTop            : '45px'
