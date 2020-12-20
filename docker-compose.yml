@@ -1,0 +1,47 @@
+version: '3.0'
+services:
+  app:
+    build: .
+    container_name: app
+    volumes:
+      - .:/app
+    ports:
+      - '127.0.0.1:3000:3000'
+    depends_on:
+      - db
+      - webpack-dev-server
+    environment:
+      - CROWDBREAKS_DATABASE_PASSWORD=password
+      - POSTGRES_HOST=database
+      - WEBPACKER_DEV_SERVER_HOST=webpack-dev-server
+    tty: true
+    stdin_open: true
+
+  webpack-dev-server:
+    build: .
+    container_name: webpack
+    command: ./bin/webpack-dev-server
+    environment:
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+    volumes:
+      - $PWD:/app:delegated
+      - bundle_cache:/usr/local/bundle:cached
+      - node_modules:/app/node_modules:cached
+    ports:
+      - '3035:3035'
+
+  db:
+    image: postgres:10.15
+    container_name: db
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data:cached
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+
+volumes:
+  db_data:
+  bundle_cache:
+  node_modules:

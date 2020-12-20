@@ -48,4 +48,7 @@ Rails.application.configure do
 
   # Action cable websocket URL
   config.action_cable.url = "ws://localhost:3000/cable"
+
+  # avoid yarn integrity check
+  config.webpacker.check_yarn_integrity = false
 end

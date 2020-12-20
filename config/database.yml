@@ -18,10 +18,14 @@ default: &default
 
 development:
   <<: *default
+  host: db
+  username: postgres
   database: crowdbreaks_development
 
 test:
   <<: *default
+  host: db
+  username: postgres
   database: crowdbreaks_test
 
 production:
