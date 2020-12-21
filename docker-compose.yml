@@ -11,9 +11,9 @@ services:
       - db
       - webpack-dev-server
     environment:
-      - CROWDBREAKS_DATABASE_PASSWORD=password
       - POSTGRES_HOST=database
       - WEBPACKER_DEV_SERVER_HOST=webpack-dev-server
+      - REDIS_URL=redis://redis:6379
     tty: true
     stdin_open: true
 
@@ -51,6 +51,21 @@ services:
     container_name: selenium
     ports:
     - "4444:4444"
+
+  sidekiq:
+    build: .
+    container_name: sidekiq
+    command: bundle exec sidekiq -q default -q mailers
+    environment:
+      - POSTGRES_HOST=database
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - $PWD:/app:delegated
+      - bundle_cache:/usr/local/bundle:cached
+      - node_modules:/app/node_modules:cached
+    depends_on:
+      - db
+      - redis
 
 volumes:
   db_data:
