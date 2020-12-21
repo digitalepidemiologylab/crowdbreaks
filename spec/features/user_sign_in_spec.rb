@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature "UserSignIn", type: :feature, js: true do
   # confirmed test user
   let!(:user) { FactoryBot.create(:user, :confirmed, username: 'testuser', email: 'user@example.com', password: '123456') }
-  
+
   before(:each) do
     visit(root_path)
   end

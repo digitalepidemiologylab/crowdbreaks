@@ -95,14 +95,32 @@ Shoulda::Matchers.configure do |config|
 end
 
 # Capybara
-run_headless = ENV['RUN_HEADLESS'] || true
-Capybara.register_driver :chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new(args: run_headless ? %w[no-sandbox headless disable-gpu] : %w[no-sandbox disable-gpu])
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+# without docker
+# run_headless = ENV['RUN_HEADLESS'] || true
+# Capybara.register_driver :chrome do |app|
+#   options = Selenium::WebDriver::Chrome::Options.new(args: run_headless ? %w[no-sandbox headless disable-gpu] : %w[no-sandbox disable-gpu])
+#   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+# end
+# Capybara.javascript_driver = :chrome
+# Capybara.server_port = '3001'
+# Capybara.server = :puma, { Silent: true }
+
+# with docker
+Capybara.register_driver :selenium_chrome_container do |app|
+  Capybara::Selenium::Driver.new(
+    app,
+    browser: :remote,
+    url: "http://selenium:4444/wd/hub",
+    desired_capabilities: :chrome,
+  )
 end
-Capybara.javascript_driver = :chrome
+Capybara.javascript_driver = :selenium_chrome_container
+Capybara.current_driver = :selenium_chrome_container
 Capybara.server_port = '3001'
+Capybara.server_host = '0.0.0.0'
 Capybara.server = :puma, { Silent: true }
+docker_ip = `/sbin/ip route show | grep eth0 | awk '{print $9}'`.strip
+Capybara.app_host = "http://#{docker_ip}:#{Capybara.server_port}"
 
 # Webmock (reject any outside API calls)
 # WebMock.disable_net_connect!(allow_localhost: true)
