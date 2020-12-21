@@ -1,0 +1,56 @@
+# Crowdbreaks works best in combination with crowdbreaks-streamer (https://github.com/crowdbreaks/crowdbreaks-streamer) but running it in parallel is optional.
+
+development: &development
+  ENVIRONMENT_NAME: "development"
+  S3_BUCKET_NAME: "crowdbreaks-dev"
+  HOST: "localhost:3000"
+  # AWS (optional)
+  AWS_REGION: "eu-central-1"
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  # Mandrill emailing (optional)
+  MANDRILL_ADDRESS: 'smtp.mandrillapp.com'
+  MANDRILL_PORT: '587'
+  MANDRILL_USERNAME: ""
+  MANDRILL_API_KEY: ""
+  # crowdbreaks-streamer default basic auth
+  FLASK_API_HOSTNAME: "localhost:8000"
+  FLASK_API_USERNAME: "admin"
+  FLASK_API_PASSWORD: "super_secret"
+  # Elasticsearch (optional)
+  ELASTICSEARCH_HOST: "localhost"
+  ELASTICSEARCH_PORT: "9200"
+  # Recaptcha keys (optional)
+  RECAPTCHA_SECRET: ""
+  RECAPTCHA_SITEKEY: ""
+  # Twitter API keys (optional)
+  CONSUMER_KEY: ""
+  CONSUMER_SECRET: ""
+  OAUTH_TOKEN: ""
+  OAUTH_TOKEN_SECRET: ""
+  # Rollbar error repporting (optional)
+  ROLLBAR_ACCESS_TOKEN: ""
+  ROLLBAR_ACCESS_TOKEN_CLIENT: ""
+  # Secret keys (used to sign cookies/sessions)
+  SECRET_KEY_BASE: "33127b8a2267136c1f1bf28163f866503a948120c752bd8c7a43b5ad68579f79abb8e7d98699d0f9f153151023ec2fb04f446eedd58631d1dd236297ac2ee3a0"
+  DEVISE_SECRET_KEY: "8fb9bbdb2ba57010c96c22e8a07bf0aa2166a976f6c96b2716b145a87d507677f504e9100974a2942660e26736b3fd4b4e6cebe4d7a547781c76c93f1ef10fac"
+  # Redis (used for caching and Rails action cable. In production we're using the RedisToGo addon on Heroku), if not running in docker-compose change this to "redis://localhost:6379"
+  REDISTOGO_URL: 'redis://redis:6379'
+  # Contact email (optional)
+  MTURK_CONTACT_EMAIL: "email@example.com"
+  # Stream error monitoring/daily & weekly status updates. This is currently triggered by Heroku Scheduler. See the wiki for "Watch stream task".
+  WATCH_STREAM_WARNING_EMAIL: "email@example.com"
+  WATCH_STREAM: 'true'
+  SEND_STATUS_EMAILS: 'true'
+  EMAIL_STREAM_STATUS_DAILY: "email@example.com"
+  EMAIL_STREAM_STATUS_WEEKLY: "email@example.com"
+
+test:
+  # test enviornment
+  <<: *development
+
+staging:
+  # staging enviornment
+
+production:
+  # production enviornment
