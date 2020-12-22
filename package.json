@@ -32,13 +32,10 @@
     "react-markdown": "^4.0.8",
     "react-modal": "^3.8.1",
     "react-tweet-embed": "^1.2.2",
-    "react-vega": "^6.0.1",
     "reactstrap": "^8.0.0",
     "rollbar": "^2.13.0",
     "toastr": "^2.1.4",
     "turbolinks": "^5.2.0",
-    "vega": "^5.4.0",
-    "vega-lite": "^4.0.0-beta.2",
     "webpack": "^4.0.0",
     "webpacker-react": "^0.3.2"
   },

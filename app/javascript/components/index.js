@@ -6,8 +6,6 @@ import { QSContainer } from './qs/QSContainer';
 import { MturkQSContainer } from './qs/MturkQSContainer';
 import { LocalBatchQSContainer } from './qs/LocalBatchQSContainer';
 import { SentimentTextBox } from './sent_textbox/SentimentTextBox';
-import { SentimentVisualization } from './sent_viz/SentimentVisualization';
-// import { SentimentMap } from './sent_viz/SentimentMap';
 import { MonitorStream } from './monitor_stream/MonitorStream';
 import { Leadline } from './frontpage/Leadline';
 import { UserActivity } from './user_activity/UserActivity';
@@ -25,8 +23,6 @@ WebpackerReact.setup({
   QSContainer,
   MturkQSContainer,
   SentimentTextBox,
-  SentimentVisualization,
-  // SentimentMap,
   MonitorStream,
   Leadline,
   UserActivity,

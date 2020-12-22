@@ -13,10 +13,6 @@ RUN apt-get update -y
 # Install Yarn
 RUN apt-get install yarn -y
 
-# RUN apt-get update -qq && apt-get install -y build-essential nodejs \
-#  && rm -rf /var/lib/apt/lists/* \
-#  && curl -o- -L https://yarnpkg.com/install.sh | bash
-
 WORKDIR /app
 
 # Install gems
@@ -24,8 +20,12 @@ COPY Gemfile Gemfile.lock ./
 RUN gem install bundler -v 2.1.4
 RUN bundle install
 
+# install js packages
+COPY package.json yarn.lock ./
+RUN yarn install --check-files
+
 # Copy all other files
-COPY . .
+COPY . ./
 
 EXPOSE 3000
 
