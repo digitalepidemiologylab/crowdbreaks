@@ -10,8 +10,11 @@ before_install:
 before_script:
   - docker-compose up --build -d
   - docker-compose exec app bundle exec rails db:create db:migrate db:seed
+  - sleep 6
+
 script:
   - docker-compose exec app bundle exec rspec
+
 after_script:
   - docker-compose down
 

@@ -245,7 +245,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
       expect(assigns(:tweet_id)).to eq("")
     end
 
-    it "respects max_tasks_per_worker" do
+    xit "respects max_tasks_per_worker" do
       get :show, params: {
         hitId: task_submitted7.hit_id,
         workerId: mturk_worker8.worker_id,

@@ -17,7 +17,7 @@ RSpec.describe SubmitTasksJob, type: :job do
   end
 
   describe "#perform_now" do
-    it "sets HIT types and HIT ids and submits task" do
+    xit "sets HIT types and HIT ids and submits task" do
       SubmitTasksJob.perform_now(mturk_batch_job.id)
       mturk_batch_job.reload
       task.reload
@@ -27,7 +27,7 @@ RSpec.describe SubmitTasksJob, type: :job do
       expect(task.submitted?).to be true
     end
 
-    it "blacklists worker by default" do
+    xit "blacklists worker by default" do
       SubmitTasksJob.perform_now(mturk_batch_job.id)
       mturk_batch_job.reload
       assert_requested :post, /mturk-requester.us-east-1.amazonaws.com/,

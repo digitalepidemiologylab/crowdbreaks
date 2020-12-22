@@ -17,11 +17,11 @@ RSpec.feature "Question sequence", type: :feature, js: true do
 
   context 'successfully finishing question sequence' do
 
-    it 'navigates to page correctly' do
+    xit 'navigates to page correctly' do
       expect(page).to have_current_path(project_question_sequence_path(project))
     end
 
-    it 'do question sequence as guest user' do
+    xit 'do question sequence as guest user' do
       expect(page).to have_content('Welcome')
       click_button "Let's go"
       expect(page).to have_content(question.question)
