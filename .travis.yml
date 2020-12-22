@@ -7,9 +7,12 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
+before_script:
+  - docker-compose up --build -d
 script:
-  - docker-compose up --build
-  - docker exec app bundle exec rspec
+  - docker-compose exec app bundle exec rspec
+after_script:
+  - docker-compose down
 
 branches:
   only:
