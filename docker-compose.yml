@@ -11,7 +11,7 @@ services:
       - db
       - webpack-dev-server
     environment:
-      - POSTGRES_HOST=database
+      - POSTGRES_HOST=db
       - WEBPACKER_DEV_SERVER_HOST=webpack-dev-server
       - REDIS_URL=redis://redis:6379
     tty: true
@@ -57,7 +57,7 @@ services:
     container_name: sidekiq
     command: bundle exec sidekiq -q default -q mailers
     environment:
-      - POSTGRES_HOST=database
+      - POSTGRES_HOST=db
       - REDIS_URL=redis://redis:6379
     volumes:
       - $PWD:/app:delegated
