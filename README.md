@@ -5,7 +5,7 @@ This is the Rails application of Crowdbreaks. For a more general intro toCrowdbr
 [![Build Status](https://travis-ci.org/crowdbreaks/crowdbreaks.svg?branch=master)](https://travis-ci.org/crowdbreaks/crowdbreaks)
 
 # Install
-You may need to run the [crowdbreaks-streamer](https://github.com/crowdbreaks/crowdbreaks-streamer) for full functionality, but the Rails application should fine on its own.
+You may want to run the [crowdbreaks-streamer](https://github.com/crowdbreaks/crowdbreaks-streamer) for full functionality, but the Rails application works fine on its own.
 
 ## Development
 
@@ -21,6 +21,7 @@ This setup was tested with docker version 20.10.0, and docker-compose version 1.
 docker exec app bundle exec rails db:create db:migrate db:seed
 ```
 This creates the database `crowdbreaks_development` and creates a new user `admin@example.com` with password `password`.
+
 6. Go to `localhost:3000` :rainbow:
 
 ### Without docker
