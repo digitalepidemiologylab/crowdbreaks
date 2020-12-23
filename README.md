@@ -21,6 +21,7 @@ This setup was tested with docker version 20.10.0, and docker-compose version 1.
 docker exec app bundle exec rails db:create db:migrate db:seed
 ```
 This creates the database `crowdbreaks_development` and creates a new user `admin@example.com` with password `password`.
+
 6. Go to `localhost:3000` :rainbow:
 
 ### Without docker
