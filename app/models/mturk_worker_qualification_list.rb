@@ -1,0 +1,2 @@
+class MturkWorkerQualificationList < ApplicationRecord
+end

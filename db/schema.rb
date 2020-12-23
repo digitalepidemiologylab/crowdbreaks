@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_25_105521) do
+ActiveRecord::Schema.define(version: 2020_12_23_110445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -141,6 +141,13 @@ ActiveRecord::Schema.define(version: 2020_03_25_105521) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["mturk_batch_job_id"], name: "index_mturk_tweets_on_mturk_batch_job_id"
+  end
+
+  create_table "mturk_worker_qualification_lists", force: :cascade do |t|
+    t.string "name"
+    t.string "qualification_type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mturk_workers", force: :cascade do |t|
