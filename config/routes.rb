@@ -65,8 +65,6 @@ Rails.application.routes.draw do
       get 'monitor_streams', to: 'manage_pages#monitor_streams'
       get 'sentiment_analysis', to: 'manage_pages#sentiment_analysis'
       get 'sentiment_analysis_playground', to: 'manage_pages#sentiment_analysis_playground'
-      get 'sentiment_analysis_chart', to: 'manage_pages#sentiment_analysis_chart'
-      get 'sentiment_analysis_map', to: 'manage_pages#sentiment_analysis_map'
       get 'user_activity', to: 'manage_pages#user_activity'
 
       resources :ml_resources do
@@ -102,6 +100,9 @@ Rails.application.routes.draw do
         post 'multi_review', on: :collection
         post 'accept', on: :member
         post 'reject', on: :member
+      end
+      resources :mturk_worker_qualification_lists do
+        resources :qualified_workers, only: [:index]
       end
 
       # elasticsearch

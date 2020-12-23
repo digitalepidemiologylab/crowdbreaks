@@ -2,8 +2,7 @@ class MturkWorker < ApplicationRecord
   has_many :tasks
   has_many :mturk_tweets, through: :tasks
   has_many :results, through: :tasks
-  has_and_belongs_to_many :mturk_worker_qualification_lists
-
+  has_many :qualified_workers, dependent: :delete_all
 
   enum status: [:default, :blacklisted, :blocked], _suffix: true
 

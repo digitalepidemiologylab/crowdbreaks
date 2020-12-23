@@ -55,7 +55,7 @@ module Manage
 
     def destroy
       unless @mturk_batch_job.present?
-        redirect_to(mturk_batch_jobs_path, notice: "Job '#{@mturk_batch_job.name}' could not be found.")
+        redirect_to(mturk_batch_jobs_path, notice: "Job could not be found.")
       end
       destroy_results = false
       if params[:destroy_results].present?

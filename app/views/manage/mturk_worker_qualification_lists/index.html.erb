@@ -1,0 +1,40 @@
+<% @title ||= 'Mturk worker qualification lists'; title @title %>
+<%= go_back_btn dashboard_path %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>
+      Mturk worker qualification lists
+    </h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-6">
+  <div class="col-12">
+    <%= paginate @mturk_worker_qualification_lists %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Created</th>
+          <th>Links</th>
+          <th># workers</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render @mturk_worker_qualification_lists %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= link_to new_mturk_worker_qualification_list_path, class: 'btn btn-primary btn-lg' do %>
+      Create new qualification list
+    <% end %>
+  </div>
+</div>

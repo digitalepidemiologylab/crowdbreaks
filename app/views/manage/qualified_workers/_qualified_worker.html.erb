@@ -1,0 +1,11 @@
+<tr>
+  <td><%= qualified_worker.mturk_worker.worker_id %></td>
+  <td><%= qualified_worker.mturk_worker.tasks.count %></td>
+  <td><%= qualified_worker.mturk_worker.results.count %></td>
+  <td><%= time_ago(qualified_worker.mturk_worker.results&.last&.created_at) %></td>
+  <td>
+    <%= link_to review_mturk_worker_path(qualified_worker.mturk_worker) do %>
+      Review <%= fa_icon('angle-double-right') %>
+    <% end %>
+  </td>
+</tr>

@@ -25,6 +25,9 @@
       <% if can? :read, :mturk_reviewable_hit %>
         <%= link_to 'Review', mturk_reviewable_hits_path, class: 'btn btn-secondary btn-lg btn-block' %>
       <% end %>
+      <% if can? :read, MturkWorkerQualificationList %>
+        <%= link_to 'Qualification lists', mturk_worker_qualification_lists_path, class: 'btn btn-secondary btn-lg btn-block' %>
+      <% end %>
     </div>
     <% if can? :read, LocalBatchJob %>
       <%= link_to 'Local', manage_local_batch_jobs_path, class: 'btn btn-primary btn-lg btn-block'%>

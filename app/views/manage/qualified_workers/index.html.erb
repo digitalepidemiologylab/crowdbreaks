@@ -1,0 +1,31 @@
+<% @title ||= 'Qualified workers'; title @title %>
+<%= go_back_btn mturk_worker_qualification_lists_path %>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <h2 class='mb-4'>
+      Qualified workers for "<%= @mturk_worker_qualification_list.name %>"
+    </h2>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-6">
+  <div class="col-12">
+    <%= paginate @qualified_workers %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Worker ID</th>
+          <th># Tasks</th>
+          <th># Results</th>
+          <th>Last contributed</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render @qualified_workers %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
