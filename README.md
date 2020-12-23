@@ -5,7 +5,7 @@ This is the Rails application of Crowdbreaks. For a more general intro toCrowdbr
 [![Build Status](https://travis-ci.org/crowdbreaks/crowdbreaks.svg?branch=master)](https://travis-ci.org/crowdbreaks/crowdbreaks)
 
 # Install
-You may need to run the [crowdbreaks-streamer](https://github.com/crowdbreaks/crowdbreaks-streamer) for full functionality, but the Rails application should fine on its own.
+You may want to run the [crowdbreaks-streamer](https://github.com/crowdbreaks/crowdbreaks-streamer) for full functionality, but the Rails application works fine on its own.
 
 ## Development
 
