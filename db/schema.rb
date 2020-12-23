@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_23_110445) do
+ActiveRecord::Schema.define(version: 2020_12_23_111614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,6 +148,11 @@ ActiveRecord::Schema.define(version: 2020_12_23_110445) do
     t.string "qualification_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "mturk_worker_qualification_lists_workers", id: false, force: :cascade do |t|
+    t.bigint "mturk_worker_id", null: false
+    t.bigint "mturk_worker_qualification_list_id", null: false
   end
 
   create_table "mturk_workers", force: :cascade do |t|

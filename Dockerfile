@@ -17,7 +17,7 @@ WORKDIR /app
 
 # Install gems
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler -v 2.1.4
+RUN gem install bundler -v 2.2.3
 RUN bundle install
 
 # install js packages
