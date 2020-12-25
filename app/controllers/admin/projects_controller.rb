@@ -14,7 +14,12 @@ module Admin
     end
 
     def create
-      if params[:question_sequence]
+      if params[:primary_project]
+        unless @project.es_index_name.present?
+          # todo: fix this behavior by setting a primary_project boolean column in project
+          @project.es_index_name = @project.name
+        end
+      else
         @project = generate_question_sequence_project(@project)
       end
       if @project.save

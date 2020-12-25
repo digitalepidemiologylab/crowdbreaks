@@ -1,6 +1,6 @@
 function toggleTwitterOptions() {
   // toggle checkbox to hide options
-  $('#twitter-streaming-options-checkbox').change(function() {
+  $('.twitter-streaming-options-checkbox').change(function() {
     if (this.checked) {
       $('#twitter-streaming-options').show()
     } else {
