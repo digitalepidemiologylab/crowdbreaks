@@ -5,8 +5,9 @@ class MturkBatchJob < ApplicationRecord
 
   has_many :tasks, dependent: :delete_all
   has_many :mturk_tweets, dependent: :delete_all
-  belongs_to :project
   has_many :results, through: :tasks
+  belongs_to :project
+  belongs_to :mturk_worker_qualification_list
 
   validates :name, presence: true, uniqueness: {message: "Name must be unique"}
   validates_presence_of :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward

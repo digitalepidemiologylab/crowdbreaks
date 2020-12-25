@@ -163,7 +163,11 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :existing_qualification_type_id, hint: 'Ensure workers have a pre-existing qualification. Leave empty if no qualification should be applied.' %>
+    <%= f.association :mturk_worker_qualification_list, hint: 'Pre-defined qualification lists. Selecting a qualification list will only allow the workers in that list to work on this batch. Make sure to set "Max tasks per worker" accordingly.' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :existing_qualification_type_id, hint: 'Ensure workers have another pre-existing qualification type.' %>
   </div>
 
   <div class="form-group">
