@@ -50,6 +50,7 @@ latest.dump*
 # other
 **/*.DS_Store
 .ignore
+*.csv
 
 # webpacker/yarn
 /public/packs
