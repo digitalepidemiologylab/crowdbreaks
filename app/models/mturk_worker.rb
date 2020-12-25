@@ -108,7 +108,7 @@ class MturkWorker < ApplicationRecord
   def exclude_worker(mturk_batch_job)
     Rails.logger.info "Excluding worker #{worker_id} from batch #{mturk_batch_job.name}."
     mturk = Mturk.new(sandbox: mturk_batch_job.sandbox)
-    mturk.exclude_worker_from_qualification(worker_id, mturk_batch_job.qualification_type_id)
+    mturk.add_worker_to_qualification(worker_id, mturk_batch_job.qualification_type_id)
   end
 
   def block(reason, sandbox: false)

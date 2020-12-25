@@ -259,12 +259,12 @@ class Mturk
     end
   end
 
-  def exclude_worker_from_qualification(worker_id, qualification_type_id)
+  def add_worker_to_qualification(worker_id, qualification_type_id, qualification_value: 1)
     handle_error do
       @client.associate_qualification_with_worker({
         qualification_type_id: qualification_type_id,
         worker_id: worker_id,
-        integer_value: 1,
+        integer_value: qualification_value,
         send_notification: false
       })
     end

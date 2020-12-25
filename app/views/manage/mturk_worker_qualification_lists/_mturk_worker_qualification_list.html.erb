@@ -3,11 +3,13 @@
   <td><%= mturk_worker_qualification_list.qualification_type_id %></td>
   <td><%= time_ago(mturk_worker_qualification_list.created_at) %></td>
   <td>
+    <div class='no-wrap'>
     <% if mturk_worker_qualification_list.qualified_workers.count > 0 %>
       <%= link_to mturk_worker_qualification_list_qualified_workers_path(mturk_worker_qualification_list) do %>
         List workers <%= fa_icon('angle-double-right') %>
       <% end %>
     <% end %>
+    </div>
   </td>
   <td><%= mturk_worker_qualification_list.qualified_workers.count %></td>
   <td><%= mturk_worker_qualification_list.sandbox ? 'Sandbox' : 'Production' %></td>

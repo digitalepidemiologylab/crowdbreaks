@@ -16,7 +16,7 @@ class MturkWorkerQualificationList < ApplicationRecord
       description: description,
       qualification_type_status: "Active",
       auto_granted: true,
-      auto_granted_value: 100
+      auto_granted_value: 1
     }
     qual_type_id = mturk.create_qualification_type(props)
     update_attribute(:qualification_type_id, qual_type_id)

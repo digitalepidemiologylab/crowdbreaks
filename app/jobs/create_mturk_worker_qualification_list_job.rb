@@ -16,13 +16,6 @@ class CreateMturkWorkerQualificationListJob < ApplicationJob
 
     return unless worker_rows.count > 0
 
-    worker_list = []
-    worker_rows.each do |row|
-      worker = MturkWorker.find_or_create_by(worker_id: row[0])
-      worker_list.push(worker)
-    end
-    qual_list.update_attribute(:mturk_workers, worker_list)
-
     # create qualification type
     unless qual_list.qualification_type_id.present?
       qual_type_id = qual_list.create_qualification_type
@@ -30,5 +23,17 @@ class CreateMturkWorkerQualificationListJob < ApplicationJob
         qual_list.failed_status! and return
       end
     end
+
+    worker_list = []
+    mturk = Mturk.new(sandbox: qual_list.sandbox)
+    worker_rows.each do |row|
+      worker_id = row[0]
+      # find or create mturk worker
+      worker = MturkWorker.find_or_create_by(worker_id: worker_id)
+      worker_list.push(worker)
+      # associate worker with qualification type
+      mturk.add_worker_to_qualification(worker_id, qual_list.qualification_type_id)
+    end
+    qual_list.update_attribute(:mturk_workers, worker_list)
   end
 end
