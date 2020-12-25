@@ -1,5 +1,6 @@
 <tr>
   <td><%= mturk_worker_qualification_list.name %></td>
+  <td><%= mturk_worker_qualification_list.qualification_type_id %></td>
   <td><%= time_ago(mturk_worker_qualification_list.created_at) %></td>
   <td>
     <% if mturk_worker_qualification_list.qualified_workers.count > 0 %>
@@ -9,6 +10,7 @@
     <% end %>
   </td>
   <td><%= mturk_worker_qualification_list.qualified_workers.count %></td>
+  <td><%= mturk_worker_qualification_list.sandbox ? 'Sandbox' : 'Production' %></td>
   <td><span class='badge badge-sentiment'><%= qual_list_status(mturk_worker_qualification_list.status) %></span></td>
   <td>
     <div class="icon-spacing">

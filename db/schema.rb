@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_23_222706) do
+ActiveRecord::Schema.define(version: 2020_12_24_115836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,6 +150,7 @@ ActiveRecord::Schema.define(version: 2020_12_23_222706) do
     t.datetime "updated_at", null: false
     t.text "description", default: ""
     t.integer "status", default: 0, null: false
+    t.boolean "sandbox", default: true
   end
 
   create_table "mturk_workers", force: :cascade do |t|

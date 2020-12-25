@@ -46,7 +46,7 @@ module Manage
     private
 
     def mturk_worker_qualification_list_params
-      params.require(:mturk_worker_qualification_list).permit(:name, :description, :job_file)
+      params.require(:mturk_worker_qualification_list).permit(:name, :description, :job_file, :sandbox)
     end
 
   end

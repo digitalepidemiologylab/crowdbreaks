@@ -228,6 +228,10 @@ class Mturk
       qualification_type_status: "Active",
       auto_granted: true
     }
+    create_qualification_type(props)
+  end
+
+  def create_qualification_type(props)
     handle_error do
       @client.create_qualification_type(props).qualification_type.qualification_type_id
     end

@@ -9,7 +9,7 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :description, hint: 'Optional: Add a basic description of the qualification list (e.g. how workers were selected)' %>
+    <%= f.input :description, hint: 'Description shown to Mturk workers', input_html: {value: f.object.description.blank? ? "You've been granted a positive qualifiction for this task." : f.object.description}  %>
   </div>
 
   <div class="form-group">
@@ -29,6 +29,10 @@
     <% if @mturk_worker_qualification_list.qualified_workers.count > 0 %>
       <div class="alert alert-danger">Note: Existing qualification list will be overwritten if file is provided.</div>
     <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :sandbox, input_html: {class: "mr-2", checked: f.object.sandbox}, label_html: {class: 'checkbox-inline'} %>
   </div>
 
   <div class="form-actions" style="margin-top:25px;">
