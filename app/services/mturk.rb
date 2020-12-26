@@ -18,19 +18,50 @@ class Mturk
       return
     end
     Rails.logger.info "Generated new qualifaction type ID: #{qual_type_id}"
-    # qualification requirements
+    # set qualification requirements
+    # dynamic negative qualification: worker gets dynamically excluded
     qualification_requirements = [{
         qualification_type_id: qual_type_id,
         comparator: 'DoesNotExist',   # If worker does not exist on list, worker is qualified
         actions_guarded: "Accept"     # Worker can still preview the task but not accept
       }]
+    # positive qualification list
+    if batch_job.mturk_worker_qualification_list.present?
+      qualification_requirements.push({
+        qualification_type_id: batch_job.mturk_worker_qualification_list.qualification_type_id,
+        comparator: 'EqualTo',                          # Worker has to have a perfect score in qualification!
+        integer_values: [1],
+        actions_guarded: "DiscoverPreviewAndAccept"     # Worker cannot accept, preview, or see HIT in their search results
+      })
+    end
+    # existing qualification type (e.g. created outside of Crowdbreaks)
     if batch_job.existing_qualification_type_id.present?
       qualification_requirements.push({
         qualification_type_id: batch_job.existing_qualification_type_id,
         comparator: 'EqualTo',                          # Worker has to have a perfect score in qualification!
-        integer_values: [100],
+        integer_values: [1],
         actions_guarded: "DiscoverPreviewAndAccept"     # Worker cannot accept, preview, or see HIT in their search results
       })
+    end
+    # system qualfification: minimum approval rate
+    unless batch_job.minimal_approval_rate.nil?
+      qual_props = {
+        qualification_type_id: '000000000000000000L0',
+        comparator: 'GreaterThanOrEqualTo',
+        integer_values: [batch_job.minimal_approval_rate],
+        actions_guarded: actions_guarded
+      }
+      qualification_requirements.push(qual_props)
+    end
+    # system qualfification: minimum number of HITS
+    unless batch_job.min_num_hits_approved.nil?
+      qual_props = {
+        qualification_type_id: '00000000000000000040',
+        comparator: 'GreaterThan',
+        integer_values: [batch_job.min_num_hits_approved],
+        actions_guarded: actions_guarded
+      }
+      qualification_requirements.push(qual_props)
     end
     # create a HIT type
     props = {
@@ -42,26 +73,6 @@ class Mturk
       assignment_duration_in_seconds: batch_job.assignment_duration_in_seconds,
       qualification_requirements: qualification_requirements
     }
-    # system qualfification: minimum approval rate
-    unless batch_job.minimal_approval_rate.nil?
-      qual_props = {
-        qualification_type_id: '000000000000000000L0',
-        comparator: 'GreaterThanOrEqualTo',
-        integer_values: [batch_job.minimal_approval_rate],
-        actions_guarded: actions_guarded
-      }
-      props[:qualification_requirements].push(qual_props)
-    end
-    # system qualfification: minimum number of HITS
-    unless batch_job.min_num_hits_approved.nil?
-      qual_props = {
-        qualification_type_id: '00000000000000000040',
-        comparator: 'GreaterThan',
-        integer_values: [batch_job.min_num_hits_approved],
-        actions_guarded: actions_guarded
-      }
-      props[:qualification_requirements].push(qual_props)
-    end
     return @client.create_hit_type(props).hit_type_id, qual_type_id
   end
 
@@ -269,6 +280,16 @@ class Mturk
       })
     end
   end
+
+  def remove_worker_from_qualification(worker_id, qualification_type_id)
+    handle_error do
+      @client.disassociate_qualification_from_worker({
+        worker_id: worker_id,
+        qualification_type_id: qualification_type_id
+      })
+    end
+  end
+
 
   def get_qualification_type(qualification_type_id)
     handle_error do
