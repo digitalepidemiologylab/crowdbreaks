@@ -16,7 +16,7 @@ class MturkBatchJob < ApplicationRecord
   validates_inclusion_of :number_of_assignments, in: 1..100, message: 'Number assignments cannot be 1 or >100'
   validates_with CsvValidator, fields: [:job_file]
   validates_with HitTypeValidator, on: :create
-  validates_with QualificationListValidator, on: :create
+  validates_with QualificationListValidator
 
   enum check_availability: [:before, :after, :before_and_after, :never], _prefix: true
 
