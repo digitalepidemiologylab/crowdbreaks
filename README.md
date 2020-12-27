@@ -1,6 +1,6 @@
 <img src="app/assets/images/logo-crowdbreaks.svg" alt="Crowdbreaks logo" width="400px"/>
 
-This is the Rails application of Crowdbreaks. For a more general intro toCrowdbreaks please follow [this link](https://github.com/crowdbreaks/welcome).
+This is the Rails application of Crowdbreaks. For a more general intro to Crowdbreaks please follow [this link](https://github.com/crowdbreaks/welcome).
 
 [![Build Status](https://travis-ci.org/crowdbreaks/crowdbreaks.svg?branch=master)](https://travis-ci.org/crowdbreaks/crowdbreaks)
 
@@ -70,6 +70,9 @@ Currently js tests are not supported outside of docker. Everything else should s
 ```bash
 bundle exec rspec
 ```
+
+# Deployment
+This application is deployed with Heroku. You can read more about deployment on the wiki page [Deployment on Heroku](https://github.com/crowdbreaks/crowdbreaks/wiki/Deployment-on-Heroku).
 
 # Documentation
 You can find more information to specific topics on the [Crowdbreaks wiki](https://github.com/crowdbreaks/crowdbreaks/wiki).
