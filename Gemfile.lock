@@ -505,7 +505,6 @@ DEPENDENCIES
   rails (~> 5.2.2)
   rails-controller-testing
   rails_12factor
-  rake (~> 13.0.3)
   rb-fsevent
   redis
   rollbar
@@ -534,4 +533,4 @@ RUBY VERSION
    ruby 2.5.8p224
 
 BUNDLED WITH
-   2.1.4
+   2.2.3
