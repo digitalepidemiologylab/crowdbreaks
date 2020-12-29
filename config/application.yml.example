@@ -1,5 +1,3 @@
-# Crowdbreaks works best in combination with crowdbreaks-streamer (https://github.com/crowdbreaks/crowdbreaks-streamer) but running it in parallel is optional.
-
 development: &development
   ENVIRONMENT_NAME: "development"
   S3_BUCKET_NAME: "crowdbreaks-dev"
@@ -38,7 +36,7 @@ development: &development
   REDISTOGO_URL: 'redis://redis:6379'
   # Contact email (optional)
   MTURK_CONTACT_EMAIL: "email@example.com"
-  # Stream error monitoring/daily & weekly status updates. This is currently triggered by Heroku Scheduler. See the wiki for "Watch stream task".
+  # Stream error monitoring/daily & weekly status updates. This is currently triggered by Heroku Scheduler. Read more on the GitHub wiki.
   WATCH_STREAM_WARNING_EMAIL: "email@example.com"
   WATCH_STREAM: 'true'
   SEND_STATUS_EMAILS: 'true'
@@ -51,6 +49,10 @@ test:
 
 staging:
   # staging enviornment
+  #
+  # Basic auth for staging
+  # STAGING_USERNAME: "admin"
+  # STAGING_PASSWORD: "password"
 
 production:
   # production enviornment
