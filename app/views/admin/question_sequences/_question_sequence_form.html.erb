@@ -1,0 +1,25 @@
+<%= simple_form_for(@project, url: @project.new_record? ? admin_projects_path : admin_project_path(@project), html: {id: 'project-form'}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-group">
+    <%= f.error :base %>
+  </div>
+
+  <div class="mb-5">
+    <h4>Add to project</h4>
+    <div class="form-group">
+      <%= f.input :name, as: :select, collection: @names, hint: 'Add a new question sequence to a primary project.', include_blank: false %>
+    </div>
+
+    <div class="form-group">
+      <%= f.input :question_sequence_name, required: true, hint: 'Give a generic name to the question sequence so you can refer to it later on.' %>
+    </div>
+  </div>
+
+  <!-- hidden fields -->
+  <%= f.input :primary, as: :hidden, :input_html => {value: false} %>
+
+  <div class="form-actions" class="mt-2">
+    <%= f.button :submit, class: 'btn btn-primary btn-lg' %>
+  </div>
+<% end %>

@@ -73,7 +73,8 @@ class StatusMailer
     modes = ['public', 'local', 'mturk', 'all']
     date_range = @date_range unless total
     table(header: ['Project', "Public", "Local", "Mturk", "Total"]) do
-      Project.grouped_by_name.each do |projects|
+      Project.primary.each do |primary_project|
+        projects = primary_project.question_sequences
         counts = {}
         modes.each do |mode|
           counts[mode] = 0
@@ -82,7 +83,7 @@ class StatusMailer
           end
           counts[mode] = num(counts[mode])
         end
-        concat table_row(projects[0].name, *counts.values_at(*modes), align: align)
+        concat table_row(primary_project.name, *counts.values_at(*modes), align: align)
       end
     end
   end

@@ -1,6 +1,10 @@
 <%= simple_form_for(@project, url: @project.new_record? ? admin_projects_path : admin_project_path(@project), html: {id: 'project-form'}) do |f| %>
   <%= f.error_notification %>
 
+  <div class="form-group">
+    <%= f.error :base %>
+  </div>
+
   <div class="mb-5">
     <h4>General</h4>
     <div class="form-group">
@@ -20,7 +24,6 @@
     </div>
     <div class="form-group">
       <%= f.input :name, hint: 'Name of the project. By convention this should be the same as the Elasticsearch index name (if provided), thus starting with the project_* prefix. The name should be unique, otherwise it will be grouped with the project of the same name.' %>
-      <%= hidden_field_tag(:primary_project, true) %>
     </div>
     <div class="form-group">
       <%= f.input :active_question_sequence_id, collection: @project.question_sequences, include_blank: false, selected: @project.active_question_sequence, hint: 'A project can have multiple question sequences. The active question sequence is the one which will be on public display.' %>
@@ -99,6 +102,8 @@
     </div>
   </div>
 
+  <!-- hidden fields -->
+  <%= f.input :primary, as: :hidden, :input_html => {value: true} %>
 
   <div class="form-actions" class="mt-2">
     <%= f.button :submit, class: 'btn btn-primary btn-lg' %>

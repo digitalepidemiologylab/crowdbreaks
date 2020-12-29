@@ -7,7 +7,6 @@ RSpec.describe MturkBatchJob, type: :model do
   it 'validates sandbox setting on qualification list' do
     batch_job = MturkBatchJob.new(sandbox: true, mturk_worker_qualification_list: MturkWorkerQualificationList.new(sandbox: false))
     batch_job.valid?
-    p batch_job.errors[:base]
     expect(batch_job.errors[:base]).to include("The selected qualification list does not have the same settings for 'sandbox'. The records need to have the same sandbox setting.")
   end
 

@@ -23,7 +23,7 @@
         <div class="col-12 text-center">
           <h4><%= t('.private_projects') %></h4>
           <% @local_batch_jobs.each do |local_batch_job| %>
-            <%= link_to local_batch_job_path(local_batch_job), class: 'btn btn-primary btn-lg m-3' do %>
+            <%= link_to local_batch_job_path(local_batch_job), class: 'btn btn-primary btn-lg m-3', data: {turbolinks: false} do %>
               <%= local_batch_job.name %>&nbsp;<%= fa_icon 'angle-double-right', style: 'color:white;' %>
             <% end %>
           <% end %>

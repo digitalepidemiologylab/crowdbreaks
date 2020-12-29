@@ -22,7 +22,7 @@ class Project < ApplicationRecord
 
   # scopes
   scope :for_current_locale, -> {where("'#{I18n.locale.to_s}' = ANY (locales)")}
-  scope :primary, -> {where.not(es_index_name: nil).order(:created_at)}
+  scope :primary, -> {where(primary: true).order({created_at: :desc})}
 
   # fields
   friendly_id :title, use: :slugged
@@ -38,8 +38,17 @@ class Project < ApplicationRecord
     title
   end
 
+  def to_label
+    # display name for simple form select options
+    if primary?
+      "#{name} (primary)"
+    else
+      "#{name} (#{question_sequence_name})"
+    end
+  end
+
   def num_question_sequences
-    Project.where(name: name).count
+    question_sequences.count
   end
 
   def active_question_sequence
@@ -64,7 +73,11 @@ class Project < ApplicationRecord
 
   def primary_project
     # in case of a project having multiple question sequences this method will return the original one
-    Project.where(name: name).where.not(es_index_name: nil)&.first || self
+    Project.where(name: name, primary: true)&.first || self
+  end
+
+  def self.primary_project_by_name(name)
+    where(primary: true, name: name)&.first
   end
 
   def question_sequences
@@ -102,33 +115,6 @@ class Project < ApplicationRecord
         user.email.match?(regexp)
       end
     end
-  end
-
-  def to_label
-    # display name for simple form select options
-    if Project.where(name: name).count == 1
-      name
-    else
-      # display project name with index based on created_at
-      idx = Project.where(name: name).order(:created_at).pluck(:id).find_index(id) + 1
-      "#{name} (#{idx})"
-    end
-  end
-
-  def self.grouped_by_name(projects: nil)
-    if projects.nil?
-      projects = Project.all
-    end
-    grouped_projects = []
-    projects.distinct.pluck(:name).each do |name|
-      grouped_projects.push(Project.where(name: name).to_a)
-    end
-    grouped_projects
-  end
-
-  def self.by_name(name)
-    # Multiple projects can have the same name (e.g. two question sequences). This method returns the original project record
-    where.not(es_index_name: nil).where(name: name)&.first
   end
 
   def initial_question

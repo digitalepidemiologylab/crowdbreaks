@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_25_122338) do
+ActiveRecord::Schema.define(version: 2020_12_29_171458) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,6 +191,8 @@ ActiveRecord::Schema.define(version: 2020_12_25_122338) do
     t.boolean "compile_trending_topics", default: false, null: false
     t.jsonb "model_endpoints", default: {}, null: false
     t.boolean "compile_data_dump_ids", default: false, null: false
+    t.boolean "primary", default: true, null: false
+    t.string "question_sequence_name"
     t.index ["es_index_name"], name: "index_projects_on_es_index_name", unique: true
     t.index ["slug"], name: "index_projects_on_slug"
   end

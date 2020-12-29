@@ -21,7 +21,8 @@
             admin_result_path(result, project_id: result.project_id, user_id: result.user_id,
               tweet_id: result.tweet_id, mturk_worker_id: result.mturk_worker_id,
               mturk_batch_job_id: result.mturk_batch_job_id,
-              res_type: result.res_type, **@options) %>
+              res_type: result.res_type, **@options),
+              data: {turbolinks: false} %>
           <% end %>
       <% else %>
         <% if can? :destroy, result %>
@@ -31,7 +32,7 @@
             data: {confirm: "Delete result?"} %>
         <% end %>
         <% if can? :read, result %>
-          <%= link_to fa_icon('eye'), admin_result_path(result, **@options) %>
+          <%= link_to fa_icon('eye'), admin_result_path(result, **@options), data: {turbolinks: false} %>
         <% end %>
       <% end %>
     </div>

@@ -3,7 +3,6 @@ module Admin
     load_and_authorize_resource param_method: :sanitized_projects_params, find_by: :slug
 
     def new
-      @names = Project.distinct.pluck(:name)
     end
 
     def show
@@ -14,24 +13,27 @@ module Admin
     end
 
     def create
-      if params[:primary_project]
-        unless @project.es_index_name.present?
-          # todo: fix this behavior by setting a primary_project boolean column in project
-          @project.es_index_name = @project.name
-        end
-      else
-        @project = generate_question_sequence_project(@project)
-      end
-      if @project.save
-        if @project.job_file.present?
-          CreatePublicTweetsJob.perform_later(@project.id, current_user.id, @project.retrieve_tweet_rows)
-          redirect_to admin_projects_path, notice: "Project #{@project.name} is being created..."
+      if @project.primary?
+        # create new primary project
+        if @project.save
+          if @project.job_file.present?
+            CreatePublicTweetsJob.perform_later(@project.id, current_user.id, @project.retrieve_tweet_rows)
+            redirect_to admin_projects_path, notice: "Project #{@project.name} is being created..."
+          else
+            redirect_to admin_projects_path, notice: "Project #{@project.name} successfully created!"
+          end
         else
-          redirect_to admin_projects_path, notice: "Project #{@project.name} successfully created!"
+          flash[:alert] = 'Creating project was unsuccessful'
+          render :new
         end
       else
-        flash[:alert] = 'Creating project was unsuccessful'
-        render :new
+        # add new question sequence
+        @project = copy_fields_from_primary_project(@project)
+        if @project.save
+          redirect_to admin_question_sequences_path, notice: "Question sequence for #{@project.name} successfully created!"
+        else
+          redirect_to admin_question_sequences_path, alert: "Question sequence for #{@project.name} could not be successfully created!"
+        end
       end
     end
 
@@ -70,12 +72,12 @@ module Admin
     def project_params
       params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales},
                                       :name, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode,
-                                      :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :active_question_sequence_id,
+                                      :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :active_question_sequence_id, :primary, :question_sequence_name,
                                       :compile_trending_tweets, :compile_trending_topics, :compile_data_dump_ids)
     end
 
-    def generate_question_sequence_project(project)
-      main_project = Project.find_by(name: project.name)
+    def copy_fields_from_primary_project(project)
+      main_project = Project.primary_project_by_name(project.name)
       project.title_translations = main_project.title_translations
       project.description_translations = main_project.description_translations
       project

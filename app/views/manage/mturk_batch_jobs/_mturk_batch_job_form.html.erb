@@ -51,7 +51,7 @@
     <%= f.input :number_of_assignments,
       as: :integer,
       input_html: { value: f.object.number_of_assignments || 1 },
-      hint: "Label every tweet n times by n different workers." %>
+      hint: "Label every tweet by n different workers." %>
   </div>
 
   <div class="form-group">
@@ -61,12 +61,12 @@
   </div>
 
   <div class="form-group">
-    <%= f.input 'Reward', hint: "Reward per finished question sequence" do %>
+    <%= f.input 'Reward', hint: "Reward per finished question sequence. With US minimum wage of 7.25$/h, we get $0.04 for a short question sequence (20sec) and $0.06 for a longer question sequence (30sec)." do %>
       <div class="input-group">
         <span class="input-group-text">$</span>
         <%= f.input_field :reward,
           class: 'form-control border-left-0',
-          value: f.object.reward || 0.03 %>
+          value: f.object.reward || 0.04 %>
       </div>
     <% end %>
   </div>

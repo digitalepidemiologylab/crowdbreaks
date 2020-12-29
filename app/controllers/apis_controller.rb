@@ -226,7 +226,7 @@ class ApisController < ApplicationController
       if model['Tags'].present?
         if model['Tags']['project_name'].present?
           project_name = model['Tags']['project_name']
-          project = Project.by_name(project_name)
+          project = Project.primary_project_by_name(project_name)
           next if project.nil?
           model_name = model['ModelName']
           question_tag = model['Tags']['question_tag']
@@ -250,7 +250,7 @@ class ApisController < ApplicationController
     question_tag = api_params_ml_update['question_tag']
     model_type = api_params_ml_update['model_type']
     run_name = api_params_ml_update['run_name']
-    project = Project.by_name(project_name)
+    project = Project.primary_project_by_name(project_name)
     if project.nil?
       msg = "Project #{project_name} could not be found."
       render json: {message: msg}.to_json, status: 400 and return

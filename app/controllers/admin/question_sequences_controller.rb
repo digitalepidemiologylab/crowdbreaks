@@ -3,10 +3,15 @@ module Admin
     load_and_authorize_resource :project, parent: false
 
     def new
+      @names = Project.primary.pluck(:name)
     end
 
     def index
-      @projects = Project.grouped_by_name(projects: @projects)
+      @primary_projects = @projects.primary
+      @grouped_projects = []
+      @primary_projects.each do |primary_project|
+        @grouped_projects.push(primary_project.question_sequences.to_a)
+      end
     end
 
     def show
