@@ -42,7 +42,7 @@
               </td>
               <td>
                 <span>
-                  <% if can? :destroy, :question_sequence %>
+                  <% if idx != 0 and can? :destroy, :question_sequence %>
                     <%= link_to fa_icon("trash"), admin_question_sequence_path(p.id),
                       title: 'Destroy question sequence',
                       method: :delete,

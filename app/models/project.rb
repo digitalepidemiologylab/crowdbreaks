@@ -9,7 +9,7 @@ class Project < ApplicationRecord
   has_many :results
   has_many :mturk_batch_jobs
   has_many :local_batch_jobs
-  has_many :public_tweets
+  has_many :public_tweets, dependent: :destroy
 
   # callbacks
   before_validation :normalize_blank_values

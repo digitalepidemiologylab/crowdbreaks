@@ -57,6 +57,12 @@ module Admin
     def destroy
       if @project.results.count > 0
         redirect_to(admin_projects_path, alert: 'Cannot delete a project with existing answers to questions (results). Delete results or define a new project.')
+      elsif @project.num_question_sequences > 1
+        redirect_to(admin_projects_path, alert: 'Cannot delete a project with more than one question sequences. Delete question sequences individually first.')
+      elsif @project.local_batch_jobs.count > 0
+        redirect_to(admin_question_sequences_path, alert: 'Cannot delete primary question sequence. Delete associated local batch jobs first.')
+      elsif @project.mturk_batch_jobs.count > 0
+        redirect_to(admin_question_sequences_path, alert: 'Cannot delete primary question sequence. Delete associated mturk batch jobs first.')
       else
         if @project.destroy
           flash[:notice] = 'Project successfully destroyed!'

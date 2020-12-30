@@ -18,7 +18,7 @@
         </div>
         <div >
           <label>Project</label>
-          <%= select('project', 'project_id', Project.all.collect{|p| [p.title, p.id]}, {selected: @project_id_filter, include_blank: true},
+          <%= select('project', 'project_id', Project.all.collect{|p| [p.to_label, p.id]}, {selected: @project_id_filter, include_blank: true},
                      {id: 'results-select-project-filter', class: 'select form-control'}) %>
         </div>
       </div>
