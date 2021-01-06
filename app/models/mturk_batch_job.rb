@@ -112,7 +112,7 @@ class MturkBatchJob < ApplicationRecord
 
   def results_to_csv
     model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'project_id', 'task_id', 'flag', 'created_at']
-    added_cols = ['worker_id', 'text', 'question_tag', 'answer_tag', 'total_duration_ms', 'full_log']
+    added_cols = ['worker_id', 'text', 'question_tag', 'answer_tag', 'total_duration_ms', 'question_sequence_name', 'full_log']
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
@@ -130,6 +130,7 @@ class MturkBatchJob < ApplicationRecord
           result.question&.tag,
           result.answer&.tag,
           total_duration_ms,
+          result.project.question_sequence_name,
           log&.to_json
         ]
         csv << row

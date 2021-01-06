@@ -24,19 +24,8 @@ module Manage
         @current_streams = []
         return
       end
-      @current_streams = Project.where(es_index_name: config.map{|stream| stream['es_index_name']})
+      @current_streams = Project.primary.where(es_index_name: config.map{|stream| stream['es_index_name']})
       @stream_status = @api.status_streaming
-    end
-
-    def sentiment_analysis_chart
-      authorize! :view, :sentiment_analysis
-      @interval = '6h'
-      @project = Project.find_by('es_index_name': 'project_vaccine_sentiment')
-    end
-
-    def sentiment_analysis_map
-      authorize! :view, :sentiment_analysis
-      @project = Project.find_by('es_index_name': 'project_vaccine_sentiment')
     end
 
     def user_activity

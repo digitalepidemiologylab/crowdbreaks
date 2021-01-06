@@ -84,7 +84,7 @@ class SyncS3
       end
     end
     # projects
-    Project.where.not(es_index_name: nil).find_each do |project|
+    Project.primary.find_each do |project|
       type = 'project'
       s3_key = project.s3_key
       exists = @s3.exists?(s3_key)

@@ -165,7 +165,7 @@ class Project < ApplicationRecord
 
   def results_to_csv(type: 'public-results')
     model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'user_id', 'project_id', 'flag', 'created_at']
-    added_cols = ['question_tag', 'answer_tag', 'text', 'user_name', 'total_duration_ms', 'full_log']
+    added_cols = ['question_tag', 'answer_tag', 'text', 'user_name', 'total_duration_ms', 'question_sequence_name', 'full_log']
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     if type == 'public-results'
       _results = results.public_res_type
@@ -191,6 +191,7 @@ class Project < ApplicationRecord
           tweet_text,
           result.user.username,
           total_duration_ms,
+          result.project.question_sequence_name,
           log&.to_json
         ]
         csv << row

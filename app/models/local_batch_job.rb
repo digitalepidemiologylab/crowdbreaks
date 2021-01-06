@@ -61,7 +61,7 @@ class LocalBatchJob < ApplicationRecord
 
   def results_to_csv
     model_cols=['id', 'question_id', 'answer_id', 'tweet_id', 'user_id', 'project_id', 'flag', 'created_at']
-    added_cols = ['text', 'question_tag', 'answer_tag', 'user_name', 'total_duration_ms', 'full_log']
+    added_cols = ['text', 'question_tag', 'answer_tag', 'user_name', 'total_duration_ms', 'question_sequence_name', 'full_log']
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
@@ -80,6 +80,7 @@ class LocalBatchJob < ApplicationRecord
           result.answer.tag,
           result.user.username,
           total_duration_ms,
+          result.project.question_sequence_name,
           log&.to_json
         ]
         csv << row
