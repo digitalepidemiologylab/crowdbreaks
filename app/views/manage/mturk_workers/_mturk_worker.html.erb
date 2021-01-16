@@ -20,7 +20,7 @@
   <td>
     <div>
       <% if mturk_worker.results.count > 0 %>
-        <%= link_to review_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Review results' do %>
+        <%= link_to review_mturk_worker_path(mturk_worker, search_worker: params[:search_worker], show_blacklisted: @show_blacklisted, show_reviewed: @show_reviewed), title: 'Review results', data: {turbolinks: false} do %>
           Review&nbsp;<%= fa_icon 'angle-double-right' %>
         <% end %>
       <% end %>
