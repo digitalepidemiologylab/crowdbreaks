@@ -7,11 +7,7 @@ module Admin
     end
 
     def index
-      @primary_projects = @projects.primary
-      @grouped_projects = []
-      @primary_projects.each do |primary_project|
-        @grouped_projects.push(primary_project.question_sequences.to_a)
-      end
+      @projects = @projects.order({last_question_sequence_created_at: :desc}).primary.page(params[:page]).per(10)
     end
 
     def show

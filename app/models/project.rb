@@ -13,6 +13,7 @@ class Project < ApplicationRecord
 
   # callbacks
   before_validation :normalize_blank_values
+  after_commit :update_last_question_sequence_created_at, on: [:create, :destroy]
 
   # validations
   validates_presence_of :title, :description, :name
@@ -204,6 +205,11 @@ class Project < ApplicationRecord
     columns.each do |column|
       self[column].present? || self[column] = nil
     end
+  end
+
+  def update_last_question_sequence_created_at
+    # update a column in the primary project whenever a project gets added or removed
+    primary_project.update_attribute(:last_question_sequence_created_at, primary_project.question_sequences.pluck(:created_at).max)
   end
 
   def accessible_by_email_pattern_is_valid

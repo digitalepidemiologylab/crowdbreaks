@@ -1,0 +1,44 @@
+<% primary_question_sequence.question_sequences.order({primary: :desc, created_at: :asc}).each_with_index do |question_sequence, idx| %>
+  <tr>
+    <% if idx == 0 %>
+      <td rowspan="<%= primary_question_sequence.num_question_sequences %>"><%= question_sequence.name %></td>
+      <td rowspan="<%= primary_question_sequence.num_question_sequences %>"><%= question_sequence.title %></td>
+    <% end %>
+    <td>
+      <% if idx == 0 %>
+        <i>primary</i>
+      <% else %>
+        <%= question_sequence.question_sequence_name %>
+      <% end %>
+    </td>
+    <td>
+      <%= number_with_delimiter(question_sequence.questions.count, delimiter: ' ') %>
+    </td>
+    <td>
+      <%= number_with_delimiter(question_sequence.results.count, delimiter: ' ') %>
+    </td>
+    <td>
+      <%= link_to 'Public', admin_question_sequence_path(question_sequence.id, mode: :public), data: {turbolinks: false} %> |
+      <%= link_to 'Mturk', admin_question_sequence_path(question_sequence.id, mode: :mturk), data: {turbolinks: false} %>
+    </td>
+    <td>
+      <span>
+        <% if idx != 0 and can? :destroy, :question_sequence %>
+          <%= link_to fa_icon("trash"), admin_question_sequence_path(question_sequence.id),
+            title: 'Destroy question sequence',
+            method: :delete,
+            data: {confirm: "Destroy question sequence?"}
+          %>
+        <% end %>
+        <% if can? :update, :question_sequence %>
+          <%= link_to fa_icon("pencil"), edit_admin_question_sequence_path(question_sequence.id), title: "Edit question sequence", data: {turbolinks: false} %>
+        <% end %>
+        <% if can? :read, :question_sequence %>
+          <% if question_sequence.questions.count > 0 %>
+            <%= link_to fa_icon('download'), admin_question_sequence_path(question_sequence.id, format: 'csv'), title: 'Download question sequence info' %>
+          <% end %>
+        <% end %>
+      </span>
+    </td>
+  </tr>
+<% end %>

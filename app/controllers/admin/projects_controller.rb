@@ -9,7 +9,7 @@ module Admin
     end
 
     def index
-      @projects = Project.primary
+      @projects = @projects.order({last_question_sequence_created_at: :desc}).primary.page(params[:page]).per(10)
     end
 
     def create
