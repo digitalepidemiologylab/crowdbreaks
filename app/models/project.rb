@@ -376,7 +376,6 @@ class Project < ApplicationRecord
     tweet_id = tweet.fetch(:tweet_id, nil)
     while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
       Rails.logger.info "Trial #{trials + 1}: Tweet #{tweet_id} is invalid and will be removed. Fetching new tweet instead."
-      api.remove_tweet(es_index_name, tweet_id)
       tweet = api.get_tweet(es_index_name, user_id: user_id)
       tweet_id = tweet&.fetch(:tweet_id, nil)
       trials += 1

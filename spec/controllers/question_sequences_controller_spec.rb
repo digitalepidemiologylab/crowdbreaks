@@ -11,7 +11,7 @@ RSpec.describe QuestionSequencesController, type: :controller do
   describe "GET #show" do
     it "dont show private projects by default" do
       get :show, params: {project_id: private_project.id}
-      expect(subject).to redirect_to(projects_path)
+      expect(subject).to redirect_to()
     end
 
     it "shows public projects" do

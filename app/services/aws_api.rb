@@ -1,62 +1,11 @@
-require 'httparty'
+require 'elasticsearch'
+require 'faraday_middleware/aws_sigv4'
+require 'stretchy'
 
-class FlaskApi
-  include HTTParty
+class AwsApi
   include Ml
   include Pipeline
   include Elasticsearch
-
-  default_timeout 5
-  base_uri ENV['FLASK_API_HOSTNAME']
-  # debug_output $stderr
-  basic_auth ENV['FLASK_API_USERNAME'], ENV['FLASK_API_PASSWORD']
-  JSON_HEADER = {'Content-Type' => 'application/json', :Accept => 'application/json'}
-
-
-  def initialize
-  end
-
-  def ping
-    options = {timeout: 5}
-    handle_error(error_return_value: false) do
-      resp = self.class.get("/", options)
-      resp.success?
-    end
-  end
-
-  # Never used
-  def test_redis
-    options = {timeout: 5}
-    handle_error(error_return_value: false) do
-      resp = self.class.get("/test/redis", options)
-      resp.parsed_response == 'true'
-    end
-  end
-
-  # tweets
-  def get_tweet(es_index_name, user_id: nil)
-    data = {'user_id': user_id}
-    tweet = nil
-    handle_error do
-      resp = self.class.get('/tweet/new/'+es_index_name, query: data, timeout: 2)
-      tweet = resp.parsed_response.deep_symbolize_keys!
-    end
-    tweet
-  end
-
-  def remove_tweet(es_index_name, tweet_id)
-    data = {'tweet_id': tweet_id}
-    handle_error do
-      self.class.post('/tweet/remove/'+es_index_name, body: data.to_json, headers: JSON_HEADER)
-    end
-  end
-
-  def update_tweet(es_index_name, user_id, tweet_id)
-    data = {'user_id': user_id, 'tweet_id': tweet_id}
-    handle_error do
-      self.class.post('/tweet/update/'+es_index_name, body: data.to_json, headers: JSON_HEADER)
-    end
-  end
 
   def get_trending_tweets(project_slug, options={})
     resp = self.class.get('/trending_tweets/'+project_slug, body: options.to_json, timeout: 10, headers: JSON_HEADER)
@@ -123,6 +72,44 @@ class FlaskApi
 
 
   private
+
+  def get_nested_query(query, index, limit: 1)
+    # Prioritize already annotated tweets (not enough times)
+    query = query.range(
+        # 2021-03-10T22:00:10.000Z
+        created_at: {gte: (Time.now.utc - 60*60*24*14).strftime("%Y-%m-%dT%T.000Z")}
+        # "%a %b %-d %T %z %Y" -- previous twitter strftime
+      )
+      .not.match(is_retweet: true)
+      .not.match(has_quote: true)
+      .query({
+        "exists": {
+          "field": "predictions"
+        }
+      })
+      .boost(boost_mode: "replace").random(42)
+      # .boost(script_score:
+      #   {
+      #     "script": {
+      #       "source": "if (_score > 0.999999) { _score } else { 0 }"
+      #     }
+      #   })
+
+    nested_query = {
+      function_score: {
+        script_score: {
+          script: {
+            source: "if (_score > params['_source']['predictions']['primary']) { _score } else { 0 }"
+          }
+        },
+        query: query.request[:body][:query]
+      }
+    }
+
+    query_full = Stretchy.query(index: index)
+      .query(nested_query)
+      .limit(limit).offset(0)
+  end
 
   def cached(cache_key, use_cache=false, cache_duration=5.minutes)
     if use_cache
