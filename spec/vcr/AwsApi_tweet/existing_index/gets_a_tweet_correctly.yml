@@ -1,0 +1,70 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_vaccine_*/_search?_source=text,annotations&from=0&size=1
+    body:
+      encoding: UTF-8
+      string: '{"query":{"function_score":{"script_score":{"script":{"source":"if
+        (_score \u003e params[''_source''][''predictions''][''primary'']) { _score
+        } else { 0 }"}},"query":{"function_score":{"boost_mode":"replace","functions":[{"random_score":{"seed":42}}],"query":{"bool":{"must_not":[{"exists":{"field":"annotations"}},{"match":{"is_retweet":true}},{"match":{"has_quote":true}}],"must":[{"range":{"created_at":{"gte":"2021-05-12T14:56:44.000Z"}}},{"exists":{"field":"predictions"}}]}}}}}}}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v1.4.1
+      X-Amz-Date:
+      - 20210526T145644Z
+      X-Amz-Content-Sha256:
+      - 4e59eebe247013e5376eb2e40790866dc3606ee52d9a747abaef6010ce07b758
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210526/eu-central-1/es/aws4_request,
+        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
+        Signature=1a1547d5a4849483fec625c6d6f790ac533280cc4ca7fd6f52a79857d14a5b81
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 26 May 2021 14:56:46 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Access-Control-Allow-Origin:
+      - "*"
+      Vary:
+      - Accept-Encoding, User-Agent
+    body:
+      encoding: ASCII-8BIT
+      string: '{"took":1545,"timed_out":false,"_shards":{"total":50,"successful":35,"skipped":0,"failed":15,"failures":[{"shard":0,"index":"project_vaccine_2021-02-21_12-41-42","node":"UxynO-AbS7q5x5qM6cENLw","reason":{"type":"parse_exception","reason":"failed
+        to parse date field [2021-05-12T14:56:44.000Z] with format [EEE MMM dd HH:mm:ss
+        Z yyyy]: [failed to parse date field [2021-05-12T14:56:44.000Z] with format
+        [EEE MMM dd HH:mm:ss Z yyyy]]","caused_by":{"type":"illegal_argument_exception","reason":"failed
+        to parse date field [2021-05-12T14:56:44.000Z] with format [EEE MMM dd HH:mm:ss
+        Z yyyy]","caused_by":{"type":"date_time_parse_exception","reason":"Text ''2021-05-12T14:56:44.000Z''
+        could not be parsed at index 0"}}}},{"shard":0,"index":"project_vaccine_2021-03-01_08-00-17","node":"UxynO-AbS7q5x5qM6cENLw","reason":{"type":"parse_exception","reason":"failed
+        to parse date field [2021-05-12T14:56:44.000Z] with format [EEE MMM dd HH:mm:ss
+        Z yyyy]: [failed to parse date field [2021-05-12T14:56:44.000Z] with format
+        [EEE MMM dd HH:mm:ss Z yyyy]]","caused_by":{"type":"illegal_argument_exception","reason":"failed
+        to parse date field [2021-05-12T14:56:44.000Z] with format [EEE MMM dd HH:mm:ss
+        Z yyyy]","caused_by":{"type":"date_time_parse_exception","reason":"Text ''2021-05-12T14:56:44.000Z''
+        could not be parsed at index 0"}}}},{"shard":0,"index":"project_vaccine_2021-03-10_20-52-14","node":"CKF226RtTjqAlbDyYNmFCw","reason":{"type":"parse_exception","reason":"failed
+        to parse date field [2021-05-12T14:56:44.000Z] with format [EEE MMM dd HH:mm:ss
+        Z yyyy]: [failed to parse date field [2021-05-12T14:56:44.000Z] with format
+        [EEE MMM dd HH:mm:ss Z yyyy]]","caused_by":{"type":"illegal_argument_exception","reason":"failed
+        to parse date field [2021-05-12T14:56:44.000Z] with format [EEE MMM dd HH:mm:ss
+        Z yyyy]","caused_by":{"type":"date_time_parse_exception","reason":"date_time_parse_exception:
+        Text ''2021-05-12T14:56:44.000Z'' could not be parsed at index 0"}}}}]},"hits":{"total":{"value":10000,"relation":"gte"},"max_score":0.99999523,"hits":[{"_index":"project_vaccine_2021-05-01_08-01-21","_type":"_doc","_id":"1394722486193885186","_score":0.99999523,"_source":{"text":"@MarkReady47
+        @MattAl3xander @ChoonedM Please read the yellow card system report on the
+        govt website. You will find that it says that the beignets of the vaccine
+        far outweigh the risks."}}]}}'
+  recorded_at: Wed, 26 May 2021 14:56:46 GMT
+recorded_with: VCR 6.0.0

@@ -17,58 +17,58 @@ RSpec.describe LocalBatchJobsController, type: :controller do
   let!(:result1) { FactoryBot.create(:result, tweet_id: local_tweet1.tweet_id, project: project, user: user2) }
   # User1 did tweet 1 but not related to local batch
   let!(:result2) { FactoryBot.create(:result, project: project, tweet_id: local_tweet1.tweet_id, user: user1) }
-  # User3 did tweet 1 in batch 
+  # User3 did tweet 1 in batch
   let!(:result3) { FactoryBot.create(:result, project: project, local_batch_job: local_batch_job, tweet_id: local_tweet1.tweet_id, user: user3) }
 
-  describe "GET #show" do
-    it "allows users belonging to batch" do
+  describe 'GET #show' do
+    it 'allows users belonging to batch' do
       sign_in user1
-      get :show, params: {id: local_batch_job.slug}
-      expect(response).to render_template("show")
+      get :show, params: { id: local_batch_job.slug }
+      expect(response).to render_template('show')
     end
 
-    it "does not allow guest" do
-      get :show, params: {id: local_batch_job.slug}
+    it 'does not allow guest' do
+      get :show, params: { id: local_batch_job.slug }
       expect(response).to redirect_to(root_path)
     end
-   
-    it "does not allow foreign user" do
+
+    it 'does not allow foreign user' do
       sign_in user2
-      get :show, params: {id: local_batch_job.slug}
+      get :show, params: { id: local_batch_job.slug }
       expect(response).to redirect_to(root_path)
     end
 
-    it "loads correct project" do
+    it 'loads correct project' do
       sign_in user1
-      get :show, params: {id: local_batch_job.slug}
+      get :show, params: { id: local_batch_job.slug }
       expect(assigns(:project).id).to eq(project.id)
       expect(assigns(:local_batch_job).id).to eq(local_batch_job.id)
       expect(assigns(:instructions)).to eq(local_batch_job.instructions)
     end
 
-    it "shows correct counts" do
+    it 'shows correct counts' do
       sign_in user1
-      get :show, params: {id: local_batch_job.slug}
+      get :show, params: { id: local_batch_job.slug }
       expect(assigns(:total_count)).to eq(2)
       expect(assigns(:user_count)).to eq(0)
     end
 
-    it "shows correct counts" do
+    it 'shows correct counts' do
       sign_in user3
-      get :show, params: {id: local_batch_job.slug}
+      get :show, params: { id: local_batch_job.slug }
       expect(assigns(:total_count)).to eq(2)
       expect(assigns(:user_count)).to eq(1)
     end
 
-    it "gives correct tweet ID user1" do
+    it 'gives correct tweet ID user1' do
       sign_in user1
-      get :show, params: {id: local_batch_job.slug}
+      get :show, params: { id: local_batch_job.slug }
       expect(assigns(:tweet_id)).to eq(local_tweet1.tweet_id).or eq(local_tweet2.tweet_id)
     end
 
-    it "gives correct tweet ID for user3" do
+    it 'gives correct tweet ID for user3' do
       sign_in user3
-      get :show, params: {id: local_batch_job.slug}
+      get :show, params: { id: local_batch_job.slug }
       expect(assigns(:tweet_id)).to eq(local_tweet2.tweet_id)
     end
   end

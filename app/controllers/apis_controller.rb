@@ -16,14 +16,22 @@ class ApisController < ApplicationController
     use_cache = api_params_predictions[:use_cache]
     average_label_val = api_params_predictions[:average_label_val].nil? ? false : true
     resp = {}
-    resp['predictions'] = @api.get_predictions(es_index_name,
-                                question_tag,
-                                answer_tags,
-                                run_name=run_name,
-                                options=options,
-                                use_cache=use_cache)
+    resp['predictions'] = @api.get_predictions(
+      index: es_index_name,
+      question_tag: question_tag,
+      answer_tags: answer_tags,
+      run_name: run_name,
+      use_cache: true,
+      **options
+    )
     if average_label_val
-      resp['avg_label_vals'] = @api.get_avg_label_val(es_index_name, question_tag, run_name=run_name, options=options, use_cache=use_cache)
+      resp['avg_label_vals'] = @api.get_avg_label_val(
+        index: es_index_name,
+        question_tag: question_tag,
+        run_name: run_name,
+        use_cache: use_cache,
+        **options
+      )
     else
       resp['avg_label_vals'] = []
     end
@@ -86,6 +94,7 @@ class ApisController < ApplicationController
   end
 
   def get_stream_graph_keywords_data
+    # TODO: Update for the new AwsApi.get_all_data
     options = {
       interval: api_params_stream_graph_keywords[:interval],
       start_date: api_params_stream_graph_keywords[:start_date],
@@ -96,7 +105,9 @@ class ApisController < ApplicationController
     if query.present?
       options[:keywords] = [query]
     end
-    _resp = @api.get_all_data(api_params_stream_graph_keywords[:es_index_name], options)
+    _resp = @api.get_all_data(
+      index: api_params_stream_graph_keywords[:es_index_name], **options
+    )
     if _resp.is_a?(Hash) and _resp.has_key?('success') and not _resp['success']
       render json: _resp.to_json, status: _resp['status'] and return
     else
@@ -110,11 +121,12 @@ class ApisController < ApplicationController
   end
 
   def get_trending_tweets
-    options = {
-      num_tweets: api_params_stream_graph_keywords[:num_trending_tweets],
-      query: api_params_stream_graph_keywords[:query]
-    }
-    resp = @api.get_trending_tweets(api_params_stream_graph_keywords[:project_slug], options)
+    # TODO: Check the response format and render it correctly
+    resp = @api.get_trending_tweets(
+      index: api_params_stream_graph_keywords[:es_index_name],
+      size: api_params_stream_graph_keywords[:num_trending_tweets],
+      term: api_params_stream_graph_keywords[:query]
+    )
     if resp.is_a?(Hash) and resp.has_key?('success') and not resp['success']
       render json: resp.to_json, status: resp['status'] and return
     else
@@ -123,10 +135,11 @@ class ApisController < ApplicationController
   end
 
   def get_trending_topics
-    options = {
-      num_topics: api_params_stream_graph_keywords[:num_trending_topics],
-    }
-    resp = @api.get_trending_topics(api_params_stream_graph_keywords[:project_slug], options)
+    # TODO: Check the response format and render it correctly
+    resp = @api.get_trending_topics(
+      slug: api_params_stream_graph_keywords[:project_slug],
+      num_topics: api_params_stream_graph_keywords[:num_trending_topics]
+    )
     if resp.is_a?(Hash) and resp.has_key?('success') and not resp['success']
       render json: resp.to_json, status: resp['status'] and return
     else
@@ -186,7 +199,7 @@ class ApisController < ApplicationController
         joins(:user, :answer, :project).where.not(users: {username: exclude_usernames}).limit(1).
         pluck(Arel.sql('results.tweet_id,users.username as username,answers.label as label,results.created_at,projects.title_translations as title'))
       unless resp.empty?
-        if TweetValidation.new.tweet_is_valid?(resp[0][0])
+        if TweetValidation.tweet_is_valid?(resp[0][0])
           result.push(resp[0])
         end
         exclude_tweet_ids.push(resp[0][0].to_s) # distinct select doesn't work with order query, hence this approach
@@ -372,7 +385,7 @@ class ApisController < ApplicationController
   end
 
   def api_init
-    @api = FlaskApi.new
+    @api = AwsApi.new
   end
 
   def respond_with_flash(response, redirect_path, is_json: false)

@@ -22,7 +22,7 @@ class LocalBatchJobsController < ApplicationController
     @tweet_text = local_tweet&.tweet_text
     @no_work_available = @tweet_id.nil?
     if @tweet_text == ""
-      @tweet_is_available = TweetValidation.new.tweet_is_valid?(@tweet_id)
+      @tweet_is_available = TweetValidation.tweet_is_valid?(@tweet_id)
       if @tweet_is_available
         local_tweet.available!
       else
@@ -81,7 +81,7 @@ class LocalBatchJobsController < ApplicationController
     # validate tweet
     no_work_available = tweet_id.nil?
     if tweet_text == ""
-      tweet_is_available = TweetValidation.new.tweet_is_valid?(tweet_id)
+      tweet_is_available = TweetValidation.tweet_is_valid?(tweet_id)
       if tweet_is_available
         local_tweet.available!
       else

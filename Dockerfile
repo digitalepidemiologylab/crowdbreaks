@@ -1,5 +1,8 @@
 FROM ruby:2.5.8
 
+ENV BUNDLE_PATH /box/bundle_gems/
+ENV NODE_PATH /box/node_modules/
+
 # Install nodejs
 RUN apt-get update -qq && apt-get install -y nodejs
 
@@ -13,21 +16,23 @@ RUN apt-get update -y
 # Install Yarn
 RUN apt-get install yarn -y
 
+# Install bundler
+RUN gem install bundler -v 2.2.3
+
 WORKDIR /app
+
+# Install js packages
+COPY package.json yarn.lock ./
+# RUN yarn install --check-files
 
 # Install gems
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler -v 2.2.3
-RUN bundle install
-
-# install js packages
-COPY package.json yarn.lock ./
-RUN yarn install --check-files
+# RUN bundle install
 
 # Copy all other files
 COPY . ./
 
 EXPOSE 3000
 
-CMD ["bin/rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+# CMD ["bin/rails", "s", "-p", "3000", "-b", "0.0.0.0"]
 

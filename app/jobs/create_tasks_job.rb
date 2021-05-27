@@ -24,11 +24,10 @@ class CreateTasksJob < ApplicationJob
     end
 
     if tweet_rows.count > 0
-      tv = TweetValidation.new
       tweet_rows.each do |row|
         mt = MturkTweet.create(tweet_id: row[0], tweet_text: row.length == 1 ? "" : row[1], mturk_batch_job_id: mturk_batch_job_id)
         if mturk_batch_job.check_availability_before? or mturk_batch_job.check_availability_before_and_after?
-          if tv.tweet_is_valid?(row[0])
+          if TweetValidation.tweet_is_valid?(row[0])
             mt.available!
             create_tasks(mturk_batch_job_id, mturk_batch_job.number_of_assignments.to_i)
           else

@@ -13,7 +13,6 @@ class ErrorLogger
     end
   end
 
-
   private
 
   def self.send_to_rollbar

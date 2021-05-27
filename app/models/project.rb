@@ -169,15 +169,15 @@ class Project < ApplicationRecord
     added_cols = ['question_tag', 'answer_tag', 'text', 'user_name', 'total_duration_ms', 'question_sequence_name', 'full_log']
     tmp_file_path = "/tmp/csv_upload_#{SecureRandom.hex}.csv"
     if type == 'public-results'
-      _results = results.public_res_type
+      results_ = results.public_res_type
     elsif type == 'other-results'
-      _results = results.other_res_type
+      results_ = results.other_res_type
     else
       raise "Unsupported results type #{type}"
     end
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
-      _results.find_each do |result|
+      results_.find_each do |result|
         row = result.attributes.values_at(*model_cols)
         log = result.question_sequence_log&.log
         tweet_text = public_tweets.find_by(tweet_id: result.tweet_id)&.tweet_text
@@ -220,20 +220,19 @@ class Project < ApplicationRecord
     end
   end
 
-  def get_tweet(user_id: nil, test_mode: false)
+  def tweet(user_id: nil, test_mode: false)
     if stream_annotation_mode?
       # Get a recent tweet from the streaming queue
-      tweet = get_tweet_stream_mode(user_id)
+      tweet = tweet_stream(user_id)
       add_to_public_tweets(tweet) unless test_mode
-      tweet_id = tweet[:tweet_id]
+      tweet.id.to_s
     elsif local_annotation_mode?
       # Fetch tweet from a pool of tweets stored in the public_tweets table
-      public_tweet = get_tweet_local_mode(user_id)
-      tweet_id = public_tweet&.tweet_id&.to_s
+      public_tweet = tweet_local(user_id)
+      public_tweet&.tweet_id&.to_s
     else
-      raise 'Unsupported annotation mode'
+      raise ArgumentError 'Unsupported annotation mode'
     end
-    return tweet_id
   end
 
   def add_endpoint(endpoint_name, question_tag, model_type, run_name)
@@ -327,75 +326,63 @@ class Project < ApplicationRecord
     save
   end
 
-
   private
 
-  def get_random_tweet
-    return random_tweet if Result.count == 0
-    if results.count == 0
-      _results = Result.all
-    else
-      _results = results
+  def add_to_public_tweets(tweet)
+    public_tweets.where(tweet_id: tweet.id).first_or_create(tweet_text: tweet.text)
+  end
+
+  def tweet_local(user_id)
+    public_tweet = public_tweets.not_assigned_to_user(user_id, id).may_be_available&.first
+    unless public_tweet.present?
+      Rails.logger.error 'Could not find a suitable public tweet for annotation. Fetching a random tweet instead.'
+      public_tweet = random_tweet
     end
-    tweet_id = _results.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
-    tv = TweetValidation.new
+    public_tweet
+  end
+
+  def tweet_stream(user_id)
+    api = AwsApi.new
+    tweet = nil # Need to define tweet outside the loop to then be returned outside the loop
     trials = 0
-    while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH_DB
-      Rails.logger.info "Tweet #{tweet_id} is not available anymore, trying another"
-      Result.uncached do
-        tweet_id = _results.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
-      end
+    loop do
       trials += 1
+      if trials > MAX_COUNT_REFETCH
+        ErrorLogger.error 'The number of trials exceeded when trying to fetch a new tweet from the API. Showing a random tweet instead.'
+        return random_tweet
+      end
+      tweet = handle_error(error_return_value: false) do
+        api.tweet(index: es_index_name, user_id: user_id)
+      end
+      if tweet == false
+        e = tweet.error
+        Rails.logger.info "Trial #{trials}. #{e.class}: #{e.message}."
+      elsif !TweetValidation.tweet_is_valid?(tweet.id)
+        Rails.logger.info "Trial #{trials}. The tweet #{tweet.id} is invalid and will be removed. Fetching a new tweet instead."
+      end
     end
-    return {tweet_id: tweet_id, tweet_text: nil}
+    { tweet_id: tweet.id, tweet_text: tweet.text }
   end
 
   def random_tweet
-    {tweet_id: '20', tweet_text: nil}
-  end
+    return { tweet_id: '20', tweet_text: nil } if Result.count.zero?
 
-  def get_tweet_local_mode(user_id)
-    public_tweet = public_tweets.not_assigned_to_user(user_id, id).may_be_available&.first
-    if not public_tweet.present?
-      Rails.logger.error 'Could not find suitable public tweet for annotation. Fetching random tweet instead.'
-      public_tweet = get_random_tweet
-    end
-    return public_tweet
-  end
-
-  def get_tweet_stream_mode(user_id)
-    api = FlaskApi.new
-    tweet = api.get_tweet(es_index_name, user_id: user_id)
-    if tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
-      ErrorLogger.error "API is down. Showing random tweet instead."
-      return get_random_tweet
-    end
-    # test if tweet is publicly available
+    results_ = results.count.zero? ? Result.all : results
+    tweet_id = nil # Need to define tweet outside the loop to then be returned outside the loop
     trials = 0
-    tv = TweetValidation.new
-    tweet_id = tweet.fetch(:tweet_id, nil)
-    while not tv.tweet_is_valid?(tweet_id) and trials < MAX_COUNT_REFETCH
-      Rails.logger.info "Trial #{trials + 1}: Tweet #{tweet_id} is invalid and will be removed. Fetching new tweet instead."
-      tweet = api.get_tweet(es_index_name, user_id: user_id)
-      tweet_id = tweet&.fetch(:tweet_id, nil)
+    loop do
       trials += 1
+      if trials > MAX_COUNT_REFETCH
+        ErrorLogger.error 'The number of trials exceeded when trying to fetch a random tweet. Showing a default tweet instead.'
+        return { tweet_id: '20', tweet_text: nil }
+      end
+      Result.uncached do
+        tweet_id = results_.limit(1000).order(Arel.sql('RANDOM()')).first&.tweet_id&.to_s
+      end
+      unless TweetValidation.tweet_is_valid?(tweet_id)
+        Rails.logger.info "Trial #{trials + 1}. The tweet #{tweet_id} is invalid, trying again."
+      end
     end
-    if trials >= MAX_COUNT_REFETCH
-      ErrorLogger.error "Number of trials exceeded when trying to fetch new tweet from API. Showing random tweet instead."
-      return get_random_tweet
-    elsif tweet.nil? or tweet.fetch(:tweet_id, nil).nil?
-      ErrorLogger.error "Tweet returned from API is invalid or empty. Showing random tweet instead."
-      return get_random_tweet
-    end
-    tweet
-  end
-
-  def add_to_public_tweets(tweet)
-    # only store if text is available
-    if tweet[:tweet_text].present?
-      whitelisted_keys = [:tweet_id, :tweet_text]
-      args = tweet.select { |key,_| whitelisted_keys.include? key }
-      public_tweets.where(args).first_or_create
-    end
+    { tweet_id: tweet_id, tweet_text: nil }
   end
 end

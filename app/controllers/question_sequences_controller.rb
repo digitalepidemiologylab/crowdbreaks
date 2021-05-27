@@ -8,11 +8,9 @@ class QuestionSequencesController < ApplicationController
     primary_project = @project.primary_project
 
     # only allow access if project is both public and accessible by user
-    if not primary_project.public?
-      redirect_to projects_path unless primary_project.accessible_by?(current_user)
-    end
+    redirect_to projects_path unless primary_project.public? && primary_project.accessible_by?(current_user)
 
-    if primary_project.active_question_sequence_id == 0
+    if primary_project.active_question_sequence_id.zero?
       # By default pick project as question sequence (active_question_sequence is initialized as 0)
       question_sequence_project = primary_project
     else
@@ -24,7 +22,7 @@ class QuestionSequencesController < ApplicationController
     @question_sequence = QuestionSequence.new(question_sequence_project).load
     # Other
     @user_id = current_or_guest_user.id
-    @tweet_id = primary_project.get_tweet(user_id: @user_id)
+    @tweet_id = primary_project.tweet(user_id: @user_id)
 
     # @tweet_id = '1047868518224416769'
     # @tweet_id = '564984221203431000'  # invalid tweet
@@ -54,21 +52,18 @@ class QuestionSequencesController < ApplicationController
     end
   end
 
-
   def final
-    api = FlaskApi.new
+    api = AwsApi.new
     project = Project.find_by(id: final_params[:project_id])
     user_id = final_params[:user_id]
     tweet_id = final_params[:tweet_id]
     test_mode = final_params[:test_mode]
 
-    if project.nil?
-      render json: {}, status: 400 and return
-    end
+    render json: {}, status: 400 and return if project.nil?
 
     if test_mode
-      new_tweet = project.get_tweet(test_mode: true)
-      render json: {tweet_id: new_tweet}, status: 200 and return
+      new_tweet = project.tweet(test_mode: true)
+      render json: { tweet_id: new_tweet }, status: 200 and return
     end
 
     primary_project = project.primary_project
@@ -81,11 +76,11 @@ class QuestionSequencesController < ApplicationController
 
     # update tweet in Redis pool
     if primary_project.stream_annotation_mode?
-      api.update_tweet(primary_project.es_index_name, user_id, tweet_id)
+      api.update_tweet(index: primary_project.es_index_name, user_id: user_id, tweet_id: tweet_id)
     end
 
     # get next tweet
-    new_tweet_id = primary_project.get_tweet(user_id: user_id)
+    new_tweet_id = primary_project.tweet(user_id: user_id)
 
     # save logs
     logs = final_params.fetch(:logs, {})

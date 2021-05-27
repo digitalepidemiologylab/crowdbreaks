@@ -44,6 +44,7 @@ gem 'friendly_id', '~> 5.1'
 # AWS
 gem 'aws-sdk-mturk'
 gem 'aws-sdk-s3'
+gem 'aws-sdk-elasticsearchservice'
 # email
 gem 'mandrill-api'
 # JS build
@@ -51,8 +52,6 @@ gem 'webpacker', '~> 4.0'
 gem 'webpacker-react', '~> 0.3.2'
 # JSON serializer
 gem 'active_model_serializers', '~> 0.10.0'
-# More powerful hashes
-gem 'hashie', '~> 3.4', '>= 3.4.6'
 # Twitter API
 gem 'twitter'
 # Job scheduling
@@ -62,6 +61,12 @@ gem 'redis'
 gem 'rollbar'
 # Advisory lock
 gem 'with_advisory_lock'
+# Elasticsearch
+gem 'elasticsearch'
+# Elasticsearch queries helper
+gem 'stretchy'
+# AWS Authentication
+gem 'faraday_middleware-aws-sigv4'
 
 group :development, :test do
   gem 'rspec-rails'
@@ -79,6 +84,10 @@ group :development, :test do
   gem 'foreman'
   # allows failing tests if translations are missing
   gem 'i18n-tasks'
+  # recording the requests responses for replay
+  gem 'vcr'
+  # load variables from .env files to ENV
+  gem 'dotenv-rails'
 end
 
 group :development do
