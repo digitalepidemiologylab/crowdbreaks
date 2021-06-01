@@ -29,7 +29,7 @@
       <% end %>
     </div>
 
-    <% if not @is_up_to_date %>
+    <% if not @up_to_date? %>
       <div class="col-12 mt-4">
         <div class="alert alert-danger">The streaming configuration is not up-to-date.</div>
         <%= link_to set_config_path, class: 'btn btn-primary btn-lg mr-2' do %>

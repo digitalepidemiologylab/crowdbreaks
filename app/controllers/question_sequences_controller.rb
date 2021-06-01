@@ -7,8 +7,8 @@ class QuestionSequencesController < ApplicationController
     # make sure we are working with the original project
     primary_project = @project.primary_project
 
-    # only allow access if project is both public and accessible by user
-    redirect_to projects_path unless primary_project.public? && primary_project.accessible_by?(current_user)
+    # only allow access to a private project if it is accessible by user
+    redirect_to projects_path unless primary_project.public? || primary_project.accessible_by?(current_user)
 
     if primary_project.active_question_sequence_id.zero?
       # By default pick project as question sequence (active_question_sequence is initialized as 0)

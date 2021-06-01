@@ -1,0 +1,47 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_inexistent/_search?_source=text,annotations&from=0&size=5
+    body:
+      encoding: UTF-8
+      string: '{"query":{"function_score":{"script_score":{"script":{"source":"if
+        (_score \u003e params[''_source''][''predictions''][''primary'']) { _score
+        } else { 0 }"}},"query":{"bool":{"must_not":[{"exists":{"field":"annotations"}},{"match":{"is_retweet":true}},{"match":{"has_quote":true}}],"must":[{"range":{"created_at":{"gte":"2021-05-17T17:48:25.000Z"}}},{"exists":{"field":"predictions"}}]}}}}}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v1.4.1
+      X-Amz-Date:
+      - 20210531T174825Z
+      X-Amz-Content-Sha256:
+      - 91decd39ea005db9d7add6bf02b49575aad6ad3d7a5bbcba5ac8a00f39eb3859
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210531/eu-central-1/es/aws4_request,
+        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
+        Signature=e99c8074cc7cb485752fc01a9cf5677dd68f03c77de2b7d88a1f4160490dd85c
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 31 May 2021 17:48:25 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '160'
+      Connection:
+      - close
+      Access-Control-Allow-Origin:
+      - "*"
+    body:
+      encoding: UTF-8
+      string: '{"took":7,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":{"value":0,"relation":"eq"},"max_score":null,"hits":[]}}'
+  recorded_at: Mon, 31 May 2021 17:48:25 GMT
+recorded_with: VCR 6.0.0

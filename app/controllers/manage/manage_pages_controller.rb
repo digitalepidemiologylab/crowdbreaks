@@ -13,7 +13,7 @@ module Manage
       @stream_status = @api.status_streaming
       current_streams = @api.get_config
       current_streams ||= []
-      @is_up_to_date = Project.is_up_to_date(current_streams)
+      @up_to_date? = Project.up_to_date?(current_streams)
       @projects = Project.primary
     end
 

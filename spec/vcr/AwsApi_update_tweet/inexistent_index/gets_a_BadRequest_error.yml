@@ -1,0 +1,48 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_inexistent/_doc/1394723048364859394/_update?refresh=true
+    body:
+      encoding: UTF-8
+      string: '{"script":{"source":"if (ctx._source.annotations == null) ctx._source.annotations
+        = new ArrayList();ctx._source.annotations.add(params.annotation)","lang":"painless","params":{"annotation":{"user_id":12345}}}}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v1.4.1
+      X-Amz-Date:
+      - 20210531T173644Z
+      X-Amz-Content-Sha256:
+      - 582c81a3b14601fffb65f55aca027bd8b3291d4b5394cbd14d78d32588ce434b
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210531/eu-central-1/es/aws4_request,
+        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
+        Signature=bbe381bd18b7b84d92e5e5f5ed68534e3cdd109ca5c52cdc0fe3fcc43596b828
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Mon, 31 May 2021 17:36:44 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '385'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+    body:
+      encoding: UTF-8
+      string: '{"error":{"root_cause":[{"type":"document_missing_exception","reason":"[_doc][1394723048364859394]:
+        document missing","index_uuid":"1VbFnD21Sw-ced4-q-1iyw","shard":"1","index":"project_inexistent"}],"type":"document_missing_exception","reason":"[_doc][1394723048364859394]:
+        document missing","index_uuid":"1VbFnD21Sw-ced4-q-1iyw","shard":"1","index":"project_inexistent"},"status":404}'
+  recorded_at: Mon, 31 May 2021 17:36:44 GMT
+recorded_with: VCR 6.0.0

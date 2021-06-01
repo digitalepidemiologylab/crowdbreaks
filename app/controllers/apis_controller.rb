@@ -243,8 +243,8 @@ class ApisController < ApplicationController
           next if project.nil?
           model_name = model['ModelName']
           question_tag = model['Tags']['question_tag']
-          model['ActiveEndpoint'] = project.has_endpoint_for_question_tag(model_name, question_tag)
-          model['IsPrimaryEndpoint'] = project.is_primary_endpoint_for_question_tag(model_name, question_tag)
+          model['ActiveEndpoint'] = project.endpoint_for_question_tag?(model_name, question_tag)
+          model['IsPrimaryEndpoint'] = project.primary_endpoint_for_question_tag?(model_name, question_tag)
           resp.push(model)
         end
       end
@@ -292,7 +292,7 @@ class ApisController < ApplicationController
     else
       if action == 'activate_endpoint'
         project.add_endpoint(model_name, question_tag, model_type, run_name)
-        if project.has_endpoint_for_question_tag(model_name, question_tag)
+        if project.endpoint_for_question_tag?(model_name, question_tag)
           msg = 'Successfully activated endpoint. Restart stream for changes to be active.'
           render json: {message: msg}.to_json, status: 200 and return
         else
@@ -301,7 +301,7 @@ class ApisController < ApplicationController
         end
       elsif action == 'deactivate_endpoint'
         project.remove_endpoint(model_name, question_tag)
-        if not project.has_endpoint_for_question_tag(model_name, question_tag)
+        if not project.endpoint_for_question_tag?(model_name, question_tag)
           msg = 'Successfully deactivated endpoint. Restart stream for changes to be active.'
           render json: {message: msg}.to_json, status: 200 and return
         else
@@ -310,7 +310,7 @@ class ApisController < ApplicationController
         end
       elsif action == 'make_primary'
         project.make_primary_endpoint(model_name, question_tag)
-        if project.is_primary_endpoint_for_question_tag(model_name, question_tag)
+        if project.primary_endpoint_for_question_tag?(model_name, question_tag)
           msg = 'Successfully set endpoint as primary. Restart stream for changes to be active.'
           render json: {message: msg}.to_json, status: 200 and return
         else

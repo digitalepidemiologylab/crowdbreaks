@@ -35,13 +35,6 @@ class AwsApi
     end
   end
 
-  def handle_error(error_return_value: nil)
-    yield
-  rescue StandardError
-    Rails.logger.error "An exception occurred. #{e.class}: #{e.message}. Traceback:\n#{e.backtrace.join("\n")}"
-    error_return_value
-  end
-
   def handle_error_notification(message = 'An error occured')
     yield
   rescue StandardError

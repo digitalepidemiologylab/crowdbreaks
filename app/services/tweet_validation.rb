@@ -1,6 +1,6 @@
 require 'httparty'
 
-module TweetValidation
+class TweetValidation
   include HTTParty
   CACHE_KEY = "twitter_too_many_requests"
 
@@ -15,7 +15,7 @@ module TweetValidation
   # id = '955454023519391744' # invalid
   # id = '563126182607339520' # valid
 
-  def tweet_is_valid?(id)
+  def self.tweet_is_valid?(id)
     return false if id.nil?
     return tweet_is_valid_front_end?(id) if Rails.cache.exist?(CACHE_KEY)
 
