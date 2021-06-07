@@ -1,3 +1,7 @@
+require 'elasticsearch'
+require 'faraday_middleware/aws_sigv4'
+require 'stretchy'
+
 module ElasticsearchApi
   extend ActiveSupport::Concern
 
@@ -5,11 +9,11 @@ module ElasticsearchApi
   MAX_VALIDATIONS = 5
   MAX_RETRIES = 5
   SLEEP_TIME = 5
-  JSON_HEADER = {'Content-Type' => 'application/json', :Accept => 'application/json'}
+  JSON_HEADER = { 'Content-Type' => 'application/json', :Accept => 'application/json' }.freeze
 
   service = 'es'
 
-  @@client = Elasticsearch::Client.new(url: ENV['ES_HOST_PORT']) do |f|
+  @@es_client = Elasticsearch::Client.new(url: ENV['ES_HOST_PORT']) do |f|
     f.request :aws_sigv4,
               service: service,
               region: Aws.config[:region],
@@ -17,31 +21,23 @@ module ElasticsearchApi
               secret_access_key: Aws.config[:credentials].secret_access_key
   end
 
-  # @@client = Aws::ElasticsearchService::Client.new
+  # @@es_client = Aws::ElasticsearchService::Client.new
 
-  Stretchy.client = @@client
+  Stretchy.client = @@es_client
 
   def ping
-    @@client.ping
+    @@es_client.ping
   end
 
   def es_stats
-    Helpers::ErrorHandler.handle_error(error_return_value: {}) do
-      @@client.indices.stats['indices']
+    handle_es_errors do
+      @@es_client.indices.stats
     end
   end
 
   def es_health
-    Helpers::ErrorHandler.handle_error(error_return_value: 'error') do
-      @@client.cluster.health
-    end
-  end
-
-  def create_index(params)
-    # Not needed if the indices are created automatically
-    handle_error_notification do
-      name = params.delete('name')
-      @@client.indices.create(index: name, body: params.to_json, headers: JSON_HEADER)
+    handle_es_errors do
+      @@es_client.cluster.health
     end
   end
 
@@ -65,7 +61,7 @@ module ElasticsearchApi
 
   def update_tweet(index:, user_id:, tweet_id:)
     handle_es_errors do
-      @@client.update(
+      @@es_client.update(
         {
           id: tweet_id,
           type: '_doc',
@@ -112,7 +108,7 @@ module ElasticsearchApi
     # resp.parsed_response
   end
 
-  # elasticsearch - all data
+  # elasticsearch - all data, for monitoring stream activity
   def get_all_data(
     index:, keywords: nil, not_keywords: nil,
     start_date: 'now-20y', end_date: 'now', interval: 'month'
@@ -126,7 +122,7 @@ module ElasticsearchApi
     query = Stretchy.query(
       index: index,
       aggs: {
-        sentiment_agg: { date_histogram: { field: 'created_at', interval: interval, format: 'yyyy-MM-dd HH:mm:ss' } }
+        date_agg: { date_histogram: { field: 'created_at', interval: interval, format: 'yyyy-MM-dd HH:mm:ss' } }
       }
     ).limit(1).range(created_at: { gte: start_date, lte: end_date })
     keywords.each do |keyword|
@@ -137,7 +133,7 @@ module ElasticsearchApi
     end
 
     result = query.results[0]
-    result&.fetch('aggregations', nil)&.fetch('sentiment_agg', nil)&.fetch('buckets', [])
+    result&.fetch('aggregations', nil)&.fetch('date_agg', nil)&.fetch('buckets', [])
   end
 
   # elasticsearch - sentiment data

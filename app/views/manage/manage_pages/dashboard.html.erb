@@ -92,10 +92,10 @@
         <th>Status</th>
       </thead>
       <tbody>
-        <% @status_all.each do |s| %>
+        <% @status_streamer.each do |s| %>
           <tr>
-            <td><%= s['name'] %></td>
-            <td><span class="badge badge-sentiment"><%= label_based_on_status(s['status']) %></span></td>
+            <td><%= s[:name] %></td>
+            <td><span class="badge badge-sentiment"><%= label_based_on_status(s[:status]) %></span></td>
           </tr>
         <% end %>
       </tbody>

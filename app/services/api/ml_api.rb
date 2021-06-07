@@ -1,4 +1,4 @@
-module Ml
+module MlApi
   extend ActiveSupport::Concern
   PREFIX = 'ml'
 

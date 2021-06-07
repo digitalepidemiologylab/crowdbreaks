@@ -1,5 +1,6 @@
 <tr>
-  <td><%= index[:name] %></td>
-  <td><%= number_with_delimiter(index[:num_docs], delimiter: ' ') %></td>
-  <td><%= number_with_precision(index[:size_bytes]/(1024.0 * 1024.0), :precision => 2, delimiter: " ") %></td>
+  <td><%= group[:name] %></td>
+  <td><%= number_with_delimiter(group[:num_indices], delimiter: ' ') %></td>
+  <td><%= number_with_delimiter(group[:num_docs], delimiter: ' ') %></td>
+  <td><%= number_with_precision(group[:size_bytes]/(1024.0 * 1024.0), :precision => 2, delimiter: " ") %></td>
 </tr>

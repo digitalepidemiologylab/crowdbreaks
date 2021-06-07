@@ -5,21 +5,21 @@ module Manage
     def dashboard
       authorize! :view, :manage_dashboard
       @api_ready = @api.ping
-      @status_all = @api.status_all
+      @status_streamer = @api.status_streamer
     end
 
     def streaming
       authorize! :configure, :streaming
       @stream_status = @api.status_streaming
-      current_streams = @api.get_config
+      current_streams = @api.config
       current_streams ||= []
-      @up_to_date? = Project.up_to_date?(current_streams)
+      @up_to_date = Project.up_to_date?(current_streams)
       @projects = Project.primary
     end
 
     def monitor_streams
       authorize! :configure, :streaming
-      config = @api.get_config
+      config = @api.config
       if config.empty?
         @current_streams = []
         return

@@ -66,6 +66,7 @@ gem 'elasticsearch'
 # Elasticsearch queries helper
 gem 'stretchy'
 # AWS Authentication
+gem 'faraday', '~> 0.15'
 gem 'faraday_middleware-aws-sigv4'
 
 group :development, :test do

@@ -4,13 +4,15 @@
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-10 col-lg-8">
     <span class="mb=4">Cluster health status:</span>
-    <span class="badge badge-sentiment"><%= label_es_health(@health) %></span><br/>
+    <span class="badge badge-sentiment"><%= label_es_health(@health_status) %></span><br/>
   </div>
 </div>
 
 <div class="row justify-content-center mb-4">
   <div class="col-12 col-md-10 col-lg-8">
-    <h2 class='mb-4'>Current Elasticsearch indexes</h2>
+    <h2 class='mb-4'>Current Elasticsearch index groups</h2>
+    <p>The indices are being rotated, therefore there are many indices for each project, each of which includes a timestamp.
+    Here, the indices are grouped by their prefix.</p>
   </div>
 </div>
 
@@ -19,22 +21,15 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Index name</th>
-          <th>Number of documents</th>
-          <th>Size (MB)</th>
+          <th>Group name</th>
+          <th>Number of indices</th>
+          <th>Total number of documents</th>
+          <th>Total size (MB)</th>
         </tr>
       </thead>
       <tbody>
-        <%= render partial: "elasticsearch_indexes", collection: @indexes, as: 'index' %>
+        <%= render partial: "elasticsearch_indexes", collection: @groups, as: 'group' %>
       </tbody>
     </table>
   </div>
 </div>
-
-<% if can? :create, :elasticsearch_index %>
-  <div class="row justify-content-center mb-4">
-    <div class="col-12 col-md-10 col-lg-8">
-      <%= link_to 'Create new index', new_elasticsearch_index_path, class: 'btn btn-primary btn-lg' %>
-    </div>
-  </div>
-<% end %>

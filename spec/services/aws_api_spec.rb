@@ -10,10 +10,10 @@ RSpec.describe AwsApi, '#tweets', :vcr do
 
     it 'gets tweets correctly' do
       tweets = @api.tweets(index: es_index_name, user_id: @user_id)
-      expect(tweets).to be_an_instance_of(Array)
+      expect(tweets).to be_an_instance_of Array
       expect(tweets).not_to be_empty
       tweets.each do |tweet|
-        expect(tweet).to be_an_instance_of(Helpers::Tweet)
+        expect(tweet).to be_an_instance_of Helpers::Tweet
         expect(tweet).to have_attributes(id: be, text: be)
       end
     end
@@ -24,7 +24,7 @@ RSpec.describe AwsApi, '#tweets', :vcr do
 
     it 'gets an empty array' do
       tweets = @api.tweets(index: es_index_name, user_id: @user_id)
-      expect(tweets).to be_an_instance_of(Array)
+      expect(tweets).to be_an_instance_of Array
       expect(tweets).to be_empty
     end
   end
@@ -39,8 +39,7 @@ RSpec.describe AwsApi, '#update_tweet', :vcr do
 
     it 'updates the tweet successfully' do
       response = @api.update_tweet(index: es_index_name, user_id: @user_id, tweet_id: ES_TEST_TWEET)
-      expect(response).to be_an_instance_of(Hash)
-      expect(response).not_to be_empty
+      expect(response).to be_an_instance_of Hash
       expect(response).to include('result' => 'updated')
     end
   end
@@ -52,5 +51,26 @@ RSpec.describe AwsApi, '#update_tweet', :vcr do
       response = @api.update_tweet(index: es_index_name, user_id: @user_id, tweet_id: ES_TEST_TWEET)
       expect(response).to include(error: 'Elasticsearch::Transport::Transport::Errors::NotFound')
     end
+  end
+end
+
+RSpec.describe AwsApi, '#es_health', :vcr do
+  before { @api = AwsApi.new }
+
+  it 'gets health status from ES' do
+    response = @api.es_health
+    expect(response).to be_an_instance_of Hash
+    expect(response).to include('status')
+  end
+end
+
+RSpec.describe AwsApi, '#es_stats', :vcr do
+  before { @api = AwsApi.new }
+
+  it 'test index is in stats' do
+    response = @api.es_stats
+    expect(response).to be_an_instance_of Hash
+    expect(response).to include 'indices'
+    expect(response['indices']).to have_key ES_TEST_INDEX
   end
 end

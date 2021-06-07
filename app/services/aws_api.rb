@@ -1,10 +1,6 @@
-require 'elasticsearch'
-require 'faraday_middleware/aws_sigv4'
-require 'stretchy'
-
 class AwsApi
-  include Ml
-  include Pipeline
+  include MlApi
+  include PipelineApi
   include ElasticsearchApi
 
   private

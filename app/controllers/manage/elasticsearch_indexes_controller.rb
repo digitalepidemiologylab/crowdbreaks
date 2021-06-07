@@ -1,49 +1,29 @@
 module Manage
   class ElasticsearchIndexesController < BaseController
-    before_action :api_init
     authorize_resource class: false
 
-    def new
-    end
+    TIMESTAMP_INDEX = -21
 
     def index
-      stats = @api.es_stats
-      @health = @api.es_health
-      @indexes = []
-      stats.each_pair do |k, v|
-        unless k.starts_with?('.')
-          @indexes << {'name': k, num_docs: v['total']['docs']['count'], size_bytes: v['total']['store']['size_in_bytes']}
+      @api = AwsApi.new
+      indices_stats = @api.es_stats['indices']
+      @health_status = @api.es_health['status']
+      @groups = {}
+      indices_stats.each do |k, v|
+        next if k.starts_with?('.')
+
+        # @groups << { name: k, num_docs: v['total']['docs']['count'], size_bytes: v['total']['store']['size_in_bytes'] }
+
+        group_name = k[0..TIMESTAMP_INDEX]
+        index_stats = { num_indices: 1, num_docs: v['total']['docs']['count'], size_bytes: v['total']['store']['size_in_bytes'] }
+        if @groups.key?(group_name)
+          @groups[group_name] = @groups[group_name].merge(index_stats) { |_k, v1, v2| v1 + v2 }
+        else
+          @groups[group_name] = {}
         end
       end
-    end
-
-    def create
-      response = @api.create_index(elasticsearch_indexes_params)
-      respond_with_flash(response, elasticsearch_indexes_path)
-    end
-
-    private
-
-    def api_init
-      @api = FlaskApi.new
-    end
-
-    def elasticsearch_indexes_params
-      params.require(:elasticsearch_index).permit(:name, :number_of_shards, :number_of_replicas)
-    end
-
-    def respond_with_flash(response, redirect_path)
-      if response.success?
-        respond_to do |format|
-          flash[:notice] = response.parsed_response
-          format.html { redirect_to redirect_path }
-        end
-      else
-        respond_to do |format|
-          flash[:alert] = response.parsed_response
-          format.html { redirect_to redirect_path }
-        end
-      end
+      @groups = @groups.map { |k, v| { name: k }.merge(v) }
+      puts @groups
     end
   end
 end

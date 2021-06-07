@@ -166,13 +166,13 @@ class ApisController < ApplicationController
 
     case api_params[:change_stream_status]
     when 'start'
-      resp = @api.start_streaming
+      resp = @api.start_streamer
       respond_with_flash(resp, streaming_path)
     when 'restart'
-      resp = @api.restart_streaming
+      resp = @api.restart_streamer
       respond_with_flash(resp, streaming_path)
     when 'stop'
-      resp = @api.stop_streaming
+      resp = @api.stop_streamer
       respond_with_flash(resp, streaming_path)
     end
   end
