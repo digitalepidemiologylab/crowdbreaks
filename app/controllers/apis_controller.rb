@@ -1,4 +1,5 @@
 class ApisController < ApplicationController
+  include Response
   before_action :api_init
 
   def get_predictions
@@ -96,7 +97,7 @@ class ApisController < ApplicationController
   def get_stream_graph_keywords_data
     # TODO: Update for the new AwsApi.get_all_data
     options = {
-      interval: api_params_stream_graph_keywords[:interval],
+      interval: Helpers::TimeParser.new(api_params_stream_graph_keywords[:interval]).time,
       start_date: api_params_stream_graph_keywords[:start_date],
       end_date: api_params_stream_graph_keywords[:end_date]
     }
@@ -150,14 +151,15 @@ class ApisController < ApplicationController
   # Monitor streams
   def stream_data
     authorize! :configure, :stream
-    if not api_params[:es_index_name].present?
-      render json: {'errors': ['es_index_name needs to be present']}, status: 400
+    unless api_params[:es_index_name].present?
+      render json: { 'errors': ['es_index_name needs to be present'] }, status: 400
       return
     end
-    past_minutes = api_params.fetch(:past_minutes, 30)
-    options = {interval: api_params[:interval], start_date: "now-#{past_minutes}m", end_date: 'now'}
-    resp =  @api.get_all_data(api_params[:es_index_name], options, use_cache=false)
-    render json: resp.to_json, status: 200
+    resp = @api.get_all_data(
+      index: api_params[:es_index_name], interval: api_params[:interval],
+      start_date: "now-#{api_params[:past_minutes]}m", end_date: 'now', round_to_sec: api_params[:round_to_sec].to_i
+    )
+    render json: resp.body.to_json, status: 200
   end
 
   # Change stream status
@@ -166,24 +168,21 @@ class ApisController < ApplicationController
 
     case api_params[:change_stream_status]
     when 'start'
-      resp = @api.start_streamer
-      respond_with_flash(resp, streaming_path)
+      respond_with_flash(@api.start_streamer, streaming_path)
     when 'restart'
-      resp = @api.restart_streamer
-      respond_with_flash(resp, streaming_path)
+      respond_with_flash(@api.restart_streamer, streaming_path)
     when 'stop'
-      resp = @api.stop_streamer
-      respond_with_flash(resp, streaming_path)
+      respond_with_flash(@api.stop_streamer, streaming_path)
     end
   end
 
   # update stream configuration
-  def set_config
+  def upload_config
     authorize! :configure, :stream
     @projects = Project.primary.where(active_stream: true)
-    config = ActiveModelSerializers::SerializableResource.new(@projects).as_json
-    resp = @api.set_config(config)
-    respond_with_flash(resp, streaming_path, is_json: true)
+    selected_params = %i[keywords lang locales es_index_name slug active storage_mode image_storage_mode model_endpoints]
+    config = @projects.to_json(only: selected_params)
+    respond_with_flash(@api.upload_config(config), streaming_path)
   end
 
   # front page leadline
@@ -227,40 +226,43 @@ class ApisController < ApplicationController
 
   def predict_ml_models
     authorize! :view, :ml
-    resp = @api.predict(text: api_params_ml_predict['text'], endpoint: api_params_ml_predict['endpoint'])
-    render json: resp.to_json, status: 200
+    response = @api.predict(text: api_params_ml_predict['text'], endpoint_name: api_params_ml_predict['endpoint'])
+    output = get_value_and_flash_now(response)
+    puts output
+    render json: output.to_json, status: 200 unless output.nil?
+    render json: '{}', status: 200
   end
 
   def list_ml_models
     authorize! :view, :ml
     models = @api.list_model_endpoints(use_cache: api_params_ml['use_cache'])
-    resp = []
+    response = []
     models.each do |model|
-      if model['Tags'].present?
-        if model['Tags']['project_name'].present?
-          project_name = model['Tags']['project_name']
-          project = Project.primary_project_by_name(project_name)
-          next if project.nil?
-          model_name = model['ModelName']
-          question_tag = model['Tags']['question_tag']
-          model['ActiveEndpoint'] = project.endpoint_for_question_tag?(model_name, question_tag)
-          model['IsPrimaryEndpoint'] = project.primary_endpoint_for_question_tag?(model_name, question_tag)
-          resp.push(model)
-        end
+      next if model.fetch(:tags, nil)&.fetch(:project_name).nil?
+
+      project_name = model[:tags][:project_name]
+      project = Project.primary_project_by_name(project_name)
+      next if project.nil?
+
+      model_name = model[:model_name]
+      question_tag = model[:tags][:question_tag]
+      model[:active_endpoint] = project.endpoint_for_question_tag?(model_name, question_tag)
+      model[:is_primary_endpoint] = project.primary_endpoint_for_question_tag?(model_name, question_tag)
+      response.push(model)
       end
     end
     Project.where.not('model_endpoints': {}).each do |project|
-      project.sync_endpoints_with_remote(resp)
+      project.sync_endpoints_with_remote(response)
     end
-    render json: resp.to_json, status: 200
+    render json: response.to_json, status: 200
   end
 
   def update_ml_models
     authorize! :view, :ml
     action = api_params_ml_update['action']
     model_name = api_params_ml_update['model_name']
-    project_name = api_params_ml_update['project_name']
-    question_tag = api_params_ml_update['question_tag']
+    project_name = api_params_ml_update[:project_name]
+    question_tag = api_params_ml_update[:question_tag]
     model_type = api_params_ml_update['model_type']
     run_name = api_params_ml_update['run_name']
     project = Project.primary_project_by_name(project_name)
@@ -353,7 +355,7 @@ class ApisController < ApplicationController
   end
 
   def api_params
-    params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes)
+    params.require(:api).permit(:interval, :text, :change_stream_status, :es_index_name, :past_minutes, :round_to_sec)
   end
 
   def api_params_download_resource
@@ -386,24 +388,5 @@ class ApisController < ApplicationController
 
   def api_init
     @api = AwsApi.new
-  end
-
-  def respond_with_flash(response, redirect_path, is_json: false)
-    if is_json
-      flash_notification = response.parsed_response['message']
-    else
-      flash_notification = response.parsed_response
-    end
-    if response.success?
-      respond_to do |format|
-        flash[:notice] = flash_notification
-        format.html { redirect_to redirect_path }
-      end
-    else
-      respond_to do |format|
-        flash[:alert] = flash_notification
-        format.html { redirect_to redirect_path }
-      end
-    end
   end
 end

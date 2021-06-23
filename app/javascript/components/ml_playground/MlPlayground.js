@@ -117,13 +117,13 @@ export class MlPlayground extends React.Component {
         let endpointData = []
         let currentEndpoint = '';
         data.map((item, i) => {
-          if (item['EndpointStatus'] == 'InService') {
+          if (item['endpoint_status'] == 'InService') {
             endpointData.push({
-              'question': item['Tags']['question_tag'],
-              'project': item['Tags']['project_name'],
-              'modelType': item['Tags']['model_type'],
-              'runName': item['Tags']['run_name'],
-              'name': item['ModelName']
+              'question': item['tags']['question_tag'],
+              'project': item['tags']['project_name'],
+              'modelType': item['tags']['model_type'],
+              'runName': item['tags']['run_name'],
+              'name': item['model_name']
             })
           }
         })

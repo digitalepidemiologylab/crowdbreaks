@@ -1,45 +1,47 @@
 module MlApi
   extend ActiveSupport::Concern
   PREFIX = 'ml'
+  AWS_SERVICE_ERROR = Aws::Errors::ServiceError
 
-  def predict(text: '', endpoint: '')
-    data = {'text': text, model_endpoint: endpoint}
-    self.class.post("/#{PREFIX}/predict", body: data.to_json, headers: FlaskApi::JSON_HEADER)
-  end
+  @@sagemaker = Aws::SageMaker::Client.new(
+    region: Aws.config[:region],
+    access_key_id: Aws.config[:credentials].access_key_id,
+    secret_access_key: Aws.config[:credentials].secret_access_key
+  )
 
-  def list_endpoints(use_cache: true)
-    cache_key = "list_endpoints_response"
-    cached(cache_key, use_cache=use_cache, cache_duration=10.minutes) do
-      avoid_duplicate_requests(__method__.to_s) do
-        handle_error(error_return_value: []) do
-          resp = self.class.get("/#{PREFIX}/list_endpoints")
-          resp.parsed_response
-        end
-      end
-    end
-  end
+  @@sagemaker_runtime = Aws::SageMakerRuntime::Client.new(
+    region: Aws.config[:region],
+    access_key_id: Aws.config[:credentials].access_key_id,
+    secret_access_key: Aws.config[:credentials].secret_access_key
+  )
 
-  def list_models
-    handle_error(error_return_value: []) do
-      self.class.get("/#{PREFIX}/list_models")
+  def predict(text: '', endpoint_name: '')
+    Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'invoking a Sagemaker endpoint') do
+      response = @@sagemaker_runtime.invoke_endpoint(
+        endpoint_name: endpoint_name,
+        body: { text: text },
+        content_type: 'application/json'
+      )
+      Helpers::ApiResponse.new(status: :success, body: response.body)
     end
   end
 
   def list_model_endpoints(use_cache: true)
-    cache_key = "list_model_endpoints_response"
-    cached(cache_key, use_cache=use_cache, cache_duration=10.minutes) do
-      avoid_duplicate_requests(__method__.to_s) do
-        handle_error(error_return_value: []) do
-          resp = self.class.get("/#{PREFIX}/list_model_endpoints", timeout: 20)
-          resp.parsed_response
-        end
+    models = @@sagemaker.list_models({}).models
+    model_endpoints = []
+    endpoints = @@sagemaker.list_endpoints({}).endpoints
+    endpoints = endpoints.map { { e.endpoint_name => [e.endpoint_arn, e.endpoint_status] } }.reduce Hash.new, :merge
+    models.each do |model|
+      model_endpoint = { model_name: model.model_name, endpoint_arn: '' }
+      model_endpoint[:tags] = @@sagemaker.list_tags({}).tags
+      if endpoints.keys.include? model.model_name
+        model_endpoint[:has_endpoint] = true
+        model_endpoint[:endpoint_arn] = endpoints[model.model_name][0]
+        model_endpoint[:endpoint_status] = endpoints[model.model_name][1]
       end
+      model_endpoints << model_endpoint
     end
-  end
-
-  def endpoint_config(model_name)
-    data = {'model_endpoint': model_name}
-    self.class.post("/#{PREFIX}/endpoint_config", body: data.to_json, headers: FlaskApi::JSON_HEADER)
+    model_endpoints
   end
 
   def endpoint_labels(model_name, use_cache: true)

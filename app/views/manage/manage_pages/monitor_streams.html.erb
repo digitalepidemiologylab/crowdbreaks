@@ -8,7 +8,7 @@
 </div>
 
 <div class="row">
-  <% if @stream_status == 'running' %>
+  <% if @stream_status == :running %>
     <%= render partial: "monitor_stream", collection: @current_streams, as: 'project' %>
   <% else %>
     <div class="col-12">

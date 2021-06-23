@@ -40,9 +40,6 @@
         <%= f.input :lang, label: "Languages", hint: 'Languages of tweets to collect through Twitter API (2-letter language code, e.g. "en")', :input_html => { value: @project.lang&.join(', ') || '' } %>
       </div>
       <div class="form-group">
-        <%= f.input :es_index_name, hint: 'Name of ElasticSearch index to store tweets into, make sure to name the index project_*', input_html: {value: @project.es_index_name || ""} %>
-      </div>
-      <div class="form-group">
         <%= f.input :storage_mode, collection: Project.storage_modes, include_blank: false, selected: @project.read_attribute_before_type_cast(:storage_mode), hint: 'Where to store tweets. In any case tweets will be stored on S3. If project is public it should include Elasticsearch (es).' %>
       </div>
       <div class="form-group">

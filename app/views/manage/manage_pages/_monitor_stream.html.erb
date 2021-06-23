@@ -5,7 +5,9 @@
       'es_index_name': project.es_index_name,
       'data_endpoint': stream_data_path,
       'past_minutes': 5,
-      'auto_update': true} %>
+      'round_to_sec': 10,
+      'aggregation_interval': '10s',
+      'auto_update': true } %>
   <% else %>
     <div class="mt-2">
       <h3 style="text-align:center;font-size:24px;"><%= project.title %></h3>

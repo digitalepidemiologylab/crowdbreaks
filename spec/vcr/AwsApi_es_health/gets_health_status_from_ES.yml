@@ -1,0 +1,47 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/_cluster/health
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v0.17.4
+      X-Amz-Date:
+      - 20210609T183754Z
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210609/eu-central-1/es/aws4_request,
+        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
+        Signature=cb197d50eec51c25ccc458aae1e85b9f0f016c8f51fef024ab66fcb3d529de44
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 09 Jun 2021 18:37:57 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Vary:
+      - Accept-Encoding, User-Agent
+    body:
+      encoding: ASCII-8BIT
+      string: '{"cluster_name":"874942657130:crowdbreaks-stg","status":"green","timed_out":false,"number_of_nodes":2,"number_of_data_nodes":2,"discovered_master":true,"active_primary_shards":126,"active_shards":252,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}'
+  recorded_at: Wed, 09 Jun 2021 18:37:57 GMT
+recorded_with: VCR 6.0.0

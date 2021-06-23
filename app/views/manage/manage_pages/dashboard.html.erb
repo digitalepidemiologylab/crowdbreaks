@@ -70,21 +70,6 @@
 
 <div class="row justify-content-center mb-6">
   <div class="col-12 col-md-10 col-lg-8 text-center">
-    <h4 class="and-divider mb-4"><span>Status of services</span></h4>
-    <table class="table mb-6">
-      <thead>
-        <th>Service</th>
-        <th>Host</th>
-        <th>Status</th>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Flask API</td>
-          <td><%= ENV['FLASK_API_HOSTNAME'] %></td>
-          <td><span class="badge badge-sentiment"><%= image_tag(@api_ready ? 'running.svg' : 'not-running.svg') %>&nbsp;<%= @api_ready ? 'Connected' : 'Not connected'%>&nbsp;</span></td>
-        </tr>
-      </tbody>
-    </table>
     <h4 class="and-divider mb-4"><span>Status of docker containers</span></h4>
     <table class="table">
       <thead>
@@ -92,7 +77,26 @@
         <th>Status</th>
       </thead>
       <tbody>
+        <tr>
+          <td>State synced with S3</td>
+          <td><span class="badge badge-sentiment"><%= label_based_on_status(@check_state) %></span></td>
+        </tr>
         <% @status_streamer.each do |s| %>
+          <tr>
+            <td><%= s[:name] %></td>
+            <td><span class="badge badge-sentiment"><%= label_based_on_status(s[:status]) %></span></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <h4 class="and-divider mb-4"><span>Status of delivery streams</span></h4>
+    <table class="table">
+      <thead>
+        <th>Delivery stream</th>
+        <th>Status</th>
+      </thead>
+      <tbody>
+        <% @status_delivery_streams.each do |s| %>
           <tr>
             <td><%= s[:name] %></td>
             <td><span class="badge badge-sentiment"><%= label_based_on_status(s[:status]) %></span></td>

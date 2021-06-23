@@ -5,7 +5,7 @@ module Manage
 
     def list_ml_models
       authorize! :view, :ml
-      @api_ready = @api.ping
+      # @api_ready = @api.ping
     end
 
     def ml_playground

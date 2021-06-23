@@ -1,4 +1,5 @@
 class QuestionSequencesController < ApplicationController
+  include Response
   authorize_resource class: false
 
   def show
@@ -22,7 +23,7 @@ class QuestionSequencesController < ApplicationController
     @question_sequence = QuestionSequence.new(question_sequence_project).load
     # Other
     @user_id = current_or_guest_user.id
-    @tweet_id = primary_project.tweet(user_id: @user_id)
+    @tweet_id = get_value_and_flash_now(primary_project.tweet(user_id: @user_id), default: Helpers::Tweet.new(id: 20, text: '')).id
 
     # @tweet_id = '1047868518224416769'
     # @tweet_id = '564984221203431000'  # invalid tweet
@@ -62,7 +63,7 @@ class QuestionSequencesController < ApplicationController
     render json: {}, status: 400 and return if project.nil?
 
     if test_mode
-      new_tweet = project.tweet(test_mode: true)
+      new_tweet = get_value(project.tweet(test_mode: true), default: Helpers::Tweet.new(id: 20, text: '')).body.id
       render json: { tweet_id: new_tweet }, status: 200 and return
     end
 
@@ -74,13 +75,13 @@ class QuestionSequencesController < ApplicationController
       project.save
     end
 
-    # update tweet in Redis pool
+    # update tweet on Elasticsearch
     if primary_project.stream_annotation_mode?
       api.update_tweet(index: primary_project.es_index_name, user_id: user_id, tweet_id: tweet_id)
     end
 
     # get next tweet
-    new_tweet_id = primary_project.tweet(user_id: user_id)
+    new_tweet_id = get_value(primary_project.tweet(user_id: user_id), default: Helpers::Tweet.new(id: 20, text: '')).body.id
 
     # save logs
     logs = final_params.fetch(:logs, {})
@@ -93,9 +94,7 @@ class QuestionSequencesController < ApplicationController
       end
     end
     # simply return new tweet ID
-    render json: {
-      tweet_id: new_tweet_id,
-    }, status: 200
+    render json: { tweet_id: new_tweet_id }, status: 200
   end
 
   private

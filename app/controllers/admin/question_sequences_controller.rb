@@ -1,5 +1,6 @@
 module Admin
   class QuestionSequencesController < BaseController
+    include Response
     load_and_authorize_resource :project, parent: false
 
     def new
@@ -12,21 +13,22 @@ module Admin
 
     def show
       respond_to do |format|
-        format.html {
+        format.html do
           @question_sequence = QuestionSequence.new(@project).load
           @user_id = current_or_guest_user.id
           @hit_id = show_params[:hitId]
-          @tweet_id = @project.tweet(user_id: @user_id)
           @mode = show_params[:mode]
           @mturk_instructions = MturkBatchJob.new.default_mturk_instructions
           @assignment_id = show_params[:assignmentId]
           @worker_id = show_params[:workerId]
-          @preview_mode = show_params[:preview_mode] == 'true' ? true : false
+          @preview_mode = show_params[:preview_mode] == 'true'
           @notification = MturkNotification.new.success
-        }
-        format.csv {
+
+          @tweet_id = get_value_and_flash_now(@project.tweet(user_id: @user_id), default: Helpers::Tweet.new(id: 20, text: '')).id
+        end
+        format.csv do
           send_data @project.qs_to_csv, filename: "#{@project.name}-#{Time.current.strftime("%d-%m-%Y")}.csv"
-        }
+        end
       end
     end
 

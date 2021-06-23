@@ -79,16 +79,16 @@ export class MlModels extends React.Component {
           this.toggleActivateEndpoint(idx, data['message']);
           // make sure correct primary index is shown (done here by modifying the state instead of reloading the data)
           let currentData = this.state.data;
-          const currentTags = currentData[idx]['Tags']
+          const currentTags = currentData[idx]['tags']
 
-          if (action == 'deactivate_endpoint' && currentData[idx]['IsPrimaryEndpoint']) {
-            currentData[idx]['IsPrimaryEndpoint'] = false;
+          if (action == 'deactivate_endpoint' && currentData[idx]['is_primary_endpoint']) {
+            currentData[idx]['is_primary_endpoint'] = false;
             for (let i=0; i<currentData.length; i++) {
               if (i != idx) {
-                if (currentTags['project_name'] == currentData[i]['Tags']['project_name'] && currentTags['question_tag'] == currentData[i]['Tags']['question_tag'] && currentData[i]['ActiveEndpoint']) {
+                if (currentTags['project_name'] == currentData[i]['tags']['project_name'] && currentTags['question_tag'] == currentData[i]['tags']['question_tag'] && currentData[i]['active_endpoint']) {
                   console.log('setting:');
                   console.log(currentData[idx]);
-                  currentData[i]['IsPrimaryEndpoint'] = true;
+                  currentData[i]['is_primary_endpoint'] = true;
                   break;
                 }
               }
@@ -97,13 +97,13 @@ export class MlModels extends React.Component {
             // activate, set as primary if it is the only endpoint for that question
             let foundOtherEndpoint = false;
             for (let i=0; i<currentData.length; i++) {
-              if (idx != i && currentTags['project_name'] == currentData[i]['Tags']['project_name'] && currentTags['question_tag'] == currentData[i]['Tags']['question_tag'] && currentData[i]['ActiveEndpoint']) {
+              if (idx != i && currentTags['project_name'] == currentData[i]['tags']['project_name'] && currentTags['question_tag'] == currentData[i]['tags']['question_tag'] && currentData[i]['active_endpoint']) {
                 foundOtherEndpoint = true;
                 break;
               }
             }
             if (!foundOtherEndpoint) {
-              currentData[idx]['IsPrimaryEndpoint'] = true;
+              currentData[idx]['is_primary_endpoint'] = true;
             }
           }
           this.setState({
@@ -118,7 +118,7 @@ export class MlModels extends React.Component {
 
   toggleActivateEndpoint(idx, message) {
     let data = this.state.data;
-    data[idx]['ActiveEndpoint'] = !data[idx]['ActiveEndpoint']
+    data[idx]['active_endpoint'] = !data[idx]['active_endpoint']
     this.setState({
       data: data
     }, () => {
@@ -130,12 +130,12 @@ export class MlModels extends React.Component {
     const updateData = {
       'ml': {
         'action': action,
-        'model_name': this.state.data[idx]['ModelName'],
-        'project_name': this.state.data[idx]['Tags']['project_name'],
-        'question_tag': this.state.data[idx]['Tags']['question_tag'],
-        'run_name': this.state.data[idx]['Tags']['run_name'],
-        'model_type': this.state.data[idx]['Tags']['model_type'],
-        'run_name': this.state.data[idx]['Tags']['run_name'],
+        'model_name': this.state.data[idx]['model_name'],
+        'project_name': this.state.data[idx]['tags']['project_name'],
+        'question_tag': this.state.data[idx]['tags']['question_tag'],
+        'run_name': this.state.data[idx]['tags']['run_name'],
+        'model_type': this.state.data[idx]['tags']['model_type'],
+        'run_name': this.state.data[idx]['tags']['run_name'],
       }
     }
     console.log(updateData);
@@ -199,35 +199,35 @@ export class MlModels extends React.Component {
         const tbody = <tbody>
           {this.state.data.map((item, i) => {
             return <tr key={i}>
-              <td>{item['ModelName']}</td>
+              <td>{item['model_name']}</td>
               <td>
                 <div className='convert-by-moment'>
                   {moment(item['CreationTime']).fromNow()}
                 </div>
               </td>
-              <td>{item['Tags']['run_name']}</td>
-              <td>{item['Tags']['project_name']}</td>
-              <td>{item['Tags']['question_tag']}</td>
-              <td><EndpointStatus status={item['EndpointStatus']} /></td>
+              <td>{item['tags']['run_name']}</td>
+              <td>{item['tags']['project_name']}</td>
+              <td>{item['tags']['question_tag']}</td>
+              <td><EndpointStatus status={item['endpoint_status']} /></td>
               <td>
                 <EndpointAction
-                  status={item['EndpointStatus']}
+                  status={item['endpoint_status']}
                   onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
                   isLoadingEndpointAction={this.state.isLoadingEndpointAction[i]}
-                  activeEndpoint={item['ActiveEndpoint']}
+                  activeEndpoint={item['active_endpoint']}
                 />
               </td>
               <td>
                 <PipelineAction
-                  status={item['EndpointStatus']}
-                  activeEndpoint={item['ActiveEndpoint']}
+                  status={item['endpoint_status']}
+                  activeEndpoint={item['active_endpoint']}
                   onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
                 />
               </td>
               <td>
                 <PrimaryEndpoint
-                  isPrimaryEndpoint={item['IsPrimaryEndpoint']}
-                  activeEndpoint={item['ActiveEndpoint']}
+                  isPrimaryEndpoint={item['is_primary_endpoint']}
+                  activeEndpoint={item['active_endpoint']}
                   isLoadingPrimaryEndpoint={this.state.isLoadingPrimaryEndpoint[i]}
                   onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
                 />
@@ -236,7 +236,7 @@ export class MlModels extends React.Component {
                 <Actions
                   onUpdateAction={(...e) => prevThis.onUpdateAction(...e, i)}
                   isLoadingActions={this.state.isLoadingActions[i]}
-                  status={item['EndpointStatus']}
+                  status={item['endpoint_status']}
                 />
               </td>
             </tr>

@@ -42,9 +42,13 @@ gem 'json_translate'
 # slug creation
 gem 'friendly_id', '~> 5.1'
 # AWS
+gem 'aws-sdk-ecs'
+gem 'aws-sdk-elasticsearchservice'
+gem 'aws-sdk-firehose'
 gem 'aws-sdk-mturk'
 gem 'aws-sdk-s3'
-gem 'aws-sdk-elasticsearchservice'
+gem 'aws-sdk-sagemaker'
+gem 'aws-sdk-sagemakerruntime'
 # email
 gem 'mandrill-api'
 # JS build
@@ -55,8 +59,8 @@ gem 'active_model_serializers', '~> 0.10.0'
 # Twitter API
 gem 'twitter'
 # Job scheduling
+# gem 'redis'
 gem 'sidekiq', '~> 5.2.7'
-gem 'redis'
 # Monitoring
 gem 'rollbar'
 # Advisory lock
@@ -85,7 +89,7 @@ group :development, :test do
   gem 'foreman'
   # allows failing tests if translations are missing
   gem 'i18n-tasks'
-  # recording the requests responses for replay
+  # recording the requests Response for replay
   gem 'vcr'
   # load variables from .env files to ENV
   gem 'dotenv-rails'

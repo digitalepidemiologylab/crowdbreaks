@@ -1,31 +1,30 @@
 module Manage
   class ManagePagesController < BaseController
+    include Response
     before_action :api_init
 
     def dashboard
       authorize! :view, :manage_dashboard
-      @api_ready = @api.ping
-      @status_streamer = @api.status_streamer
+      @status_streamer = get_value_and_flash_now(
+        @api.status_streamer, default: [{ name: 'Error', status: 'Unable to get ECS tasks from cluster' }]
+      )
+      @check_state = get_value_and_flash_now(@api.check_state)
+      @status_delivery_streams = get_value_and_flash_now(@api.status_delivery_streams, default: [])
     end
 
     def streaming
       authorize! :configure, :streaming
-      @stream_status = @api.status_streaming
-      current_streams = @api.config
-      current_streams ||= []
-      @up_to_date = Project.up_to_date?(current_streams)
+      @stream_status = get_value_and_flash_now(@api.status_streaming)
+      config = get_value_and_flash_now(@api.config, default: [])
+      @up_to_date = Project.up_to_date?(config)
       @projects = Project.primary
     end
 
     def monitor_streams
       authorize! :configure, :streaming
-      config = @api.config
-      if config.empty?
-        @current_streams = []
-        return
-      end
-      @current_streams = Project.primary.where(es_index_name: config.map{|stream| stream['es_index_name']})
-      @stream_status = @api.status_streaming
+      config = get_value_and_flash_now(@api.config, default: [])
+      @current_streams = Project.primary.where(es_index_name: config.map { |stream| stream['es_index_name'] })
+      @stream_status = get_value_and_flash_now(@api.status_streaming)
     end
 
     def user_activity
@@ -36,7 +35,7 @@ module Manage
     private
 
     def api_init
-      @api = FlaskApi.new
+      @api = AwsApi.new
     end
   end
 end

@@ -1,7 +1,7 @@
-redis: &redis
-  adapter: redis
-  url: <%= ENV['REDISTOGO_URL'] %>
+# redis: &redis
+#   adapter: redis
+#   url: <%= ENV['REDISTOGO_URL'] %>
 
-production: *redis
-development: *redis
-test: *redis
+# production: *redis
+# development: *redis
+# test: *redis

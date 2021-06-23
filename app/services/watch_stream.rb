@@ -1,16 +1,16 @@
 class WatchStream
+  include Response
   CACHE_KEY = "watch_stream_error_report_sent"
   CACHE_KEY_EXPIRY = 1.hours
 
   def initialize
     @mailer = ApplicationMailer.new
-    @api = FlaskApi.new
+    @api = AwsApi.new
     if defined?(Rails) && (Rails.env == 'development')
       Rails.logger = Logger.new(STDOUT)
     end
 
   end
-
 
   def check_all_systems
     if not check_api or not check_stream or not check_es
@@ -20,9 +20,8 @@ class WatchStream
     end
   end
 
-
   def check_es
-    es_health = @api.es_health
+    es_health = get_value_and_flash_now(@api.es_health)
     if es_health != 'green'
       msg = "Elasticsearch is currently in #{es_health} state."
       notify_and_deactivate(msg)
@@ -33,24 +32,27 @@ class WatchStream
 
   def check_stream
     status = @api.status_streaming
-    if not status == 'running'
-      msg = "The stream is currently in state '#{status}'"
-      notify_and_deactivate(msg)
+    if status.error?
+      notify_and_deactivate(status.message)
+      return false
+    elsif status.body != :running
+      notify_and_deactivate("The stream is currently in state '#{status}'")
       return false
     end
-    activity_options = {es_activity_threshold_min: 10, redis_counts_threshold_hours: 2}
-    activity = @api.stream_activity(activity_options)
-    if activity.empty?
-      msg = "The stream seems to be running but no activity measures could be retrieved."
-      notify_and_deactivate(msg)
+
+    response = @api.stream_activity(es_activity_threshold_min: 10)
+    case response.status
+    when :error
+      notify_and_deactivate('There was an error trying to retrieve the ES activity.')
       return false
-    end
-    if activity['es_count'] == 0 or activity['redis_count'] == 0
-      msg = "The stream seems to be running but with very low activity.\n
-          Documents indexed on Elasticsearch: #{num(activity['es_count'])} (last #{activity_options[:es_activity_threshold_min]} min)
-          Documents counted in Redis: #{num(activity['redis_count'])} (last #{activity_options[:redis_counts_threshold_hours]} hours)"
-      notify_and_deactivate(msg)
-      return false
+    when :success
+      count = response.body['count']
+      if count.zero?
+        message = "The stream seems to be running but with very low activity.\n
+               Documents indexed on Elasticsearch: #{num(count)} (last #{activity_options[:es_activity_threshold_min]} min)"
+        notify_and_deactivate(message)
+        return false
+      end
     end
     true
   end
@@ -77,7 +79,6 @@ class WatchStream
       return true
     end
   end
-
 
   def notify_and_deactivate(msg)
     send_error_report(msg)

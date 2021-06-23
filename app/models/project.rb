@@ -1,4 +1,5 @@
 class Project < ApplicationRecord
+  include Response
   include S3Uploadable
   include S3UploadableAssociation
   include CsvFileHandler
@@ -18,6 +19,7 @@ class Project < ApplicationRecord
   # validations
   validates_presence_of :title, :description, :name
   validates_uniqueness_of :es_index_name, allow_nil: true
+  validates_uniqueness_of :name
   validate :accessible_by_email_pattern_is_valid
   validates_with CsvValidator, fields: [:job_file]
 
@@ -26,9 +28,9 @@ class Project < ApplicationRecord
   scope :primary, -> { where(primary: true).order({ created_at: :desc }) }
 
   # fields
-  friendly_id :title, use: :slugged
-  enum storage_mode: %i['s3-es' 's3-es-no-retweets' s3 test_mode]
-  enum image_storage_mode: %i[inactive active avoid_possibly_sensitive]
+  friendly_id :name, use: :slugged
+  enum storage_mode: %i[s3-es s3-es-no-retweets s3 s3-no-retweets test_mode]
+  enum image_storage_mode: %i[inactive active]
   enum annotation_mode: %i[stream local], _suffix: true
   translates :title, :description
 
@@ -69,7 +71,7 @@ class Project < ApplicationRecord
   end
 
   def num_annotations
-    question_sequences.map{ |project| project.results.num_annotations }.sum
+    question_sequences.map { |project| project.results.num_annotations }.sum
   end
 
   def primary_project
@@ -146,23 +148,31 @@ class Project < ApplicationRecord
 
   def self.up_to_date?(remote_config)
     # test if given stream configuration is identical to projects
-    return false if remote_config.nil?
-    return false if remote_config.length != Project.primary.where(active_stream: true).count
+    selected_params = %i[keywords lang locales es_index_name slug active storage_mode image_storage_mode model_endpoints]
+    config = Project.primary.where(active_stream: true).to_json(only: selected_params)
+    remote_config.to_json == config
 
-    remote_config.each do |c|
-      p = Project.find_by(slug: c['slug'])
-      return false if p.nil?
+    # return false if remote_config.nil?
+    # return false if remote_config.length != Project.primary.where(active_stream: true).count
 
-      %w[keywords lang locales].each do |prop|
-        return false if p[prop].nil? || c[prop].nil?
-        return false if p[prop].sort != c[prop].sort
-      end
-      %w[es_index_name storage_mode image_storage_mode compile_trending_tweets compile_trending_topics model_endpoints compile_data_dump_ids].each do |prop|
-        return false if p[prop].nil? || c[prop].nil?
-        return false if p[prop] != c[prop]
-      end
-    end
-    true
+    # remote_config.each do |c|
+    #   p = Project.find_by(slug: c['slug'])
+    #   return false if p.nil?
+
+    #   puts p.to_json()
+
+    #   %w[keywords lang locales].each do |prop|
+    #     puts 'first check'
+    #     return false if p[prop].nil? || c[prop].nil?
+    #     return false if p[prop].sort != c[prop].sort
+    #   end
+    #   %w[slug active storage_mode image_storage_mode model_endpoints].each do |prop|
+    #     puts 'second check'
+    #     return false if p[prop].nil? || c[prop].nil?
+    #     return false if p[prop] != c[prop]
+    #   end
+    # end
+    # true
   end
 
   def results_to_csv(type: 'public-results')
@@ -216,12 +226,11 @@ class Project < ApplicationRecord
     if stream_annotation_mode?
       # Get a recent tweet from the streaming queue
       tweet = test_mode ? tweet_stream(user_id, index: ES_TEST_INDEX_PATTERN) : tweet_stream(user_id)
-      add_to_public_tweets(tweet) unless test_mode
-      tweet.id.to_s
+      add_to_public_tweets(tweet.body) unless test_mode
+      tweet
     elsif local_annotation_mode?
       # Fetch tweet from a pool of tweets stored in the public_tweets table
-      public_tweet = tweet_local(user_id)
-      public_tweet.id.to_s
+      tweet_local(user_id)
     else
       raise ArgumentError 'Unsupported annotation mode'
     end
@@ -264,7 +273,7 @@ class Project < ApplicationRecord
     # If endpoint has been removed remotely (e.g. through dev/stg), remove it from projects
     models_remote = []
     resp.each do |r|
-      models_remote.push(r['ModelName']) if r['Tags']['project_name'] == es_index_name
+      models_remote.push(r[:model_name]) if r[:tags][:project_name] == es_index_name
     end
     found_change = false
     model_endpoints.each do |question_tag, active_endpoints|
@@ -324,23 +333,36 @@ class Project < ApplicationRecord
   def tweet_local(user_id)
     public_tweet = public_tweets.not_assigned_to_user(user_id, id).may_be_available&.first
     unless public_tweet.present?
-      Rails.logger.error 'Could not find a suitable public tweet for annotation. Fetching a random tweet instead.'
-      public_tweet = random_tweet
+      return Helpers::ApiResponse.new(
+        status: :fail, body: random_tweet,
+        message: 'Could not find a suitable public tweet for annotation, showing a random tweet.'
+      )
     end
-    Helpers::Tweet(id: public_tweet[:tweet_id], text: public_tweet[:tweet_text])
+    public_tweet = Helpers::Tweet(id: public_tweet[:tweet_id], text: public_tweet[:tweet_text])
+    Helpers::ApiResponse.new(status: :success, body: public_tweet)
   end
 
   def tweet_stream(user_id, index: es_index_name)
     api = AwsApi.new
-    tweets = Helpers::ErrorHandler.handle_error(error_return_value: { error: 'StandardError' }) do
-      api.tweets(index: index, user_id: user_id)
+    response = api.tweets(index: index, user_id: user_id)
+    if response.error?
+      return Helpers::ApiResponse.new(
+        status: :fail, body: random_tweet,
+        message: 'Did not manage to get a tweet from the stream, showing a random tweet.'
+      )
     end
-    return random_tweet if tweets.key?(:error) || tweets.empty?
 
+    tweets = response.body
+    puts 'tweets'
+    puts response.to_s
+    puts(tweets.map { tweet.id })
     tweets.each do |tweet|
-      return { tweet_id: tweet.id, tweet_text: tweet.text } if TweetValidation.tweet_is_valid?(tweet.id)
+      return Helpers::ApiResponse.new(status: :success, body: tweet) if TweetValidation.tweet_is_valid?(tweet.id)
     end
-    random_tweet
+    Helpers::ApiResponse.new(
+      status: :fail, body: random_tweet,
+      message: 'The tweets from the stream are invalid, showing a random tweet.'
+    )
   end
 
   def random_tweet(retries: MAX_COUNT_REFETCH)
