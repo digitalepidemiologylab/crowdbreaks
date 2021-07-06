@@ -1,0 +1,48 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://runtime.sagemaker.eu-central-1.amazonaws.com/endpoints/crowdbreaks-6512709bc4/invocations
+    body:
+      encoding: UTF-8
+      string: '{"text":"hi there"}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.110.0 ruby/2.5.8 x86_64-darwin19 aws-sdk-sagemakerruntime/1.28.0
+      X-Amz-Date:
+      - 20210630T183901Z
+      X-Amz-Content-Sha256:
+      - c71636fcb6f6818a062e4256ab9580ff145a8d0e163ac17dc0322b42bb471a1a
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210630/eu-central-1/sagemaker/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=49e9b3176efa7428b4813bc9dfc0f14d79da6f43f5cabe59690dc4dbdce6f043
+      Content-Length:
+      - '19'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - b7eed413-95d9-4296-8e10-83058e560490
+      X-Amzn-Invoked-Production-Variant:
+      - AllTraffic
+      Date:
+      - Wed, 30 Jun 2021 18:39:01 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '358'
+    body:
+      encoding: UTF-8
+      string: '{"duration_ms":0.20122528076171875,"model_type":"fasttext","predictions":[{"labels":["neutral","negative","positive"],"labels_fixed":["negative","neutral","positive"],"probabilities":[1.0000100135803223,1.0000003385357559e-05,1.0000003385357559e-05],"probabilities_fixed":[1.0000003385357559e-05,1.0000100135803223,1.0000003385357559e-05]}],"run_config":{}}
+
+        '
+  recorded_at: Wed, 30 Jun 2021 18:39:01 GMT
+recorded_with: VCR 6.0.0

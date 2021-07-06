@@ -16,8 +16,9 @@ class ApisController < ApplicationController
     run_name = api_params_predictions[:run_name] || ''
     use_cache = api_params_predictions[:use_cache]
     average_label_val = api_params_predictions[:average_label_val].nil? ? false : true
-    resp = {}
-    resp['predictions'] = @api.get_predictions(
+
+    response = {}
+    predictions_response = @api.get_predictions(
       index: es_index_name,
       question_tag: question_tag,
       answer_tags: answer_tags,
@@ -25,38 +26,42 @@ class ApisController < ApplicationController
       use_cache: true,
       **options
     )
+    Rails.logger.info(predictions_response.body)
+    response['predictions'] = predictions_response.success? ? predictions_response.body : {}
+
     if average_label_val
-      resp['avg_label_vals'] = @api.get_avg_label_val(
+      avg_label_vals_response = @api.get_avg_label_val(
         index: es_index_name,
         question_tag: question_tag,
         run_name: run_name,
         use_cache: use_cache,
         **options
       )
-    else
-      resp['avg_label_vals'] = []
+      Rails.logger.info(avg_label_vals_response.body)
+      response['avg_label_vals'] = avg_label_vals_response.success? ? avg_label_vals_response.body : []
     end
-    render json: resp.to_json, status: 200
+
+    render json: response.to_json, status: 200
   end
 
   def endpoint_info
     model_endpoints = Project.where.not(model_endpoints: {}).pluck(:model_endpoints, :es_index_name)
     endpoint_info = {}
     model_endpoints.each do |endpoint, es_index_name|
-      _project_endpoints = {}
+      project_endpoints_ = {}
       endpoint.each do |question_tag, question_tag_endpoints|
-        resp = @api.endpoint_labels(question_tag_endpoints['primary'])
-        if not resp['success'].nil? and not resp['success']
-          render json: resp.to_json, status: resp['status'] and return
-        end
-        _endpoints = []
+        response = @api.endpoint_labels(question_tag_endpoints['primary'])
+        Rails.logger.info response
+        render json: { message: response.message }, status: 400 and return if response.error?
+
+        endpoints_ = []
         question_tag_endpoints['active'].each do |endpoint_name, endpoint_obj|
           is_primary = endpoint_name == question_tag_endpoints['primary']
-          _endpoints.push({is_primary: is_primary, endpoint_name: endpoint_name, run_name: endpoint_obj['run_name']})
+          endpoints_.push({ is_primary: is_primary, endpoint_name: endpoint_name, run_name: endpoint_obj[:run_name] })
         end
-        _project_endpoints[question_tag] = {endpoints: _endpoints, **resp.symbolize_keys}
+        project_endpoints_[question_tag] = { endpoints: endpoints_, **response.body }
       end
-      endpoint_info[es_index_name] = _project_endpoints
+      endpoint_info[es_index_name] = project_endpoints_
     end
     render json: endpoint_info.to_json, status: 200
   end
@@ -227,29 +232,35 @@ class ApisController < ApplicationController
   def predict_ml_models
     authorize! :view, :ml
     response = @api.predict(text: api_params_ml_predict['text'], endpoint_name: api_params_ml_predict['endpoint'])
-    output = get_value_and_flash_now(response)
-    puts output
-    render json: output.to_json, status: 200 unless output.nil?
+    render json: response.body, status: 200 and return if response.success?
+
     render json: '{}', status: 200
   end
 
   def list_ml_models
     authorize! :view, :ml
-    models = @api.list_model_endpoints(use_cache: api_params_ml['use_cache'])
+    models_response = @api.list_model_endpoints(use_cache: api_params_ml[:use_cache])
+    Rails.logger.info models_response
+    if models_response.error?
+      Rails.logger.info 'ERRROROROOROORO' + models_response.message
+      render json: { message: models_response.message }.to_json, status: 400 and return
+    end
+
+    models = models_response.body
     response = []
     models.each do |model|
-      next if model.fetch(:tags, nil)&.fetch(:project_name).nil?
+      puts model.class
+      next if model.fetch(:tags, nil)&.fetch(:project_name, nil).nil?
 
       project_name = model[:tags][:project_name]
-      project = Project.primary_project_by_name(project_name)
+      project = Project.primary_project_by_name(project_name) #[8..-1]
       next if project.nil?
 
       model_name = model[:model_name]
       question_tag = model[:tags][:question_tag]
       model[:active_endpoint] = project.endpoint_for_question_tag?(model_name, question_tag)
       model[:is_primary_endpoint] = project.primary_endpoint_for_question_tag?(model_name, question_tag)
-      response.push(model)
-      end
+      response << model
     end
     Project.where.not('model_endpoints': {}).each do |project|
       project.sync_endpoints_with_remote(response)
@@ -259,70 +270,64 @@ class ApisController < ApplicationController
 
   def update_ml_models
     authorize! :view, :ml
-    action = api_params_ml_update['action']
-    model_name = api_params_ml_update['model_name']
+    action = api_params_ml_update[:action]
+    model_name = api_params_ml_update[:model_name]
     project_name = api_params_ml_update[:project_name]
     question_tag = api_params_ml_update[:question_tag]
-    model_type = api_params_ml_update['model_type']
-    run_name = api_params_ml_update['run_name']
-    project = Project.primary_project_by_name(project_name)
+    model_type = api_params_ml_update[:model_type]
+    run_name = api_params_ml_update[:run_name]
+    project = Project.primary_project_by_name(project_name) #[8..-1]
     if project.nil?
       msg = "Project #{project_name} could not be found."
-      render json: {message: msg}.to_json, status: 400 and return
+      render json: { message: msg }.to_json, status: 400 and return
     end
-    if action == 'create_endpoint'
+    # Flash notifications are rendered in MlModels.js
+    case action
+    when 'create_endpoint'
       resp = @api.create_endpoint(model_name)
-      if resp
-        render json: {message: 'Endpoint successfully created'}.to_json, status: 200 and return
-      else
-        render json: {message: 'Something went wrong when creating endpoint'}.to_json, status: 400 and return
-      end
-    elsif action == 'delete_endpoint'
+      render json: { message: 'Endpoint successfully created.' }.to_json, status: 200 and return if resp.success?
+
+      render json: { message: 'Something went wrong when creating endpoint.' }.to_json, status: 400 and return
+    when 'delete_endpoint'
       resp = @api.delete_endpoint(model_name)
-      if resp
-        render json: {message: 'Endpoint successfully deleted'}.to_json, status: 200 and return
-      else
-        render json: {message: 'Something went wrong when deleting endpoint'}.to_json, status: 400 and return
-      end
-    elsif action == 'delete_model'
+      render json: { message: 'Endpoint successfully deleted.' }.to_json, status: 200 and return if resp.success?
+
+      render json: { message: 'Something went wrong when deleting endpoint.' }.to_json, status: 400 and return
+    when 'delete_model'
       resp = @api.delete_model(model_name)
-      if resp
-        render json: {message: 'Model successfully deleted'}.to_json, status: 200 and return
+      render json: { message: 'Model successfully deleted.' }.to_json, status: 200 and return if resp.success?
+
+      render json: { message: 'Something went wrong when deleting model.' }.to_json, status: 400 and return
+    when 'activate_endpoint'
+      project.add_endpoint(model_name, question_tag, model_type, run_name)
+      if project.endpoint_for_question_tag?(model_name, question_tag)
+        msg = 'Successfully activated endpoint. Restart stream for changes to be active.'
+        render json: { message: msg }.to_json, status: 200 and return
       else
-        render json: {message: 'Something went wrong when deleting model'}.to_json, status: 400 and return
+        msg = 'Something went wrong when trying to activate endpoint.'
+        render json: { message: msg }.to_json, status: 400 and return
+      end
+    when 'deactivate_endpoint'
+      project.remove_endpoint(model_name, question_tag)
+      if project.endpoint_for_question_tag?(model_name, question_tag)
+        msg = 'Something went wrong when trying to deactivate endpoint.'
+        render json: { message: msg }.to_json, status: 400 and return
+      else
+        msg = 'Successfully deactivated endpoint. Restart stream for changes to be active.'
+        render json: { message: msg }.to_json, status: 200 and return
+      end
+    when 'make_primary'
+      project.make_primary_endpoint(model_name, question_tag)
+      if project.primary_endpoint_for_question_tag?(model_name, question_tag)
+        msg = 'Successfully set endpoint as primary. Restart stream for changes to be active.'
+        render json: { message: msg }.to_json, status: 200 and return
+      else
+        msg = 'Something went wrong when trying to set endpoint to primary.'
+        render json: { message: msg }.to_json, status: 400 and return
       end
     else
-      if action == 'activate_endpoint'
-        project.add_endpoint(model_name, question_tag, model_type, run_name)
-        if project.endpoint_for_question_tag?(model_name, question_tag)
-          msg = 'Successfully activated endpoint. Restart stream for changes to be active.'
-          render json: {message: msg}.to_json, status: 200 and return
-        else
-          msg = 'Something went wrong when trying to activate endpoint.'
-          render json: {message: msg}.to_json, status: 400 and return
-        end
-      elsif action == 'deactivate_endpoint'
-        project.remove_endpoint(model_name, question_tag)
-        if not project.endpoint_for_question_tag?(model_name, question_tag)
-          msg = 'Successfully deactivated endpoint. Restart stream for changes to be active.'
-          render json: {message: msg}.to_json, status: 200 and return
-        else
-          msg = 'Something went wrong when trying to deactivate endpoint.'
-          render json: {message: msg}.to_json, status: 400 and return
-        end
-      elsif action == 'make_primary'
-        project.make_primary_endpoint(model_name, question_tag)
-        if project.primary_endpoint_for_question_tag?(model_name, question_tag)
-          msg = 'Successfully set endpoint as primary. Restart stream for changes to be active.'
-          render json: {message: msg}.to_json, status: 200 and return
-        else
-          msg = 'Something went wrong when trying to set endpoint to primary.'
-          render json: {message: msg}.to_json, status: 400 and return
-        end
-      else
-        msg = "Update action #{action} is not known."
-        render json: {message: msg}.to_json, status: 400 and return
-      end
+      msg = "Update action #{action} is not known."
+      render json: { message: msg }.to_json, status: 400 and return
     end
   end
 
@@ -330,19 +335,19 @@ class ApisController < ApplicationController
     client = AwsS3.new(bucket: 'crowdbreaks-public')
     project = api_params_download_resource[:project]
     modes = [
-      {name: 'all', prefix: ''},
-      {name: 'place', prefix: '_has_place'},
-      {name: 'coordinates', prefix: '_has_coordinates'}
-    ];
+      { name: 'all', prefix: '' },
+      { name: 'place', prefix: '_has_place' },
+      { name: 'coordinates', prefix: '_has_coordinates' }
+    ]
     resp = {}
     modes.each do |mode|
       name = mode[:name]
-      resp[name] = {exists: false}
+      resp[name] = { exists: false }
       key = "data_dump/#{project}/data_dump_ids_#{project}#{mode[:prefix]}.txt.gz"
       if client.exists?(key)
         resp[name][:exists] = true
         _resp = client.head(key)
-        resp[name] = {**resp[name], last_modified: _resp['last_modified'], size: _resp['content_length']}
+        resp[name] = { **resp[name], last_modified: _resp['last_modified'], size: _resp['content_length'] }
       end
     end
     render json: resp.to_json, status: 200

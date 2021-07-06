@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'vcr_helper'
+require 'json'
 
 RSpec.describe AwsApi, '#tweets', :vcr do
   before { @api = AwsApi.new }
@@ -77,5 +78,43 @@ RSpec.describe AwsApi, '#es_stats', :vcr do
     expect(response).to be_an_instance_of Helpers::ApiResponse
     expect(response.body).to include 'indices'
     expect(response.body['indices']).to have_key ES_TEST_INDEX
+  end
+end
+
+RSpec.describe AwsApi, '#endpoint_labels', :vcr do
+  before { @api = AwsApi.new }
+  before { @model_name = 'crowdbreaks-6512709bc4' }
+
+  it 'endpoint labels are correct' do
+    response = @api.endpoint_labels(@model_name)
+    expect(response).to be_an_instance_of Helpers::ApiResponse
+    expect(response.body).to be_an_instance_of Hash
+    expect(response.body).not_to be_empty
+    expect(response.body).to have_key :labels
+    expect(response.body).to have_key :label_vals
+  end
+end
+
+RSpec.describe AwsApi, '#list_model_endpoints', :vcr do
+  before { @api = AwsApi.new }
+
+  it 'existing models are listed' do
+    response = @api.list_model_endpoints
+    expect(response).to be_an_instance_of Helpers::ApiResponse
+    expect(response.body).to be_an_instance_of Array
+    expect(response.body).not_to be_empty
+    expect(response.body[0]).to be_an_instance_of Hash
+  end
+end
+
+RSpec.describe AwsApi, '#predict', :vcr do
+  before { @api = AwsApi.new }
+  before { @endpoint_name = 'crowdbreaks-6512709bc4' }
+
+  it 'existing models are listed' do
+    response = @api.predict(text: 'hi there', endpoint_name: @endpoint_name)
+    expect(response).to be_an_instance_of Helpers::ApiResponse
+    expect(response.body).to be_an_instance_of String
+    expect(JSON.parse(response.body)).to be_an_instance_of Hash
   end
 end

@@ -6,7 +6,6 @@ module Helpers
       raise(ArgumentError, 'status should be in %i[success fail error]') unless %i[success fail error].include?(status)
       raise(ArgumentError, 'no message in an error response') if status == :error && message.nil?
       raise(ArgumentError, 'no message in a fail response') if status == :fail && message.nil?
-      raise(ArgumentError, 'no body in a fail response') if status == :fail && body.nil?
       raise(ArgumentError, 'body in an error response') if status == :error && !body.nil?
 
       @status = status

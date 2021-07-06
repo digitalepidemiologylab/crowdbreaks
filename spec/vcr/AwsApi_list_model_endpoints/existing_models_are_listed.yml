@@ -1,0 +1,311 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sagemaker.eu-central-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: "{}"
+    headers:
+      Content-Type:
+      - application/x-amz-json-1.1
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.110.0 ruby/2.5.8 x86_64-darwin19 aws-sdk-sagemaker/1.75.0
+      X-Amz-Target:
+      - SageMaker.ListModels
+      X-Amz-Date:
+      - 20210624T124709Z
+      X-Amz-Content-Sha256:
+      - 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210624/eu-central-1/sagemaker/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target,
+        Signature=6fbd3e7d6268a67673da2696a5bbad23cb839135444027bd35e365690e56c923
+      Content-Length:
+      - '2'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - f85cb9f0-8375-44a4-8dd7-f3c08e9f79e5
+      Content-Type:
+      - application/x-amz-json-1.1
+      Content-Length:
+      - '773'
+      Date:
+      - Thu, 24 Jun 2021 12:47:08 GMT
+    body:
+      encoding: UTF-8
+      string: '{"Models":[{"CreationTime":1.601028691563E9,"ModelArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/mock-model","ModelName":"mock-model"},{"CreationTime":1.600353761094E9,"ModelArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/crowdbreaks-e5efb7f99e","ModelName":"crowdbreaks-e5efb7f99e"},{"CreationTime":1.585406331622E9,"ModelArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/crowdbreaks-39a8934e21","ModelName":"crowdbreaks-39a8934e21"},{"CreationTime":1.584696250565E9,"ModelArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/crowdbreaks-6512709bc4","ModelName":"crowdbreaks-6512709bc4"},{"CreationTime":1.583941542033E9,"ModelArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/crowdbreaks-331b8421d3","ModelName":"crowdbreaks-331b8421d3"}]}'
+  recorded_at: Thu, 24 Jun 2021 12:47:09 GMT
+- request:
+    method: post
+    uri: https://api.sagemaker.eu-central-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: "{}"
+    headers:
+      Content-Type:
+      - application/x-amz-json-1.1
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.110.0 ruby/2.5.8 x86_64-darwin19 aws-sdk-sagemaker/1.75.0
+      X-Amz-Target:
+      - SageMaker.ListEndpoints
+      X-Amz-Date:
+      - 20210624T124709Z
+      X-Amz-Content-Sha256:
+      - 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210624/eu-central-1/sagemaker/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target,
+        Signature=ffecc11760c34eecac7304f5f0f5688626384c82357bdb48b58633e314103bea
+      Content-Length:
+      - '2'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 1e45fbd6-c53b-4d73-b543-a46ca1dc22b9
+      Content-Type:
+      - application/x-amz-json-1.1
+      Content-Length:
+      - '1131'
+      Date:
+      - Thu, 24 Jun 2021 12:47:08 GMT
+    body:
+      encoding: UTF-8
+      string: '{"Endpoints":[{"CreationTime":1.601301228196E9,"EndpointArn":"arn:aws:sagemaker:eu-central-1:874942657130:endpoint/mock-fasttext","EndpointName":"mock-fasttext","EndpointStatus":"InService","LastModifiedTime":1.624368206049E9},{"CreationTime":1.601028802929E9,"EndpointArn":"arn:aws:sagemaker:eu-central-1:874942657130:endpoint/mock-endpoint","EndpointName":"mock-endpoint","EndpointStatus":"InService","LastModifiedTime":1.62436132696E9},{"CreationTime":1.585406352082E9,"EndpointArn":"arn:aws:sagemaker:eu-central-1:874942657130:endpoint/crowdbreaks-39a8934e21","EndpointName":"crowdbreaks-39a8934e21","EndpointStatus":"InService","LastModifiedTime":1.624371121067E9},{"CreationTime":1.584696271701E9,"EndpointArn":"arn:aws:sagemaker:eu-central-1:874942657130:endpoint/crowdbreaks-6512709bc4","EndpointName":"crowdbreaks-6512709bc4","EndpointStatus":"InService","LastModifiedTime":1.624362716141E9},{"CreationTime":1.583950170091E9,"EndpointArn":"arn:aws:sagemaker:eu-central-1:874942657130:endpoint/crowdbreaks-331b8421d3","EndpointName":"crowdbreaks-331b8421d3","EndpointStatus":"InService","LastModifiedTime":1.6243687306E9}]}'
+  recorded_at: Thu, 24 Jun 2021 12:47:09 GMT
+- request:
+    method: post
+    uri: https://api.sagemaker.eu-central-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: '{"ResourceArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/mock-model"}'
+    headers:
+      Content-Type:
+      - application/x-amz-json-1.1
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.110.0 ruby/2.5.8 x86_64-darwin19 aws-sdk-sagemaker/1.75.0
+      X-Amz-Target:
+      - SageMaker.ListTags
+      X-Amz-Date:
+      - 20210624T124709Z
+      X-Amz-Content-Sha256:
+      - 9d7dd95912db7e1c22adb09faaf7a880fc86548a9e36c480dac6508da4110b2c
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210624/eu-central-1/sagemaker/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target,
+        Signature=f0edb5334988128838dd22a2063f8c6b3619acf67a561abf26221204dd5334d5
+      Content-Length:
+      - '78'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 2476b689-4878-4859-b1c7-edf34746f74f
+      Content-Type:
+      - application/x-amz-json-1.1
+      Content-Length:
+      - '11'
+      Date:
+      - Thu, 24 Jun 2021 12:47:08 GMT
+    body:
+      encoding: UTF-8
+      string: '{"Tags":[]}'
+  recorded_at: Thu, 24 Jun 2021 12:47:09 GMT
+- request:
+    method: post
+    uri: https://api.sagemaker.eu-central-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: '{"ResourceArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/crowdbreaks-e5efb7f99e"}'
+    headers:
+      Content-Type:
+      - application/x-amz-json-1.1
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.110.0 ruby/2.5.8 x86_64-darwin19 aws-sdk-sagemaker/1.75.0
+      X-Amz-Target:
+      - SageMaker.ListTags
+      X-Amz-Date:
+      - 20210624T124709Z
+      X-Amz-Content-Sha256:
+      - a32fd77993f198422f1295ab1a001c8048da388c3222b641e4d90c387875de3f
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210624/eu-central-1/sagemaker/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target,
+        Signature=f903fc5439b6415fed496bf18d79115484dc8ded9ddfddf3370106a901a2b927
+      Content-Length:
+      - '90'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - e1ecc3bf-03e4-4c31-b2e6-cb1f2fc638e8
+      Content-Type:
+      - application/x-amz-json-1.1
+      Content-Length:
+      - '183'
+      Date:
+      - Thu, 24 Jun 2021 12:47:09 GMT
+    body:
+      encoding: UTF-8
+      string: '{"Tags":[{"Key":"model_type","Value":"fasttext"},{"Key":"question_tag","Value":"worry"},{"Key":"project_name","Value":"project_wuhan"},{"Key":"run_name","Value":"fasttext_worry_v1"}]}'
+  recorded_at: Thu, 24 Jun 2021 12:47:10 GMT
+- request:
+    method: post
+    uri: https://api.sagemaker.eu-central-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: '{"ResourceArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/crowdbreaks-39a8934e21"}'
+    headers:
+      Content-Type:
+      - application/x-amz-json-1.1
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.110.0 ruby/2.5.8 x86_64-darwin19 aws-sdk-sagemaker/1.75.0
+      X-Amz-Target:
+      - SageMaker.ListTags
+      X-Amz-Date:
+      - 20210624T124710Z
+      X-Amz-Content-Sha256:
+      - 9ee062cddf6ce46225df146e7fe2a75c707a12ade7dc9366bc58183b75401c46
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210624/eu-central-1/sagemaker/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target,
+        Signature=0a1244e8f34693c6b33182354774d75036aff6956d790a9f5e142cfd27d74c15
+      Content-Length:
+      - '90'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - a1a88803-02a6-488d-8cba-81c60da135e2
+      Content-Type:
+      - application/x-amz-json-1.1
+      Content-Length:
+      - '177'
+      Date:
+      - Thu, 24 Jun 2021 12:47:09 GMT
+    body:
+      encoding: UTF-8
+      string: '{"Tags":[{"Key":"model_type","Value":"fasttext"},{"Key":"question_tag","Value":"worry"},{"Key":"project_name","Value":"project_wuhan"},{"Key":"run_name","Value":"fasttext_v1"}]}'
+  recorded_at: Thu, 24 Jun 2021 12:47:10 GMT
+- request:
+    method: post
+    uri: https://api.sagemaker.eu-central-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: '{"ResourceArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/crowdbreaks-6512709bc4"}'
+    headers:
+      Content-Type:
+      - application/x-amz-json-1.1
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.110.0 ruby/2.5.8 x86_64-darwin19 aws-sdk-sagemaker/1.75.0
+      X-Amz-Target:
+      - SageMaker.ListTags
+      X-Amz-Date:
+      - 20210624T124710Z
+      X-Amz-Content-Sha256:
+      - 92582fd8ded7f13ae136e3d263ede3acdda67739ea50366d7aa2df610ea0cfbd
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210624/eu-central-1/sagemaker/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target,
+        Signature=f936f4b68c8220e71584a27a55d4fc88d6302ca99da1132ae93a9b65a0797f83
+      Content-Length:
+      - '90'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - a884e456-40a4-4803-97df-5665c76f6db9
+      Content-Type:
+      - application/x-amz-json-1.1
+      Content-Length:
+      - '193'
+      Date:
+      - Thu, 24 Jun 2021 12:47:09 GMT
+    body:
+      encoding: UTF-8
+      string: '{"Tags":[{"Key":"model_type","Value":"fasttext"},{"Key":"question_tag","Value":"sentiment"},{"Key":"project_name","Value":"project_vaccine_sentiment"},{"Key":"run_name","Value":"fasttext_v2"}]}'
+  recorded_at: Thu, 24 Jun 2021 12:47:10 GMT
+- request:
+    method: post
+    uri: https://api.sagemaker.eu-central-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: '{"ResourceArn":"arn:aws:sagemaker:eu-central-1:874942657130:model/crowdbreaks-331b8421d3"}'
+    headers:
+      Content-Type:
+      - application/x-amz-json-1.1
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.110.0 ruby/2.5.8 x86_64-darwin19 aws-sdk-sagemaker/1.75.0
+      X-Amz-Target:
+      - SageMaker.ListTags
+      X-Amz-Date:
+      - 20210624T124710Z
+      X-Amz-Content-Sha256:
+      - ed684984b0c3e94ac1001a4ee42bc5b1f515ec761cd835b5044c29c4799e821b
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210624/eu-central-1/sagemaker/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target,
+        Signature=aaa08ae908638e87e5e51fec194666ad61e813efe3152d6a97a13d7c7c50029b
+      Content-Length:
+      - '90'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 804a4f8d-fadc-4ff3-8395-3eb1672944ba
+      Content-Type:
+      - application/x-amz-json-1.1
+      Content-Length:
+      - '193'
+      Date:
+      - Thu, 24 Jun 2021 12:47:10 GMT
+    body:
+      encoding: UTF-8
+      string: '{"Tags":[{"Key":"model_type","Value":"fasttext"},{"Key":"question_tag","Value":"sentiment"},{"Key":"project_name","Value":"project_vaccine_sentiment"},{"Key":"run_name","Value":"fasttext_v1"}]}'
+  recorded_at: Thu, 24 Jun 2021 12:47:10 GMT
+recorded_with: VCR 6.0.0

@@ -241,10 +241,10 @@ class Project < ApplicationRecord
     return if endpoint_for_question_tag?(endpoint_name, question_tag)
 
     existing_endpoints = active_endpoints(question_tag)
-    existing_endpoints[endpoint_name] = {'model_type': model_type, 'run_name': run_name}
+    existing_endpoints[endpoint_name] = { model_type: model_type, run_name: run_name }
     if existing_endpoints.length == 1
       # first time we add an endpoint -> make it primary
-      model_endpoints[question_tag] = {'active': existing_endpoints, 'primary': endpoint_name}
+      model_endpoints[question_tag] = { 'active': existing_endpoints, 'primary': endpoint_name }
     else
       model_endpoints[question_tag]['active'] = existing_endpoints
     end

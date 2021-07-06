@@ -41,6 +41,12 @@ export class MlModels extends React.Component {
       data: JSON.stringify(postData),
       dataType: "json",
       contentType: "application/json",
+      error: (data) => {
+        toastr.error(data['responseJSON']['message']);
+        this.setState({
+          isLoadingData: false
+        });
+      },
       success: (data) => {
         const loadingActions = new Array(data.length).fill(false);
         this.setState({
@@ -63,7 +69,7 @@ export class MlModels extends React.Component {
       dataType: "json",
       contentType: "application/json",
       error: (data) => {
-        toastr.error(data['message'])
+        toastr.error(data['responseJSON']['message'])
         const loadingActions = new Array(data.length).fill(false);
         this.setState({
           isLoadingData: false,
@@ -122,7 +128,7 @@ export class MlModels extends React.Component {
     this.setState({
       data: data
     }, () => {
-      toastr.success(message)
+      toastr.success(message);
     })
   }
 
@@ -202,7 +208,7 @@ export class MlModels extends React.Component {
               <td>{item['model_name']}</td>
               <td>
                 <div className='convert-by-moment'>
-                  {moment(item['CreationTime']).fromNow()}
+                  {moment(item['creation_time']).fromNow()}
                 </div>
               </td>
               <td>{item['tags']['run_name']}</td>

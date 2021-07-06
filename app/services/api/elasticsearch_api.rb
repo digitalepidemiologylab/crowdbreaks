@@ -126,14 +126,14 @@ module ElasticsearchApi
   # elasticsearch - all data, for monitoring stream activity
   def get_all_data(
     index:, keywords: nil, not_keywords: nil,
-    start_date: 'now-20y', end_date: 'now', interval: 1.month, round_to_sec: nil
+    start_date: 'now-20y', end_date: 'now', interval: 1.month, round_to_sec: nil, use_cache: true
   )
     start_date = process_date(start_date, round_to_sec)
     end_date = process_date(end_date, round_to_sec)
     keywords = keywords.nil? ? [] : keywords
     not_keywords = not_keywords.nil? ? [] : not_keywords
 
-    ranges = get_ranges(start_date, end_date, interval, format: DATE_FORMAT)
+    ranges = get_ranges(start_date, end_date, interval)
     definition = {
       aggs: { all_data_agg: { date_range: { field: 'created_at', format: 'strict_date_optional_time', ranges: ranges } } }
     }
@@ -154,16 +154,19 @@ module ElasticsearchApi
       end
     end
 
-    handle_es_errors(occured_when: 'aggregating tweets by keywords on ES') do
-      result = @@es_client.search index: index, body: definition
-      Helpers::ApiResponse.new(status: :success, body: result['aggregations']['all_data_agg']['buckets'])
+    cache_key = "get-all-data-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+    cached(cache_key, use_cache: use_cache) do
+      handle_es_errors(occured_when: 'aggregating tweets by keywords on ES') do
+        result = @@es_client.search index: index, body: definition
+        Helpers::ApiResponse.new(status: :success, body: result['aggregations']['all_data_agg']['buckets'])
+      end
     end
   end
 
   # elasticsearch - sentiment data
   def get_predictions(
     index:, question_tag:, answer_tags:, run_name: '',
-    start_date: 'now-20y', end_date: 'now', interval: 'month', include_retweets: true
+    start_date: 'now-20y', end_date: 'now', interval: 'month', include_retweets: true, use_cache: true
   )
     aggs = {
       prediction_agg: { date_histogram: { field: 'created_at', interval: interval, format: 'yyyy-MM-dd HH:mm:ss' } }
@@ -171,20 +174,23 @@ module ElasticsearchApi
 
     query = aggregation_query(aggs, index, question_tag, run_name, start_date, end_date, include_retweets)
 
-    handle_es_errors(occured_when: 'aggregating predictions on ES') do
-      predictions = {}
-      answer_tags.each do |answer_tag|
-        result = query.filter(term: { 'predictions.endpoints.label': answer_tag }).results[0]
-        predictions[answer_tag] = result&.fetch('aggregations', nil)&.fetch('prediction_agg', nil)&.fetch('buckets', [])
+    cache_key = "get-predictions-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+    cached(cache_key, use_cache: use_cache) do
+      handle_es_errors(occured_when: 'aggregating predictions on ES') do
+        predictions = {}
+        answer_tags.each do |answer_tag|
+          result = query.filter(term: { 'predictions.endpoints.label': answer_tag }).results[0]
+          predictions[answer_tag] = result&.fetch('aggregations', nil)&.fetch('prediction_agg', nil)&.fetch('buckets', [])
+        end
+        Helpers::ApiResponse.new(status: :success, body: predictions)
       end
-      Helpers::ApiResponse.new(status: :success, body: predictions)
     end
   end
 
   def get_avg_label_val(
     index:, question_tag:, run_name: '',
     start_date: 'now-20y', end_date: 'now', interval: 'month',
-    include_retweets: true, with_moving_average: nil, moving_average_window_size: 10
+    include_retweets: true, with_moving_average: nil, moving_average_window_size: 10, use_cache: true
   )
     aggs = {
       hist_agg: {
@@ -198,9 +204,13 @@ module ElasticsearchApi
       }
     end
     query = aggregation_query(aggs, index, question_tag, run_name, start_date, end_date, include_retweets)
-    handle_es_errors(occured_when: 'aggregating average label value on ES') do
-      result = query.results[0]&.fetch('aggregations', nil)&.fetch('hist_agg', nil)&.fetch('buckets', [])
-      Helpers::ApiResponse.new(status: :success, body: result)
+
+    cache_key = "get-avg-label-val-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+    cached(cache_key, use_cache: use_cache) do
+      handle_es_errors(occured_when: 'aggregating average label value on ES') do
+        result = query.results[0]&.fetch('aggregations', nil)&.fetch('hist_agg', nil)&.fetch('buckets', [])
+        Helpers::ApiResponse.new(status: :success, body: result)
+      end
     end
   end
 
@@ -231,7 +241,7 @@ module ElasticsearchApi
     aggs_name = aggs.keys.map { |key| key.to_s if key.to_s.end_with?('_agg') }.compact[0]
 
     query = Stretchy.query(
-      index: index, aggs: aggs
+      index: index, body: { aggs: aggs }
     ).fields("aggregations.#{aggs_name}").limit(1).range(
       created_at: { gte: start_date, lte: end_date }
     ).filter(
