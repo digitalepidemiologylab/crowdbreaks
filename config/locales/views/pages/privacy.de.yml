@@ -30,8 +30,8 @@ de:
       i_text: "Cookies are placed on our website. Cookies serve to make your website’s visit simpler, more pleasant and more pertinent. Cookies are data files saved automatically by your browser on your computer. Some of these cookies are placed and managed by third parties. These are mainly advertising cookies. The majority of Web browsers automatically accept cookies. You can however configure your browser not to accept cookies or to request your approval each time. If you disable cookies, it is possible that you will no longer be able to use certain functions of our website." 
       j_heading: J. Who is the data controller?
       j_text_html: "The data controller is the Digital Epidemiology Lab at EPFL (%{email})" 
-      k_heading: K. Who is the Data Protection Officer at EPFL? Which is the competent authority?
-      k_text_html: "The Data Protection Officer at EPFL is Ms. Eva Thélisson, %{email}. The competent authority is the Swiss Federal Data Protection and Information Commissioner. You can contact its services %{href_here}, or call the following number: +41 (0)058 462 43 95." 
+      k_heading: K. Whom should you contact in case you have questions concerning this Privacy Policy?
+      k_text_html: 'For any information concerning this Privacy Policy, please contact the Data Protection Officer at EPFL at the following mailing address:<br/><br/>Data Protection Officer<br/>École Polytechnique Fédérale de Lausanne<br/>P-SG-AJ DPO<br/>BS 248, Station 4, CH-1015 Lausanne<br/>email address: %{email}.'
       l_heading: L. Final (but important) provisions
       l_text_html: "a) Applications and technologies managed by third parties<br/>
       You are aware that surfing on the web entails certain risks that we are not able to control. In particular, we do not control third parties’ applications or other technologies for tracking, even if they are present on our website. The confidentiality policies of these third parties must be consulted. We decline all liability in the case of loss or damage caused by third parties’ applications or other technologies for tracking.<br/><br/>
