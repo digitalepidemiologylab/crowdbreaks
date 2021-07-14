@@ -91,7 +91,7 @@ export class PredictViz extends React.Component {
         for (let i=0; i < predictions[maxLengthKey].length; i++) {
           const currentDate = null;
           for (let j=0; j<this.state.labels.length; j++) {
-            if ('key_as_string' in predictions[this.state.labels[j]][i]) {
+            if (predictions[this.state.labels[j]][i] && 'key_as_string' in predictions[this.state.labels[j]][i]) {
               currentDate = predictions[this.state.labels[j]][i].key_as_string;
               break;
             }
@@ -244,6 +244,8 @@ export class PredictViz extends React.Component {
           endpointInfo: endpointInfo,
           isLoadingEndpointInfo: false
         }
+        console.log(endpointInfo);
+        console.log(this.state);
         if (Object.keys(endpointInfo).length > 0) {
           let project = Object.keys(endpointInfo)[0]
           let questionTag = Object.keys(endpointInfo[project])[0]

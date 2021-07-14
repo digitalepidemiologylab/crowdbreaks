@@ -2,46 +2,50 @@
 http_interactions:
 - request:
     method: get
-    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_inexistent/_search?_source=text,annotations&from=0&size=5
+    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_inexistent/_search?size=5
     body:
       encoding: UTF-8
       string: '{"query":{"function_score":{"script_score":{"script":{"source":"if
-        (_score \u003e params[''_source''][''predictions''][''primary'']) { _score
-        } else { 0 }"}},"query":{"bool":{"must_not":[{"exists":{"field":"annotations"}},{"match":{"is_retweet":true}},{"match":{"has_quote":true}}],"must":[{"range":{"created_at":{"gte":"2021-05-17T17:48:25.000Z"}}},{"exists":{"field":"predictions"}}]}}}}}'
+        (_score \u003e params[''_source''][''predictions''][''sentiment''][''endpoints''][''primary_probability''])
+        { _score } else { 0 }"}},"query":{"function_score":{"boost_mode":"replace","functions":[{"random_score":{}}],"query":{"bool":{"must":[{"range":{"created_at":{"gte":"2021-07-07T16:38:17.000Z"}}},{"exists":{"field":"predictions"}}],"must_not":[{"exists":{"field":"is_retweet"}},{"exists":{"field":"has_quote"}},{"terms":{"annotations.user_id":[0]}}],"filter":[{"script":{"script":"doc.containsKey(''annotations.user_id'')
+        \u0026\u0026 doc[''annotations.user_id''].size() \u003e 0 \u0026\u0026 doc[''annotations.user_id''].size()
+        \u003c 2"}}]}}}}}}}'
     headers:
       Content-Type:
       - application/json
       User-Agent:
-      - Faraday v1.4.1
+      - Faraday v0.17.4
       X-Amz-Date:
-      - 20210531T174825Z
+      - 20210714T163817Z
       X-Amz-Content-Sha256:
-      - 91decd39ea005db9d7add6bf02b49575aad6ad3d7a5bbcba5ac8a00f39eb3859
+      - f66167090df038183927429afffbaf43a6941910ec0f0ef53c9b81bad96b9913
       Authorization:
-      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210531/eu-central-1/es/aws4_request,
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210714/eu-central-1/es/aws4_request,
         SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
-        Signature=e99c8074cc7cb485752fc01a9cf5677dd68f03c77de2b7d88a1f4160490dd85c
+        Signature=4c26b948c8ad5f867d9a41bdddf009db55029e163eced63e1f9b7642c346c240
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
   response:
     status:
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
     headers:
       Date:
-      - Mon, 31 May 2021 17:48:25 GMT
+      - Wed, 14 Jul 2021 16:38:18 GMT
       Content-Type:
       - application/json; charset=UTF-8
       Content-Length:
-      - '160'
+      - '437'
       Connection:
       - close
       Access-Control-Allow-Origin:
       - "*"
     body:
       encoding: UTF-8
-      string: '{"took":7,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":{"value":0,"relation":"eq"},"max_score":null,"hits":[]}}'
-  recorded_at: Mon, 31 May 2021 17:48:25 GMT
+      string: '{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no
+        such index [project_inexistent]","resource.type":"index_or_alias","resource.id":"project_inexistent","index_uuid":"_na_","index":"project_inexistent"}],"type":"index_not_found_exception","reason":"no
+        such index [project_inexistent]","resource.type":"index_or_alias","resource.id":"project_inexistent","index_uuid":"_na_","index":"project_inexistent"},"status":404}'
+  recorded_at: Wed, 14 Jul 2021 16:38:18 GMT
 recorded_with: VCR 6.0.0

@@ -8,12 +8,12 @@ class ApisController < ApplicationController
       interval: api_params_predictions[:interval],
       start_date: api_params_predictions[:start_date],
       end_date: api_params_predictions[:end_date],
-      include_retweets: api_params_predictions[:include_retweets],
+      include_retweets: api_params_predictions[:include_retweets]
     }
     es_index_name = api_params_predictions[:es_index_name]
     question_tag = api_params_predictions[:question_tag]
     answer_tags = api_params_predictions[:answer_tags]
-    run_name = api_params_predictions[:run_name] || ''
+    run_name = api_params_predictions[:run_name]
     use_cache = api_params_predictions[:use_cache]
     average_label_val = api_params_predictions[:average_label_val].nil? ? false : true
 
@@ -26,7 +26,6 @@ class ApisController < ApplicationController
       use_cache: true,
       **options
     )
-    Rails.logger.info(predictions_response.body)
     response['predictions'] = predictions_response.success? ? predictions_response.body : {}
 
     if average_label_val
@@ -37,7 +36,6 @@ class ApisController < ApplicationController
         use_cache: use_cache,
         **options
       )
-      Rails.logger.info(avg_label_vals_response.body)
       response['avg_label_vals'] = avg_label_vals_response.success? ? avg_label_vals_response.body : []
     end
 
@@ -46,6 +44,7 @@ class ApisController < ApplicationController
 
   def endpoint_info
     model_endpoints = Project.where.not(model_endpoints: {}).pluck(:model_endpoints, :es_index_name)
+    Rails.logger.info "Model endpoints: #{model_endpoints}"
     endpoint_info = {}
     model_endpoints.each do |endpoint, es_index_name|
       project_endpoints_ = {}
@@ -57,7 +56,7 @@ class ApisController < ApplicationController
         endpoints_ = []
         question_tag_endpoints['active'].each do |endpoint_name, endpoint_obj|
           is_primary = endpoint_name == question_tag_endpoints['primary']
-          endpoints_.push({ is_primary: is_primary, endpoint_name: endpoint_name, run_name: endpoint_obj[:run_name] })
+          endpoints_.push({ is_primary: is_primary, endpoint_name: endpoint_name, run_name: endpoint_obj['run_name'] })
         end
         project_endpoints_[question_tag] = { endpoints: endpoints_, **response.body }
       end
@@ -104,7 +103,8 @@ class ApisController < ApplicationController
     options = {
       interval: Helpers::TimeParser.new(api_params_stream_graph_keywords[:interval]).time,
       start_date: api_params_stream_graph_keywords[:start_date],
-      end_date: api_params_stream_graph_keywords[:end_date]
+      end_date: api_params_stream_graph_keywords[:end_date],
+      round_to_sec: api_params_stream_graph_keywords[:round_to_sec].to_i
     }
     query = api_params_stream_graph_keywords[:query]
     resp = {}
@@ -160,6 +160,7 @@ class ApisController < ApplicationController
       render json: { 'errors': ['es_index_name needs to be present'] }, status: 400
       return
     end
+    Rails.logger.info "API params round_to_sec: #{api_params[:round_to_sec]}"
     resp = @api.get_all_data(
       index: api_params[:es_index_name], interval: api_params[:interval],
       start_date: "now-#{api_params[:past_minutes]}m", end_date: 'now', round_to_sec: api_params[:round_to_sec].to_i
@@ -240,9 +241,7 @@ class ApisController < ApplicationController
   def list_ml_models
     authorize! :view, :ml
     models_response = @api.list_model_endpoints(use_cache: api_params_ml[:use_cache])
-    Rails.logger.info models_response
     if models_response.error?
-      Rails.logger.info 'ERRROROROOROORO' + models_response.message
       render json: { message: models_response.message }.to_json, status: 400 and return
     end
 
@@ -372,7 +371,7 @@ class ApisController < ApplicationController
   end
 
   def api_params_stream_graph_keywords
-    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :timeOption, :query, :num_trending_tweets, :num_trending_topics, :project_slug)
+    params.require(:viz).permit(:interval, :start_date, :end_date, :es_index_name, :timeOption, :query, :num_trending_tweets, :num_trending_topics, :project_slug, :round_to_sec)
   end
 
   def api_params_leadline

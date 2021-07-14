@@ -12,8 +12,8 @@ export class MonitorStream extends React.Component {
 
     this.state = {
       data: [],
-      min: moment().utc().subtract(props.past_minutes, 'minutes').format('YYYY-MM-DD HH:mm'),
-      max: moment().utc().format('YYYY-MM-DD HH:mm')
+      min: moment().subtract(props.past_minutes, 'minutes').format('YYYY-MM-DD HH:mm'),
+      max: moment().format('YYYY-MM-DD HH:mm')
     };
 
     this.intervalId = null;
@@ -55,7 +55,7 @@ export class MonitorStream extends React.Component {
             max: this.state.max,
             display: true,
             autoSkip: true,
-            maxTicksLimit: this.props.past_minutes * 60 / 10
+            maxTicksLimit: this.props.past_minutes * 60 / this.props.round_to_sec
           }
         }]
       },
@@ -81,7 +81,7 @@ export class MonitorStream extends React.Component {
 
     // Automatic update
     if (this.props.auto_update) {
-      this.intervalId = setInterval(() => this.triggerGetData(), 2000);
+      this.intervalId = setInterval(() => this.triggerGetData(), 5000);
     }
   }
 
@@ -120,10 +120,10 @@ export class MonitorStream extends React.Component {
       contentType: "application/json",
       success: (result) => {
         this.setState({
-          labels: result.map((d) => moment.utc(d.from_as_string).format('YYYY-MM-DD HH:mm:ss')),
+          labels: result.map((d) => moment(d.from_as_string).format('YYYY-MM-DD HH:mm:ss')),
           counts: result.map((d) => d.doc_count),
-          min: moment().utc().subtract(this.props.past_minutes, 'minutes').add(1, 'minute').format('YYYY-MM-DD HH:mm'),
-          max: moment().utc().add(1, 'minute').format('YYYY-MM-DD HH:mm')
+          min: moment().subtract(this.props.past_minutes, 'minutes').add(1, 'minute').format('YYYY-MM-DD HH:mm'),
+          max: moment().add(1, 'minute').format('YYYY-MM-DD HH:mm')
         });
         // console.log('success');
         // console.log(this.state.labels);

@@ -2,7 +2,7 @@ require 'httparty'
 
 class TweetValidation
   include HTTParty
-  CACHE_KEY = "twitter_too_many_requests"
+  CACHE_KEY = 'twitter_too_many_requests'.freeze
 
   # Two main ways to check presence of a tweet
   # 1) Use Twitter API to check tweet. Note: This is under rate limits.
@@ -21,14 +21,15 @@ class TweetValidation
 
     Crowdbreaks::TwitterClient.status(id)
   rescue Twitter::Error::TooManyRequests
-    ErrorLogger.error 'Too many requests on Twitter API'
+    ErrorLogger.error "Twitter error. #{e.class}: #{e.message}"
     Rails.cache.write(CACHE_KEY, 1, expires_in: 1.hour)
     tweet_is_valid_front_end?(id)
-  rescue Twitter::Error::ClientError
-    # Tweet is not available anymore
+  rescue Twitter::Error::ClientError => e
+    ErrorLogger.error "Twitter client error. #{e.class}: #{e.message}"
+    # Tweet is not available anymore or bad authentication
     false
   rescue Twitter::Error => e
-    ErrorLogger.error e
+    ErrorLogger.error "Twitter error. #{e.class}: #{e.message}"
     tweet_is_valid_front_end?(id)
   else
     true
@@ -38,10 +39,10 @@ class TweetValidation
 
   def tweet_is_valid_front_end?(id)
     # Check validity of tweet first by making a HEAD request to
-    Rails.logger.info 'Checking tweet in front end'
+    Rails.logger.info 'Checking the tweet using the Twitter front end'
     url = "https://twitter.com/user/status/#{id}"
-    self.class.head(url).response.code == '200' # ? true : false -- why was it like that?
+    self.class.head(url).response.code == '200'
   rescue StandardError => e
-    ErrorLogger.error e
+    ErrorLogger.error "Twitter client error. #{e.class}: #{e.message}"
   end
 end

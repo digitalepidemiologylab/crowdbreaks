@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_03_175558) do
+ActiveRecord::Schema.define(version: 2021_07_08_100909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -205,6 +205,7 @@ ActiveRecord::Schema.define(version: 2021_02_03_175558) do
     t.integer "availability", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "tweet_index", default: ""
     t.index ["availability"], name: "index_public_tweets_on_availability"
     t.index ["project_id"], name: "index_public_tweets_on_project_id"
     t.index ["tweet_id"], name: "index_public_tweets_on_tweet_id"

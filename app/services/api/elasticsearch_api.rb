@@ -1,6 +1,7 @@
 require 'elasticsearch'
 require 'faraday_middleware/aws_sigv4'
 require 'stretchy'
+require 'json'
 
 module ElasticsearchApi
   extend ActiveSupport::Concern
@@ -44,54 +45,110 @@ module ElasticsearchApi
     end
   end
 
-  def stream_activity(es_activity_threshold_min: 10)
-    handle_es_errors(occured_when: 'counting ES activity') do
-      query = { query: { range: { timestamp: { gte: "now-#{es_activity_threshold_min}m/m", lt: 'now/m' } } } }
-      Helpers::ApiResponse.new(status: :success, body: @@es_client.count({ body: query }))
-    end
-  end
+  def get_all_data(
+    index:, keywords: nil, not_keywords: nil,
+    start_date: 'now-20y', end_date: 'now', interval: 1.month, round_to_sec: nil, use_cache: true
+  )
+    # start_date = parse_dates(start_date)
+    # end_date = parse_dates(end_date)
+    start_date = process_date(start_date, round_to_sec)
+    end_date = process_date(end_date, round_to_sec)
+    keywords = keywords.nil? ? [] : keywords
+    not_keywords = not_keywords.nil? ? [] : not_keywords
 
-  def tweets(index:, user_id: nil, new_prob: 1.00)
-    query_new = Stretchy.query.not.query(exists: { field: 'annotations' })
-    query_not_finished = Stretchy.query.query(exists: { field: 'annotations' }).filter(
-      'script': { 'script': "doc['annotations'].values.length < #{MAX_ASSIGNMENTS}" }
-    ).filter(
-      'bool': { 'must_not': [{ 'terms': { 'annotations': [user_id] } }] }
-    )
-    query_pipeline = lambda do |query, index|
-      handle_es_errors(occured_when: 'fetching a new tweet from ES') do
-        sample_predictions_query(recent_predictions_query(query), index: index).results
+    ranges = get_ranges(start_date, end_date, interval)
+    definition = {
+      aggs: { all_data_agg: { date_range: { field: 'created_at', format: 'strict_date_optional_time', ranges: ranges } } }
+    }
+
+    # definition = {
+    #   aggs: {
+    #     all_data_agg: { date_histogram: { field: 'created_at', fixed_interval: interval, format: 'yyyy-MM-dd HH:mm:ss' } }
+    #   },
+    #   query: { bool: { filter: [{ range: { created_at: { gte: start_date, lte: end_date } } }] } }
+    # }
+
+    definition[:query] = {} unless keywords.empty? && not_keywords.empty?
+    keywords.each do |keyword|
+      if definition.dig(:query, :bool, :must).nil?
+        definition[:query][:bool] = { must: [{ match_phrase: { text: keyword } }] }
+      else
+        definition[:query][:bool][:must] << { match_phrase: { text: keyword } }
       end
     end
-    tweets = rand > new_prob ? query_pipeline.call(query_not_finished, index) : query_pipeline.call(query_new, index)
-    return tweets if tweets.is_a?(Hash)
+    not_keywords.each do |keyword|
+      if definition.dig(:query, :bool, :must_not).nil?
+        definition[:query][:bool] = { must_not: [{ match_phrase: { text: keyword } }] }
+      else
+        definition[:query][:bool][:must_not] << { match_phrase: { text: keyword } }
+      end
+    end
 
-    tweets = tweets.map { |tweet| Helpers::Tweet.new(id: tweet['_id'], text: tweet['text']) }.compact
-    Helpers::ApiResponse.new(status: :success, body: tweets)
+    handle_es_errors(occured_when: 'aggregating tweets by keywords on ES') do
+      result = @@es_client.search index: index, body: definition
+      Helpers::ApiResponse.new(status: :success, body: result['aggregations']['all_data_agg']['buckets'])
+    end
   end
 
-  def update_tweet(index:, user_id:, tweet_id:)
-    handle_es_errors(occured_when: 'updating a tweet on ES') do
-      response = @@es_client.update(
-        {
-          id: tweet_id,
-          type: '_doc',
-          index: index,
-          refresh: true,
-          body: {
-            script: {
-              source: 'if (ctx._source.annotations == null) ctx._source.annotations = new ArrayList();' \
-                      'ctx._source.annotations.add(params.annotation)',
-              lang: 'painless',
-              params: {
-                annotation: { user_id: user_id }
-              }
-            }
-          }
-        }
-      )
-      Helpers::ApiResponse.new(status: :success, message: 'Successfully updated tweet.', body: response)
+  def get_avg_label_val(
+    index:, question_tag:, run_name:,
+    start_date: 'now-20y', end_date: 'now', interval: 'month',
+    include_retweets: true, with_moving_average: true, moving_average_window_size: 10, use_cache: true
+  )
+    aggs = {
+      hist_agg: {
+        date_histogram: { field: 'created_at', interval: interval, format: 'yyyy-MM-dd HH:mm:ss' },
+        aggs: { mean_label_val: { avg: { field: "predictions.#{question_tag}.endpoints.#{run_name}.label_val" } } }
+      }
+    }
+    if with_moving_average
+      aggs[:hist_agg][:aggs][:mean_label_val_moving_average] = {
+        moving_avg: { buckets_path: 'mean_label_val', window: moving_average_window_size }
+      }
     end
+    definition = aggregation_query(aggs, question_tag, run_name, start_date, end_date, include_retweets)
+
+    cache_key = "get-avg-label-val-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+    cached(cache_key, use_cache: use_cache) do
+      handle_es_errors(occured_when: 'aggregating average label value on ES') do
+        result = @@es_client.search index: index, body: definition
+        Helpers::ApiResponse.new(status: :success, body: result['aggregations']['hist_agg']['buckets'])
+      end
+    end
+  end
+
+  def get_geo_sentiment(**kwargs)
+    raise NotImplementedError
+  end
+
+  def get_predictions(
+    index:, question_tag:, answer_tags:, run_name:,
+    start_date: 'now-20y', end_date: 'now', interval: 'month', include_retweets: true, use_cache: true
+  )
+    aggs = {
+      prediction_agg: { date_histogram: { field: 'created_at', fixed_interval: interval, format: 'yyyy-MM-dd HH:mm:ss' } }
+    }
+    cache_key = "get-predictions-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+    cached(cache_key, use_cache: use_cache) do
+      handle_es_errors(occured_when: 'aggregating predictions on ES') do
+        predictions = {}
+        answer_tags.each do |answer_tag|
+          definition = aggregation_query(aggs, question_tag, run_name, start_date, end_date, include_retweets)
+          definition[:query][:bool][:filter] << { term: { "predictions.#{question_tag}.endpoints.#{run_name}.label": answer_tag } }
+          result = @@es_client.search index: index, body: definition
+          predictions[answer_tag] = result['aggregations']['prediction_agg']['buckets']
+        end
+        Helpers::ApiResponse.new(status: :success, body: predictions)
+      end
+    end
+  end
+
+  def get_streaming_email_status(type: 'weekly')
+    raise NotImplementedError
+  end
+
+  def get_trending_topics(slug:, **kwargs)
+    raise NotImplementedError
   end
 
   def get_trending_tweets(
@@ -115,141 +172,85 @@ module ElasticsearchApi
     end
   end
 
-  def get_trending_topics(slug:, **kwargs)
-    # TODO: Implement
-    # TODO: Example queries and Response, handle errors
-    raise NotImplementedError
-    # resp = self.class.get('/trending_topics/'+project_slug, body: kwargs.to_json, timeout: 10, headers: JSON_HEADER)
-    # resp.parsed_response
-  end
-
-  # elasticsearch - all data, for monitoring stream activity
-  def get_all_data(
-    index:, keywords: nil, not_keywords: nil,
-    start_date: 'now-20y', end_date: 'now', interval: 1.month, round_to_sec: nil, use_cache: true
-  )
-    start_date = process_date(start_date, round_to_sec)
-    end_date = process_date(end_date, round_to_sec)
-    keywords = keywords.nil? ? [] : keywords
-    not_keywords = not_keywords.nil? ? [] : not_keywords
-
-    ranges = get_ranges(start_date, end_date, interval)
-    definition = {
-      aggs: { all_data_agg: { date_range: { field: 'created_at', format: 'strict_date_optional_time', ranges: ranges } } }
-    }
-
-    definition[:query] = {} unless keywords.empty? && not_keywords.empty?
-    keywords.each do |keyword|
-      if definition[:query]&.fetch(:bool, nil)&.fetch(:must, nil).nil?
-        definition[:query][:bool] = { must: [{ match_phrase: { text: keyword } }] }
-      else
-        definition[:query][:bool][:must] << { match_phrase: { text: keyword } }
-      end
-    end
-    not_keywords.each do |keyword|
-      if definition[:query]&.fetch(:bool, nil)&.fetch(:must_not, nil).nil?
-        definition[:query][:bool] = { must_not: [{ match_phrase: { text: keyword } }] }
-      else
-        definition[:query][:bool][:must_not] << { match_phrase: { text: keyword } }
-      end
-    end
-
-    cache_key = "get-all-data-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
-    cached(cache_key, use_cache: use_cache) do
-      handle_es_errors(occured_when: 'aggregating tweets by keywords on ES') do
-        result = @@es_client.search index: index, body: definition
-        Helpers::ApiResponse.new(status: :success, body: result['aggregations']['all_data_agg']['buckets'])
-      end
+  def stream_activity(es_activity_threshold_min: 10)
+    handle_es_errors(occured_when: 'counting ES activity') do
+      query = { query: { range: { timestamp: { gte: "now-#{es_activity_threshold_min}m/m", lt: 'now/m' } } } }
+      Helpers::ApiResponse.new(status: :success, body: @@es_client.count({ body: query }))
     end
   end
 
-  # elasticsearch - sentiment data
-  def get_predictions(
-    index:, question_tag:, answer_tags:, run_name: '',
-    start_date: 'now-20y', end_date: 'now', interval: 'month', include_retweets: true, use_cache: true
-  )
-    aggs = {
-      prediction_agg: { date_histogram: { field: 'created_at', interval: interval, format: 'yyyy-MM-dd HH:mm:ss' } }
-    }
+  def tweets(index:, question_tag: 'sentiment', user_id: nil, new_prob: 0.0)
+    Rails.logger.info "#{user_id} #{user_id.class}"
+    query_new = { bool: { must_not: [{ exists: { field: 'annotations' } }] } }
+    query_not_finished = { bool: {
+      filter: [{ "script": {
+        "script": "doc.containsKey('annotations.user_id') && doc['annotations.user_id'].size() > 0 && " \
+                  "doc['annotations.user_id'].size() < #{MAX_ASSIGNMENTS}"
+      } }],
+      # [
+      #   { exists: { field: 'annotations' } },
+      #   { script: { script: {
+      #     source: "doc['annotations'].value < params.max_assignments",
+      #     lang: 'painless',
+      #     params: {
+      #       max_assignments: MAX_ASSIGNMENTS
+      #     }
+      #   } } }
+      # ],
+      # must: [
+      #   { script: { script: "doc['annotations'].values.length < #{MAX_ASSIGNMENTS}" } }
+      # ],
+      must_not: [{ terms: { 'annotations.user_id': [user_id] } }]
+    } }
 
-    query = aggregation_query(aggs, index, question_tag, run_name, start_date, end_date, include_retweets)
-
-    cache_key = "get-predictions-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
-    cached(cache_key, use_cache: use_cache) do
-      handle_es_errors(occured_when: 'aggregating predictions on ES') do
-        predictions = {}
-        answer_tags.each do |answer_tag|
-          result = query.filter(term: { 'predictions.endpoints.label': answer_tag }).results[0]
-          predictions[answer_tag] = result&.fetch('aggregations', nil)&.fetch('prediction_agg', nil)&.fetch('buckets', [])
-        end
-        Helpers::ApiResponse.new(status: :success, body: predictions)
+    query_pipeline = lambda do |query, index|
+      handle_es_errors(occured_when: 'fetching a new tweet from ES') do
+        @@es_client.search(
+          index: index, size: MAX_VALIDATIONS,
+          body: sample_predictions_definition(recent_predictions_query(query), question_tag)
+        )['hits']['hits']
       end
     end
+
+    rand_num = rand
+    tweets = rand_num > new_prob ? query_pipeline.call(query_not_finished, index) : query_pipeline.call(query_new, index)
+    return tweets if tweets.is_a? Helpers::ApiResponse
+
+    tweets = query_pipeline.call(query_new, index) if rand_num > new_prob && tweets.empty?
+
+    tweets = tweets.map { |tweet| Helpers::Tweet.new(id: tweet['_id'], text: tweet['_source']['text'], index: tweet['_index']) }.compact
+    Helpers::ApiResponse.new(status: :success, body: tweets)
   end
 
-  def get_avg_label_val(
-    index:, question_tag:, run_name: '',
-    start_date: 'now-20y', end_date: 'now', interval: 'month',
-    include_retweets: true, with_moving_average: nil, moving_average_window_size: 10, use_cache: true
-  )
-    aggs = {
-      hist_agg: {
-        date_histogram: { field: 'created_at', interval: interval, format: 'yyyy-MM-dd HH:mm:ss' },
-        aggs: { mean_label_val: { avg: { field: 'predictions.endpoints.label_val' } } }
-      }
-    }
-    unless with_moving_average
-      aggs[:hist_agg][:aggs][:mean_label_val_moving_average] = {
-        moving_avg: { buckets_path: 'mean_label_val', window: moving_average_window_size }
-      }
+  def update_tweet(index:, user_id:, tweet_id:)
+    handle_es_errors(occured_when: 'updating a tweet on ES') do
+      response = @@es_client.update(
+        { id: tweet_id, type: '_doc', index: index, refresh: true, body: {
+          script: {
+            source: 'if (ctx._source.annotations == null) ctx._source.annotations = new ArrayList();' \
+                    'ctx._source.annotations.add(params.annotation)',
+            lang: 'painless',
+            params: { annotation: { user_id: user_id } }
+          }
+        } }
+      )
+      Helpers::ApiResponse.new(status: :success, message: 'Successfully updated tweet.', body: response)
     end
-    query = aggregation_query(aggs, index, question_tag, run_name, start_date, end_date, include_retweets)
-
-    cache_key = "get-avg-label-val-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
-    cached(cache_key, use_cache: use_cache) do
-      handle_es_errors(occured_when: 'aggregating average label value on ES') do
-        result = query.results[0]&.fetch('aggregations', nil)&.fetch('hist_agg', nil)&.fetch('buckets', [])
-        Helpers::ApiResponse.new(status: :success, body: result)
-      end
-    end
-  end
-
-  def get_geo_sentiment(**kwargs)
-    raise NotImplementedError
-    # Helpers::ErrorHandler.handle_error(error_return_value: []) do
-    #   resp = self.class.get('/sentiment/geo', query: kwargs, timeout: 20)
-    #   JSON.parse(resp)
-    # end
-  end
-
-  # email status
-  def get_streaming_email_status(type: 'weekly')
-    raise NotImplementedError
-    # kwargs = {type: type}
-    # Helpers::ErrorHandler.handle_error(error_return_value: '') do
-    #   resp = self.class.get('/email/status', query: kwargs, timeout: 20)
-    #   resp.parsed_response
-    # end
   end
 
   private
 
-  def aggregation_query(aggs, index, question_tag, run_name, start_date, end_date, include_retweets)
-    start_date = parse_dates(start_date)
-    end_date = parse_dates(end_date)
-
-    aggs_name = aggs.keys.map { |key| key.to_s if key.to_s.end_with?('_agg') }.compact[0]
-
-    query = Stretchy.query(
-      index: index, body: { aggs: aggs }
-    ).fields("aggregations.#{aggs_name}").limit(1).range(
-      created_at: { gte: start_date, lte: end_date }
-    ).filter(
-      term: { 'predictions.endpoints.question_tag': question_tag }
-    )
-    query = query.filter(term: { 'predictions.endpoints.run_name': run_name }) unless run_name.blank?
-    query = query.not.query(exists: { field: 'is_retweet' }) unless include_retweets
-    query
+  def aggregation_query(aggs, question_tag, run_name, start_date, end_date, include_retweets)
+    {
+      aggs: aggs,
+      query: { bool: {
+        filter: [
+          { range: { created_at: { gte: parse_dates(start_date), lte: parse_dates(end_date) } } },
+          { exists: { field: "predictions.#{question_tag}.endpoints.#{run_name}" } }
+        ],
+        must_not: [include_retweets ? { exists: { field: 'is_retweet' } } : {}]
+      } }
+    }
   end
 
   def get_ranges(start_date, end_date, interval)
@@ -266,23 +267,28 @@ module ElasticsearchApi
     ranges
   end
 
-  def handle_es_errors(max_retries: MAX_RETRIES, occured_when: nil)
+  def handle_es_errors(occured_when: nil)
     retries = 0
-    yield
-  rescue Elasticsearch::Transport::Transport::Errors::Forbidden => e
-    if retries < max_retires
-      retries += 1
-      Rails.logger.warning "Retrying #{retries}/#{max_retries}. #{e.class}: #{e.message}."
-      sleep(sleep_time)
-      retry
-    else
+    begin
+      yield
+    rescue *[
+      Elasticsearch::Transport::Transport::Errors::Forbidden,
+      Faraday::ConnectionFailed
+    ] => e
+      if retries < MAX_RETRIES
+        retries += 1
+        Rails.logger.info "Retrying #{retries}/#{MAX_RETRIES}. #{e.class}: #{e.message}."
+        sleep(SLEEP_TIME)
+        retry
+      else
+        Helpers::ErrorHandler.error_log_response(occured_when, e)
+      end
+    rescue *[
+      Elasticsearch::Transport::Transport::Errors::BadRequest,
+      Elasticsearch::Transport::Transport::Errors::NotFound
+    ] => e
       Helpers::ErrorHandler.error_log_response(occured_when, e)
     end
-  rescue *[
-    Elasticsearch::Transport::Transport::Errors::BadRequest,
-    Elasticsearch::Transport::Transport::Errors::NotFound
-  ] => e
-    Helpers::ErrorHandler.error_log_response(occured_when, e)
   end
 
   def parse_dates(date)
@@ -304,34 +310,35 @@ module ElasticsearchApi
     round_to_seconds(date, round_to_sec)
   end
 
-  def recent_predictions_query(query, days_back: 14)
-    query.range(
-      created_at: { gte: (Time.now.utc - 60 * 60 * 24 * days_back).strftime(DATE_FORMAT) } # '%a %b %-d %T %z %Y' -- previous twitter strftime
-    ).not.match(
-      is_retweet: true
-    ).not.match(
-      has_quote: true
-    ).query(
-      { 'exists': { 'field': 'predictions' } }
-    )
+  def recent_predictions_query(query, days_back: 7)
+    { bool: {
+      must: [
+        { range: { created_at: { gte: (Time.now.utc - 60 * 60 * 24 * days_back).strftime(DATE_FORMAT) } } },
+        { exists: { field: 'predictions' } }
+      ],
+      must_not: [
+        { exists: { field: 'is_retweet' } },
+        { exists: { field: 'has_quote' } }
+      ]
+    } }.deep_merge(query)
   end
 
   def round_to_seconds(time, seconds)
-    remainder = seconds - (time.to_i % seconds)
+    Rails.logger.info "#{time}, #{seconds}"
+    seconds = Integer(seconds)
+    remainder = seconds - (Integer(time) % seconds)
     time + remainder
   end
 
-  def sample_predictions_query(query, index:, limit: MAX_VALIDATIONS)
-    nested_query = {
-      function_score: {
-        script_score: {
-          script: {
-            source: "if (_score > params['_source']['predictions']['primary']) { _score } else { 0 }"
-          }
-        },
-        query: query.boost(boost_mode: 'replace').random({}).request[:body][:query]
-      }
+  def sample_predictions_definition(query, question_tag)
+    {
+      query: { function_score: {
+        script_score: { script: {
+          source: "if (_score > params['_source']['predictions']['#{question_tag}']['endpoints']['primary_probability'])" \
+                  ' { _score } else { 0 }'
+        } },
+        query: { function_score: { boost_mode: 'replace', functions: [{ random_score: {} }], query: query } }
+      } }
     }
-    Stretchy.query(index: index).query(nested_query).limit(limit).offset(0).fields(:text, :annotations)
   end
 end

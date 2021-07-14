@@ -16,7 +16,7 @@ RSpec.describe AwsApi, '#tweets', :vcr do
       expect(tweets.body).not_to be_empty
       tweets.body.each do |tweet|
         expect(tweet).to be_an_instance_of Helpers::Tweet
-        expect(tweet).to have_attributes(id: be, text: be)
+        expect(tweet).to have_attributes(id: be, text: be, index: be)
       end
     end
   end
@@ -27,8 +27,7 @@ RSpec.describe AwsApi, '#tweets', :vcr do
     it 'gets an empty array' do
       tweets = @api.tweets(index: es_index_name, user_id: @user_id)
       expect(tweets).to be_an_instance_of Helpers::ApiResponse
-      expect(tweets.body).to be_an_instance_of Array
-      expect(tweets.body).to be_empty
+      expect(tweets.body).to be_nil
     end
   end
 end
@@ -111,10 +110,27 @@ RSpec.describe AwsApi, '#predict', :vcr do
   before { @api = AwsApi.new }
   before { @endpoint_name = 'crowdbreaks-6512709bc4' }
 
-  it 'existing models are listed' do
+  it 'prediction comes through' do
     response = @api.predict(text: 'hi there', endpoint_name: @endpoint_name)
     expect(response).to be_an_instance_of Helpers::ApiResponse
     expect(response.body).to be_an_instance_of String
     expect(JSON.parse(response.body)).to be_an_instance_of Hash
+  end
+end
+
+RSpec.describe AwsApi, '#get_predictions', :vcr do
+  before { @api = AwsApi.new }
+  before { @endpoint_name = 'crowdbreaks-6512709bc4' }
+
+  it 'get predictions' do
+    response = @api.get_predictions(
+      index: ES_TEST_INDEX_PATTERN,
+      question_tag: 'sentiment',
+      answer_tags: %w[negative neutral positive],
+      run_name: 'fasttext_v2',
+      start_date: 'now-1d', end_date: 'now', interval: '1h'
+    )
+    expect(response).to be_an_instance_of Helpers::ApiResponse
+    expect(response.body).to be_an_instance_of Hash
   end
 end

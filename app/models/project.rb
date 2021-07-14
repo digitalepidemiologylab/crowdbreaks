@@ -222,7 +222,8 @@ class Project < ApplicationRecord
     errors.add(:accessible_by_email_pattern, 'Patterns need to be email patterns including "@"')
   end
 
-  def tweet(user_id: nil, test_mode: false)
+  def tweet(user_id:, test_mode: false)
+    # Rails.logger.info "Calling '#{__method__}' from '#{caller[0][/`.*'/][1..-2]}'"
     if stream_annotation_mode?
       # Get a recent tweet from the streaming queue
       tweet = test_mode ? tweet_stream(user_id, index: ES_TEST_INDEX_PATTERN) : tweet_stream(user_id)
@@ -327,7 +328,7 @@ class Project < ApplicationRecord
   private
 
   def add_to_public_tweets(tweet)
-    public_tweets.where(tweet_id: tweet.id).first_or_create(tweet_text: tweet.text)
+    public_tweets.where(tweet_id: tweet.id).first_or_create(tweet_text: tweet.text, tweet_index: tweet.index)
   end
 
   def tweet_local(user_id)
@@ -338,27 +339,47 @@ class Project < ApplicationRecord
         message: 'Could not find a suitable public tweet for annotation, showing a random tweet.'
       )
     end
-    public_tweet = Helpers::Tweet(id: public_tweet[:tweet_id], text: public_tweet[:tweet_text])
+    public_tweet = Helpers::Tweet(
+      id: public_tweet[:tweet_id], text: public_tweet[:tweet_text], index: public_tweet[:tweet_index]
+    )
     Helpers::ApiResponse.new(status: :success, body: public_tweet)
   end
 
   def tweet_stream(user_id, index: es_index_name)
     api = AwsApi.new
-    response = api.tweets(index: index, user_id: user_id)
-    if response.error?
-      return Helpers::ApiResponse.new(
-        status: :fail, body: random_tweet,
-        message: 'Did not manage to get a tweet from the stream, showing a random tweet.'
-      )
+    get_tweet_from_api = lambda do |api, index, user_id|
+      response = api.tweets(index: index, user_id: user_id)
+      if response.error?
+        ErrorLogger.error 'Did not manage to get a tweet from the stream, showing a random tweet.'
+        return Helpers::ApiResponse.new(
+          status: :fail, body: random_tweet,
+          message: 'Did not manage to get a tweet from the stream, showing a random tweet.'
+        )
+      end
+      response.body
     end
 
-    tweets = response.body
-    puts 'tweets'
-    puts response.to_s
-    puts(tweets.map { tweet.id })
-    tweets.each do |tweet|
-      return Helpers::ApiResponse.new(status: :success, body: tweet) if TweetValidation.tweet_is_valid?(tweet.id)
+    cache_key = "tweets-from-stream-user-#{user_id}"
+    if Rails.cache.exist?(cache_key)
+      Rails.logger.info 'Reading from CACHE'
+      tweets = Rails.cache.read(cache_key)
+    else
+      tweets = get_tweet_from_api.call(api, index, user_id)
     end
+
+    tweets.each_with_index do |tweet, i|
+      next unless TweetValidation.tweet_is_valid?(tweet.id)
+
+      if tweets[i + 1..-1].length.positive?
+        Rails.logger.info 'Writing to CACHE'
+        Rails.cache.write(cache_key, tweets[i + 1..-1], expires_in: 5.minutes)
+      else
+        Rails.logger.info 'Deleting CACHE'
+        Rails.cache.delete(cache_key)
+      end
+      return Helpers::ApiResponse.new(status: :success, body: tweet)
+    end
+    ErrorLogger.error 'The tweets from the stream are invalid, showing a random tweet.'
     Helpers::ApiResponse.new(
       status: :fail, body: random_tweet,
       message: 'The tweets from the stream are invalid, showing a random tweet.'
@@ -366,7 +387,7 @@ class Project < ApplicationRecord
   end
 
   def random_tweet(retries: MAX_COUNT_REFETCH)
-    default_tweet = Helpers::Tweet.new(id: '20', text: 'Have not found a valid tweet ¯\_(ツ)_/¯')
+    default_tweet = Helpers::Tweet.new(id: '20', text: 'Have not found a valid tweet ¯\_(ツ)_/¯', index: nil)
     return default_tweet if Result.count.zero?
 
     if retries.zero?
@@ -382,6 +403,6 @@ class Project < ApplicationRecord
       Rails.logger.info "Retries left #{retries}/#{MAX_COUNT_REFETCH}. The tweet #{tweet_id} is invalid, trying again."
       random_tweet(retries: retries - 1)
     end
-    Helpers::Tweet.new(id: tweet_id, text: nil)
+    Helpers::Tweet.new(id: tweet_id, text: nil, index: nil)
   end
 end

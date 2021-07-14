@@ -24,7 +24,11 @@ module Admin
           @preview_mode = show_params[:preview_mode] == 'true'
           @notification = MturkNotification.new.success
 
-          @tweet_id = get_value_and_flash_now(@project.tweet(user_id: @user_id), default: Helpers::Tweet.new(id: 20, text: '')).id
+          tweet = get_value_and_flash_now(
+            primary_project.tweet(user_id: @user_id), default: Helpers::Tweet.new(id: 20, text: '', index: nil)
+          )
+          @tweet_id = tweet.id
+          @tweet_index = tweet.index
         end
         format.csv do
           send_data @project.qs_to_csv, filename: "#{@project.name}-#{Time.current.strftime("%d-%m-%Y")}.csv"

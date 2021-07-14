@@ -38,6 +38,7 @@ module Crowdbreaks
 
     # Autoload path
     config.autoload_paths += Dir[Rails.root.join('app', 'services', 'api')]
+    config.autoload_paths += Dir[File.join(Rails.root, 'lib', 'extensions', '*.rb')].sort.each { |l| require l }
 
     # Internationalization
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
