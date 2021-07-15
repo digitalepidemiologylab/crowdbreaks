@@ -37,7 +37,7 @@ export class SentimentTextBox extends React.Component {
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       type: "POST",
       crossDomain: true,
-      url: this.props.flaskPostEndpoint,
+      url: this.props.predictPostEndpoint,
       data: JSON.stringify(data),
       dataType: "json",
       contentType: "application/json",
@@ -118,5 +118,5 @@ export class SentimentTextBox extends React.Component {
 
 
 SentimentTextBox.propTypes = {
-  flaskPostEndpoint: PropTypes.string
+  predictPostEndpoint: PropTypes.string
 }
