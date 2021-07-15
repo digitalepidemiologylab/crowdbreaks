@@ -6,7 +6,7 @@ FactoryBot.define do
     title
     name
     es_index_name
-    description { "Description" }
+    description { 'Description' }
     public { false }
     trait :public do
       public { true }

@@ -1,0 +1,548 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_vaccine_*/_search
+    body:
+      encoding: UTF-8
+      string: '{"aggs":{"prediction_agg":{"date_histogram":{"field":"created_at","fixed_interval":"1h","format":"yyyy-MM-dd
+        HH:mm:ss"}}},"query":{"bool":{"filter":[{"range":{"created_at":{"gte":"now-1d","lte":"now"}}},{"exists":{"field":"predictions.sentiment.endpoints.fasttext_v2"}},{"term":{"predictions.sentiment.endpoints.fasttext_v2.label":"negative"}}],"must_not":[{"exists":{"field":"is_retweet"}}]}}}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v0.17.4
+      X-Amz-Date:
+      - 20210714T164508Z
+      X-Amz-Content-Sha256:
+      - ed7df6086c70e6e4850d2bee492ee1cb79b7730ac7a8dcf9aef02c4d74c6be0f
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210714/eu-central-1/es/aws4_request,
+        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
+        Signature=95b42b6a3cc5e8e904ee6a7eb1ceb75a7287476538b09880c3e8ab8701740651
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 14 Jul 2021 16:45:09 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Access-Control-Allow-Origin:
+      - "*"
+      Vary:
+      - Accept-Encoding, User-Agent
+    body:
+      encoding: ASCII-8BIT
+      string: '{"took":743,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":{"value":6985,"relation":"eq"},"max_score":0.0,"hits":[{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070661861642243","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:31.000Z", "text": "brilliantmacron made a big mistakeforcing
+        medical staff to be vaxxedCome on medical staffCome out on strike Put an end
+        to this childish madness = communism", "user": {"id": "154909077", "name":
+        "The Ogster (@Nuremberg2 is coming)", "screen_name": "Ognir2", "location":
+        "Ireland / Switzerland", "description": "Sheep herding since 2004Fractional
+        Reserve BankingFrench/English - Skype Ognir3I reserve all rights to my tweets
+        and retweets"}, "geo_info": {"location_type": "country", "country_code": "CH",
+        "geo_type": "user.location", "coordinates": {"lat": 47.00016, "lon": 8.01427}},
+        "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaxxed"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.47654014825820923,
+        "primary_label": "negative", "primary_label_val": -1, "fasttext_v2": {"probability":
+        0.47654014825820923, "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070668396195841","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:32.000Z", "text": "@PizzaPie1018 @laurieanne_p @YvonneF50177592
+        @DavidBa69494891 @EricTopol That''s where there could be trouble if there''s
+        a mutation that the vaccine doesn''t protect against.", "in_reply_to_user_id":
+        "1386511248666234882", "user": {"id": "1386511248666234882", "name": "Aman
+        Singh", "screen_name": "AmanSin81089745", "location": "California ", "description":
+        "Data scientist and part time MS in Signal Processing/Machine Learning #ripkentaromiuraAlso
+        interested in economics. And cats!"}, "geo_info": {"location_type": "admin1",
+        "country_code": "US", "geo_type": "user.location", "coordinates": {"lat":
+        37.25022, "lon": -119.75126000000002}}, "lang": "en", "project": "vaccine_sentiment",
+        "matching_keywords": ["vaccine"], "predictions": {"sentiment": {"endpoints":
+        {"primary_probability": 0.47654014825820923, "primary_label": "negative",
+        "primary_label_val": -1, "fasttext_v2": {"probability": 0.47654014825820923,
+        "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070671277862912","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:33.000Z", "text": "@AndrewKehoe8 Also, I'' mentioned to
+        traders about vaccine passports and they rolled their eyes, meaning, money
+        talks and bullshit walks. There are different ways of trading, and, also most
+        Irish people for historical reasons are deeply hostile towards this type of
+        approach. We''ve memorizes.", "in_reply_to_user_id": "1366111403728330758",
+        "user": {"id": "1366111403728330758", "name": "Walter", "screen_name": "Mr69313316",
+        "description": "Life is the flight of the alone to the alone.Plotinus"}, "lang":
+        "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccine"], "predictions":
+        {"sentiment": {"endpoints": {"primary_probability": 0.47654014825820923, "primary_label":
+        "negative", "primary_label_val": -1, "fasttext_v2": {"probability": 0.47654014825820923,
+        "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070677548158976","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:34.000Z", "text": "@USATRUMPMAN1 The so called vaccine is
+        a bioweapon!", "in_reply_to_user_id": "1263604554110832645", "user": {"id":
+        "383583763", "name": "Sally Telford", "screen_name": "sallytca", "location":
+        "OR", "description": "I am a constitutional conservative. I believe without
+        our Constitution we will lose all our freedoms. #TwitterPhilanthropy"}, "geo_info":
+        {"location_type": "admin1", "country_code": "US", "geo_type": "user.location",
+        "coordinates": {"lat": 44.00013, "lon": -120.50138999999999}}, "lang": "en",
+        "project": "vaccine_sentiment", "matching_keywords": ["vaccine"], "predictions":
+        {"sentiment": {"endpoints": {"primary_probability": 0.47654014825820923, "primary_label":
+        "negative", "primary_label_val": -1, "fasttext_v2": {"probability": 0.47654014825820923,
+        "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070702781308931","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:40.000Z", "text": "@AaronBlake This is great ... considering
+        the big picture ... all these idiots will die off because they will not get
+        vaccinated against potentially deadly diseases. Just the chlorine the American
+        genepool needs ...", "in_reply_to_user_id": "136300373", "user": {"id": "1689532795",
+        "name": "Inga B", "screen_name": "02CRMBL", "location": "Antares", "description":
+        ""}, "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccinated"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.47654014825820923,
+        "primary_label": "negative", "primary_label_val": -1, "fasttext_v2": {"probability":
+        0.47654014825820923, "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070707042725890","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:41.000Z", "text": "EXTENDED HRS: The pop-up COVID-19 vaccination
+        clinic on the boulevard in the parking lot outside Cooperators Centre on the
+        Evraz Place grounds in #Regina is now open until 7pm (July 13)! Access the
+        site via the Princess St or Elphinstone Ave entrances. Come out & #StickItToCOVID.
+        https://t.co/crsy4mLhdY", "user": {"id": "134198093", "name": "Saskatchewan
+        Health Authority", "screen_name": "SaskHealth", "location": "Saskatchewan,
+        Canada", "description": "Official twitter account of the Saskatchewan Health
+        Authority.Dial 9-1-1 in a medical emergency.Account monitored Mon., to Fri.,
+        8a.m.- 4p.m."}, "geo_info": {"location_type": "admin1", "country_code": "CA",
+        "geo_type": "user.location", "coordinates": {"lat": 54.0001, "lon": -106.00098999999999}},
+        "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccination"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.47654014825820923,
+        "primary_label": "negative", "primary_label_val": -1, "fasttext_v2": {"probability":
+        0.47654014825820923, "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070709970313216","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:42.000Z", "text": "@BrettKelman WTF?? I live in a developing
+        country but at least we still have an amazing vaccination program for free
+        here.", "in_reply_to_user_id": "1209304614", "user": {"id": "1190805128045121536",
+        "name": "M\u00e1", "screen_name": "loveonlyftbrave", "description": "Rainbow
+        Paradise \ud83c\udf08I looked you in the eyes, saw that I was lost | I get
+        so lost inside your eyes, would you believe me?"}, "lang": "en", "project":
+        "vaccine_sentiment", "matching_keywords": ["vaccination"], "predictions":
+        {"sentiment": {"endpoints": {"primary_probability": 0.47654014825820923, "primary_label":
+        "negative", "primary_label_val": -1, "fasttext_v2": {"probability": 0.47654014825820923,
+        "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070710096179210","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:42.000Z", "text": "If people think the pandemic will end
+        without them getting vaccinated they are really ignorant. Jeez people, how
+        stupid can you be?https://t.co/GSs4P2ezmk", "user": {"id": "47854180", "name":
+        "John H Armwood", "screen_name": "armwood", "location": "Brookhaven, Georgia",
+        "description": "Retired Professor of Constitutional Law and Criminal Justice.
+        Human Rights activist and jazz and western classical music affectionado."},
+        "geo_info": {"location_type": "admin1", "country_code": "US", "geo_type":
+        "user.location", "coordinates": {"lat": 32.75042, "lon": -83.50018}}, "lang":
+        "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccinated"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.47654014825820923,
+        "primary_label": "negative", "primary_label_val": -1, "fasttext_v2": {"probability":
+        0.47654014825820923, "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070734548881410","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:48.000Z", "text": "@littledeekay Dems really need to refer
+        to him as twice impeached and vaccinated", "in_reply_to_user_id": "477012156",
+        "user": {"id": "817767324178485248", "name": "Michael hines", "screen_name":
+        "HinesAllTheTime", "description": ""}, "lang": "en", "project": "vaccine_sentiment",
+        "matching_keywords": ["vaccinated"], "predictions": {"sentiment": {"endpoints":
+        {"primary_probability": 0.47654014825820923, "primary_label": "negative",
+        "primary_label_val": -1, "fasttext_v2": {"probability": 0.47654014825820923,
+        "label": "negative", "label_val": -1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070735840710657","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:08:48.000Z", "text": "I\u2019ve had just enough to allow vaccination
+        rhetoric to bother me but not enough to fully explain the anger...so I got
+        that going for me.", "user": {"id": "261888960", "name": "Fred Haun", "screen_name":
+        "haunsolo02", "description": "Official conductor of the @KCBoutThatLife Kenny
+        Clark hype train. Retweets = Subway coupons"}, "lang": "en", "project": "vaccine_sentiment",
+        "matching_keywords": ["vaccination"], "predictions": {"sentiment": {"endpoints":
+        {"primary_probability": 0.47654014825820923, "primary_label": "negative",
+        "primary_label_val": -1, "fasttext_v2": {"probability": 0.47654014825820923,
+        "label": "negative", "label_val": -1}}}}}}]},"aggregations":{"prediction_agg":{"buckets":[{"key_as_string":"2021-07-13
+        16:00:00","key":1626192000000,"doc_count":224},{"key_as_string":"2021-07-13
+        17:00:00","key":1626195600000,"doc_count":404},{"key_as_string":"2021-07-13
+        18:00:00","key":1626199200000,"doc_count":212},{"key_as_string":"2021-07-13
+        19:00:00","key":1626202800000,"doc_count":206},{"key_as_string":"2021-07-13
+        20:00:00","key":1626206400000,"doc_count":0},{"key_as_string":"2021-07-13
+        21:00:00","key":1626210000000,"doc_count":417},{"key_as_string":"2021-07-13
+        22:00:00","key":1626213600000,"doc_count":1164},{"key_as_string":"2021-07-13
+        23:00:00","key":1626217200000,"doc_count":524},{"key_as_string":"2021-07-14
+        00:00:00","key":1626220800000,"doc_count":324},{"key_as_string":"2021-07-14
+        01:00:00","key":1626224400000,"doc_count":451},{"key_as_string":"2021-07-14
+        02:00:00","key":1626228000000,"doc_count":154},{"key_as_string":"2021-07-14
+        03:00:00","key":1626231600000,"doc_count":147},{"key_as_string":"2021-07-14
+        04:00:00","key":1626235200000,"doc_count":111},{"key_as_string":"2021-07-14
+        05:00:00","key":1626238800000,"doc_count":195},{"key_as_string":"2021-07-14
+        06:00:00","key":1626242400000,"doc_count":0},{"key_as_string":"2021-07-14
+        07:00:00","key":1626246000000,"doc_count":120},{"key_as_string":"2021-07-14
+        08:00:00","key":1626249600000,"doc_count":234},{"key_as_string":"2021-07-14
+        09:00:00","key":1626253200000,"doc_count":0},{"key_as_string":"2021-07-14
+        10:00:00","key":1626256800000,"doc_count":417},{"key_as_string":"2021-07-14
+        11:00:00","key":1626260400000,"doc_count":0},{"key_as_string":"2021-07-14
+        12:00:00","key":1626264000000,"doc_count":0},{"key_as_string":"2021-07-14
+        13:00:00","key":1626267600000,"doc_count":297},{"key_as_string":"2021-07-14
+        14:00:00","key":1626271200000,"doc_count":254},{"key_as_string":"2021-07-14
+        15:00:00","key":1626274800000,"doc_count":571},{"key_as_string":"2021-07-14
+        16:00:00","key":1626278400000,"doc_count":559}]}}}'
+  recorded_at: Wed, 14 Jul 2021 16:45:09 GMT
+- request:
+    method: get
+    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_vaccine_*/_search
+    body:
+      encoding: UTF-8
+      string: '{"aggs":{"prediction_agg":{"date_histogram":{"field":"created_at","fixed_interval":"1h","format":"yyyy-MM-dd
+        HH:mm:ss"}}},"query":{"bool":{"filter":[{"range":{"created_at":{"gte":"now-1d","lte":"now"}}},{"exists":{"field":"predictions.sentiment.endpoints.fasttext_v2"}},{"term":{"predictions.sentiment.endpoints.fasttext_v2.label":"neutral"}}],"must_not":[{"exists":{"field":"is_retweet"}}]}}}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v0.17.4
+      X-Amz-Date:
+      - 20210714T164509Z
+      X-Amz-Content-Sha256:
+      - 59c739684feb68460519fb2896848f332031d5105d8bca0f039c224d5969229e
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210714/eu-central-1/es/aws4_request,
+        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
+        Signature=18f9dc30eba0fbf65bbd921cf2c61c40c2be6252539fee5a4a50a09a4313a958
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 14 Jul 2021 16:45:11 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Access-Control-Allow-Origin:
+      - "*"
+      Vary:
+      - Accept-Encoding, User-Agent
+    body:
+      encoding: ASCII-8BIT
+      string: '{"took":991,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":{"value":10000,"relation":"gte"},"max_score":0.0,"hits":[{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070917164630016","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:32.000Z", "text": "@RicardoMayorgaB @char_not_4_sure @Dissident_732
+        @wooknponub Because they want people to be healthy. Also if the vaccine is
+        so dangerous, why were the wealthy trying to jump the line to get it? You
+        don''t live with logic, or reasoning.", "in_reply_to_user_id": "3342932920",
+        "user": {"id": "1293661310542995456", "name": "Anarchist Cannabis Community",
+        "screen_name": "ACC21634731", "location": "Washington, USA", "description":
+        "Just a couple of plants trying to spread joy, debating skills, and class
+        conciousness. mad scientist dragon, I clone like one.History \ud83e\udd13SEIZE
+        THE BREAD"}, "geo_info": {"location_type": "city", "country_code": "US", "geo_type":
+        "user.location", "coordinates": {"lat": 38.895109999999995, "lon": -77.03636999999999}},
+        "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccine"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.9926285147666931,
+        "primary_label": "neutral", "primary_label_val": 0, "fasttext_v2": {"probability":
+        0.9926285147666931, "label": "neutral", "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070920348143616","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:32.000Z", "text": "@combs1971 @ChappellPatriot @Franklin_Graham
+        Lol! So you believe the lie that 500,000 people in the US have died from the
+        vaccine?!? \ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02\ud83d\ude02Ahem....\ud83e\udd23\ud83e\udd23\ud83e\udd23\ud83e\udd23\ud83e\udd23\ud83e\udd23\ud83e\udd23\ud83e\udd23You\u2019re
+        deep in the cult I see.", "in_reply_to_user_id": "62495110", "user": {"id":
+        "381750736", "name": "Runnergal4Life \ud83d\udc89\ud83d\udc89\ud83d\ude37",
+        "screen_name": "BlueWave215", "location": "Gary, IN girl in Maryland", "description":
+        "Christ follower~Lover of food/running/genealogy~HBCU Proud~ VP Harris is
+        my Soror \ud83d\udc9a\ud83d\udc95 ~Married to \ud83c\udded\ud83c\uddf9 w/kids~she/her
+        ~ \ud83c\udff3\ufe0f\ud83c\udf08 ally ~ #blacklivesmatter #resist"}, "geo_info":
+        {"location_type": "admin1", "country_code": "US", "geo_type": "user.location",
+        "coordinates": {"lat": 40.00032, "lon": -86.25027}}, "lang": "en", "project":
+        "vaccine_sentiment", "matching_keywords": ["vaccine"], "predictions": {"sentiment":
+        {"endpoints": {"primary_probability": 0.9926285147666931, "primary_label":
+        "neutral", "primary_label_val": 0, "fasttext_v2": {"probability": 0.9926285147666931,
+        "label": "neutral", "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070939390300163","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:37.000Z", "text": "@sunlorrie Do we lock down the province
+        for the unvaccinated, or do we just say \"sorry, you should have gotten vaxed\"
+        as they get turned away from full hospitals?", "in_reply_to_user_id": "255340030",
+        "user": {"id": "1404060622883545089", "name": "SteveSteele", "screen_name":
+        "Stevest48366771", "location": "Ontario, Canada", "description": "Software
+        Engineer, Hacker and Makee"}, "geo_info": {"location_type": "admin1", "country_code":
+        "CA", "geo_type": "user.location", "coordinates": {"lat": 49.25014, "lon":
+        -84.49983}}, "lang": "en", "project": "vaccine_sentiment", "matching_keywords":
+        ["vaccinated", "unvaccinated"], "predictions": {"sentiment": {"endpoints":
+        {"primary_probability": 0.9926285147666931, "primary_label": "neutral", "primary_label_val":
+        0, "fasttext_v2": {"probability": 0.9926285147666931, "label": "neutral",
+        "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070941353324555","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:37.000Z", "text": "@retro_8bits White House to Ask SMS Carriers
+        to Monitor Vaccine \u2018Misinformation\u2019 in Private Text Messages.According
+        to Politico, Biden administration may be taking a step further in curbing
+        vaccine misinformation by monitoring private social media and text messages
+        https://t.co/ybxAnmFkQP", "in_reply_to_user_id": "859908883", "user": {"id":
+        "730983088252170240", "name": "Theoreticalthinker", "screen_name": "philosopherstew",
+        "location": "Ontario, CA. Ethicist Veganism", "description": "God is Peace
+        Love Humility Grace Mercy, Faith in Symbiotic Ethics. Assume naught, to know
+        aught. Ethical Political Symbiocracy, Symbioticrat therapy, VEGANISM"}, "geo_info":
+        {"location_type": "admin1", "country_code": "US", "geo_type": "user.location",
+        "coordinates": {"lat": 37.25022, "lon": -119.75126000000002}}, "lang": "en",
+        "project": "vaccine_sentiment", "matching_keywords": ["vaccine"], "predictions":
+        {"sentiment": {"endpoints": {"primary_probability": 0.9926285147666931, "primary_label":
+        "neutral", "primary_label_val": 0, "fasttext_v2": {"probability": 0.9926285147666931,
+        "label": "neutral", "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070942259253254","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:38.000Z", "text": "More resources for TB vaccine discovery
+        is urgently needed@SLAMTB1 https://t.co/SCWqgwJOOf", "user": {"id": "1261286936842571776",
+        "name": "Gabriela Gago", "screen_name": "GabrielaGago4", "location": "Rosario,
+        Argentina", "description": "Scientist at @ibr Rosario/Argentina.Tuberculosis
+        and lipids.Mother and volleyball player."}, "geo_info": {"location_type":
+        "city", "country_code": "AR", "geo_type": "user.location", "coordinates":
+        {"lat": -32.94682, "lon": -60.63932}}, "lang": "en", "project": "vaccine_sentiment",
+        "matching_keywords": ["vaccine"], "predictions": {"sentiment": {"endpoints":
+        {"primary_probability": 0.9926285147666931, "primary_label": "neutral", "primary_label_val":
+        0, "fasttext_v2": {"probability": 0.9926285147666931, "label": "neutral",
+        "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070949511028741","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:39.000Z", "text": "Looks like all the GOP governors who
+        are ranting and legislating against the vaccinations are literally going to
+        cause the death of the Republican party and its supporters.", "quoted_user_id":
+        "16041234", "user": {"id": "1311579913879658496", "name": "Lynn", "screen_name":
+        "280s_Not_Enough", "description": "Retired tech."}, "has_quote": true, "lang":
+        "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccination"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.9926285147666931,
+        "primary_label": "neutral", "primary_label_val": 0, "fasttext_v2": {"probability":
+        0.9926285147666931, "label": "neutral", "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070950349963264","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:39.000Z", "text": "@EricHar16025556 @medic333 @seattletimes
+        I get that, but claiming the risk of the vaccine might be greater than the
+        virus for those under 35 is just ridiculous, I would love to see why you think
+        that.", "in_reply_to_user_id": "1290070161244864512", "user": {"id": "59864938",
+        "name": "Haven", "screen_name": "havenb3", "description": ""}, "lang": "en",
+        "project": "vaccine_sentiment", "matching_keywords": ["vaccine"], "predictions":
+        {"sentiment": {"endpoints": {"primary_probability": 0.9926285147666931, "primary_label":
+        "neutral", "primary_label_val": 0, "fasttext_v2": {"probability": 0.9926285147666931,
+        "label": "neutral", "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070965550174212","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:43.000Z", "text": "Im tryna catch the new variant and go
+        2/2 before I get vaccinated", "user": {"id": "1046642095", "name": "John Kennedy",
+        "screen_name": "John_Cashel", "description": "@cashelcannabis \ud83c\udf41\ud83d\udc68\ud83c\udffb\ud83c\udf73"},
+        "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccinated"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.9926285147666931,
+        "primary_label": "neutral", "primary_label_val": 0, "fasttext_v2": {"probability":
+        0.9926285147666931, "label": "neutral", "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070970885414917","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:44.000Z", "text": "These anti vaxxers don''t have much fight
+        in them because they simply don''t have much to back up their argument. Anyway,
+        here''s what happens when a razorback tries to take on a Bama fan. Only one
+        way this could end. They just don''t teach these kids the fundamentals anymore.",
+        "quoted_user_id": "809676422", "user": {"id": "809676422", "name": "Chaka
+        John", "screen_name": "jscottnatale", "location": "Birmingham, AL", "description":
+        "Rebel Scum"}, "geo_info": {"location_type": "city", "country_code": "GB",
+        "geo_type": "user.location", "coordinates": {"lat": 52.48141999999999, "lon":
+        -1.89983}}, "has_quote": true, "lang": "en", "project": "vaccine_sentiment",
+        "matching_keywords": ["vaxxer"], "predictions": {"sentiment": {"endpoints":
+        {"primary_probability": 0.9926285147666931, "primary_label": "neutral", "primary_label_val":
+        0, "fasttext_v2": {"probability": 0.9926285147666931, "label": "neutral",
+        "label_val": 0}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1415070980507148288","_score":0.0,"_source":{"created_at":
+        "2021-07-13T22:09:47.000Z", "text": "@Take__Stock The most vaccinated country
+        at almost 90% total population vaccinated is having an out break... lmfao",
+        "in_reply_to_user_id": "811404134716964865", "user": {"id": "59085982", "name":
+        "xC\u00e6sar", "screen_name": "PARABOLIT", "description": "Fight for your
+        freedom. Trading #bitcoin & $ETH, mostly derivatives. I will never ask you
+        for money, please don\u2019t give your crypto to someone impersonating me."},
+        "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccinated"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.9926285147666931,
+        "primary_label": "neutral", "primary_label_val": 0, "fasttext_v2": {"probability":
+        0.9926285147666931, "label": "neutral", "label_val": 0}}}}}}]},"aggregations":{"prediction_agg":{"buckets":[{"key_as_string":"2021-07-13
+        16:00:00","key":1626192000000,"doc_count":1586},{"key_as_string":"2021-07-13
+        17:00:00","key":1626195600000,"doc_count":9145},{"key_as_string":"2021-07-13
+        18:00:00","key":1626199200000,"doc_count":8684},{"key_as_string":"2021-07-13
+        19:00:00","key":1626202800000,"doc_count":7658},{"key_as_string":"2021-07-13
+        20:00:00","key":1626206400000,"doc_count":5344},{"key_as_string":"2021-07-13
+        21:00:00","key":1626210000000,"doc_count":7767},{"key_as_string":"2021-07-13
+        22:00:00","key":1626213600000,"doc_count":6276},{"key_as_string":"2021-07-13
+        23:00:00","key":1626217200000,"doc_count":5722},{"key_as_string":"2021-07-14
+        00:00:00","key":1626220800000,"doc_count":5355},{"key_as_string":"2021-07-14
+        01:00:00","key":1626224400000,"doc_count":5079},{"key_as_string":"2021-07-14
+        02:00:00","key":1626228000000,"doc_count":5800},{"key_as_string":"2021-07-14
+        03:00:00","key":1626231600000,"doc_count":4541},{"key_as_string":"2021-07-14
+        04:00:00","key":1626235200000,"doc_count":4086},{"key_as_string":"2021-07-14
+        05:00:00","key":1626238800000,"doc_count":3797},{"key_as_string":"2021-07-14
+        06:00:00","key":1626242400000,"doc_count":3753},{"key_as_string":"2021-07-14
+        07:00:00","key":1626246000000,"doc_count":4140},{"key_as_string":"2021-07-14
+        08:00:00","key":1626249600000,"doc_count":4775},{"key_as_string":"2021-07-14
+        09:00:00","key":1626253200000,"doc_count":4808},{"key_as_string":"2021-07-14
+        10:00:00","key":1626256800000,"doc_count":4814},{"key_as_string":"2021-07-14
+        11:00:00","key":1626260400000,"doc_count":7090},{"key_as_string":"2021-07-14
+        12:00:00","key":1626264000000,"doc_count":8644},{"key_as_string":"2021-07-14
+        13:00:00","key":1626267600000,"doc_count":8900},{"key_as_string":"2021-07-14
+        14:00:00","key":1626271200000,"doc_count":10516},{"key_as_string":"2021-07-14
+        15:00:00","key":1626274800000,"doc_count":8240},{"key_as_string":"2021-07-14
+        16:00:00","key":1626278400000,"doc_count":7080}]}}}'
+  recorded_at: Wed, 14 Jul 2021 16:45:11 GMT
+- request:
+    method: get
+    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_vaccine_*/_search
+    body:
+      encoding: UTF-8
+      string: '{"aggs":{"prediction_agg":{"date_histogram":{"field":"created_at","fixed_interval":"1h","format":"yyyy-MM-dd
+        HH:mm:ss"}}},"query":{"bool":{"filter":[{"range":{"created_at":{"gte":"now-1d","lte":"now"}}},{"exists":{"field":"predictions.sentiment.endpoints.fasttext_v2"}},{"term":{"predictions.sentiment.endpoints.fasttext_v2.label":"positive"}}],"must_not":[{"exists":{"field":"is_retweet"}}]}}}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v0.17.4
+      X-Amz-Date:
+      - 20210714T164511Z
+      X-Amz-Content-Sha256:
+      - 151ee66a43cf3ae36af7ee6d9bb5f28b04f69638043026416380f68700140061
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210714/eu-central-1/es/aws4_request,
+        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
+        Signature=93315f58625895fc834082d7088e66b2fffc9a2fba396735ba0557405ca53447
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 14 Jul 2021 16:45:12 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Access-Control-Allow-Origin:
+      - "*"
+      Vary:
+      - Accept-Encoding, User-Agent
+    body:
+      encoding: ASCII-8BIT
+      string: '{"took":882,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":{"value":10000,"relation":"gte"},"max_score":0.0,"hits":[{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989302237433858","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:13.000Z", "text": "Holidays abroad 100% your type on paper?
+        Over the next two weeks we have extra clinics to make sure everyone is ready
+        for a summer to remember! Book your vaccine now https://t.co/WxTr3OINQ5 #CovidVaccine
+        #Summer2021 #GetVaccinated https://t.co/q6cuBnoUFX", "user": {"id": "927473457725607936",
+        "name": "Cov & Warwickshire Health & Care Partnership NHS", "screen_name":
+        "happyhealthycw", "location": "Coventry and Warwickshire", "description":
+        "Local councils and the NHS joining forces to help us all lead happier and
+        healthier lives."}, "geo_info": {"location_type": "city", "country_code":
+        "GB", "geo_type": "user.location", "coordinates": {"lat": 52.40656, "lon":
+        -1.51217}}, "lang": "en", "project": "vaccine_sentiment", "matching_keywords":
+        ["vaccine", "vaccinated"], "predictions": {"sentiment": {"endpoints": {"primary_probability":
+        0.5953441262245178, "primary_label": "positive", "primary_label_val": 1, "fasttext_v2":
+        {"probability": 0.5953441262245178, "label": "positive", "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989306096099333","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:14.000Z", "text": "@DGHisham @sureshdr @KKMPutrajaya Vaccination
+        slow, darurat x menjadi, seriously a total failure!", "in_reply_to_user_id":
+        "1595149746", "user": {"id": "2253467726", "name": "Saruk~Khan", "screen_name":
+        "Takuya_Addin", "location": "Malaysia", "description": "Malaysia boleh...la"},
+        "geo_info": {"location_type": "country", "country_code": "MY", "geo_type":
+        "user.location", "coordinates": {"lat": 2.5, "lon": 112.5}}, "lang": "en",
+        "project": "vaccine_sentiment", "matching_keywords": ["vaccination"], "predictions":
+        {"sentiment": {"endpoints": {"primary_probability": 0.5953441262245178, "primary_label":
+        "positive", "primary_label_val": 1, "fasttext_v2": {"probability": 0.5953441262245178,
+        "label": "positive", "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989308994506757","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:15.000Z", "text": "@crabapple66 If you\u2019ve been vaxxed
+        they do", "in_reply_to_user_id": "167459193", "user": {"id": "1387587420040876045",
+        "name": "TruthTweets", "screen_name": "saveKIDSfreeUS", "location": "New Orleans,
+        LA", "description": "Noone knows what goes on, into the night.. out of the
+        SUN. Unaware of what I\u2019ve done, I save lives daily.. one by one. cashapp:
+        saveKIDSfreeUS \ud83e\udd1e\ud83e\udd7aHOPE4LIFE"}, "geo_info": {"location_type":
+        "city", "country_code": "US", "geo_type": "user.location", "coordinates":
+        {"lat": 29.95465, "lon": -90.07507}}, "lang": "en", "project": "vaccine_sentiment",
+        "matching_keywords": ["vaxxed"], "predictions": {"sentiment": {"endpoints":
+        {"primary_probability": 0.5953441262245178, "primary_label": "positive", "primary_label_val":
+        1, "fasttext_v2": {"probability": 0.5953441262245178, "label": "positive",
+        "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989314262437889","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:16.000Z", "text": "@Yukon_Strong @VanRothnRoll This isn''t
+        just about a virus or a vaccine. This is the elite making their move to take
+        over the world and enslave us totally. Having you branded by a traceable vax
+        is key to this.", "in_reply_to_user_id": "994988859065708545", "user": {"id":
+        "493658257", "name": "Time for joy", "screen_name": "WakeDotup", "description":
+        "I love my husband, sons and grandkids. I want my grandkids to know their
+        granny did everything to fight to keep their freedoms during information warfare."},
+        "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccine"],
+        "predictions": {"sentiment": {"endpoints": {"primary_probability": 0.5953441262245178,
+        "primary_label": "positive", "primary_label_val": 1, "fasttext_v2": {"probability":
+        0.5953441262245178, "label": "positive", "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989314669387779","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:16.000Z", "text": "\"Global solidarity underscores that
+        during the Covid-19 pandemic, each nation\u2019s interests are entwined with
+        the interests of every other.\" ... The effort must continue until ''all people
+        are vaccinated'' ! Thank you ... https://t.co/LXWmtCZWyU via @commondreams",
+        "user": {"id": "600439910", "name": "John Burke", "screen_name": "dadsolarjohn",
+        "location": "Jonesport, Me; Sea Cliff, NY", "description": "Alternative Energy
+        Enthusiast, Learning Facliltator, http://dadsolar.com, Maine Solar Energy
+        Association - Activation !"}, "geo_info": {"location_type": "admin1", "country_code":
+        "US", "geo_type": "user.location", "coordinates": {"lat": 43.00035, "lon":
+        -75.4999}}, "lang": "en", "project": "vaccine_sentiment", "matching_keywords":
+        ["vaccinated"], "predictions": {"sentiment": {"endpoints": {"primary_probability":
+        0.5953441262245178, "primary_label": "positive", "primary_label_val": 1, "fasttext_v2":
+        {"probability": 0.5953441262245178, "label": "positive", "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989324727189504","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:18.000Z", "text": "Your more likely to die from the covid
+        vaccine than from any assault rifle..", "user": {"id": "1040405188652097536",
+        "name": "Mehcat", "screen_name": "MehcatCat", "location": "Meh", "description":
+        "Meh, thanks for stopping by feel free to REEEE your way out..."}, "lang":
+        "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccine"], "predictions":
+        {"sentiment": {"endpoints": {"primary_probability": 0.5953441262245178, "primary_label":
+        "positive", "primary_label_val": 1, "fasttext_v2": {"probability": 0.5953441262245178,
+        "label": "positive", "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989324622368773","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:18.000Z", "text": "Have been \u201crushed\u201d but poses
+        no more danger overall than any other drug. And this vaccine will cut down
+        on the risk of permanent lung injury or death. People just need to slow their
+        damn roll. #CovidIsNotOver #COVID19", "in_reply_to_user_id": "2565309227",
+        "user": {"id": "2565309227", "name": "Lisa", "screen_name": "lisa_waldron769",
+        "location": "New Jersey", "description": "Trying not to go crazy in a batshit
+        crazy world. #Resist #BLM \ud83c\udff3\ufe0f\ud83c\udf08\ud83c\udff3\ufe0f\ud83c\udf08\ud83c\udff3\ufe0f\ud83c\udf08"},
+        "geo_info": {"location_type": "admin1", "country_code": "US", "geo_type":
+        "user.location", "coordinates": {"lat": 40.16706, "lon": -74.49987}}, "lang":
+        "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccine"], "predictions":
+        {"sentiment": {"endpoints": {"primary_probability": 0.5953441262245178, "primary_label":
+        "positive", "primary_label_val": 1, "fasttext_v2": {"probability": 0.5953441262245178,
+        "label": "positive", "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989341168967681","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:22.000Z", "text": "@debprince @B52Malmet I wonder if Fox
+        viewers know all 3 hosts have gotten vaccine shots and feel a sense of relief?
+        BTW trump has gotten it in secret.", "in_reply_to_user_id": "22146353", "user":
+        {"id": "1301349138148274178", "name": "Karen Jacob", "screen_name": "KarenJa13052413",
+        "description": ""}, "lang": "en", "project": "vaccine_sentiment", "matching_keywords":
+        ["vaccine"], "predictions": {"sentiment": {"endpoints": {"primary_probability":
+        0.5953441262245178, "primary_label": "positive", "primary_label_val": 1, "fasttext_v2":
+        {"probability": 0.5953441262245178, "label": "positive", "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989344734158849","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:23.000Z", "text": "As everyone is getting vaccinated and
+        the world is opening up, let\u2019s not forget all the restaurants that couldn\u2019t
+        survive the pandemic\ud83d\ude22", "user": {"id": "1210727654061686784", "name":
+        "\ud83e\udd8c\ud83c\uddf5\ud83c\uddf8\ud83c\udde9\ud83c\uddff", "screen_name":
+        "anazhqan", "location": "\u0627\u0644\u0642\u062f\u0633", "description": "free
+        palestine, #savesilwan"}, "geo_info": {"location_type": "city", "country_code":
+        "IL", "geo_type": "user.location", "coordinates": {"lat": 31.769040000000004,
+        "lon": 35.21633}}, "lang": "en", "project": "vaccine_sentiment", "matching_keywords":
+        ["vaccinated"], "predictions": {"sentiment": {"endpoints": {"primary_probability":
+        0.5953441262245178, "primary_label": "positive", "primary_label_val": 1, "fasttext_v2":
+        {"probability": 0.5953441262245178, "label": "positive", "label_val": 1}}}}}},{"_index":"project_vaccine_sentiment_2021-07-01_08-03-48","_type":"_doc","_id":"1414989359263195139","_score":0.0,"_source":{"created_at":
+        "2021-07-13T16:45:27.000Z", "text": "\"well good for you, you look happy and
+        healthy\" -olivia rodrigo after teens get vaccinated", "user": {"id": "3288705094",
+        "name": "Elly Belle, notably not a woman \ud83d\udd2e", "screen_name": "literElly",
+        "location": "Brooklyn, NY", "description": "\u2605 Goth Pun King and organizer
+        \u2605 rep\u2019d @mina_hamedi \u2022 against chill \u2022 \u270d\ud83c\udffb
+        Bitch Media, R29, Teen Vogue, etc, mentor @zenithcoop \u2022 they/he \u2022
+        #ActuallyAutistic \u2721\ufe0e"}, "geo_info": {"location_type": "city", "country_code":
+        "US", "geo_type": "user.location", "coordinates": {"lat": 40.6501, "lon":
+        -73.94958000000001}}, "lang": "en", "project": "vaccine_sentiment", "matching_keywords":
+        ["vaccinated"], "predictions": {"sentiment": {"endpoints": {"primary_probability":
+        0.5953441262245178, "primary_label": "positive", "primary_label_val": 1, "fasttext_v2":
+        {"probability": 0.5953441262245178, "label": "positive", "label_val": 1}}}}}}]},"aggregations":{"prediction_agg":{"buckets":[{"key_as_string":"2021-07-13
+        16:00:00","key":1626192000000,"doc_count":1522},{"key_as_string":"2021-07-13
+        17:00:00","key":1626195600000,"doc_count":3048},{"key_as_string":"2021-07-13
+        18:00:00","key":1626199200000,"doc_count":3985},{"key_as_string":"2021-07-13
+        19:00:00","key":1626202800000,"doc_count":4897},{"key_as_string":"2021-07-13
+        20:00:00","key":1626206400000,"doc_count":7482},{"key_as_string":"2021-07-13
+        21:00:00","key":1626210000000,"doc_count":4427},{"key_as_string":"2021-07-13
+        22:00:00","key":1626213600000,"doc_count":3841},{"key_as_string":"2021-07-13
+        23:00:00","key":1626217200000,"doc_count":3961},{"key_as_string":"2021-07-14
+        00:00:00","key":1626220800000,"doc_count":3628},{"key_as_string":"2021-07-14
+        01:00:00","key":1626224400000,"doc_count":3625},{"key_as_string":"2021-07-14
+        02:00:00","key":1626228000000,"doc_count":3024},{"key_as_string":"2021-07-14
+        03:00:00","key":1626231600000,"doc_count":3206},{"key_as_string":"2021-07-14
+        04:00:00","key":1626235200000,"doc_count":2567},{"key_as_string":"2021-07-14
+        05:00:00","key":1626238800000,"doc_count":2424},{"key_as_string":"2021-07-14
+        06:00:00","key":1626242400000,"doc_count":1622},{"key_as_string":"2021-07-14
+        07:00:00","key":1626246000000,"doc_count":3086},{"key_as_string":"2021-07-14
+        08:00:00","key":1626249600000,"doc_count":2351},{"key_as_string":"2021-07-14
+        09:00:00","key":1626253200000,"doc_count":2815},{"key_as_string":"2021-07-14
+        10:00:00","key":1626256800000,"doc_count":2466},{"key_as_string":"2021-07-14
+        11:00:00","key":1626260400000,"doc_count":2858},{"key_as_string":"2021-07-14
+        12:00:00","key":1626264000000,"doc_count":3830},{"key_as_string":"2021-07-14
+        13:00:00","key":1626267600000,"doc_count":3314},{"key_as_string":"2021-07-14
+        14:00:00","key":1626271200000,"doc_count":4105},{"key_as_string":"2021-07-14
+        15:00:00","key":1626274800000,"doc_count":6385},{"key_as_string":"2021-07-14
+        16:00:00","key":1626278400000,"doc_count":3460}]}}}'
+  recorded_at: Wed, 14 Jul 2021 16:45:12 GMT
+recorded_with: VCR 6.0.0

@@ -1,34 +1,48 @@
 version: "3.0"
 services:
+  box:
+    image: busybox
+    volumes:
+      - box:/box
+
   app:
     build: .
     container_name: app
+    command:
+      sh -c "./wait-for-it.sh webpack-dev-server:3035 -t 300
+             -- bundle exec rails s -p 3000 -b 0.0.0.0"
     volumes:
       - .:/app
+      - box:/box
     ports:
       - "127.0.0.1:3000:3000"
     depends_on:
       - db
+      - box
       - webpack-dev-server
     environment:
       - POSTGRES_HOST=db
       - WEBPACKER_DEV_SERVER_HOST=webpack-dev-server
-      - REDIS_URL=redis://redis:6379
     tty: true
     stdin_open: true
 
   webpack-dev-server:
     build: .
     container_name: webpack
-    command: ./bin/webpack-dev-server
+    command: >
+      sh -c "yarn add &&
+             bundle check || bundle install &&
+             bundle clean &&
+             ./bin/webpack-dev-server"
     environment:
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
     volumes:
       - $PWD:/app:delegated
-      - bundle_cache:/usr/local/bundle:cached
-      - node_modules:/app/node_modules:cached
+      - box:/box
     ports:
       - "3035:3035"
+    depends_on:
+      - box
 
   db:
     image: postgres:10.15
@@ -40,11 +54,11 @@ services:
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
 
-  redis:
-    image: redis:6.0.9
-    container_name: redis
-    volumes:
-      - redis_data:/data:cached
+  # redis:
+  #   image: redis:6.0.9
+  #   container_name: redis
+  #   volumes:
+  #     - redis_data:/data:cached
 
   selenium:
     image: selenium/standalone-chrome
@@ -55,20 +69,22 @@ services:
   sidekiq:
     build: .
     container_name: sidekiq
-    command: bundle exec sidekiq -q default -q mailers
+    command:
+      sh -c "./wait-for-it.sh webpack-dev-server:3035 -t 300
+             -- bundle exec sidekiq -q default -q mailers"
     environment:
       - POSTGRES_HOST=db
-      - REDIS_URL=redis://redis:6379
+      # - REDIS_URL=redis://redis:6379
     volumes:
       - $PWD:/app:delegated
-      - bundle_cache:/usr/local/bundle:cached
-      - node_modules:/app/node_modules:cached
+      - box:/box
     depends_on:
       - db
-      - redis
+      # - redis
+      - box
+      - webpack-dev-server
 
 volumes:
+  box:
   db_data:
-  bundle_cache:
-  node_modules:
-  redis_data:
+  # redis_data:

@@ -24,6 +24,7 @@ class FlaskApi
     end
   end
 
+  # Never used
   def test_redis
     options = {timeout: 5}
     handle_error(error_return_value: false) do

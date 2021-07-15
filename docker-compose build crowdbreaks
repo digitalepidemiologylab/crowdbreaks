@@ -1,0 +1,1078 @@
+(base) Olesias-MacBook-Pro:crowdbreaks utanashati$ docker-compose up
+Creating volume "crowdbreaks_db_data" with default driver
+Creating volume "crowdbreaks_bundle_cache" with default driver
+Creating volume "crowdbreaks_node_modules" with default driver
+Creating volume "crowdbreaks_redis_data" with default driver
+Building webpack-dev-server
+Step 1/16 : FROM ruby:2.5.8
+2.5.8: Pulling from library/ruby
+004f1eed87df: Pull complete
+5d6f1e8117db: Pull complete
+48c2faf66abe: Pull complete
+234b70d0479d: Pull complete
+6fa07a00e2f0: Pull complete
+eaa60f1cb67e: Pull complete
+58332fca8db6: Pull complete
+0d2b6095406d: Pull complete
+Digest: sha256:1ac0062aab5e2193c11d350fcc8c7ba5c452d41e3bbb6ea663062e73e2eabd77
+Status: Downloaded newer image for ruby:2.5.8
+ ---> fc5e02c64ca4
+Step 2/16 : RUN apt-get update -qq && apt-get install -y nodejs
+ ---> Running in 0dc4d5601ecc
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  libbrotli1 libc-ares2 libnode64 libuv1 nodejs-doc
+Suggested packages:
+  npm
+The following NEW packages will be installed:
+  libbrotli1 libc-ares2 libnode64 libuv1 nodejs nodejs-doc
+0 upgraded, 6 newly installed, 0 to remove and 8 not upgraded.
+Need to get 7156 kB of archives.
+After this operation, 31.8 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian buster/main amd64 libbrotli1 amd64 1.0.7-2+deb10u1 [269 kB]
+Get:2 http://deb.debian.org/debian buster/main amd64 libc-ares2 amd64 1.14.0-1 [85.8 kB]
+Get:3 http://deb.debian.org/debian buster/main amd64 libuv1 amd64 1.24.1-1 [110 kB]
+Get:4 http://deb.debian.org/debian buster/main amd64 libnode64 amd64 10.24.0~dfsg-1~deb10u1 [5631 kB]
+Get:5 http://deb.debian.org/debian buster/main amd64 nodejs amd64 10.24.0~dfsg-1~deb10u1 [87.3 kB]
+Get:6 http://deb.debian.org/debian buster/main amd64 nodejs-doc all 10.24.0~dfsg-1~deb10u1 [974 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 7156 kB in 3s (2193 kB/s)
+Selecting previously unselected package libbrotli1:amd64.
+(Reading database ... 23985 files and directories currently installed.)
+Preparing to unpack .../0-libbrotli1_1.0.7-2+deb10u1_amd64.deb ...
+Unpacking libbrotli1:amd64 (1.0.7-2+deb10u1) ...
+Selecting previously unselected package libc-ares2:amd64.
+Preparing to unpack .../1-libc-ares2_1.14.0-1_amd64.deb ...
+Unpacking libc-ares2:amd64 (1.14.0-1) ...
+Selecting previously unselected package libuv1:amd64.
+Preparing to unpack .../2-libuv1_1.24.1-1_amd64.deb ...
+Unpacking libuv1:amd64 (1.24.1-1) ...
+Selecting previously unselected package libnode64:amd64.
+Preparing to unpack .../3-libnode64_10.24.0~dfsg-1~deb10u1_amd64.deb ...
+Unpacking libnode64:amd64 (10.24.0~dfsg-1~deb10u1) ...
+Selecting previously unselected package nodejs.
+Preparing to unpack .../4-nodejs_10.24.0~dfsg-1~deb10u1_amd64.deb ...
+Unpacking nodejs (10.24.0~dfsg-1~deb10u1) ...
+Selecting previously unselected package nodejs-doc.
+Preparing to unpack .../5-nodejs-doc_10.24.0~dfsg-1~deb10u1_all.deb ...
+Unpacking nodejs-doc (10.24.0~dfsg-1~deb10u1) ...
+Setting up libbrotli1:amd64 (1.0.7-2+deb10u1) ...
+Setting up libc-ares2:amd64 (1.14.0-1) ...
+Setting up libuv1:amd64 (1.24.1-1) ...
+Setting up libnode64:amd64 (10.24.0~dfsg-1~deb10u1) ...
+Setting up nodejs-doc (10.24.0~dfsg-1~deb10u1) ...
+Setting up nodejs (10.24.0~dfsg-1~deb10u1) ...
+update-alternatives: using /usr/bin/nodejs to provide /usr/bin/js (js) in auto mode
+Processing triggers for libc-bin (2.28-10) ...
+Removing intermediate container 0dc4d5601ecc
+ ---> 70e960370260
+Step 3/16 : RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+ ---> Running in 4f73f3db7271
+Warning: apt-key output should not be parsed (stdout is not a terminal)
+OK
+Removing intermediate container 4f73f3db7271
+ ---> 80216b59f6f4
+Step 4/16 : RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+ ---> Running in c9918cb013ed
+deb https://dl.yarnpkg.com/debian/ stable main
+Removing intermediate container c9918cb013ed
+ ---> e5eb404bc9e5
+Step 5/16 : RUN apt-get update -y
+ ---> Running in 369e1a611d43
+Hit:1 http://deb.debian.org/debian buster InRelease
+Hit:2 http://security.debian.org/debian-security buster/updates InRelease
+Hit:3 http://deb.debian.org/debian buster-updates InRelease
+Get:4 https://dl.yarnpkg.com/debian stable InRelease [17.1 kB]
+Get:5 https://dl.yarnpkg.com/debian stable/main amd64 Packages [10.1 kB]
+Get:6 https://dl.yarnpkg.com/debian stable/main all Packages [10.1 kB]
+Fetched 37.2 kB in 1s (71.8 kB/s)
+Reading package lists...
+Removing intermediate container 369e1a611d43
+ ---> 3e61565cc37b
+Step 6/16 : RUN apt-get install yarn -y
+ ---> Running in 2effa71d271d
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  yarn
+0 upgraded, 1 newly installed, 0 to remove and 8 not upgraded.
+Need to get 891 kB of archives.
+After this operation, 5407 kB of additional disk space will be used.
+Get:1 https://dl.yarnpkg.com/debian stable/main amd64 yarn all 1.22.5-1 [891 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 891 kB in 0s (3798 kB/s)
+Selecting previously unselected package yarn.
+(Reading database ... 24140 files and directories currently installed.)
+Preparing to unpack .../archives/yarn_1.22.5-1_all.deb ...
+Unpacking yarn (1.22.5-1) ...
+Setting up yarn (1.22.5-1) ...
+Removing intermediate container 2effa71d271d
+ ---> 53ad4fcdf628
+Step 7/16 : WORKDIR /app
+ ---> Running in b0faac7057ba
+Removing intermediate container b0faac7057ba
+ ---> 8ca494b369b4
+Step 8/16 : COPY Gemfile Gemfile.lock ./
+ ---> 6012127aa408
+Step 9/16 : RUN gem install bundler -v 2.2.3
+ ---> Running in b2ded18fc3a5
+Successfully installed bundler-2.2.3
+1 gem installed
+Removing intermediate container b2ded18fc3a5
+ ---> 981c1241369f
+Step 10/16 : RUN bundle update mimemagic
+ ---> Running in 70728f0d4e36
+Fetching gem metadata from https://rubygems.org/.......
+Fetching gem metadata from https://rubygems.org/.
+Resolving dependencies...
+Fetching rake 13.0.3
+Installing rake 13.0.3
+Fetching concurrent-ruby 1.1.7
+Fetching thread_safe 0.3.6
+Fetching builder 3.2.4
+Fetching minitest 5.14.2
+Fetching erubi 1.10.0
+Fetching mini_portile2 2.4.0
+Fetching crass 1.0.6
+Fetching rack 2.2.3
+Installing builder 3.2.4
+Installing erubi 1.10.0
+Installing crass 1.0.6
+Installing mini_portile2 2.4.0
+Installing minitest 5.14.2
+Installing thread_safe 0.3.6
+Installing rack 2.2.3
+Fetching nio4r 2.5.4
+Installing concurrent-ruby 1.1.7
+Fetching websocket-extensions 0.1.5
+Installing nio4r 2.5.4 with native extensions
+Installing websocket-extensions 0.1.5
+Fetching mini_mime 1.0.2
+Fetching jsonapi-renderer 0.2.2
+Fetching arel 9.0.0
+Fetching public_suffix 4.0.6
+Installing mini_mime 1.0.2
+Installing jsonapi-renderer 0.2.2
+Installing arel 9.0.0
+Installing public_suffix 4.0.6
+Fetching ast 2.4.1
+Fetching execjs 2.7.0
+Installing ast 2.4.1
+Installing execjs 2.7.0
+Fetching aws-eventstream 1.1.0
+Installing aws-eventstream 1.1.0
+Fetching bcrypt 3.1.16
+Fetching jmespath 1.4.0
+Fetching bindex 0.8.1
+Fetching popper_js 1.16.0
+Fetching aws-partitions 1.412.0
+Fetching thor 0.20.3
+Fetching method_source 1.0.0
+Fetching ffi 1.14.2
+Installing bindex 0.8.1 with native extensions
+Installing method_source 1.0.0
+Installing jmespath 1.4.0
+Installing popper_js 1.16.0
+Installing aws-partitions 1.412.0
+Installing bcrypt 3.1.16 with native extensions
+Installing thor 0.20.3
+Fetching tilt 2.0.10
+Fetching buftok 0.2.0
+Installing tilt 2.0.10
+Using bundler 2.2.3
+Fetching byebug 11.1.3
+Installing buftok 0.2.0
+Fetching cancancan 2.3.0
+Installing byebug 11.1.3 with native extensions
+Installing ffi 1.14.2 with native extensions
+Installing cancancan 2.3.0
+Fetching regexp_parser 1.8.2
+Fetching childprocess 3.0.0
+Fetching coderay 1.1.3
+Fetching rubyzip 2.3.0
+Installing rubyzip 2.3.0
+Installing childprocess 3.0.0
+Installing regexp_parser 1.8.2
+Installing coderay 1.1.3
+Fetching connection_pool 2.2.3
+Fetching crack 0.4.4
+Fetching database_cleaner 1.8.5
+Fetching orm_adapter 0.5.0
+Fetching unf_ext 0.0.7.7
+Fetching diff-lcs 1.4.4
+Fetching docile 1.3.4
+Fetching eventmachine 1.2.7
+Installing crack 0.4.4
+Installing connection_pool 2.2.3
+Fetching http_parser.rb 0.6.0
+Fetching equalizer 0.0.11
+Installing orm_adapter 0.5.0
+Installing docile 1.3.4
+Installing database_cleaner 1.8.5
+Installing diff-lcs 1.4.4
+Installing equalizer 0.0.11
+Installing eventmachine 1.2.7 with native extensions
+Installing http_parser.rb 0.6.0 with native extensions
+Installing unf_ext 0.0.7.7 with native extensions
+Fetching excon 0.78.1
+Fetching ffaker 2.17.0
+Installing excon 0.78.1
+Fetching foreman 0.87.2
+Installing foreman 0.87.2
+Fetching formatador 0.2.5
+Installing ffaker 2.17.0
+Installing formatador 0.2.5
+Fetching rb-fsevent 0.10.4
+Fetching lumberjack 1.2.8
+Installing rb-fsevent 0.10.4
+Installing lumberjack 1.2.8
+Fetching nenv 0.3.0
+Installing nenv 0.3.0
+Fetching guard-compat 1.2.1
+Fetching shellany 0.0.1
+Fetching multi_json 1.15.0
+Fetching redis 4.1.4
+Fetching rspec-support 3.10.0
+Fetching hashdiff 1.0.1
+Fetching hashie 3.6.0
+Installing shellany 0.0.1
+Installing guard-compat 1.2.1
+Installing multi_json 1.15.0
+Installing hashdiff 1.0.1
+Installing rspec-support 3.10.0
+Installing redis 4.1.4
+Installing hashie 3.6.0
+Fetching highline 2.0.3
+Fetching http-form_data 2.3.0
+Fetching multi_xml 0.6.0
+Fetching json 1.8.6
+Fetching rainbow 3.0.0
+Fetching kaminari-core 1.2.1
+Fetching multipart-post 2.1.1
+Fetching unicode-display_width 1.7.0
+Installing multi_xml 0.6.0
+Installing http-form_data 2.3.0
+Installing kaminari-core 1.2.1
+Installing unicode-display_width 1.7.0
+Installing multipart-post 2.1.1
+Installing rainbow 3.0.0
+Installing json 1.8.6 with native extensions
+Installing highline 2.0.3
+Fetching naught 1.1.0
+Fetching parallel 1.20.1
+Installing naught 1.1.0
+Installing parallel 1.20.1
+Fetching pg 0.21.0
+Fetching puma 3.12.6
+Fetching rails_serve_static_assets 0.0.5
+Fetching rails_stdout_logging 0.0.5
+Installing pg 0.21.0 with native extensions
+Installing puma 3.12.6 with native extensions
+Fetching rexml 3.2.4
+Installing rails_stdout_logging 0.0.5
+Installing rexml 3.2.4
+Fetching rollbar 3.1.1
+Fetching ruby-progressbar 1.10.1
+Installing ruby-progressbar 1.10.1
+Installing rollbar 3.1.1
+Installing rails_serve_static_assets 0.0.5
+Fetching simple_oauth 0.3.1
+Installing simple_oauth 0.3.1
+Fetching simplecov_json_formatter 0.1.2
+Fetching spring 2.1.1
+Fetching simplecov-html 0.12.3
+Installing spring 2.1.1
+Installing simplecov-html 0.12.3
+Installing simplecov_json_formatter 0.1.2
+Fetching timecop 0.9.2
+Fetching vcr 6.0.0
+Fetching nokogiri 1.10.10
+Fetching mail 2.7.1
+Fetching parser 2.7.2.0
+Fetching websocket-driver 0.7.3
+Installing timecop 0.9.2
+Installing vcr 6.0.0
+Installing websocket-driver 0.7.3 with native extensions
+Installing mail 2.7.1
+Fetching memoizable 0.4.2
+Fetching tzinfo 1.2.9
+Installing parser 2.7.2.0
+Installing memoizable 0.4.2
+Fetching aws-sigv4 1.2.2
+Installing tzinfo 1.2.9
+Installing aws-sigv4 1.2.2
+Fetching autoprefixer-rails 10.1.0.0
+Fetching uglifier 4.2.0
+Fetching addressable 2.7.0
+Fetching rack-test 1.1.0
+Installing addressable 2.7.0
+Installing uglifier 4.2.0
+Installing rack-test 1.1.0
+Installing autoprefixer-rails 10.1.0.0
+Fetching warden 1.2.9
+Fetching rack-protection 2.1.0
+Fetching rack-proxy 0.6.5
+Installing warden 1.2.9
+Installing rack-protection 2.1.0
+Installing rack-proxy 0.6.5
+Fetching i18n 1.8.5
+Fetching sprockets 3.7.2
+Installing i18n 1.8.5
+Fetching figaro 1.1.1
+Installing sprockets 3.7.2
+Fetching selenium-webdriver 3.142.7
+Fetching pry 0.13.1
+Installing figaro 1.1.1
+Fetching sassc 2.4.0
+Installing pry 0.13.1
+Installing sassc 2.4.0 with native extensions
+Installing selenium-webdriver 3.142.7
+Fetching ffi-compiler 1.0.1
+Fetching rb-inotify 0.10.1
+Fetching unf 0.1.4
+Installing ffi-compiler 1.0.1
+Installing rb-inotify 0.10.1
+Installing unf 0.1.4
+Fetching notiffany 0.1.3
+Fetching rspec-core 3.10.0
+Installing notiffany 0.1.3
+Fetching rspec-expectations 3.10.0
+Installing nokogiri 1.10.10 with native extensions
+Installing rspec-core 3.10.0
+Installing rspec-expectations 3.10.0
+Fetching rspec-mocks 3.10.0
+Installing rspec-mocks 3.10.0
+Fetching em-websocket 0.5.2
+Installing em-websocket 0.5.2
+Fetching terminal-table 2.0.0
+Fetching rails_12factor 0.0.3
+Installing terminal-table 2.0.0
+Fetching simplecov 0.20.0
+Installing rails_12factor 0.0.3
+Fetching httparty 0.13.7
+Installing simplecov 0.20.0
+Fetching mandrill-api 1.0.53
+Fetching aws-sdk-core 3.110.0
+Fetching launchy 2.5.0
+Installing mandrill-api 1.0.53
+Fetching webmock 3.11.0
+Installing httparty 0.13.7
+Installing launchy 2.5.0
+Installing aws-sdk-core 3.110.0
+Installing webmock 3.11.0
+Fetching sidekiq 5.2.9
+Fetching rubocop-ast 1.3.0
+Installing rubocop-ast 1.3.0
+Installing sidekiq 5.2.9
+Fetching activesupport 5.2.4.4
+Installing activesupport 5.2.4.4
+Fetching domain_name 0.5.20190701
+Fetching listen 3.0.8
+Fetching http-parser 1.2.2
+Fetching sass-listen 4.0.0
+Fetching rspec-its 1.3.0
+Fetching rspec 3.10.0
+Fetching letter_opener 1.7.0
+Installing rspec 3.10.0
+Installing letter_opener 1.7.0
+Installing rspec-its 1.3.0
+Installing sass-listen 4.0.0
+Installing http-parser 1.2.2 with native extensions
+Installing listen 3.0.8
+Installing domain_name 0.5.20190701
+Fetching rubocop 1.6.1
+Fetching aws-sdk-mturk 1.27.0
+Fetching aws-sdk-kms 1.40.0
+Installing aws-sdk-mturk 1.27.0
+Installing aws-sdk-kms 1.40.0
+Installing rubocop 1.6.1
+Fetching activemodel 5.2.4.4
+Fetching globalid 0.4.2
+Fetching case_transform 0.2
+Fetching jbuilder 2.10.1
+Fetching factory_bot 6.1.0
+Fetching http-cookie 1.0.3
+Fetching shoulda-matchers 4.4.1
+Fetching sass 3.7.4
+Installing globalid 0.4.2
+Installing case_transform 0.2
+Installing factory_bot 6.1.0
+Installing jbuilder 2.10.1
+Installing activemodel 5.2.4.4
+Installing http-cookie 1.0.3
+Fetching guard 2.16.2
+Installing shoulda-matchers 4.4.1
+Fetching spring-watcher-listen 2.0.1
+Installing sass 3.7.4
+Installing guard 2.16.2
+Installing spring-watcher-listen 2.0.1
+Fetching rails-dom-testing 2.0.3
+Installing rails-dom-testing 2.0.3
+Fetching loofah 2.8.0
+Fetching mimemagic 0.3.10 (was 0.3.5)
+Installing loofah 2.8.0
+Installing mimemagic 0.3.10 (was 0.3.5) with native extensions
+Fetching xpath 3.2.0
+Installing xpath 3.2.0
+Fetching webdrivers 4.4.1
+Fetching aws-sdk-s3 1.87.0
+Fetching activejob 5.2.4.4
+Installing webdrivers 4.4.1
+Installing activejob 5.2.4.4
+Fetching http 4.4.1
+Fetching rails-html-sanitizer 1.3.0
+Installing aws-sdk-s3 1.87.0
+Installing rails-html-sanitizer 1.3.0
+Installing http 4.4.1
+Fetching marcel 0.3.3
+Installing marcel 0.3.3
+Fetching capybara 3.34.0
+Fetching activerecord 5.2.4.4
+Fetching rspec-activemodel-mocks 1.1.0
+Fetching actionview 5.2.4.4
+Installing capybara 3.34.0
+Installing rspec-activemodel-mocks 1.1.0
+Installing activerecord 5.2.4.4
+Installing actionview 5.2.4.4
+Fetching guard-bundler 3.0.0
+Installing guard-bundler 3.0.0
+Fetching guard-livereload 2.5.2
+Installing guard-livereload 2.5.2
+Fetching guard-rspec 4.7.3
+Fetching guard-sidekiq 0.1.0
+Fetching twitter 7.0.0
+Installing guard-rspec 4.7.3
+Installing twitter 7.0.0
+Installing guard-sidekiq 0.1.0
+Fetching kaminari-actionview 1.2.1
+Fetching actionpack 5.2.4.4
+Installing kaminari-actionview 1.2.1
+Installing actionpack 5.2.4.4
+Fetching json_translate 4.0.0
+Fetching kaminari-activerecord 1.2.1
+Fetching friendly_id 5.4.1
+Fetching with_advisory_lock 4.6.0
+Fetching actioncable 5.2.4.4
+Fetching actionmailer 5.2.4.4
+Fetching active_model_serializers 0.10.12
+Fetching activestorage 5.2.4.4
+Installing json_translate 4.0.0
+Installing kaminari-activerecord 1.2.1
+Installing with_advisory_lock 4.6.0
+Installing actionmailer 5.2.4.4
+Installing actioncable 5.2.4.4
+Installing friendly_id 5.4.1
+Installing active_model_serializers 0.10.12
+Installing activestorage 5.2.4.4
+Fetching railties 5.2.4.4
+Fetching sprockets-rails 3.2.2
+Installing sprockets-rails 3.2.2
+Installing railties 5.2.4.4
+Fetching rails-controller-testing 1.0.5
+Fetching simple_form 5.0.3
+Fetching capybara-selenium 0.0.6
+Installing rails-controller-testing 1.0.5
+Installing capybara-selenium 0.0.6
+Installing simple_form 5.0.3
+Fetching kaminari 1.2.1
+Installing kaminari 1.2.1
+Fetching responders 3.0.1
+Fetching factory_bot_rails 6.1.0
+Fetching font-awesome-rails 4.7.0.5
+Fetching sassc-rails 2.1.2
+Fetching rspec-rails 4.0.1
+Fetching rails 5.2.4.4
+Fetching sass-rails 5.1.0
+Fetching rails-i18n 5.1.3
+Installing responders 3.0.1
+Fetching web-console 3.7.0
+Installing sassc-rails 2.1.2
+Installing factory_bot_rails 6.1.0
+Fetching webpacker 4.3.0
+Fetching devise 4.7.3
+Installing font-awesome-rails 4.7.0.5
+Installing sass-rails 5.1.0
+Installing rails 5.2.4.4
+Fetching bootstrap 4.5.3
+Installing rspec-rails 4.0.1
+Installing rails-i18n 5.1.3
+Installing web-console 3.7.0
+Installing devise 4.7.3
+Installing bootstrap 4.5.3
+Installing webpacker 4.3.0
+Fetching devise-i18n 1.9.2
+Fetching webpacker-react 0.3.2
+Installing devise-i18n 1.9.2
+Fetching i18n-tasks 0.9.33
+Installing i18n-tasks 0.9.33
+Installing webpacker-react 0.3.2
+Bundle updated!
+Post-install message from i18n:
+
+HEADS UP! i18n 1.1 changed fallbacks to exclude default locale.
+But that may break your application.
+
+If you are upgrading your Rails application from an older version of Rails:
+
+Please check your Rails app for 'config.i18n.fallbacks = true'.
+If you're using I18n (>= 1.1.0) and Rails (< 5.2.2), this should be
+'config.i18n.fallbacks = [I18n.default_locale]'.
+If not, fallbacks will be broken in your app by I18n 1.1.x.
+
+If you are starting a NEW Rails application, you can ignore this notice.
+
+For more info see:
+https://github.com/svenfuchs/i18n/releases/tag/v1.1.0
+
+Post-install message from httparty:
+When you HTTParty, you must party hard!
+Post-install message from i18n-tasks:
+# Install default configuration:
+cp $(bundle exec i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+# Add an RSpec for missing and unused keys:
+cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
+Post-install message from sass:
+
+Ruby Sass has reached end-of-life and should no longer be used.
+
+* If you use Sass as a command-line tool, we recommend using Dart Sass, the new
+  primary implementation: https://sass-lang.com/install
+
+* If you use Sass as a plug-in for a Ruby web framework, we recommend using the
+  sassc gem: https://github.com/sass/sassc-ruby#readme
+
+* For more details, please refer to the Sass blog:
+  https://sass-lang.com/blog/posts/7828841
+
+Removing intermediate container 70728f0d4e36
+ ---> 9e56d4aaa283
+Step 11/16 : RUN bundle install
+ ---> Running in 1fbdc44b5a6c
+Using rake 13.0.3
+Using concurrent-ruby 1.1.7
+Using i18n 1.8.5
+Using minitest 5.14.2
+Using thread_safe 0.3.6
+Using tzinfo 1.2.9
+Using activesupport 5.2.4.4
+Using builder 3.2.4
+Using erubi 1.10.0
+Using mini_portile2 2.4.0
+Using nokogiri 1.10.10
+Using rails-dom-testing 2.0.3
+Using crass 1.0.6
+Using loofah 2.8.0
+Using rails-html-sanitizer 1.3.0
+Using actionview 5.2.4.4
+Using rack 2.2.3
+Using rack-test 1.1.0
+Using actionpack 5.2.4.4
+Using nio4r 2.5.4
+Using websocket-extensions 0.1.5
+Using websocket-driver 0.7.3
+Using actioncable 5.2.4.4
+Using globalid 0.4.2
+Using activejob 5.2.4.4
+Using mini_mime 1.0.2
+Using mail 2.7.1
+Using actionmailer 5.2.4.4
+Using activemodel 5.2.4.4
+Using case_transform 0.2
+Using jsonapi-renderer 0.2.2
+Using active_model_serializers 0.10.12
+Using arel 9.0.0
+Using activerecord 5.2.4.4
+Using mimemagic 0.3.10
+Using marcel 0.3.3
+Using activestorage 5.2.4.4
+Using public_suffix 4.0.6
+Using addressable 2.7.0
+Using ast 2.4.1
+Using execjs 2.7.0
+Using autoprefixer-rails 10.1.0.0
+Using aws-eventstream 1.1.0
+Using aws-partitions 1.412.0
+Using aws-sigv4 1.2.2
+Using jmespath 1.4.0
+Using aws-sdk-core 3.110.0
+Using aws-sdk-kms 1.40.0
+Using aws-sdk-mturk 1.27.0
+Using aws-sdk-s3 1.87.0
+Using bcrypt 3.1.16
+Using bindex 0.8.1
+Using popper_js 1.16.0
+Using method_source 1.0.0
+Using thor 0.20.3
+Using railties 5.2.4.4
+Using ffi 1.14.2
+Using sassc 2.4.0
+Using sprockets 3.7.2
+Using sprockets-rails 3.2.2
+Using tilt 2.0.10
+Using sassc-rails 2.1.2
+Using bootstrap 4.5.3
+Using buftok 0.2.0
+Using bundler 2.2.3
+Using byebug 11.1.3
+Using cancancan 2.3.0
+Using regexp_parser 1.8.2
+Using xpath 3.2.0
+Using capybara 3.34.0
+Using childprocess 3.0.0
+Using rubyzip 2.3.0
+Using selenium-webdriver 3.142.7
+Using capybara-selenium 0.0.6
+Using coderay 1.1.3
+Using connection_pool 2.2.3
+Using crack 0.4.4
+Using database_cleaner 1.8.5
+Using orm_adapter 0.5.0
+Using responders 3.0.1
+Using warden 1.2.9
+Using devise 4.7.3
+Using devise-i18n 1.9.2
+Using diff-lcs 1.4.4
+Using docile 1.3.4
+Using unf_ext 0.0.7.7
+Using unf 0.1.4
+Using domain_name 0.5.20190701
+Using eventmachine 1.2.7
+Using http_parser.rb 0.6.0
+Using em-websocket 0.5.2
+Using equalizer 0.0.11
+Using excon 0.78.1
+Using factory_bot 6.1.0
+Using factory_bot_rails 6.1.0
+Using ffaker 2.17.0
+Using ffi-compiler 1.0.1
+Using figaro 1.1.1
+Using font-awesome-rails 4.7.0.5
+Using foreman 0.87.2
+Using formatador 0.2.5
+Using friendly_id 5.4.1
+Using rb-fsevent 0.10.4
+Using rb-inotify 0.10.1
+Using listen 3.0.8
+Using lumberjack 1.2.8
+Using nenv 0.3.0
+Using shellany 0.0.1
+Using notiffany 0.1.3
+Using pry 0.13.1
+Using guard 2.16.2
+Using guard-compat 1.2.1
+Using guard-bundler 3.0.0
+Using multi_json 1.15.0
+Using guard-livereload 2.5.2
+Using rspec-support 3.10.0
+Using rspec-core 3.10.0
+Using rspec-expectations 3.10.0
+Using rspec-mocks 3.10.0
+Using rspec 3.10.0
+Using guard-rspec 4.7.3
+Using rack-protection 2.1.0
+Using redis 4.1.4
+Using sidekiq 5.2.9
+Using guard-sidekiq 0.1.0
+Using hashdiff 1.0.1
+Using hashie 3.6.0
+Using highline 2.0.3
+Using http-cookie 1.0.3
+Using http-form_data 2.3.0
+Using http-parser 1.2.2
+Using http 4.4.1
+Using json 1.8.6
+Using multi_xml 0.6.0
+Using httparty 0.13.7
+Using parser 2.7.2.0
+Using rails-i18n 5.1.3
+Using rainbow 3.0.0
+Using unicode-display_width 1.7.0
+Using terminal-table 2.0.0
+Using i18n-tasks 0.9.33
+Using jbuilder 2.10.1
+Using json_translate 4.0.0
+Using kaminari-core 1.2.1
+Using kaminari-actionview 1.2.1
+Using kaminari-activerecord 1.2.1
+Using kaminari 1.2.1
+Using launchy 2.5.0
+Using letter_opener 1.7.0
+Using mandrill-api 1.0.53
+Using memoizable 0.4.2
+Using multipart-post 2.1.1
+Using naught 1.1.0
+Using parallel 1.20.1
+Using pg 0.21.0
+Using puma 3.12.6
+Using rack-proxy 0.6.5
+Using rails 5.2.4.4
+Using rails-controller-testing 1.0.5
+Using rails_serve_static_assets 0.0.5
+Using rails_stdout_logging 0.0.5
+Using rails_12factor 0.0.3
+Using rexml 3.2.4
+Using rollbar 3.1.1
+Using rspec-activemodel-mocks 1.1.0
+Using rspec-its 1.3.0
+Using rspec-rails 4.0.1
+Using rubocop-ast 1.3.0
+Using ruby-progressbar 1.10.1
+Using rubocop 1.6.1
+Using sass-listen 4.0.0
+Using sass 3.7.4
+Using sass-rails 5.1.0
+Using shoulda-matchers 4.4.1
+Using simple_form 5.0.3
+Using simple_oauth 0.3.1
+Using simplecov-html 0.12.3
+Using simplecov_json_formatter 0.1.2
+Using simplecov 0.20.0
+Using spring 2.1.1
+Using spring-watcher-listen 2.0.1
+Using timecop 0.9.2
+Using twitter 7.0.0
+Using uglifier 4.2.0
+Using vcr 6.0.0
+Using web-console 3.7.0
+Using webdrivers 4.4.1
+Using webmock 3.11.0
+Using webpacker 4.3.0
+Using webpacker-react 0.3.2
+Using with_advisory_lock 4.6.0
+Bundle complete! 61 Gemfile dependencies, 191 gems now installed.
+Use `bundle info [gemname]` to see where a bundled gem is installed.
+Removing intermediate container 1fbdc44b5a6c
+ ---> 45ef8d0f6545
+Step 12/16 : COPY package.json yarn.lock ./
+ ---> 635497617b8b
+Step 13/16 : RUN yarn install --check-files
+ ---> Running in 6b45845786b7
+yarn install v1.22.5
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+info fsevents@2.1.3: The platform "linux" is incompatible with this module.
+info "fsevents@2.1.3" is an optional dependency and failed compatibility check. Excluding it from installation.
+info fsevents@1.2.13: The platform "linux" is incompatible with this module.
+info "fsevents@1.2.13" is an optional dependency and failed compatibility check. Excluding it from installation.
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+Done in 27.30s.
+Removing intermediate container 6b45845786b7
+ ---> 3362e0c204bf
+Step 14/16 : COPY . ./
+ ---> 3064fccbd2de
+Step 15/16 : EXPOSE 3000
+ ---> Running in 337d7b33615e
+Removing intermediate container 337d7b33615e
+ ---> 249280b0449a
+Step 16/16 : CMD ["bin/rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+ ---> Running in 6cfbec6bfba9
+Removing intermediate container 6cfbec6bfba9
+ ---> ae11a8812ff1
+
+Successfully built ae11a8812ff1
+Successfully tagged crowdbreaks_webpack-dev-server:latest
+WARNING: Image for service webpack-dev-server was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Pulling db (postgres:10.15)...
+10.15: Pulling from library/postgres
+cae7303ade7f: Pull complete
+74b1b2de3667: Pull complete
+2a8214680dbf: Pull complete
+2d96c85c9c8e: Pull complete
+ea61da79a978: Pull complete
+ad4d0ef2cddb: Pull complete
+6a2c02e60b45: Pull complete
+9a9993af0b23: Pull complete
+ffee356edc20: Pull complete
+3097b11add3d: Pull complete
+b14aa30116a2: Pull complete
+a1e8599c5155: Pull complete
+9bf9b28b68d0: Pull complete
+a6c91e3063ac: Pull complete
+Digest: sha256:fcfec8e91cfdd676307e2b7ab2a39510f2a4ccee39009befa4ddca573207ca20
+Status: Downloaded newer image for postgres:10.15
+Building app
+Step 1/16 : FROM ruby:2.5.8
+ ---> fc5e02c64ca4
+Step 2/16 : RUN apt-get update -qq && apt-get install -y nodejs
+ ---> Using cache
+ ---> 70e960370260
+Step 3/16 : RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+ ---> Using cache
+ ---> 80216b59f6f4
+Step 4/16 : RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+ ---> Using cache
+ ---> e5eb404bc9e5
+Step 5/16 : RUN apt-get update -y
+ ---> Using cache
+ ---> 3e61565cc37b
+Step 6/16 : RUN apt-get install yarn -y
+ ---> Using cache
+ ---> 53ad4fcdf628
+Step 7/16 : WORKDIR /app
+ ---> Using cache
+ ---> 8ca494b369b4
+Step 8/16 : COPY Gemfile Gemfile.lock ./
+ ---> Using cache
+ ---> 6012127aa408
+Step 9/16 : RUN gem install bundler -v 2.2.3
+ ---> Using cache
+ ---> 981c1241369f
+Step 10/16 : RUN bundle update mimemagic
+ ---> Using cache
+ ---> 9e56d4aaa283
+Step 11/16 : RUN bundle install
+ ---> Using cache
+ ---> 45ef8d0f6545
+Step 12/16 : COPY package.json yarn.lock ./
+ ---> Using cache
+ ---> 635497617b8b
+Step 13/16 : RUN yarn install --check-files
+ ---> Using cache
+ ---> 3362e0c204bf
+Step 14/16 : COPY . ./
+ ---> Using cache
+ ---> 3064fccbd2de
+Step 15/16 : EXPOSE 3000
+ ---> Using cache
+ ---> 249280b0449a
+Step 16/16 : CMD ["bin/rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+ ---> Using cache
+ ---> ae11a8812ff1
+
+Successfully built ae11a8812ff1
+Successfully tagged crowdbreaks_app:latest
+WARNING: Image for service app was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Pulling redis (redis:6.0.9)...
+6.0.9: Pulling from library/redis
+a076a628af6f: Pull complete
+f40dd07fe7be: Pull complete
+ce21c8a3dbee: Pull complete
+47b0fe76214f: Pull complete
+6c5e46e23ecb: Pull complete
+e81e24116351: Pull complete
+Digest: sha256:48c1431bed43fb2645314e4a22d6ca03cf36c5541d034de6a4f3330e7174915b
+Status: Downloaded newer image for redis:6.0.9
+Pulling selenium (selenium/standalone-chrome:)...
+latest: Pulling from selenium/standalone-chrome
+da7391352a9b: Pull complete
+14428a6d4bcd: Pull complete
+2c2d948710f2: Pull complete
+0219dfafe1a8: Pull complete
+60f1c8a7de18: Pull complete
+67ef97602b3c: Pull complete
+05e72f362e68: Pull complete
+aa56724423c5: Pull complete
+8393388b6c0b: Pull complete
+453c1f5950f6: Pull complete
+49ce483223d1: Pull complete
+3d12afd753e2: Pull complete
+42386e90f6bb: Pull complete
+78fe95d96adb: Pull complete
+187c0702f87d: Pull complete
+bb6b87b0183e: Pull complete
+ee634f6416e5: Pull complete
+d43582cbb57e: Pull complete
+57a123dd5ad7: Pull complete
+7485a25fbdf9: Pull complete
+66ef943ef84a: Pull complete
+c2085dba8ee4: Pull complete
+ad8e11785255: Pull complete
+a13df7f6fee8: Pull complete
+Digest: sha256:4a590fc95d67a8eb13464799583991daa6a8548c9a9e2e7f234a92c9c4fa8f29
+Status: Downloaded newer image for selenium/standalone-chrome:latest
+Building sidekiq
+Step 1/16 : FROM ruby:2.5.8
+ ---> fc5e02c64ca4
+Step 2/16 : RUN apt-get update -qq && apt-get install -y nodejs
+ ---> Using cache
+ ---> 70e960370260
+Step 3/16 : RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+ ---> Using cache
+ ---> 80216b59f6f4
+Step 4/16 : RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+ ---> Using cache
+ ---> e5eb404bc9e5
+Step 5/16 : RUN apt-get update -y
+ ---> Using cache
+ ---> 3e61565cc37b
+Step 6/16 : RUN apt-get install yarn -y
+ ---> Using cache
+ ---> 53ad4fcdf628
+Step 7/16 : WORKDIR /app
+ ---> Using cache
+ ---> 8ca494b369b4
+Step 8/16 : COPY Gemfile Gemfile.lock ./
+ ---> Using cache
+ ---> 6012127aa408
+Step 9/16 : RUN gem install bundler -v 2.2.3
+ ---> Using cache
+ ---> 981c1241369f
+Step 10/16 : RUN bundle update mimemagic
+ ---> Using cache
+ ---> 9e56d4aaa283
+Step 11/16 : RUN bundle install
+ ---> Using cache
+ ---> 45ef8d0f6545
+Step 12/16 : COPY package.json yarn.lock ./
+ ---> Using cache
+ ---> 635497617b8b
+Step 13/16 : RUN yarn install --check-files
+ ---> Using cache
+ ---> 3362e0c204bf
+Step 14/16 : COPY . ./
+ ---> Using cache
+ ---> 3064fccbd2de
+Step 15/16 : EXPOSE 3000
+ ---> Using cache
+ ---> 249280b0449a
+Step 16/16 : CMD ["bin/rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+ ---> Using cache
+ ---> ae11a8812ff1
+
+Successfully built ae11a8812ff1
+Successfully tagged crowdbreaks_sidekiq:latest
+WARNING: Image for service sidekiq was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Creating webpack  ... done
+Creating redis    ... done
+Creating selenium ... done
+Creating db       ... done
+Creating sidekiq  ... done
+Creating app      ... done
+Attaching to redis, selenium, db, webpack, app, sidekiq
+app                   | Could not find mimemagic-0.3.5 in any of the sources
+app                   | Run `bundle install` to install missing gems.
+db                    | ********************************************************************************
+db                    | WARNING: POSTGRES_HOST_AUTH_METHOD has been set to "trust". This will allow
+db                    |          anyone with access to the Postgres port to access your database without
+db                    |          a password, even if POSTGRES_PASSWORD is set. See PostgreSQL
+db                    |          documentation about "trust":
+db                    |          https://www.postgresql.org/docs/current/auth-trust.html
+db                    |          In Docker's default configuration, this is effectively any other
+db                    |          container on the same system.
+db                    | 
+db                    |          It is not recommended to use POSTGRES_HOST_AUTH_METHOD=trust. Replace
+db                    |          it with "-e POSTGRES_PASSWORD=password" instead to set a password in
+db                    |          "docker run".
+db                    | ********************************************************************************
+selenium              | 2021-05-10 09:57:17,255 INFO Included extra file "/etc/supervisor/conf.d/selenium.conf" during parsing
+db                    | The files belonging to this database system will be owned by user "postgres".
+db                    | This user must also own the server process.
+db                    | 
+webpack               | /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/spec_set.rb:87:in `block in materialize': Could not find mimemagic-0.3.5 in any of the sources (Bundler::GemNotFound)
+selenium              | 2021-05-10 09:57:17,258 INFO supervisord started with pid 8
+redis                 | 1:C 10 May 2021 09:57:16.986 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis                 | 1:C 10 May 2021 09:57:16.986 # Redis version=6.0.9, bits=64, commit=00000000, modified=0, pid=1, just started
+redis                 | 1:C 10 May 2021 09:57:16.986 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/spec_set.rb:81:in `map!'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/spec_set.rb:81:in `materialize'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/definition.rb:175:in `specs'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/definition.rb:245:in `specs_for'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/definition.rb:227:in `requested_specs'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/runtime.rb:91:in `block in definition_method'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/runtime.rb:20:in `setup'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler.rb:149:in `setup'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/setup.rb:20:in `block in <top (required)>'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/ui/shell.rb:136:in `with_level'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/ui/shell.rb:88:in `silence'
+webpack               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/setup.rb:20:in `<top (required)>'
+webpack               | 	from /usr/local/lib/ruby/site_ruby/2.5.0/rubygems/core_ext/kernel_require.rb:54:in `require'
+webpack               | 	from /usr/local/lib/ruby/site_ruby/2.5.0/rubygems/core_ext/kernel_require.rb:54:in `require'
+webpack               | 	from ./bin/webpack-dev-server:11:in `<main>'
+db                    | The database cluster will be initialized with locale "en_US.utf8".
+db                    | The default database encoding has accordingly been set to "UTF8".
+db                    | The default text search configuration will be set to "english".
+db                    | 
+db                    | Data page checksums are disabled.
+selenium              | 2021-05-10 09:57:18,260 INFO spawned: 'xvfb' with pid 10
+redis                 | 1:M 10 May 2021 09:57:16.988 * Running mode=standalone, port=6379.
+db                    | 
+selenium              | 2021-05-10 09:57:18,262 INFO spawned: 'selenium-standalone' with pid 11
+redis                 | 1:M 10 May 2021 09:57:16.988 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+redis                 | 1:M 10 May 2021 09:57:16.988 # Server initialized
+db                    | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+selenium              | 09:57:18.520 INFO [GridLauncherV3.parse] - Selenium server version: 3.141.59, revision: e82be7d358
+selenium              | 2021-05-10 09:57:18,522 INFO success: xvfb entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+redis                 | 1:M 10 May 2021 09:57:16.988 * Ready to accept connections
+selenium              | 2021-05-10 09:57:18,522 INFO success: selenium-standalone entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+db                    | creating subdirectories ... ok
+db                    | selecting default max_connections ... 100
+selenium              | 09:57:18.599 INFO [GridLauncherV3.lambda$buildLaunchers$3] - Launching a standalone Selenium Server on port 4444
+selenium              | 2021-05-10 09:57:18.645:INFO::main: Logging initialized @368ms to org.seleniumhq.jetty9.util.log.StdErrLog
+db                    | selecting default shared_buffers ... 128MB
+selenium              | 09:57:18.903 INFO [WebDriverServlet.<init>] - Initialising WebDriverServlet
+webpack exited with code 1
+db                    | selecting default timezone ... Etc/UTC
+selenium              | 09:57:18.974 INFO [SeleniumServer.boot] - Selenium Server is up and running on port 4444
+db                    | selecting dynamic shared memory implementation ... posix
+db                    | creating configuration files ... ok
+db                    | running bootstrap script ... ok
+db                    | performing post-bootstrap initialization ... ok
+db                    | syncing data to disk ... ok
+db                    | 
+db                    | Success. You can now start the database server using:
+db                    | 
+db                    |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+db                    | 
+db                    | 
+db                    | WARNING: enabling "trust" authentication for local connections
+db                    | You can change this by editing pg_hba.conf or using the option -A, or
+db                    | --auth-local and --auth-host, the next time you run initdb.
+db                    | waiting for server to start....2021-05-10 09:57:17.904 UTC [49] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db                    | 2021-05-10 09:57:17.914 UTC [50] LOG:  database system was shut down at 2021-05-10 09:57:17 UTC
+db                    | 2021-05-10 09:57:17.918 UTC [49] LOG:  database system is ready to accept connections
+db                    |  done
+db                    | server started
+db                    | 
+db                    | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+db                    | 
+db                    | 2021-05-10 09:57:18.054 UTC [49] LOG:  received fast shutdown request
+db                    | waiting for server to shut down....2021-05-10 09:57:18.108 UTC [49] LOG:  aborting any active transactions
+db                    | 2021-05-10 09:57:18.112 UTC [49] LOG:  worker process: logical replication launcher (PID 56) exited with exit code 1
+db                    | 2021-05-10 09:57:18.112 UTC [51] LOG:  shutting down
+db                    | 2021-05-10 09:57:18.129 UTC [49] LOG:  database system is shut down
+db                    |  done
+db                    | server stopped
+db                    | 
+db                    | PostgreSQL init process complete; ready for start up.
+db                    | 
+db                    | 2021-05-10 09:57:18.163 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+db                    | 2021-05-10 09:57:18.163 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+db                    | 2021-05-10 09:57:18.164 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db                    | 2021-05-10 09:57:18.173 UTC [68] LOG:  database system was shut down at 2021-05-10 09:57:18 UTC
+db                    | 2021-05-10 09:57:18.176 UTC [1] LOG:  database system is ready to accept connections
+app exited with code 7
+sidekiq               | bundler: failed to load command: sidekiq (/usr/local/bundle/bin/sidekiq)
+sidekiq               | /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/spec_set.rb:87:in `block in materialize': Could not find mimemagic-0.3.5 in any of the sources (Bundler::GemNotFound)
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/spec_set.rb:81:in `map!'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/spec_set.rb:81:in `materialize'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/definition.rb:175:in `specs'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/definition.rb:245:in `specs_for'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/definition.rb:227:in `requested_specs'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/runtime.rb:91:in `block in definition_method'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/runtime.rb:20:in `setup'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler.rb:149:in `setup'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/setup.rb:20:in `block in <top (required)>'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/ui/shell.rb:136:in `with_level'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/ui/shell.rb:88:in `silence'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/setup.rb:20:in `<top (required)>'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/cli/exec.rb:61:in `require_relative'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/cli/exec.rb:61:in `kernel_load'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/cli/exec.rb:28:in `run'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/cli.rb:497:in `exec'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/vendor/thor/lib/thor/command.rb:27:in `run'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/vendor/thor/lib/thor/invocation.rb:127:in `invoke_command'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/vendor/thor/lib/thor.rb:392:in `dispatch'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/cli.rb:30:in `dispatch'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/vendor/thor/lib/thor/base.rb:485:in `start'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/cli.rb:24:in `start'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/exe/bundle:49:in `block in <top (required)>'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/lib/bundler/friendly_errors.rb:130:in `with_friendly_errors'
+sidekiq               | 	from /usr/local/bundle/gems/bundler-2.2.3/exe/bundle:37:in `<top (required)>'
+sidekiq               | 	from /usr/local/bundle/bin/bundle:23:in `load'
+sidekiq               | 	from /usr/local/bundle/bin/bundle:23:in `<main>'
+sidekiq exited with code 1
+

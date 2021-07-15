@@ -23,7 +23,7 @@
       <% end %>
     </div>
     <div class="form-group">
-      <%= f.input :name, hint: 'Name of the project. By convention this should be the same as the Elasticsearch index name (if provided), thus starting with the project_* prefix. The name should be unique, otherwise it will be grouped with the project of the same name.' %>
+      <%= f.input :name, input_html: { value: @project.name[8..-1] || "" }, hint: "Name of the project, without the 'project_' prefix. Use latin symbols, numbers and underscores." %>
     </div>
     <div class="form-group">
       <%= f.input :active_question_sequence_id, collection: @project.question_sequences, include_blank: false, selected: @project.active_question_sequence, hint: 'A project can have multiple question sequences. The active question sequence is the one which will be on public display.' %>
@@ -38,9 +38,6 @@
         <%= f.input :keywords, hint: 'Comma-separated list of keywords for the Twitter streaming API to filter for' ,
           input_html: {value: @project.keywords&.join(', ') || ""} %>
         <%= f.input :lang, label: "Languages", hint: 'Languages of tweets to collect through Twitter API (2-letter language code, e.g. "en")', :input_html => { value: @project.lang&.join(', ') || '' } %>
-      </div>
-      <div class="form-group">
-        <%= f.input :es_index_name, hint: 'Name of ElasticSearch index to store tweets into, make sure to name the index project_*', input_html: {value: @project.es_index_name || ""} %>
       </div>
       <div class="form-group">
         <%= f.input :storage_mode, collection: Project.storage_modes, include_blank: false, selected: @project.read_attribute_before_type_cast(:storage_mode), hint: 'Where to store tweets. In any case tweets will be stored on S3. If project is public it should include Elasticsearch (es).' %>

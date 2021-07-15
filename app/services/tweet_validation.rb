@@ -2,7 +2,7 @@ require 'httparty'
 
 class TweetValidation
   include HTTParty
-  CACHE_KEY = "twitter_too_many_requests"
+  CACHE_KEY = 'twitter_too_many_requests'.freeze
 
   # Two main ways to check presence of a tweet
   # 1) Use Twitter API to check tweet. Note: This is under rate limits.
@@ -12,43 +12,37 @@ class TweetValidation
   # However, here we call it from our back-end (method: tweet_is_valid_front_end)
 
   # Test IDs
-  # tweet_id = '955454023519391744' # invalid
-  # tweet_id = '563126182607339520' # valid
+  # id = '955454023519391744' # invalid
+  # id = '563126182607339520' # valid
 
+  def self.tweet_is_valid?(id)
+    return false if id.nil?
+    return tweet_is_valid_front_end?(id) if Rails.cache.exist?(CACHE_KEY)
 
-  def tweet_is_valid?(tweet_id)
-    return false if tweet_id.nil?
-    begin
-      if Rails.cache.exist?(CACHE_KEY)
-        return tweet_is_valid_front_end?(tweet_id)
-      else
-        Crowdbreaks::TwitterClient.status(tweet_id)
-      end
-    rescue Twitter::Error::TooManyRequests => e
-      ErrorLogger.error "Too many requests on Twitter API"
-      Rails.cache.write(CACHE_KEY, 1, expires_in: 1.hour)
-      return tweet_is_valid_front_end?(tweet_id)
-    rescue Twitter::Error::ClientError
-      # Tweet is not available anymore
-      return false
-    rescue Twitter::Error => e
-      ErrorLogger.error e
-      return tweet_is_valid_front_end?(tweet_id)
-    else
-      return true
-    end
+    Crowdbreaks::TwitterClient.status(id)
+  rescue Twitter::Error::TooManyRequests
+    ErrorLogger.error "Twitter error. #{e.class}: #{e.message}"
+    Rails.cache.write(CACHE_KEY, 1, expires_in: 1.hour)
+    tweet_is_valid_front_end?(id)
+  rescue Twitter::Error::ClientError => e
+    ErrorLogger.error "Twitter client error. #{e.class}: #{e.message}"
+    # Tweet is not available anymore or bad authentication
+    false
+  rescue Twitter::Error => e
+    ErrorLogger.error "Twitter error. #{e.class}: #{e.message}"
+    tweet_is_valid_front_end?(id)
+  else
+    true
   end
 
   private
 
-  def tweet_is_valid_front_end?(tweet_id)
+  def tweet_is_valid_front_end?(id)
     # Check validity of tweet first by making a HEAD request to
-    begin
-      Rails.logger.info 'Checking tweet in front end'
-      url = "https://twitter.com/user/status/#{tweet_id}"
-      return self.class.head(url).response.code == '200' ? true : false
-    rescue StandardError => e
-      ErrorLogger.error e
-    end
+    Rails.logger.info 'Checking the tweet using the Twitter front end'
+    url = "https://twitter.com/user/status/#{id}"
+    self.class.head(url).response.code == '200'
+  rescue StandardError => e
+    ErrorLogger.error "Twitter client error. #{e.class}: #{e.message}"
   end
 end

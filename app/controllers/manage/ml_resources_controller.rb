@@ -5,7 +5,6 @@ module Manage
 
     def list_ml_models
       authorize! :view, :ml
-      @api_ready = @api.ping
     end
 
     def ml_playground
@@ -19,7 +18,7 @@ module Manage
     private
 
     def api_init
-      @api = FlaskApi.new
+      @api = AwsApi.new
     end
   end
 end

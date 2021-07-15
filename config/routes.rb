@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     controller :apis do
       post 'get_predictions', action: 'get_predictions'
       post 'update_sentiment_map', action: 'update_sentiment_map'
-      get 'set_config', action: 'set_config'
+      get 'upload_config', action: 'upload_config'
       get 'stream_status', action: 'stream_status'
       get 'stream_data', action: 'stream_data'
       post 'get_leadline', action: 'get_leadline'

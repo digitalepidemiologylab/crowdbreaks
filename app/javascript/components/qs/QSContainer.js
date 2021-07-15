@@ -28,6 +28,7 @@ export class QSContainer extends React.Component {
       'questionSequenceHasEnded': false,
       'captchaVerified': !props.enableCaptcha,  // if captcha is disabled, sets captcha permanently to verified state
       'tweetId': props.tweetId,
+      'tweetIndex': props.tweetIndex,
       'openModal': !props.userSignedIn,
       'errors': [],
       'nextTweetId': 0,
@@ -61,6 +62,7 @@ export class QSContainer extends React.Component {
         questionId: this.state.currentQuestion.id,
         userId: this.props.userId,
         tweetId: this.state.tweetId,
+        tweetIndex: this.state.tweetIndex,
         projectId: this.props.projectId
       }
     });
@@ -100,6 +102,7 @@ export class QSContainer extends React.Component {
     let data = humps.decamelizeKeys({
       qs: {
         tweetId: this.state.tweetId,
+        tweetIndex: this.state.tweetIndex,
         userId: this.props.userId,
         projectId: this.props.projectId,
         testMode: this.testMode,
@@ -113,8 +116,10 @@ export class QSContainer extends React.Component {
       contentType: "application/json",
       success: (response) => {
         let tweet_id = response['tweet_id'];
+        let tweet_index = response['tweet_index'];
         this.setState({
-          nextTweetId: tweet_id
+          nextTweetId: tweet_id,
+          nextTweetIndex: tweet_index
         });
       }
     });
@@ -140,6 +145,7 @@ export class QSContainer extends React.Component {
     } else {
       this.setState({
         tweetId: this.state.nextTweetId,
+        tweetIndex: this.state.nextTweetIndex,
         questionSequenceHasEnded: false,
         openModal: false,
         nextTweetId: 0,
@@ -199,6 +205,7 @@ export class QSContainer extends React.Component {
           currentQuestion={this.state.currentQuestion}
           transitions={this.props.transitions}
           tweetId={this.state.tweetId}
+          tweetIndex={this.state.tweetIndex}
           userId={this.props.userId}
           projectId={this.props.projectId}
           onTweetLoadError={() => this.onTweetLoadError()}

@@ -1,7 +1,13 @@
 module DashboardHelper
   def label_based_on_status(status)
-    if status == 'running' or status == 'paused'
-      image_tag(status+'.svg') + ' ' + status
+    status = status.to_s.downcase
+    status_to_pic = {
+      'running' => 'running', 'active' => 'running',
+      'paused' => 'paused', 'creating' => 'paused', 'deleting' => 'paused',
+      'true' => 'running'
+    }
+    if status_to_pic.keys.include?(status)
+      image_tag(status_to_pic[status] + '.svg') + ' ' + status
     else
       image_tag('not-running.svg') + ' ' + status
     end

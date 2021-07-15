@@ -12,13 +12,11 @@ export class MonitorStream extends React.Component {
 
     this.state = {
       data: [],
-      past_minutes: props.past_minutes,
       min: moment().subtract(props.past_minutes, 'minutes').format('YYYY-MM-DD HH:mm'),
       max: moment().format('YYYY-MM-DD HH:mm')
     };
 
     this.intervalId = null;
-    this.aggregation_interval = '10s';
 
     this.options = {
       maintainAspectRatio: false,
@@ -46,14 +44,18 @@ export class MonitorStream extends React.Component {
         }],
         xAxes: [{
           type: 'time',
-          barPercentage: 10,
           time: {
             unit: 'second',
             displayFormats: {
               'second': 'HH:mm:ss'
-            },
+            }
+          },
+          ticks: {
             min: this.state.min,
-            max: this.state.max
+            max: this.state.max,
+            display: true,
+            autoSkip: true,
+            maxTicksLimit: this.props.past_minutes * 60 / this.props.round_to_sec
           }
         }]
       },
@@ -70,15 +72,16 @@ export class MonitorStream extends React.Component {
     const data = {
       'api': {
         'es_index_name': this.props.es_index_name,
-        'interval': this.aggregation_interval,
-        'past_minutes': this.state.past_minutes
+        'interval': this.props.aggregation_interval,
+        'past_minutes': this.props.past_minutes,
+        'round_to_sec': this.props.round_to_sec
       }
     }
     this.getData(data);
 
     // Automatic update
     if (this.props.auto_update) {
-      this.intervalId = setInterval(() => this.triggerGetData(), 2000);
+      this.intervalId = setInterval(() => this.triggerGetData(), 5000);
     }
   }
 
@@ -92,11 +95,18 @@ export class MonitorStream extends React.Component {
     const data = {
       'api': {
         'es_index_name': this.props.es_index_name,
-        'interval': this.aggregation_interval,
-        'past_minutes': this.state.past_minutes
+        'interval': this.props.aggregation_interval,
+        'past_minutes': this.props.past_minutes,
+        'round_to_sec': this.props.round_to_sec
       }
     }
     this.getData(data);
+  }
+
+  roundToSeconds(datetime, seconds) {
+    const remainder = seconds - (moment.seconds() % seconds);
+    datetime = datetime.add(remainder, 'seconds');
+    return datetime
   }
 
   getData(data) {
@@ -110,11 +120,14 @@ export class MonitorStream extends React.Component {
       contentType: "application/json",
       success: (result) => {
         this.setState({
-          labels: result.map((d) => moment.utc(d.key_as_string, 'YYYY-MM-DD HH:mm:ss')),
+          labels: result.map((d) => moment(d.from_as_string).format('YYYY-MM-DD HH:mm:ss')),
           counts: result.map((d) => d.doc_count),
           min: moment().subtract(this.props.past_minutes, 'minutes').add(1, 'minute').format('YYYY-MM-DD HH:mm'),
           max: moment().add(1, 'minute').format('YYYY-MM-DD HH:mm')
         });
+        // console.log('success');
+        // console.log(this.state.labels);
+        // console.log(this.state.counts);
       }
     });
   }
@@ -126,12 +139,15 @@ export class MonitorStream extends React.Component {
         {
           label: this.props.project_name,
           data: this.state.counts,
-          backgroundColor: '#1e9CeA'
+          backgroundColor: '#1e9CeA',
+          barPercentage: 10
         }
       ]
     };
-    this.options.scales.xAxes[0].time.min = this.state.min;
-    this.options.scales.xAxes[0].time.max = this.state.max;
+    console.log('data');
+    console.log(data);
+    this.options.scales.xAxes[0].ticks.min = this.state.min;
+    this.options.scales.xAxes[0].ticks.max = this.state.max;
 
     return(
       <div>

@@ -33,7 +33,7 @@ development: &development
   SECRET_KEY_BASE: "33127b8a2267136c1f1bf28163f866503a948120c752bd8c7a43b5ad68579f79abb8e7d98699d0f9f153151023ec2fb04f446eedd58631d1dd236297ac2ee3a0"
   DEVISE_SECRET_KEY: "8fb9bbdb2ba57010c96c22e8a07bf0aa2166a976f6c96b2716b145a87d507677f504e9100974a2942660e26736b3fd4b4e6cebe4d7a547781c76c93f1ef10fac"
   # Redis (used for caching and Rails action cable. In production we're using the RedisToGo addon on Heroku), if not running in docker-compose change this to "redis://localhost:6379"
-  REDISTOGO_URL: 'redis://redis:6379'
+  # REDISTOGO_URL: 'redis://redis:6379'
   # Contact email (optional)
   MTURK_CONTACT_EMAIL: "email@example.com"
   # Stream error monitoring/daily & weekly status updates. This is currently triggered by Heroku Scheduler. Read more on the GitHub wiki.

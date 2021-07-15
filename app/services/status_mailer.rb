@@ -4,7 +4,7 @@ class StatusMailer
 
   def initialize(type: 'weekly')
     @type = type
-    @api = FlaskApi.new
+    @api = AwsApi.new
     @mailer = ApplicationMailer.new
     if @type == 'weekly'
       @to_email = ENV['EMAIL_STREAM_STATUS_WEEKLY']

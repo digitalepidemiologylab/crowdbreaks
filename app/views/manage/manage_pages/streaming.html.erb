@@ -9,10 +9,10 @@
   </div>
 </div>
 
-<% if not @stream_status == 'error' %>
+<% if not @stream_status == :error %>
   <div class="row justify-content-center">
     <div class="col-12">
-      <% if @stream_status == 'running' %>
+      <% if @stream_status == :running %>
         <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), change_stream_status: 'stop', class: 'btn btn-lg btn-negative mr-2' do %>
           <%= fa_icon('stop', class: 'fa-white') %>
           Stop stream
@@ -29,10 +29,10 @@
       <% end %>
     </div>
 
-    <% if not @is_up_to_date %>
+    <% if not @up_to_date %>
       <div class="col-12 mt-4">
         <div class="alert alert-danger">The streaming configuration is not up-to-date.</div>
-        <%= link_to set_config_path, class: 'btn btn-primary btn-lg mr-2' do %>
+        <%= link_to upload_config_path, class: 'btn btn-primary btn-lg mr-2' do %>
           <%= fa_icon('refresh', class: 'fa-white') %>
           Update configuration
         <% end %>
