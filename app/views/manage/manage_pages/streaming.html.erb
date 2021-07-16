@@ -13,16 +13,16 @@
   <div class="row justify-content-center">
     <div class="col-12">
       <% if @stream_status == :running %>
-        <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), change_stream_status: 'stop', class: 'btn btn-lg btn-negative mr-2' do %>
+        <%= link_to stream_status_path(api: {change_stream_status: 'stop'}), class: 'btn btn-lg btn-negative mr-2', data: { confirm: 'Are you sure?' } do %>
           <%= fa_icon('stop', class: 'fa-white') %>
           Stop stream
         <% end %>
-        <%= link_to stream_status_path(api: {change_stream_status: 'restart'}), class: 'btn btn-lg btn-primary' do %>
+        <%= link_to stream_status_path(api: {change_stream_status: 'restart'}), class: 'btn btn-lg btn-primary', data: { confirm: 'Are you sure?' } do %>
           <%= fa_icon('refresh', class: 'fa-white') %>
           Restart stream
         <% end %>
       <% else %>
-        <%= link_to stream_status_path(api: {change_stream_status: 'start'}), class: 'btn btn-lg btn-success' do %>
+        <%= link_to stream_status_path(api: {change_stream_status: 'start'}), class: 'btn btn-lg btn-success', data: { confirm: 'Are you sure?' } do %>
           <%= fa_icon('play', class: 'fa-white') %>
           Start stream
         <% end %>

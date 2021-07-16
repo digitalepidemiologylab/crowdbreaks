@@ -72,6 +72,8 @@ gem 'stretchy'
 # AWS Authentication
 gem 'faraday', '~> 0.15'
 gem 'faraday_middleware-aws-sigv4'
+# Turbolinks
+gem 'turbolinks', '~> 5.2.0'
 
 group :development, :test do
   gem 'rspec-rails'

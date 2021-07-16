@@ -26,12 +26,12 @@ module Response
     when :success
       respond_to do |format|
         flash.notice = response.message unless response.message.nil?
-        format.html { redirect_to redirect_path }
+        format.html { redirect_to redirect_path, turbolinks: true }
       end
     when :error
       respond_to do |format|
         flash.alert = response.message
-        format.html { redirect_to redirect_path }
+        format.html { redirect_to redirect_path, turbolinks: true }
       end
     end
   end
