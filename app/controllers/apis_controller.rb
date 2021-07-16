@@ -171,14 +171,22 @@ class ApisController < ApplicationController
   # Change stream status
   def stream_status
     authorize! :configure, :stream
+    quick_response = lambda do |action|
+      Helpers::ApiResponse.new(
+        status: :success, message: "Successfully sent a request to #{action} the streamer. Wait a minute please."
+      )
+    end
 
     case api_params[:change_stream_status]
     when 'start'
-      respond_with_flash(@api.start_streamer, streaming_path)
+      StartStreamerJob.perform_later
+      respond_with_flash(quick_response.call('start'), streaming_path)
     when 'restart'
-      respond_with_flash(@api.restart_streamer, streaming_path)
+      RestartStreamerJob.perform_later
+      respond_with_flash(quick_response.call('restart'), streaming_path)
     when 'stop'
-      respond_with_flash(@api.stop_streamer, streaming_path)
+      StopStreamerJob.perform_later
+      respond_with_flash(quick_response.call('stop'), streaming_path)
     end
   end
 
