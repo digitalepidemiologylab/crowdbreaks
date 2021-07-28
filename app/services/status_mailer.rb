@@ -17,13 +17,14 @@ class StatusMailer
 
   def send
     return unless send_emails?
+
     # Get streaming status from API
     options = {
       subject: subject,
       from_name: 'Crowdbreaks',
       from_email: 'no-reply@crowdbreaks.org',
       email: @to_email,
-      html: html_email,
+      html: html_email
     }
     @mailer.send_raw(options)
   end
@@ -33,7 +34,7 @@ class StatusMailer
       content_tag :body do
         concat header
         concat annotation_status
-        concat stream_status.html_safe
+        # concat stream_status.html_safe
       end
     end
   end
@@ -60,19 +61,25 @@ class StatusMailer
   end
 
   def annotation_summary
-    align = ['left', 'right']
+    align = %w[left right]
     table do
-      concat table_row("Total annotations:", num(annotation_counts), align: align)
-      concat table_row("Annotations #{@type == 'weekly' ? 'this week' : 'today'}:", num(annotation_counts(date_range: @date_range)), align: align)
-      concat table_row("New users #{@type == 'weekly' ? 'this week' : 'today'}:", num(sign_up_counts(date_range: @date_range)), align: align)
+      concat table_row('Total annotations:', num(annotation_counts), align: align)
+      concat table_row(
+        "Annotations #{@type == 'weekly' ? 'this week' : 'today'}:",
+        num(annotation_counts(date_range: @date_range)), align: align
+      )
+      concat table_row(
+        "New users #{@type == 'weekly' ? 'this week' : 'today'}:",
+        num(sign_up_counts(date_range: @date_range)), align: align
+      )
     end
   end
 
   def counts_by_project(total: false)
-    align = ['left'] + ['right']*4
-    modes = ['public', 'local', 'mturk', 'all']
+    align = ['left'] + ['right'] * 4
+    modes = %w[public local mturk all]
     date_range = @date_range unless total
-    table(header: ['Project', "Public", "Local", "Mturk", "Total"]) do
+    table(header: %w[Project Public Local Mturk Total]) do
       Project.primary.each do |primary_project|
         projects = primary_project.question_sequences
         counts = {}
@@ -93,13 +100,14 @@ class StatusMailer
     if date_range.present?
       results = results.where(created_at: date_range)
     end
-    if mode == 'all'
+    case mode
+    when 'all'
       results.num_annotations
-    elsif mode == 'public'
+    when 'public'
       results.num_public_annotations
-    elsif mode == 'mturk'
+    when 'mturk'
       results.num_mturk_annotations
-    elsif mode == 'local'
+    when 'local'
       results.num_local_annotations
     else
       raise 'Unsupported mode'
@@ -131,7 +139,7 @@ class StatusMailer
   end
 
   def table(num_cols: 2, header: nil)
-    header = ['']*num_cols if header.nil?
+    header = [''] * num_cols if header.nil?
     content_tag :table do
       concat table_row(*header, style: 'bold')
       yield
@@ -139,11 +147,11 @@ class StatusMailer
   end
 
   def table_row(*args, style: '', align: nil)
-    align = ['left']*args.length if align.nil?
+    align = ['left'] * args.length if align.nil?
     content_tag :tr do
       args.each_with_index do |arg, i|
         if style == 'bold'
-          concat tag.td(tag.b arg, align: align[i], style: 'padding:0 5px 0 5px;')
+          concat tag.td(tag.b(arg), align: align[i], style: 'padding:0 5px 0 5px;')
         else
           concat tag.td(arg, align: align[i], style: 'padding:0 5px 0 5px;')
         end

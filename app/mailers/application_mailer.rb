@@ -16,7 +16,7 @@ class ApplicationMailer < ActionMailer::Base
           type: 'to'
         }
       ],
-      global_merge_vars:  options.fetch(:global_merge_vars, [])
+      global_merge_vars: options.fetch(:global_merge_vars, [])
     }
 
     # send template
@@ -58,22 +58,19 @@ class ApplicationMailer < ActionMailer::Base
   private
 
   def full_subject(subject)
-    '[Crowdbreaks] ' + subject
+    "[Crowdbreaks] #{subject}"
   end
 
-  def verify_options(options, required_keys=[:template, :email, :subject])
+  def verify_options(options, required_keys=%i[template email subject])
     required_keys.each do |key|
-      unless options.has_key?(key)
-        raise "Key #{key.to_s} has to be present in options in order to send email!"
-      end
+      raise "Key #{key} has to be present in options in order to send email!" unless options.key?(key)
     end
   end
-
 
   def convert_mandrill_message(message)
     {
       from: message[:from_email],
-      to: message[:to].map{|m| m[:email]}.join(', '),
+      to: message[:to].map{ |m| m[:email] }.join(', '),
       subject: message[:subject],
       body: JSON.pretty_generate(message)
     }

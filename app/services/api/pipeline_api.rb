@@ -8,8 +8,8 @@ module PipelineApi
   BUCKET_NAME = ENV['S3_BUCKET_NAME']
   STREAM_CONFIG_KEY = 'configs/stream/stream.json'.freeze
   STREAM_STATE_KEY = 'configs/stream/state.json'.freeze
-  ECS_CLUSTER = 'crowdbreaks-streamer'.freeze
-  ECS_SERVICE_NAME = 'streamer-stg-service-1'.freeze
+  ECS_CLUSTER_NAME = ENV['ECS_CLUSTER_NAME']
+  ECS_SERVICE_NAME = ENV['ECS_SERVICE_NAME']
 
   @@s3_client = Aws::S3::Client.new(
     region: Aws.config[:region],
@@ -47,7 +47,7 @@ module PipelineApi
 
   def status_streaming
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'checking whether ECS container is running') do
-      Helpers::ApiResponse.new(status: :success, body: check_if_currently_active(ECS_CLUSTER, ECS_SERVICE_NAME))
+      Helpers::ApiResponse.new(status: :success, body: check_if_currently_active(ECS_CLUSTER_NAME, ECS_SERVICE_NAME))
     end
   end
 
@@ -57,7 +57,7 @@ module PipelineApi
       # description = @@ecs_client.describe_clusters({ clusters: ['crowdbreaks-streamer'] })
       # puts clusters
       # puts description
-      tasks = @@ecs_client.list_tasks({ cluster: ECS_CLUSTER, service_name: ECS_SERVICE_NAME }).task_arns
+      tasks = @@ecs_client.list_tasks({ cluster: ECS_CLUSTER_NAME, service_name: ECS_SERVICE_NAME }).task_arns
       statuses = []
       unless tasks.empty?
         resp = @@ecs_client.describe_tasks({ tasks: tasks })
@@ -96,8 +96,8 @@ module PipelineApi
   def start_streamer
     # To start streaming, set desired count to 1 and wait until tasks are pending
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'starting streamer') do
-      _ = @@ecs_client.update_service({ cluster: ECS_CLUSTER, service: ECS_SERVICE_NAME, desired_count: 1 })
-      wait_for_desired_count(ECS_CLUSTER, ECS_SERVICE_NAME, 1)
+      _ = @@ecs_client.update_service({ cluster: ECS_CLUSTER_NAME, service: ECS_SERVICE_NAME, desired_count: 1 })
+      wait_for_desired_count(ECS_CLUSTER_NAME, ECS_SERVICE_NAME, 1)
     end
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'updating the streamer state on S3') do
       File.open('app/services/api/start.json', 'rb') do |file|
@@ -110,8 +110,8 @@ module PipelineApi
   def stop_streamer
     # To stop streaming, set desired count to 0 and wait until tasks are stopped
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'stopping streamer') do
-      _ = @@ecs_client.update_service({ cluster: ECS_CLUSTER, service: ECS_SERVICE_NAME, desired_count: 0 })
-      wait_for_desired_count(ECS_CLUSTER, ECS_SERVICE_NAME, 0)
+      _ = @@ecs_client.update_service({ cluster: ECS_CLUSTER_NAME, service: ECS_SERVICE_NAME, desired_count: 0 })
+      wait_for_desired_count(ECS_CLUSTER_NAME, ECS_SERVICE_NAME, 0)
     end
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'updating the streamer state on S3') do
       File.open('app/services/api/stop.json', 'rb') do |file|
