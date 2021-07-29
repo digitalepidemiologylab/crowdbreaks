@@ -332,7 +332,7 @@ class Project < ApplicationRecord
   end
 
   def tweet_local(user_id)
-    public_tweet = public_tweets.not_assigned_to_user(user_id, id).may_be_available&.first
+    public_tweet = public_tweets.not_assigned_to_user(user_id, id).has_tweet_index.may_be_available&.first
     unless public_tweet.present?
       return Helpers::ApiResponse.new(
         status: :fail, body: random_tweet,

@@ -10,4 +10,6 @@ class PublicTweet < ApplicationRecord
 
   scope :not_assigned_to_user, not_assigned_to_user
   scope :may_be_available, -> { where(availability: %i[available unknown]) }
+
+  scope :has_tweet_index, -> { where.not(tweet_index: [nil, '']) }
 end
