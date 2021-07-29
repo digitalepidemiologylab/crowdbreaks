@@ -150,6 +150,8 @@ class Project < ApplicationRecord
     # test if given stream configuration is identical to projects
     selected_params = %i[keywords lang locales es_index_name slug active storage_mode image_storage_mode model_endpoints]
     config = Project.primary.where(active_stream: true).to_json(only: selected_params)
+    return false if remote_config.nil?
+
     remote_config.to_json == config
 
     # return false if remote_config.nil?
