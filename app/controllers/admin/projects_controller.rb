@@ -97,7 +97,7 @@ module Admin
       [:image_storage_mode, :annotation_mode, :storage_mode].each do |item|
         sanitized_params[item] = sanitized_params[item].to_i
       end
-      sanitized_params[:name] = "project_#{sanitized_params[:name]}"
+      sanitized_params[:name] = sanitized_params[:name].start_with?('project_') ? sanitized_params[:name] : "project_#{sanitized_params[:name]}"
       sanitized_params[:es_index_name] = sanitized_params[:active_stream] ? "#{sanitized_params[:name]}_*" : nil
       # sanitized_params[:es_index_name] = 'project_vaccine_sentiment'
       sanitized_params
