@@ -226,7 +226,6 @@ class Project < ApplicationRecord
   def tweet(user_id:, test_mode: false)
     # Rails.logger.info "Calling '#{__method__}' from '#{caller[0][/`.*'/][1..-2]}'"
     if stream_annotation_mode?
-      Rails.logger.info('Getting a new tweet')
       # Get a recent tweet from the streaming queue
       tweet = test_mode ? tweet_stream(user_id, index: ES_TEST_INDEX_PATTERN) : tweet_stream(user_id)
       add_to_public_tweets(tweet.body) unless test_mode
@@ -348,7 +347,6 @@ class Project < ApplicationRecord
   end
 
   def tweet_stream(user_id, index: es_index_name)
-    Rails.logger.info('tweet_stream')
     api = AwsApi.new
     get_tweet_from_api = lambda do |api, index, user_id|
       response = api.tweets(index: index, user_id: user_id)

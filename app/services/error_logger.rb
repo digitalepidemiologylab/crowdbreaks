@@ -9,9 +9,7 @@ class ErrorLogger
     Rollbar.warning(message) if send_to_rollbar
   end
 
-  private
-
-  def send_to_rollbar
+  def self.send_to_rollbar
     ENV['ENVIRONMENT_NAME'] == 'production'
   end
 end
