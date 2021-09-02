@@ -25,7 +25,7 @@ module Admin
           @notification = MturkNotification.new.success
 
           tweet = get_value_and_flash_now(
-            @project.tweet(user_id: @user_id), default: Helpers::Tweet.new(id: 20, text: '', index: nil)
+            @project.tweet(user_id: @user_id, test_mode: true), default: Helpers::Tweet.new(id: 20, text: '', index: nil)
           )
           @tweet_id = tweet.id
           @tweet_index = tweet.index

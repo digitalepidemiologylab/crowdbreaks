@@ -16,20 +16,23 @@ class TweetValidation
   # id = '563126182607339520' # valid
 
   def self.tweet_is_valid?(id)
-    return false if id.nil?
+    if id.nil?
+      ErrorLogger.error 'Tweet validation: The tweet id is nil.'
+      return false
+    end
     return tweet_is_valid_front_end?(id) if Rails.cache.exist?(CACHE_KEY)
 
     Crowdbreaks::TwitterClient.status(id)
   rescue Twitter::Error::TooManyRequests
-    ErrorLogger.error "Twitter error. #{e.class}: #{e.message}"
+    ErrorLogger.error "Tweet validation: Twitter error. #{e.class}: #{e.message} Validating with Twitter front-end."
     Rails.cache.write(CACHE_KEY, 1, expires_in: 1.hour)
     tweet_is_valid_front_end?(id)
   rescue Twitter::Error::ClientError => e
-    ErrorLogger.error "Twitter client error. #{e.class}: #{e.message}"
+    ErrorLogger.error "Tweet validation: Twitter client error. #{e.class}: #{e.message}"
     # Tweet is not available anymore or bad authentication
     false
   rescue Twitter::Error => e
-    ErrorLogger.error "Twitter error. #{e.class}: #{e.message}"
+    ErrorLogger.error "Tweet validation: Twitter error. #{e.class}: #{e.message} Validating with Twitter front-end."
     tweet_is_valid_front_end?(id)
   else
     true

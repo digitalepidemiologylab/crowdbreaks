@@ -227,7 +227,7 @@ class Project < ApplicationRecord
     # Rails.logger.info "Calling '#{__method__}' from '#{caller[0][/`.*'/][1..-2]}'"
     if stream_annotation_mode?
       # Get a recent tweet from the streaming queue
-      tweet = test_mode ? tweet_stream(user_id, index: ES_TEST_INDEX_PATTERN) : tweet_stream(user_id)
+      tweet = test_mode ? tweet_local(user_id) : tweet_stream(user_id)
       add_to_public_tweets(tweet.body) unless test_mode
       tweet
     elsif local_annotation_mode?
@@ -340,7 +340,7 @@ class Project < ApplicationRecord
         message: 'Could not find a suitable public tweet for annotation, showing a random tweet.'
       )
     end
-    public_tweet = Helpers::Tweet(
+    public_tweet = Helpers::Tweet.new(
       id: public_tweet[:tweet_id], text: public_tweet[:tweet_text], index: public_tweet[:tweet_index]
     )
     Helpers::ApiResponse.new(status: :success, body: public_tweet)
@@ -348,24 +348,19 @@ class Project < ApplicationRecord
 
   def tweet_stream(user_id, index: es_index_name)
     api = AwsApi.new
-    get_tweet_from_api = lambda do |api, index, user_id|
-      response = api.tweets(index: index, user_id: user_id)
-      if response.error?
-        ErrorLogger.error 'Did not manage to get a tweet from the stream, showing a random tweet.'
-        return Helpers::ApiResponse.new(
-          status: :fail, body: random_tweet,
-          message: 'Did not manage to get a tweet from the stream, showing a random tweet.'
-        )
-      end
-      response.body
-    end
 
     cache_key = "tweets-from-stream-user-#{user_id}"
     if Rails.cache.exist?(cache_key)
       Rails.logger.info 'Reading from CACHE'
       tweets = Rails.cache.read(cache_key)
     else
-      tweets = get_tweet_from_api.call(api, index, user_id)
+      response = api.tweets(index: index, user_id: user_id)
+      if response.error?
+        return Helpers::ApiResponse.new(
+          status: :fail, body: random_tweet, message: "#{response.message} Showing a random tweet."
+        )
+      end
+      tweets = response.body
     end
 
     tweets.each_with_index do |tweet, i|

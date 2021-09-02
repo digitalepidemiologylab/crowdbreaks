@@ -200,7 +200,6 @@ module ElasticsearchApi
   end
 
   def tweets(index:, question_tag: 'sentiment', user_id: nil, new_prob: 0.0)
-    Rails.logger.info "#{user_id} #{user_id.class}"
     query_new = { bool: { must_not: [{ exists: { field: 'annotations' } }] } }
     query_not_finished = { bool: {
       filter: [{ "script": {
@@ -239,6 +238,7 @@ module ElasticsearchApi
     return tweets if tweets.is_a? Helpers::ApiResponse
 
     tweets = query_pipeline.call(query_new, index) if rand_num > new_prob && tweets.empty?
+    return tweets if tweets.is_a? Helpers::ApiResponse
 
     tweets = tweets.map { |tweet| Helpers::Tweet.new(id: tweet['_id'], text: tweet['_source']['text'], index: tweet['_index']) }.compact
     Helpers::ApiResponse.new(status: :success, body: tweets)
@@ -309,7 +309,8 @@ module ElasticsearchApi
       end
     rescue *[
       Elasticsearch::Transport::Transport::Errors::BadRequest,
-      Elasticsearch::Transport::Transport::Errors::NotFound
+      Elasticsearch::Transport::Transport::Errors::NotFound,
+      Timeout::Error
     ] => e
       Helpers::ErrorHandler.error_log_response(occured_when, e)
     end
@@ -348,7 +349,6 @@ module ElasticsearchApi
   end
 
   def round_to_seconds(time, seconds)
-    Rails.logger.info "#{time}, #{seconds}"
     seconds = Integer(seconds)
     remainder = seconds - (Integer(time) % seconds)
     time + remainder
