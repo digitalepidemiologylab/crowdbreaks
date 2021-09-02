@@ -1,3 +1,4 @@
+require 'timeout'
 require 'elasticsearch'
 require 'faraday_middleware/aws_sigv4'
 require 'stretchy'
@@ -10,12 +11,15 @@ module ElasticsearchApi
   MAX_VALIDATIONS = 5
   MAX_RETRIES = 5
   SLEEP_TIME = 5
+  TIMEOUT = 20
   JSON_HEADER = { 'Content-Type' => 'application/json', :Accept => 'application/json' }.freeze
   DATE_FORMAT = '%Y-%m-%dT%T.000Z'.freeze
 
   service = 'es'
 
-  @@es_client = Elasticsearch::Client.new(url: ENV['ES_HOST_PORT'], retry_on_status: [403], retry_on_failure: 5) do |f|
+  @@es_client = Elasticsearch::Client.new(
+    url: ENV['ES_HOST_PORT'], request_timeout: 15, retry_on_status: [403], retry_on_failure: 2
+  ) do |f|
     f.request :aws_sigv4,
               service: service,
               region: Aws.config[:region],
@@ -29,19 +33,25 @@ module ElasticsearchApi
 
   def ping_es
     handle_es_errors(occured_when: 'pinging ES') do
-      Helpers::ApiResponse.new(status: :success, body: @@es_client.ping)
+      Timeout.timeout(TIMEOUT) do
+        Helpers::ApiResponse.new(status: :success, body: @@es_client.ping)
+      end
     end
   end
 
   def es_stats
     handle_es_errors(occured_when: 'fetching ES stats') do
-      Helpers::ApiResponse.new(status: :success, body: @@es_client.indices.stats)
+      Timeout.timeout(TIMEOUT) do
+        Helpers::ApiResponse.new(status: :success, body: @@es_client.indices.stats)
+      end
     end
   end
 
   def es_health
     handle_es_errors(occured_when: 'fetching ES cluster health') do
-      Helpers::ApiResponse.new(status: :success, body: @@es_client.cluster.health)
+      Timeout.timeout(TIMEOUT) do
+        Helpers::ApiResponse.new(status: :success, body: @@es_client.cluster.health)
+      end
     end
   end
 
@@ -85,8 +95,10 @@ module ElasticsearchApi
     end
 
     handle_es_errors(occured_when: 'aggregating tweets by keywords on ES') do
-      result = @@es_client.search index: index, body: definition
-      Helpers::ApiResponse.new(status: :success, body: result['aggregations']['all_data_agg']['buckets'])
+      Timeout.timeout(TIMEOUT) do
+        result = @@es_client.search index: index, body: definition
+        Helpers::ApiResponse.new(status: :success, body: result['aggregations']['all_data_agg']['buckets'])
+      end
     end
   end
 
@@ -111,8 +123,10 @@ module ElasticsearchApi
     cache_key = "get-avg-label-val-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
     cached(cache_key, use_cache: use_cache) do
       handle_es_errors(occured_when: 'aggregating average label value on ES') do
-        result = @@es_client.search index: index, body: definition
-        Helpers::ApiResponse.new(status: :success, body: result['aggregations']['hist_agg']['buckets'])
+        Timeout.timeout(TIMEOUT) do
+          result = @@es_client.search index: index, body: definition
+          Helpers::ApiResponse.new(status: :success, body: result['aggregations']['hist_agg']['buckets'])
+        end
       end
     end
   end
@@ -138,7 +152,9 @@ module ElasticsearchApi
           result = @@es_client.search index: index, body: definition
           predictions[answer_tag] = result['aggregations']['prediction_agg']['buckets']
         end
-        Helpers::ApiResponse.new(status: :success, body: predictions)
+        Timeout.timeout(TIMEOUT) do
+          Helpers::ApiResponse.new(status: :success, body: predictions)
+        end
       end
     end
   end
@@ -167,15 +183,19 @@ module ElasticsearchApi
     ).fields('aggregations.trending_tweets_agg').range(created_at: { gte: start_date, lte: end_date })
     query = query.query(term: { text: term }) unless term.nil?
     handle_es_errors(occured_when: 'aggregating trending tweets on ES') do
-      result = query.results[0]&.fetch('aggregations', nil)&.fetch('trending_tweets_agg', nil)&.fetch('buckets', [])
-      Helpers::ApiResponse.new(status: :success, body: result)
+      Timeout.timeout(TIMEOUT) do
+        result = query.results[0]&.fetch('aggregations', nil)&.fetch('trending_tweets_agg', nil)&.fetch('buckets', [])
+        Helpers::ApiResponse.new(status: :success, body: result)
+      end
     end
   end
 
   def stream_activity(es_activity_threshold_min: 10)
     handle_es_errors(occured_when: 'counting ES activity') do
-      query = { query: { range: { timestamp: { gte: "now-#{es_activity_threshold_min}m/m", lt: 'now/m' } } } }
-      Helpers::ApiResponse.new(status: :success, body: @@es_client.count({ body: query }))
+      Timeout.timeout(TIMEOUT) do
+        query = { query: { range: { timestamp: { gte: "now-#{es_activity_threshold_min}m/m", lt: 'now/m' } } } }
+        Helpers::ApiResponse.new(status: :success, body: @@es_client.count({ body: query }))
+      end
     end
   end
 
@@ -205,10 +225,12 @@ module ElasticsearchApi
 
     query_pipeline = lambda do |query, index|
       handle_es_errors(occured_when: 'fetching a new tweet from ES') do
-        @@es_client.search(
-          index: index, size: MAX_VALIDATIONS,
-          body: sample_predictions_definition(recent_predictions_query(query), question_tag)
-        )['hits']['hits']
+        Timeout.timeout(TIMEOUT) do
+          @@es_client.search(
+            index: index, size: MAX_VALIDATIONS,
+            body: sample_predictions_definition(recent_predictions_query(query), question_tag)
+          )['hits']['hits']
+        end
       end
     end
 
@@ -224,17 +246,19 @@ module ElasticsearchApi
 
   def update_tweet(index:, user_id:, tweet_id:)
     handle_es_errors(occured_when: 'updating a tweet on ES') do
-      response = @@es_client.update(
-        { id: tweet_id, type: '_doc', index: index, refresh: true, body: {
-          script: {
-            source: 'if (ctx._source.annotations == null) ctx._source.annotations = new ArrayList();' \
-                    'ctx._source.annotations.add(params.annotation)',
-            lang: 'painless',
-            params: { annotation: { user_id: user_id } }
-          }
-        } }
-      )
-      Helpers::ApiResponse.new(status: :success, message: 'Successfully updated tweet.', body: response)
+      Timeout.timeout(TIMEOUT) do
+        response = @@es_client.update(
+          { id: tweet_id, type: '_doc', index: index, refresh: true, body: {
+            script: {
+              source: 'if (ctx._source.annotations == null) ctx._source.annotations = new ArrayList();' \
+                      'ctx._source.annotations.add(params.annotation)',
+              lang: 'painless',
+              params: { annotation: { user_id: user_id } }
+            }
+          } }
+        )
+        Helpers::ApiResponse.new(status: :success, message: 'Successfully updated tweet.', body: response)
+      end
     end
   end
 
