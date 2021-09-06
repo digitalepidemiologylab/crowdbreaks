@@ -2,6 +2,7 @@ class WatchStream
   include Response
   CACHE_KEY = 'watch_stream_error_report_sent'.freeze
   CACHE_KEY_EXPIRY = 1.hours
+  ES_THRESHOLD = 10
 
   def initialize
     @mailer = ApplicationMailer.new
@@ -35,7 +36,7 @@ class WatchStream
       return false
     end
 
-    response = @api.stream_activity(es_activity_threshold_min: 10)
+    response = @api.stream_activity(es_activity_threshold_min: ES_THRESHOLD)
     case response.status
     when :error
       notify_and_deactivate('There was an error trying to retrieve the ES activity.')
@@ -45,7 +46,7 @@ class WatchStream
       if count.zero?
         message = \
           "The stream seems to be running but with very low activity.\n" \
-          "Documents indexed on Elasticsearch: #{num(count)} (last #{activity_options[:es_activity_threshold_min]} min)."
+          "Documents indexed on Elasticsearch: #{num(count)} (last #{ES_THRESHOLD} min)."
         notify_and_deactivate(message)
         return false
       end
