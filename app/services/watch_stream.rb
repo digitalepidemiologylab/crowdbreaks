@@ -17,7 +17,7 @@ class WatchStream
   end
 
   def check_es
-    es_health = get_value(@api.es_health)
+    es_health = get_value(@api.es_health).fetch('status', nil)
     unless es_health == 'green'
       message = "Elasticsearch is currently in state '#{es_health}'."
       notify_and_deactivate(message)
