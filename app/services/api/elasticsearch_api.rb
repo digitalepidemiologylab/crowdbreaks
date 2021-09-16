@@ -193,7 +193,7 @@ module ElasticsearchApi
   def stream_activity(es_activity_threshold_min: 10)
     handle_es_errors(occured_when: 'counting ES activity') do
       Timeout.timeout(TIMEOUT) do
-        query = { query: { range: { timestamp: { gte: "now-#{es_activity_threshold_min}m/m", lt: 'now/m' } } } }
+        query = { query: { range: { created_at: { gte: "now-#{es_activity_threshold_min}m", lt: 'now' } } } }
         Helpers::ApiResponse.new(status: :success, body: @@es_client.count({ body: query }))
       end
     end
