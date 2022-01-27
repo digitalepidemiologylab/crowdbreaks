@@ -60,7 +60,7 @@ gem 'active_model_serializers', '~> 0.10.0'
 gem 'twitter'
 # Job scheduling
 # gem 'redis'
-gem 'sidekiq', '~> 5.2.7'
+gem 'sidekiq', '~> 6.4.0'
 # Monitoring
 gem 'rollbar'
 # Advisory lock
