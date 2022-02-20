@@ -14,7 +14,7 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt-get update -y
 
 # Install Yarn
-RUN apt-get install yarn -y
+RUN apt-get install yarn -y --no-install-recommends
 
 # Install bundler
 RUN gem install bundler -v 2.2.3
