@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_08_100909) do
+ActiveRecord::Schema.define(version: 2022_02_17_151030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,6 +194,7 @@ ActiveRecord::Schema.define(version: 2021_07_08_100909) do
     t.boolean "primary", default: true, null: false
     t.string "question_sequence_name"
     t.datetime "last_question_sequence_created_at"
+    t.boolean "covid", default: false, null: false
     t.index ["es_index_name"], name: "index_projects_on_es_index_name", unique: true
     t.index ["slug"], name: "index_projects_on_slug"
   end

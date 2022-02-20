@@ -1,6 +1,6 @@
 function toggleTwitterOptions() {
   // toggle checkbox to hide options
-  $('.twitter-streaming-options-checkbox').change(function() {
+  $('.twitter-streaming-options-checkbox').on('change', function() {
     if (this.checked) {
       $('#twitter-streaming-options').show()
     } else {
@@ -10,7 +10,7 @@ function toggleTwitterOptions() {
 }
 
 function annotationModeSelect() {
-  $('#select-annotation-mode').change(function() {
+  $('#select-annotation-mode').on('change', function() {
     if ($('#select-annotation-mode').val() == 0) {
       $('#options-annotation-mode-local').hide()
     } else {

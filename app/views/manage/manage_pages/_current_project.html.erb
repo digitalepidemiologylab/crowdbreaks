@@ -6,6 +6,7 @@
   <td><%= current_project.storage_mode %></td>
   <td><%= current_project.image_storage_mode %></td>
   <td><%= status_yes_no(current_project.active_stream?) %></td>
+  <td><%= status_yes_no(current_project.covid?) %></td>
   <td>
     <span class="no-wrap">
       <% if can? :read, current_project %>

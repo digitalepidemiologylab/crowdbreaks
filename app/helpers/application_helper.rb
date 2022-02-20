@@ -84,7 +84,7 @@ module ApplicationHelper
 
   def simple_toggle_switch(checked, label, class_name, color: nil)
     content_tag :div do
-      content_tag :label, class: "switch" do
+      content_tag :label, class: 'switch' do
         concat tag.input(type: 'checkbox', checked: checked, class: class_name)
         concat tag.span(class: "slider round#{color.nil? ? '' : " slider-#{color}"}")
         concat tag.span(label, class: 'switch-label')
@@ -97,8 +97,8 @@ module ApplicationHelper
     name = "#{model_name}[#{field_name}]"
     content_tag :div, class: class_name do
       output = content_tag :label, class: 'switch' do
-        concat hidden_field_tag(name, value="0")
-        concat check_box_tag(name, value="1", checked=instance_var, class: name)
+        concat hidden_field_tag(name, value='0')
+        concat check_box_tag(name, value='1', checked=instance_var, class: name)
         concat tag.span(class: "slider round#{color.nil? ? '' : " slider-#{color}"}")
         concat tag.span(label, class: 'switch-label')
       end
