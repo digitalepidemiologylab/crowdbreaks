@@ -18,13 +18,11 @@ default: &default
 
 development:
   <<: *default
-  host: <%= ENV.fetch('POSTGRES_HOST') { 'localhost' } %>
   username: postgres
   database: crowdbreaks_development
 
 test:
   <<: *default
-  host: db
   username: postgres
   database: crowdbreaks_test
 

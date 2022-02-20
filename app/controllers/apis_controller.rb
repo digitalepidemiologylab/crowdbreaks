@@ -194,7 +194,7 @@ class ApisController < ApplicationController
   def upload_config
     authorize! :configure, :stream
     @projects = Project.primary.where(active_stream: true)
-    selected_params = %i[keywords lang locales es_index_name slug active storage_mode image_storage_mode model_endpoints]
+    selected_params = %i[keywords lang locales es_index_name slug covid storage_mode image_storage_mode model_endpoints]
     config = @projects.to_json(only: selected_params)
     UploadConfigJob.perform_later(config)
     respond_with_flash(
