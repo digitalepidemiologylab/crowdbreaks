@@ -4,7 +4,7 @@ ENV BUNDLE_PATH /box/bundle_gems/
 ENV NODE_PATH /box/node_modules/
 
 # Install nodejs
-RUN apt-get update -qq && apt-get install -y nodejs
+RUN apt-get update -qq && apt-get install -y nodejs=14.19.0
 
 # Add Yarn repository
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
