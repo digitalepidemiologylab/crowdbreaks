@@ -147,33 +147,19 @@ class Project < ApplicationRecord
 
   def self.up_to_date?(remote_config)
     # test if given stream configuration is identical to projects
-    selected_params = %i[keywords lang locales es_index_name slug covid storage_mode image_storage_mode model_endpoints]
-    config = Project.primary.where(active_stream: true).to_json(only: selected_params)
+    config_params = %i[keywords lang locales es_index_name slug covid storage_mode image_storage_mode model_endpoints]
+    config_serialization = Project.primary.where(active_stream: true)
     return false if remote_config.nil?
+    return false if remote_config.length != config_serialization.count
 
-    remote_config.to_json == config
+    remote_config = remote_config.sort_by { |conf| conf['slug'] }
+    config = JSON.parse config_serialization.reorder(slug: :asc).to_json(only: config_params)
 
-    # return false if remote_config.nil?
-    # return false if remote_config.length != Project.primary.where(active_stream: true).count
+    remote_config.zip(config).each do |remote_conf, conf|
+      return false if remote_conf.sort.to_h.to_json != conf.sort.to_h.to_json
+    end
 
-    # remote_config.each do |c|
-    #   p = Project.find_by(slug: c['slug'])
-    #   return false if p.nil?
-
-    #   puts p.to_json()
-
-    #   %w[keywords lang locales].each do |prop|
-    #     puts 'first check'
-    #     return false if p[prop].nil? || c[prop].nil?
-    #     return false if p[prop].sort != c[prop].sort
-    #   end
-    #   %w[slug active storage_mode image_storage_mode model_endpoints].each do |prop|
-    #     puts 'second check'
-    #     return false if p[prop].nil? || c[prop].nil?
-    #     return false if p[prop] != c[prop]
-    #   end
-    # end
-    # true
+    true
   end
 
   def results_to_csv(type: 'public-results')

@@ -141,7 +141,7 @@ module PipelineApi
   def get_s3_object(bucket, key, version_id: nil)
     params = { bucket: bucket, key: key }
     params[:version_id] = version_id if version_id
-    JSON.parse(@@s3_client.get_object(params).body.read.force_encoding('UTF-8'))
+    JSON.parse @@s3_client.get_object(params).body.read.force_encoding('UTF-8')
   end
 
   def check_if_currently_active(cluster_name, service_name)
