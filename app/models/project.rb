@@ -153,7 +153,8 @@ class Project < ApplicationRecord
     return false if remote_config.length != config_serialization.count
 
     remote_config = remote_config.sort_by { |conf| conf['slug'] }
-    config = JSON.parse config_serialization.reorder(slug: :asc).to_json(only: config_params)
+    config = JSON.parse config_serialization.to_json(only: config_params)
+    config = config.sort_by { |conf| conf['slug'] }
 
     remote_config.zip(config).each do |remote_conf, conf|
       return false if remote_conf.sort.to_h.to_json != conf.sort.to_h.to_json
