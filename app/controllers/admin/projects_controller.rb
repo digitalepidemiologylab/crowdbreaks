@@ -76,10 +76,12 @@ module Admin
     private
 
     def project_params
-      params.require(:project).permit({title_translations: Crowdbreaks::Locales}, {description_translations: Crowdbreaks::Locales},
-                                      :name, :covid, :keywords, :es_index_name, :image, :public, :active_stream, :lang, :storage_mode, :image_storage_mode,
-                                      :locales, :accessible_by_email_pattern, :annotation_mode, :job_file, :active_question_sequence_id, :primary, :question_sequence_name,
-                                      :compile_trending_tweets, :compile_trending_topics, :compile_data_dump_ids)
+      params.require(:project).permit(
+        { title_translations: Crowdbreaks::Locales }, { description_translations: Crowdbreaks::Locales },
+        :name, :covid, :keywords, :es_index_name, :image, :public, :active_stream, :lang,
+        :storage_mode, :image_storage_mode, :locales, :accessible_by_email_pattern,
+        :annotation_mode, :auto_mturking, :job_file, :active_question_sequence_id, :primary, :question_sequence_name,
+        :compile_trending_tweets, :compile_trending_topics, :compile_data_dump_ids)
     end
 
     def copy_fields_from_primary_project(project)

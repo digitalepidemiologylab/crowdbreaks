@@ -147,7 +147,8 @@ class Project < ApplicationRecord
 
   def self.up_to_date?(remote_config)
     # test if given stream configuration is identical to projects
-    config_params = %i[keywords lang locales es_index_name slug covid storage_mode image_storage_mode model_endpoints]
+    config_params =
+      %i[keywords lang locales es_index_name slug covid storage_mode image_storage_mode model_endpoints auto_mturking]
     config_serialization = Project.primary.where(active_stream: true)
     return false if remote_config.nil?
     return false if remote_config.length != config_serialization.count

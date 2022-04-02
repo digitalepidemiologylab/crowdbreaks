@@ -8,6 +8,7 @@
   <td><%= status_yes_no(project.public?) %></td>
   <td><%= status_yes_no(project.active_stream?) %></td>
   <td><%= status_yes_no(project.covid?) %></td>
+  <td><%= status_yes_no(project.auto_mturking?) %></td>
   <td>
     <div id="progress-circle-record-<%= project.id %>-public-tweets-context">
       <span class="no-wrap">
