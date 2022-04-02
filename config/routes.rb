@@ -74,6 +74,8 @@ Rails.application.routes.draw do
       end
 
       # mturk
+      get 'mturk_auto', to: 'mturk_auto#index', as: 'mturk_auto'
+      post 'mturk_auto/update', to: 'mturk_auto#update', as: 'mturk_auto_update'
       resources :mturk_batch_jobs do
         resources :tasks
         resources :mturk_tweets, only: [:index] do
