@@ -66,6 +66,9 @@ GEM
     aws-sdk-elasticsearchservice (1.47.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-eventbridge (1.18.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-firehose (1.35.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
@@ -512,6 +515,7 @@ DEPENDENCIES
   autoprefixer-rails (>= 9.1.0)
   aws-sdk-ecs
   aws-sdk-elasticsearchservice
+  aws-sdk-eventbridge
   aws-sdk-firehose
   aws-sdk-mturk
   aws-sdk-s3

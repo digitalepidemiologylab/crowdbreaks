@@ -44,6 +44,7 @@ gem 'friendly_id', '~> 5.1'
 # AWS
 gem 'aws-sdk-ecs'
 gem 'aws-sdk-elasticsearchservice'
+gem 'aws-sdk-eventbridge'
 gem 'aws-sdk-firehose'
 gem 'aws-sdk-mturk'
 gem 'aws-sdk-s3'

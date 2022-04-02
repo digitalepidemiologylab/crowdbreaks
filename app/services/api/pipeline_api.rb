@@ -29,7 +29,26 @@ module PipelineApi
     secret_access_key: Aws.config[:credentials].secret_access_key
   )
 
-  # pipeline
+  @@eventbridge = Aws::EventBridge::Client.new(
+    region: Aws.config[:region],
+    access_key_id: Aws.config[:credentials].access_key_id,
+    secret_access_key: Aws.config[:credentials].secret_access_key
+  )
+
+  # Create-update an event
+  def create_update_cron_event(name:, cron:)
+    Helpers::ErrorHandler.handle_error(
+      AWS_SERVICE_ERROR, occured_when: "updating the EventBridge rule '#{name}' with the cron '#{cron}'"
+    ) do
+      response = @@eventbridge.put_rule(
+        { name: name, schedule_expression: "cron(#{cron})", state: 'ENABLED',
+          tags: [{ key: 'project', value: 'crowdbreaks' }] }
+      )
+      Helpers::ApiResponse.new(status: :success, message: 'Successfully updated the rule.', body: response.rule_arn)
+    end
+  end
+
+  # Pipeline
   def config
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'downloading the config from S3') do
       Helpers::ApiResponse.new(status: :success, body: get_s3_object(BUCKET_NAME, STREAM_CONFIG_KEY))
