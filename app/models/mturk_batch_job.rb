@@ -9,7 +9,7 @@ class MturkBatchJob < ApplicationRecord
   belongs_to :project
   belongs_to :mturk_worker_qualification_list
 
-  validates :name, presence: true, uniqueness: {message: "Name must be unique"}
+  validates :name, presence: true, uniqueness: { message: 'Name must be unique' }
   validates_presence_of :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward
   validates_inclusion_of :sandbox, in: [true, false]
   validates_inclusion_of :minimal_approval_rate, in: 0..100, message: 'Minimal approval rate needs to be between 0 and 100', allow_nil: true
@@ -18,7 +18,7 @@ class MturkBatchJob < ApplicationRecord
   validates_with HitTypeValidator, on: :create
   validates_with QualificationListValidator
 
-  enum check_availability: [:before, :after, :before_and_after, :never], _prefix: true
+  enum check_availability: %i[before after before_and_after never], _prefix: true
 
   attr_accessor :cloned_name
 

@@ -1,9 +1,9 @@
 class Mturk
   attr_reader :client
 
-  DEFAULT_ACCEPT_MESSAGE = 'Thank you for your work!'
-  DEFAULT_REJECT_MESSAGE = 'Your work has been rejected because the majority of questions answered in this task are wrong.'
-  DEFAULT_BLOCK_REASON = 'Poor quality'
+  DEFAULT_ACCEPT_MESSAGE = 'Thank you for your work!'.freeze
+  DEFAULT_REJECT_MESSAGE = 'Your work has been rejected because the majority of questions answered in this task are wrong.'.freeze
+  DEFAULT_BLOCK_REASON = 'Poor quality'.freeze
 
   def initialize(sandbox: true)
     @client = get_client(sandbox)
@@ -14,34 +14,34 @@ class Mturk
     qual_type_id = generate_exclude_worker_qualification(batch_job.name)
     actions_guarded = batch_job.sandbox? ? 'Accept' : 'DiscoverPreviewAndAccept'
     if qual_type_id.nil?
-      ErrorLogger.error "Something went wrong when generating the qualification type. Aborting."
+      ErrorLogger.error 'Something went wrong when generating the qualification type. Aborting.'
       return
     end
     Rails.logger.info "Generated new qualifaction type ID: #{qual_type_id}"
     # set qualification requirements
     # dynamic negative qualification: worker gets dynamically excluded
-    qualification_requirements = [{
-        qualification_type_id: qual_type_id,
-        comparator: 'DoesNotExist',   # If worker does not exist on list, worker is qualified
-        actions_guarded: "Accept"     # Worker can still preview the task but not accept
-      }]
+    qualification_requirements = [
+      { qualification_type_id: qual_type_id,
+        comparator: 'DoesNotExist', # If worker does not exist on list, worker is qualified
+        actions_guarded: 'Accept' } # Worker can still preview the task but not accept
+    ]
     # positive qualification list
     if batch_job.mturk_worker_qualification_list.present?
-      qualification_requirements.push({
-        qualification_type_id: batch_job.mturk_worker_qualification_list.qualification_type_id,
-        comparator: 'EqualTo',                          # Worker has to have a perfect score in qualification!
-        integer_values: [1],
-        actions_guarded: "DiscoverPreviewAndAccept"     # Worker cannot accept, preview, or see HIT in their search results
-      })
+      qualification_requirements.push(
+        { qualification_type_id: batch_job.mturk_worker_qualification_list.qualification_type_id,
+          comparator: 'EqualTo', # Worker has to have a perfect score in qualification!
+          integer_values: [1],
+          actions_guarded: 'DiscoverPreviewAndAccept' } # Worker cannot accept, preview, or see HIT in their search results
+      )
     end
     # existing qualification type (e.g. created outside of Crowdbreaks)
     if batch_job.existing_qualification_type_id.present?
-      qualification_requirements.push({
-        qualification_type_id: batch_job.existing_qualification_type_id,
-        comparator: 'EqualTo',                          # Worker has to have a perfect score in qualification!
-        integer_values: [1],
-        actions_guarded: "DiscoverPreviewAndAccept"     # Worker cannot accept, preview, or see HIT in their search results
-      })
+      qualification_requirements.push(
+        { qualification_type_id: batch_job.existing_qualification_type_id,
+          comparator: 'EqualTo', # Worker has to have a perfect score in qualification!
+          integer_values: [1],
+          actions_guarded: 'DiscoverPreviewAndAccept' } # Worker cannot accept, preview, or see HIT in their search results
+      )
     end
     # system qualfification: minimum approval rate
     unless batch_job.minimal_approval_rate.nil?
@@ -290,7 +290,6 @@ class Mturk
     end
   end
 
-
   def get_qualification_type(qualification_type_id)
     handle_error do
       resp = @client.get_qualification_type({
@@ -299,7 +298,6 @@ class Mturk
       resp.qualification_type
     end
   end
-
 
   private
 

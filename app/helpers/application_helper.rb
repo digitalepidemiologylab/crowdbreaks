@@ -2,11 +2,13 @@ module ApplicationHelper
   def flash_messages
     # Bootstrap notifications
     flash.each do |msg_type, message|
-      msg_type = "success" if msg_type == "notice"
-      msg_type = "danger" if msg_type == "alert"
+      msg_type = 'success' if msg_type == 'notice'
+      msg_type = 'danger' if msg_type == 'alert'
       concat(content_tag(:div, message, class: "alert alert-#{msg_type} alert-dismissible fade show", role: 'alert') do
         concat message
-        concat content_tag(:button, '&times;'.html_safe, class: "close", data: { dismiss: 'alert' }, aria: {label: 'Close'})
+        concat content_tag(
+          :button, '&times;'.html_safe, class: 'close', data: { dismiss: 'alert' }, aria: { label: 'Close' }
+        )
       end)
     end
     nil
@@ -15,17 +17,17 @@ module ApplicationHelper
   def toastr_flash_class(type)
     # Mapping for toastr notifications
     case type
-    when "alert"
-      "toastr.error"
-    when "notice"
-      "toastr.success"
+    when 'alert'
+      'toastr.error'
+    when 'notice'
+      'toastr.success'
     else
-      "toastr.info"
+      'toastr.info'
     end
   end
 
   def title(page_title)
-    content_for :title, 'Crowdbreaks | ' + page_title.to_s
+    content_for :title, "Crowdbreaks | #{page_title}"
   end
 
   def current_namespace?(namespace)
@@ -41,9 +43,10 @@ module ApplicationHelper
   end
 
   def availability_status(status)
-    if status == 'unknown'
+    case status
+    when 'unknown'
       tag.span(status, class: 'badge badge-light')
-    elsif status == 'available'
+    when 'available'
       tag.span(status, class: 'badge badge-success')
     else
       tag.span(status, class: 'badge badge-danger')
@@ -51,9 +54,10 @@ module ApplicationHelper
   end
 
   def mturk_worker_status(status)
-    if status == 'default'
+    case status
+    when 'default'
       tag.span(status, class: 'badge badge-light')
-    elsif status == 'blacklisted'
+    when 'blacklisted'
       tag.span(status, class: 'badge badge-warning')
     else
       tag.span(status, class: 'badge badge-danger')
@@ -61,9 +65,10 @@ module ApplicationHelper
   end
 
   def endpoint_status(status)
-    if status == 'InService'
+    case status
+    when 'InService'
       tag.span(status, class: 'badge badge-success')
-    elsif status == 'Failed'
+    when 'Failed'
       tag.span(status, class: 'badge badge-danger')
     else
       tag.span(status, class: 'badge badge-warning')
@@ -133,7 +138,7 @@ module ApplicationHelper
 
   def attributes_table(record, mb: 'mb-4', center: true, col: 'col-md-8')
     content_tag :div, class: "row #{center ? 'justify-content-center' : ''} #{mb}" do
-      content_tag :div, class: "#{col}" do
+      content_tag :div, class: col.to_s do
         content_tag :table, class: 'table vertical-align' do
           concat tag.col
           concat tag.col
@@ -146,20 +151,24 @@ module ApplicationHelper
   end
 
   def time_ago(time_at)
-    if time_at.respond_to?(:strftime)
-      tag.div(time_at.iso8601, class: 'convert-by-moment', data: {lang: I18n.locale})
-    end
+    return unless time_at.respond_to?(:strftime)
+
+    tag.div(time_at.iso8601, class: 'convert-by-moment', data: { lang: I18n.locale })
   end
 
   def _progress_circle_outer
     content_tag :div, class: 'circle' do
-      concat content_tag(:div, '<div class="fill"></div>', {class: 'mask full'}, false)
-      concat content_tag :div, '<div class="fill"></div><div class="fill fix"></div>', {class: 'mask half'}, false
+      concat content_tag(:div, '<div class="fill"></div>', { class: 'mask full' }, false)
+      concat content_tag :div, '<div class="fill"></div><div class="fill fix"></div>', { class: 'mask half' }, false
     end
   end
 
   def progress_circle(id, small: false, progress: 0, visible: false)
-    content_tag :div, id: id, class: "#{small ? 'progress-circle-sm' : 'progress-circle'}", data: {progress: progress}, style: "#{visible ? '' : 'display:none;'}" do
+    content_tag :div, **{
+      id: id,
+      class: (small ? 'progress-circle-sm' : 'progress-circle').to_s,
+      data: { progress: progress }, style: visible ? '' : 'display:none;'
+    } do
       concat _progress_circle_outer
       concat tag.div class: 'inset'
     end
