@@ -66,11 +66,46 @@
   </div>
 </div>
 
-<hr class='md-5'/>
+<hr class='mb-5'/>
 
+<h4 class="and-divider mb-4"><span>List of Crowdbreaks AWS resources ARNs</span></h4>
 <div class="row justify-content-center mb-6">
+  <% if !@resource_groups.nil? %>
+    <div class="col-4 mb-5">
+      <div class="list-group" id="list-tab" role="tablist">
+        <% @resource_groups.each do |krg, vrg| %>
+          <% class_name = krg.capitalize&.split('::')&.join('') %>
+          <a class="list-group-item list-group-item-action" id=<%= "#list#{class_name}List" %> data-toggle="list" href=<%= "#list#{class_name}" %> role="tag" aria-controls=<%= "#{class_name}" %>>
+            <%= krg %>
+          </a>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-8 mb-5">
+      <div class="tab-content" id="nav-tabContent">
+        <% @resource_groups.each do |krg, vrg| %>
+          <% class_name = krg.capitalize&.split('::')&.join('') %>
+          <div class="tab-pane fade" id=<%= "list#{class_name}" %> role="tabpanel" aria-labelledby=<%= "#list#{class_name}List" %>>
+            <table class="table text-left">
+              <thead>
+                <th><%= "#{vrg[0].identifier.resource_arn.split('/')[0..-2].join('/')}/..." %></th>
+              </thead>
+              <% vrg.each do |r| %>
+                <tbody>
+                  <tr>
+                    <td><%= r.identifier.resource_arn.split('/')[-1] %></td>
+                  </tr>
+                </tbody>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="col-12 col-md-10 col-lg-8 text-center">
-    <h4 class="and-divider mb-4"><span>Status of docker containers</span></h4>
+    <%# <h4 class="and-divider mb-4"><span>Status of docker containers</span></h4>
     <table class="table">
       <thead>
         <th>Container</th>
@@ -79,16 +114,22 @@
       <tbody>
         <tr>
           <td>State synced with S3</td>
-          <td><span class="badge badge-sentiment"><%= label_based_on_status(@check_state) %></span></td>
-        </tr>
-        <% @status_streamer.each do |s| %>
-          <tr>
-            <td><%= s[:name] %></td>
-            <td><span class="badge badge-sentiment"><%= label_based_on_status(s[:status]) %></span></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+          <td><span class="badge badge-sentiment"> %>
+            <%# label_based_on_status(@check_state) %>
+          <%# </span></td>
+        </tr> %>
+        <%# @status_streamer.each do |s| %>
+          <%# <tr>
+            <td> %>
+              <%# s[:name] %>
+            <%# </td> %>
+            <%# <td><span class="badge badge-sentiment"> %>
+              <%# label_based_on_status(s[:status]) %>
+            <%# </span></td>
+          </tr> %>
+        <%# end %>
+      <%# </tbody>
+    </table> %>
     <h4 class="and-divider mb-4"><span>Status of delivery streams</span></h4>
     <table class="table">
       <thead>

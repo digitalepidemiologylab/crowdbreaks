@@ -78,6 +78,9 @@ GEM
     aws-sdk-mturk (1.27.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-resourcegroups (1.33.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-s3 (1.87.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sdk-kms (~> 1)
@@ -518,6 +521,7 @@ DEPENDENCIES
   aws-sdk-eventbridge
   aws-sdk-firehose
   aws-sdk-mturk
+  aws-sdk-resourcegroups
   aws-sdk-s3
   aws-sdk-sagemaker
   aws-sdk-sagemakerruntime

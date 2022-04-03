@@ -5,9 +5,8 @@ module Manage
 
     def dashboard
       authorize! :view, :manage_dashboard
-      @status_streamer = get_value_and_flash_now(
-        @api.status_streamer, default: [{ name: 'Error', status: 'Unable to get ECS tasks from cluster' }]
-      )
+      # @status_streamer = get_value_and_flash_now(@api.status_streamer)
+      @resource_groups = get_value_and_flash_now(@api.list_group_resources)
       @check_state = get_value_and_flash_now(@api.check_state)
       @status_delivery_streams = get_value_and_flash_now(@api.status_delivery_streams, default: [])
     end

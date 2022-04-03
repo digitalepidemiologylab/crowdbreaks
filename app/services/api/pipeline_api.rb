@@ -10,6 +10,7 @@ module PipelineApi
   STREAM_STATE_KEY = 'configs/stream/state.json'.freeze
   ECS_CLUSTER_NAME = ENV['ECS_CLUSTER_NAME']
   ECS_SERVICE_NAME = ENV['ECS_SERVICE_NAME']
+  GROUP_NAME = 'Crowdbreaks'.freeze
 
   @@s3_client = Aws::S3::Client.new(
     region: Aws.config[:region],
@@ -34,6 +35,30 @@ module PipelineApi
     access_key_id: Aws.config[:credentials].access_key_id,
     secret_access_key: Aws.config[:credentials].secret_access_key
   )
+
+  @@resourcegroups = Aws::ResourceGroups::Client.new(
+    region: Aws.config[:region],
+    access_key_id: Aws.config[:credentials].access_key_id,
+    secret_access_key: Aws.config[:credentials].secret_access_key
+  )
+
+  # List group resources
+  def list_group_resources(resources_hash: {}, next_token: nil)
+    Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: "listing #{GROUP_NAME} resources") do
+      response = @@resourcegroups.list_group_resources({ group: GROUP_NAME, max_results: 50, next_token: next_token })
+      response.resources.each do |r|
+        if resources_hash.fetch(r.identifier.resource_type, nil).nil?
+          resources_hash[r.identifier.resource_type] = [r]
+        else
+          resources_hash[r.identifier.resource_type] << r
+        end
+      end
+      unless response.next_token.blank?
+        list_group_resources(resources_hash: resources_hash, next_token: response.next_token)
+      end
+      Helpers::ApiResponse.new(status: :success, body: resources_hash.sort.to_h)
+    end
+  end
 
   # Create-update an event
   def create_update_cron_event(name:, cron:)
