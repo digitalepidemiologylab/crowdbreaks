@@ -68,11 +68,11 @@ gem 'rollbar'
 # Advisory lock
 gem 'with_advisory_lock'
 # Elasticsearch
-gem 'elasticsearch'
+gem 'elasticsearch', '~> 7.17.1'
 # Elasticsearch queries helper
 gem 'stretchy'
 # AWS Authentication
-gem 'faraday', '~> 0.15'
+gem 'faraday'
 gem 'faraday_middleware-aws-sigv4'
 # Turbolinks
 gem 'turbolinks', '~> 5.2.0'

@@ -15,17 +15,11 @@ module ElasticsearchApi
   JSON_HEADER = { 'Content-Type' => 'application/json', :Accept => 'application/json' }.freeze
   DATE_FORMAT = '%Y-%m-%dT%T.000Z'.freeze
 
-  service = 'es'
-
   @@es_client = Elasticsearch::Client.new(
-    url: ENV['ES_HOST_PORT'], request_timeout: 15, retry_on_status: [403], retry_on_failure: 2
-  ) do |f|
-    f.request :aws_sigv4,
-              service: service,
-              region: Aws.config[:region],
-              access_key_id: Aws.config[:credentials].access_key_id,
-              secret_access_key: Aws.config[:credentials].secret_access_key
-  end
+    request_timeout: 15, retry_on_status: [403], retry_on_failure: 2,
+    cloud_id: ENV['ES_CLOUD_ID'],
+    api_key: { id: ENV['ES_API_KEY_ID'], api_key: ENV['ES_API_KEY'] }
+  )
 
   # @@es_client = Aws::ElasticsearchService::Client.new
 
