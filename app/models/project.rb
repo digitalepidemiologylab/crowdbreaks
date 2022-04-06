@@ -46,13 +46,11 @@ class Project < ApplicationRecord
   end
 
   def auto_mturking_validations
-    if auto_mturking == true
-      errors.add(:storage_mode, :choose_es_mode) unless %w[s3-es s3-es-no-retweets].include? storage_mode
-      errors.add(:tweets_per_batch, :cannot_be_blank) if tweets_per_batch.nil?
-      errors.add(:tweets_per_batch, :must_be_more_than_zero) unless tweets_per_batch&.positive?
-    else
-      errors.add(:tweets_per_batch, :must_be_blank) unless tweets_per_batch.nil?
-    end
+    return unless auto_mturking == true
+
+    errors.add(:storage_mode, :choose_es_mode) unless %w[s3-es s3-es-no-retweets].include? storage_mode
+    errors.add(:tweets_per_batch, :cannot_be_blank) if tweets_per_batch.nil?
+    errors.add(:tweets_per_batch, :must_be_more_than_zero) unless tweets_per_batch&.positive?
   end
 
   def display_name

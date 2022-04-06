@@ -61,18 +61,5 @@ RSpec.describe Project, type: :model do
     expect(project.errors[:tweets_per_batch]).not_to include(
       I18n.t('activerecord.errors.models.project.attributes.tweets_per_batch.cannot_be_blank')
     )
-
-    project.auto_mturking = false
-    project.tweets_per_batch = 2000
-    project.valid?
-    expect(project.errors[:tweets_per_batch]).to include(
-      I18n.t('activerecord.errors.models.project.attributes.tweets_per_batch.must_be_blank')
-    )
-
-    project.tweets_per_batch = nil
-    project.valid?
-    expect(project.errors[:tweets_per_batch]).not_to include(
-      I18n.t('activerecord.errors.models.project.attributes.tweets_per_batch.must_be_blank')
-    )
   end
 end

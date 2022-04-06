@@ -53,7 +53,6 @@ en:
               choose_es_mode: If you want the project to be eligible for auto MTurking, please choose a storage mode which includes storing in Elasticseach (ES).
             tweets_per_batch:
               cannot_be_blank: Tweets per batch cannot be blank if auto MTurking is on.
-              must_be_blank: Tweets per batch must be blank if auto MTurking is off.
               must_be_more_than_zero: Batch size must be more than zero.
     models:
       user: User
