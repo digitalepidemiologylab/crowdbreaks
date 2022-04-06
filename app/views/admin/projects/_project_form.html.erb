@@ -87,8 +87,15 @@
       <% end %>
       </div>
     </div>
+  </div>
+
+  <div class="mb-5">
+    <h4>Automatic MTurking</h4>
     <div class="form-group">
-      <%= toggle_switch(@project.auto_mturking, 'Enable automatic MTurking pipeline for this project', 'project', 'auto_mturking') %>
+      <%= toggle_switch(@project.auto_mturking, 'Enable automatic MTurking pipeline for this project', 'project', 'auto_mturking', hint: 'For this to work, the storage mode must include ES (auto sampling is done using ES).') %>
+    </div>
+    <div class="form-group">
+      <%= f.input :tweets_per_batch, hint: 'How many tweets are going to be sampled from ES in a new iteration of model training.' %>
     </div>
   </div>
 

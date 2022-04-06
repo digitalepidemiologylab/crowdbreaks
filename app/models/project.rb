@@ -20,6 +20,7 @@ class Project < ApplicationRecord
   validates_presence_of :title, :description, :name
   validates_uniqueness_of :es_index_name, allow_nil: true
   validate :accessible_by_email_pattern_is_valid
+  validate :auto_mturking_validations
   validates_with CsvValidator, fields: [:job_file]
 
   # scopes
@@ -35,6 +36,24 @@ class Project < ApplicationRecord
 
   MAX_COUNT_REFETCH_DB = 10
   MAX_COUNT_REFETCH = 5
+
+  # Validations
+  def accessible_by_email_pattern_is_valid
+    return unless accessible_by_email_pattern.present?
+    return if accessible_by_email_pattern.all? { |p| p.include?('@') }
+
+    errors.add(:accessible_by_email_pattern, :invalid)
+  end
+
+  def auto_mturking_validations
+    if auto_mturking == true
+      errors.add(:storage_mode, :choose_es_mode) unless %w[s3-es s3-es-no-retweets].include? storage_mode
+      errors.add(:tweets_per_batch, :cannot_be_blank) if tweets_per_batch.nil?
+      errors.add(:tweets_per_batch, :must_be_more_than_zero) unless tweets_per_batch&.positive?
+    else
+      errors.add(:tweets_per_batch, :must_be_blank) unless tweets_per_batch.nil?
+    end
+  end
 
   def display_name
     title
@@ -148,7 +167,8 @@ class Project < ApplicationRecord
   def self.up_to_date?(remote_config)
     # test if given stream configuration is identical to projects
     config_params =
-      %i[keywords lang locales es_index_name slug covid storage_mode image_storage_mode model_endpoints auto_mturking]
+      %i[keywords lang locales es_index_name slug covid
+         storage_mode image_storage_mode model_endpoints auto_mturking tweets_per_batch]
     config_serialization = Project.primary.where(active_stream: true)
     return false if remote_config.nil?
     return false if remote_config.length != config_serialization.count
@@ -201,14 +221,8 @@ class Project < ApplicationRecord
 
   def update_last_question_sequence_created_at
     # update a column in the primary project whenever a project gets added or removed
-    primary_project.update_attribute(:last_question_sequence_created_at, primary_project.question_sequences.pluck(:created_at).max)
-  end
-
-  def accessible_by_email_pattern_is_valid
-    return unless accessible_by_email_pattern.present?
-    return if accessible_by_email_pattern.all? { |p| p.include?('@') }
-
-    errors.add(:accessible_by_email_pattern, 'Patterns need to be email patterns including "@"')
+    latest_qs = primary_project.question_sequences.pluck(:created_at).max
+    primary_project.update_attribute(:last_question_sequence_created_at, latest_qs) unless latest_qs.nil?
   end
 
   def tweet(user_id:, test_mode: false)
