@@ -23,7 +23,7 @@ class TweetValidation
     return tweet_is_valid_front_end?(id) if Rails.cache.exist?(CACHE_KEY)
 
     Crowdbreaks::TwitterClient.status(id)
-  rescue Twitter::Error::TooManyRequests
+  rescue Twitter::Error::TooManyRequests => e
     ErrorLogger.error "Tweet validation: Twitter error. #{e.class}: #{e.message} Validating with Twitter front-end."
     Rails.cache.write(CACHE_KEY, 1, expires_in: 1.hour)
     tweet_is_valid_front_end?(id)
@@ -38,9 +38,7 @@ class TweetValidation
     true
   end
 
-  private
-
-  def tweet_is_valid_front_end?(id)
+  def self.tweet_is_valid_front_end?(id)
     # Check validity of tweet first by making a HEAD request to
     Rails.logger.info 'Checking the tweet using the Twitter front end'
     url = "https://twitter.com/user/status/#{id}"

@@ -28,7 +28,7 @@ module Response
         flash.notice = response.message unless response.message.nil?
         format.html { redirect_to redirect_path, turbolinks: true }
       end
-    when :error
+    when :error, :fail
       respond_to do |format|
         flash.alert = response.message
         format.html { redirect_to redirect_path, turbolinks: true }

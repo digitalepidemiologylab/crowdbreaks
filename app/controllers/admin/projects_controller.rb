@@ -2,11 +2,9 @@ module Admin
   class ProjectsController < BaseController
     load_and_authorize_resource param_method: :sanitized_projects_params, find_by: :slug
 
-    def new
-    end
+    def new; end
 
-    def show
-    end
+    def show; end
 
     def index
       @projects = @projects.order({last_question_sequence_created_at: :desc}).primary.page(params[:page]).per(10)
@@ -55,13 +53,13 @@ module Admin
     end
 
     def destroy
-      if @project.results.count > 0
+      if @project.results.count.positive?
         redirect_to(admin_projects_path, alert: 'Cannot delete a project with existing answers to questions (results). Delete results or define a new project.')
       elsif @project.num_question_sequences > 1
         redirect_to(admin_projects_path, alert: 'Cannot delete a project with more than one question sequences. Delete question sequences individually first.')
-      elsif @project.local_batch_jobs.count > 0
+      elsif @project.local_batch_jobs.count.positive?
         redirect_to(admin_question_sequences_path, alert: 'Cannot delete primary question sequence. Delete associated local batch jobs first.')
-      elsif @project.mturk_batch_jobs.count > 0
+      elsif @project.mturk_batch_jobs.count.positive?
         redirect_to(admin_question_sequences_path, alert: 'Cannot delete primary question sequence. Delete associated mturk batch jobs first.')
       else
         if @project.destroy
@@ -106,6 +104,7 @@ module Admin
 
     def array_from_string(str, downcase: false, make_unique: true)
       return nil if str.nil?
+
       arr = []
       str.split(',').each do |k|
         _k = k.strip

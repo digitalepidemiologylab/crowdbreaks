@@ -16,7 +16,7 @@ module Manage
       if @mturk_worker_qualification_list.save
         @mturk_worker_qualification_list.updating_status!
         CreateMturkWorkerQualificationListJob.perform_later(@mturk_worker_qualification_list.id, @mturk_worker_qualification_list.retrieve_tweet_rows)
-        redirect_to(mturk_worker_qualification_lists_path, notice: "Qaulification list '#{@mturk_worker_qualification_list.name}' is being created...")
+        redirect_to(mturk_worker_qualification_lists_path, notice: "Qualification list '#{@mturk_worker_qualification_list.name}' is being created...")
       else
         render :new and return
       end
@@ -31,7 +31,7 @@ module Manage
           @mturk_worker_qualification_list.updating_status!
           CreateMturkWorkerQualificationListJob.perform_later(@mturk_worker_qualification_list.id, @mturk_worker_qualification_list.retrieve_tweet_rows, destroy_first: true)
         end
-        redirect_to(mturk_worker_qualification_lists_path, notice: "Qaulification list '#{@mturk_worker_qualification_list.name}' is being created...") and return
+        redirect_to(mturk_worker_qualification_lists_path, notice: "Qualification list '#{@mturk_worker_qualification_list.name}' is being created...") and return
       else
         render :new and return
       end
@@ -39,11 +39,11 @@ module Manage
 
     def destroy
       if @mturk_worker_qualification_list.mturk_batch_jobs.any?
-        redirect_to(mturk_worker_qualification_lists_path, alert: "Qaulification list '#{@mturk_worker_qualification_list.name}' is still referenced in batch jobs. Cannot delete.") and return
+        redirect_to(mturk_worker_qualification_lists_path, alert: "Qualification list '#{@mturk_worker_qualification_list.name}' is still referenced in batch jobs. Cannot delete.") and return
       end
       @mturk_worker_qualification_list.deleting_status!
       DestroyMturkWorkerQualificationListJob.perform_later(@mturk_worker_qualification_list.id)
-      redirect_to(mturk_worker_qualification_lists_path, notice: "Qaulification list '#{@mturk_worker_qualification_list.name}' is being destroyed...") and return
+      redirect_to(mturk_worker_qualification_lists_path, notice: "Qualification list '#{@mturk_worker_qualification_list.name}' is being destroyed...") and return
     end
 
     private

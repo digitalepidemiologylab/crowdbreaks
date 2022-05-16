@@ -4,9 +4,9 @@ class MturkWorkerQualificationList < ApplicationRecord
   has_many :mturk_workers, through: :qualified_workers
   has_many :mturk_batch_jobs
 
-  enum status: {default: 0, updating: 1, deleting: 2, failed: 3}, _suffix: true
+  enum status: { default: 0, updating: 1, deleting: 2, failed: 3 }, _suffix: true
 
-  validates :name, presence: true, uniqueness: {message: "Name must be unique"}
+  validates :name, presence: true, uniqueness: { message: 'Name must be unique' }
   validates_with CsvValidator, fields: [:job_file]
 
   def create_qualification_type
@@ -14,7 +14,7 @@ class MturkWorkerQualificationList < ApplicationRecord
     props = {
       name: "QualificationList_#{name}",
       description: description,
-      qualification_type_status: "Active",
+      qualification_type_status: 'Active',
       auto_granted: true,
       auto_granted_value: 1
     }
