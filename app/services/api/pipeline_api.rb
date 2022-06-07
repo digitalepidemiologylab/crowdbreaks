@@ -8,6 +8,9 @@ module PipelineApi
   BUCKET_NAME = ENV['S3_BUCKET_NAME']
   STREAM_CONFIG_KEY = 'configs/stream/stream.json'.freeze
   STREAM_STATE_KEY = 'configs/stream/state.json'.freeze
+  SAMPLES_STATUS_KEY = 'other/csv/automatic-samples/status.json'.freeze
+  # PRIMARY_JOBS_KEY = 'other/csv/automatic-samples/primary_jobs.json'.freeze
+  SAMPLES_STATUS_PATH = 'app/services/api/sampled_status.json'.freeze
   ECS_CLUSTER_NAME = ENV['ECS_CLUSTER_NAME']
   ECS_SERVICE_NAME = ENV['ECS_SERVICE_NAME']
   GROUP_NAME = 'Crowdbreaks'.freeze
@@ -42,6 +45,104 @@ module PipelineApi
     secret_access_key: Aws.config[:credentials].secret_access_key
   )
 
+  def check_subsamples_status(project_name)
+    yesterday = Date.yesterday.strftime('%Y%m%d')
+    # For testing in development
+    # yesterday = Date.today.strftime('%Y%m%d')
+    prefix = "other/csv/mturk-batch-job-results/project_#{project_name}/evaluate_ids-#{yesterday}"
+    response = nil
+    Helpers::ErrorHandler.handle_error(
+      AWS_SERVICE_ERROR, occured_when: "Checking subsamples status for project #{project_name}"
+    ) do
+      response = @@s3_client.list_objects_v2({ bucket: BUCKET_NAME, max_keys: 5, prefix: prefix })
+    end
+
+    s3_keys = response.contents.map(&:key)
+    message = nil
+    case s3_keys.length
+    when 0
+      return Helpers::ApiResponse.new(
+        status: :error, message: "Evaluation file not found for project '#{project_name}'."
+      )
+    when ->(l) { l > 1 }
+      message = "More than one file for project '#{project_name}'."
+    end
+
+    s3_key = s3_keys[0]
+    mturk_batch_name = s3_key.split('/')[-1].split('-')[3] # evaluate_ids-<date>-<type>-<batch_name>-...
+    tweets = get_s3_object(BUCKET_NAME, s3_key).read
+    if message.nil?
+      Helpers::ApiResponse.new(status: :success, body: [mturk_batch_name, tweets])
+    else
+      Helpers::ApiResponse.new(status: :fail, message: message, body: [mturk_batch_name, tweets])
+    end
+  end
+
+  # def upload_primary_jobs(primary_jobs)
+  #   Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'uploading primary jobs to S3') do
+  #     put_data_to_s3(bucket: BUCKET_NAME, key: PRIMARY_JOBS_KEY, data: primary_jobs, filename: 'app/services/api/primary_jobs.json')
+  #     Helpers::ApiResponse.new(status: :success, message: 'Successfully uploaded primary jobs to S3.')
+  #   end
+  # end
+
+  # def load_primary_jobs
+  #   Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'loading primary jobs') do
+  #     Helpers::ApiResponse.new(status: :success, body: get_s3_json(BUCKET_NAME, PRIMARY_JOBS_KEY))
+  #   end
+  # end
+
+  def load_new_batch_cron(name)
+    Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: "describing the EventBridge rule '#{name}'") do
+      Helpers::ApiResponse.new(status: :success, body: @@eventbridge.describe_rule({ name: name }).schedule_expression)
+    end
+  end
+
+  # Checks 'other/csv/automated-samples/state.json'
+  def check_samples_status
+    s3_keys = nil
+    Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'downloading the config from S3') do
+      s3_keys = get_s3_json(BUCKET_NAME, SAMPLES_STATUS_KEY)['no_text'].sort
+    end
+    # file = File.read(SAMPLES_STATUS_PATH)
+    # s3_keys_old = JSON.parse(file).sort
+    s3_keys_old = Setting.sampled_status
+    unless s3_keys != s3_keys_old
+      return Helpers::ApiResponse.new(
+        status: :fail,
+        message: 'No new samples available.',
+        body: nil
+      )
+    end
+
+    # File.write(SAMPLES_STATUS_PATH, s3_keys)
+    Setting.sampled_status = s3_keys
+    tweets = {}
+    slug_errors = []
+    s3_keys.each do |s3_key|
+      slug = s3_key.split('/')[3]
+      if slug.start_with?('project_')
+        slug = slug[8..-1]
+      else
+        slug_errors << s3_key
+        next
+      end
+      tweets[slug] = get_s3_object(BUCKET_NAME, s3_key).read
+    end
+    if slug_errors.length.positive?
+      Helpers::ApiResponse.new(
+        status: :fail,
+        message: "Could not identify project slug from key(s) #{slug_errors}. " \
+                "Expected to be prefixed with 'project_'.",
+        body: tweets
+      )
+    else
+      Helpers::ApiResponse.new(
+        status: :success,
+        body: tweets
+      )
+    end
+  end
+
   # List group resources
   def list_group_resources(resources_hash: {}, next_token: nil)
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: "listing #{GROUP_NAME} resources") do
@@ -66,7 +167,7 @@ module PipelineApi
       AWS_SERVICE_ERROR, occured_when: "updating the EventBridge rule '#{name}' with the cron '#{cron}'"
     ) do
       response = @@eventbridge.put_rule(
-        { name: name, schedule_expression: "cron(#{cron})", state: 'ENABLED',
+        { name: name, schedule_expression: cron, state: 'ENABLED',
           tags: [{ key: 'project', value: 'crowdbreaks' }] }
       )
       Helpers::ApiResponse.new(status: :success, message: 'Successfully updated the rule.', body: response.rule_arn)
@@ -76,14 +177,14 @@ module PipelineApi
   # Pipeline
   def config
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'downloading the config from S3') do
-      Helpers::ApiResponse.new(status: :success, body: get_s3_object(BUCKET_NAME, STREAM_CONFIG_KEY))
+      Helpers::ApiResponse.new(status: :success, body: get_s3_json(BUCKET_NAME, STREAM_CONFIG_KEY))
     end
   end
 
   def check_state
     state = nil
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'downloading the config from S3') do
-      state = get_s3_object(BUCKET_NAME, STREAM_STATE_KEY)['state']
+      state = get_s3_json(BUCKET_NAME, STREAM_STATE_KEY)['state']
     end
     ecs_state = status_streaming.success? ? { running: true, paused: false }[status_streaming.body] : nil
     Helpers::ApiResponse.new(status: :success, body: state == ecs_state)
@@ -132,7 +233,7 @@ module PipelineApi
 
   def upload_config(config)
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'uploading the config to S3') do
-      put_data_to_s3(bucket: BUCKET_NAME, key: STREAM_CONFIG_KEY, data: config, filename: 'stream.json')
+      put_data_to_s3(bucket: BUCKET_NAME, key: STREAM_CONFIG_KEY, data: config, filename: 'app/services/api/stream.json')
       Helpers::ApiResponse.new(status: :success, message: 'Successfully uploaded the config to S3.')
     end
   end
@@ -185,7 +286,11 @@ module PipelineApi
   def get_s3_object(bucket, key, version_id: nil)
     params = { bucket: bucket, key: key }
     params[:version_id] = version_id if version_id
-    JSON.parse @@s3_client.get_object(params).body.read.force_encoding('UTF-8')
+    @@s3_client.get_object(params).body
+  end
+
+  def get_s3_json(bucket, key, version_id: nil)
+    JSON.parse get_s3_object(bucket, key, version_id: version_id).read.force_encoding('UTF-8')
   end
 
   def check_if_currently_active(cluster_name, service_name)

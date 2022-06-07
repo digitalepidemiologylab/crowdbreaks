@@ -14,6 +14,17 @@ class CsvValidator < ActiveModel::Validator
     end
   end
 
+  def self.open_csv(csv_file)
+    csv_string_io = if csv_file.instance_of?(String) && (csv_file.include?(',') || csv_file.include?("\n"))
+                      csv_file
+                    elsif csv_file.instance_of?(String)
+                      File.open(csv_file, 'r')
+                    elsif csv_file.instance_of?(ActionDispatch::Http::UploadedFile)
+                      File.open(csv_file.path, 'r')
+                    end
+    CSV.new(csv_string_io)
+  end
+
   private
 
   def file_valid?(csv_file)

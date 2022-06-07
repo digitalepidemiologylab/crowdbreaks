@@ -5,8 +5,11 @@ class ManageAbility
   
   def initialize(user)
     user ||= User.new
-    if user.admin?
+    if user.super_admin?
       can :manage, :all
+    elsif user.admin?
+      can :manage, :all
+      cannot :evaluate_batch, :mturk_auto
     elsif user.collaborator?
       # dashboard - pipeline
       can :view, :manage_dashboard

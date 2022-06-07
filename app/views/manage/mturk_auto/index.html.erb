@@ -1,12 +1,12 @@
 <h1>Auto MTurking Dashboard</h1><br/>
 
-<%= form_tag mturk_auto_update_path do %>
+<%= form_tag mturk_auto_update_cron_path do %>
   <%= fields_for :mturk_auto do |ff| %>
     <h4>Cron event rule</h4>
     <div class="form-group mb-3">
       <div class="form-text mb-1">
         <% aws_cron_docs_url = 'https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-rule-schedule.html' %>
-        Current <%= link_to 'AWS cron', aws_cron_docs_url %> schedule expression: <i>cron(<%= cron(@new_batch_each) %>)</i>.
+        Current <%= link_to 'AWS cron', aws_cron_docs_url %> schedule expression: <i><%= cron(@new_batch_each) %></i>.
       </div>
       <div class="input-group">
         <%= submit_tag 'Update', class: "btn btn-secondary mr-1", data: {confirm: "Are you sure? This will update the existing rule."} %>
@@ -15,8 +15,133 @@
         <%= link_to 'Go to AWS console', aws_cron_rule_url, target: '_blank', class: 'btn btn-primary ml-1' %>
       </div>
       <small class="form-text text-muted">
-        Please enter either a number of months (new batch on the first day of each X months).
+        Please enter a number of months (new batch on the first day of each X months).
       </small>
     </div>
   <% end %>
 <% end %>
+
+<%= form_tag mturk_auto_update_primary_jobs_path do %>
+  <%= fields_for :mturk_auto do |ff| %>
+    <h4 class="mb-3">Primary MTurk jobs</h4>
+    <% @primary_jobs.each do |primary_job| %>
+      <div class="form-group mb-3">
+        <div class="input-group">
+          <span class="input-group-text mr-1"><i><%= primary_job.project.name %></i></span>
+          <% options = MturkBatchJob.includes(:project).where(auto: false, 'projects.name': primary_job.project.name) %>
+          <% collection = options.collect{ |s| ["#{s.name} [#{s.project.question_sequence_name.nil? && s.project.primary? ? 'primary' : s.project.question_sequence_name}]", s.id] } %>
+          <%= ff.select "primary_jobs[#{primary_job.project.id}]", options_for_select(collection, primary_job.mturk_batch_job&.id), { include_blank: primary_job.mturk_batch_job&.id.nil? }, { class: "form-control" } %>
+        </div>
+      </div>
+    <% end %>
+    <%= submit_tag 'Update', class: "btn btn-secondary", data: {confirm: "Are you sure?"} %>
+  <% end %>
+<% end %><br/><br/>
+
+<h4 class="mb-3">Auto MTurk jobs</h4>
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <%= paginate @mturk_auto_batches %>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Batch name (MTurk/evaluation)</th>
+          <th>Created</th>
+          <th>Status</th>
+          <th>Progress</th>
+          <th>Num tweets</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @mturk_auto_batches.each do |mturk_auto_batch| %>
+          <tr>
+            <% mturk_batch_job = mturk_auto_batch.mturk_batch_job %>
+            <td><%= mturk_batch_job.name %></td>
+            <td><%= time_ago(mturk_batch_job.created_at) %></td>
+            <td><span class='badge badge-sentiment'><%= status(mturk_batch_job.status) %></span></td>
+            <td><%= mturk_batch_job.percentage_completed %> %</td>
+            <td><%= mturk_batch_job.num_tweets %></td>
+            <td>
+              <div class="no-wrap"> 
+                <% if can? :read, mturk_batch_job %>
+                  <%= link_to fa_icon('eye'), mturk_batch_job_path(mturk_batch_job), title: 'Expand' %>
+                <% end %>
+                <% if can? :evaluate_batch, :mturk_auto %>
+                  <%= link_to mturk_auto_evaluate_batch_path(mturk_auto_batch.id), title: 'Evaluate' do %>
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                  <% end %>
+                <% end %>
+                <% unless mturk_batch_job.marked_for_deletion? %>
+                  <% if can? :destroy, mturk_batch_job %>
+                    <%= link_to fa_icon('trash'),
+                      mturk_batch_job_path(mturk_batch_job.id, destroy_results: false),
+                      method: :delete,
+                      title: "Delete batch, without results",
+                      data: {confirm: "Delete batch, tasks, but without associated results?"} %>
+                    <% if mturk_batch_job.results.count > 0 %>
+                      <%= link_to fa_icon('times-circle'),
+                        mturk_batch_job_path(mturk_batch_job.id, destroy_results: true),
+                        method: :delete,
+                        style: "color:red;",
+                        title: "Delete batch, with results",
+                        data: {confirm: "Delete batch, tasks, and all associated results?"} %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <% local_batch_job = mturk_auto_batch.local_batch_job %>
+            <% if local_batch_job.nil? %>
+              <td><i>Evaluation batch not created yet</i></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            <% else %>
+              <td><%= local_batch_job.name %></td>
+              <td><%= time_ago(local_batch_job.created_at) %></td>
+              <td>
+                <div id="progress-circle-record-<%= local_batch_job.id %>-local-tweets-context">
+                  <span class='badge badge-sentiment'><%= local_batch_job_status(local_batch_job.status)%></span>
+                </div>
+                <%= progress_circle("progress-circle-record-#{local_batch_job.id}-local-tweets") %>
+              </td>
+              <td>
+                <% local_batch_job.users.limit(5).each_with_index do |user, i| %>
+                  <div class='progress-with-label-sm'>
+                    <%= progress_circle("progress-circle-record-#{local_batch_job.id}-user-#{user.id}", progress: local_batch_job.progress_by_user(user), visible: true, small: true) %>
+                    <div class="progress-label", data-toggle="tooltip" title=<%="#{local_batch_job.progress_by_user(user)}%" %>>
+                      <%= user.username %>
+                    </div>
+                  </div>
+                <% end %>
+                <% if local_batch_job.users.count > 5 %>
+                  <%= "... and #{local_batch_job.users.count - 5} more" %>
+                <% end %>
+              </td>
+              <td><%= num(local_batch_job.local_tweets.count) %></td>
+              <td>
+                <% if can? :read, local_batch_job %>
+                  <%= link_to fa_icon('eye'), manage_local_batch_job_path(local_batch_job) %>
+                <% end %>
+                <%= link_to local_batch_job_path(local_batch_job) do %>
+                  <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                <% end %>
+                <% if can? :destroy, local_batch_job %>
+                  <%= link_to fa_icon('trash'),
+                    manage_local_batch_job_path(local_batch_job),
+                    method: :delete,
+                    data: {confirm: "Delete batch and all queued tweets?"} %>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

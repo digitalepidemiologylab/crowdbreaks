@@ -1,9 +1,16 @@
 <%= simple_form_for [:manage, @local_batch_job] do |f| %>
   <%= f.error_notification %>
 
+  <% edit_condition = params[:controller] == 'manage/local_batch_jobs' && params[:action] == 'edit' %>
+  <% if edit_condition && @local_batch_job.auto == true %>
+    <fieldset disabled>
+  <% end %>
   <div class="form-group">
-    <%= f.input :name, hint: 'Has to be unique' %>
+    <%= f.input :name, hint: 'Has to be unique, must only include small letters, numbers, and underscores' %>
   </div>
+  <% if edit_condition && @local_batch_job.auto == true %>
+    </fieldset>
+  <% end %>
 
   <div class="form-group">
     <%= f.association :project, hint: 'Choose question sequence' %>

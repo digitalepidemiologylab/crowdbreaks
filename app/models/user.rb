@@ -10,7 +10,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :email
   validates :honeypot, absence: true
 
-  enum role: [:default, :contributor, :collaborator, :admin]
+  enum role: [:default, :contributor, :collaborator, :admin, :super_admin]
   @skip = false
   attr_accessor :mark_as_confirmed, :honeypot
 

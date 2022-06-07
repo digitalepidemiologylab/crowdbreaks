@@ -45,7 +45,7 @@
   <td>
     <div class="icon-spacing">
       <% unless mturk_batch_job.marked_for_deletion? %>
-        <% if can? :destroy, mturk_batch_job %>
+        <% if can? :destroy, mturk_batch_job && mturk_batch_job == false %>
           <%= link_to fa_icon('trash'),
             mturk_batch_job_path(mturk_batch_job.id, destroy_results: false),
             method: :delete,

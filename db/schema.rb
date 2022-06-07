@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_06_091611) do
+ActiveRecord::Schema.define(version: 2022_06_03_134337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,7 +53,10 @@ ActiveRecord::Schema.define(version: 2022_04_06_091611) do
     t.integer "delay_start", default: 2000, null: false
     t.integer "delay_next_question", default: 1000, null: false
     t.integer "annotation_display_mode", default: 0, null: false
+    t.boolean "auto", default: false, null: false
+    t.bigint "mturk_auto_batch_id"
     t.index ["check_availability"], name: "index_local_batch_jobs_on_check_availability"
+    t.index ["mturk_auto_batch_id"], name: "index_local_batch_jobs_on_mturk_auto_batch_id"
     t.index ["project_id"], name: "index_local_batch_jobs_on_project_id"
     t.index ["slug"], name: "index_local_batch_jobs_on_slug"
     t.index ["tweet_display_mode"], name: "index_local_batch_jobs_on_tweet_display_mode"
@@ -74,6 +77,12 @@ ActiveRecord::Schema.define(version: 2022_04_06_091611) do
     t.text "tweet_text", default: ""
     t.integer "availability", default: 0
     t.index ["local_batch_job_id"], name: "index_local_tweets_on_local_batch_job_id"
+  end
+
+  create_table "mturk_auto_batches", force: :cascade do |t|
+    t.boolean "evaluated", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mturk_batch_jobs", force: :cascade do |t|
@@ -104,7 +113,12 @@ ActiveRecord::Schema.define(version: 2022_04_06_091611) do
     t.integer "delay_next_question", default: 1000, null: false
     t.string "existing_qualification_type_id", default: "", null: false
     t.bigint "mturk_worker_qualification_list_id"
+    t.boolean "auto", default: false, null: false
+    t.bigint "mturk_auto_batch_id"
+    t.bigint "primary_mturk_batch_job_id"
+    t.index ["mturk_auto_batch_id"], name: "index_mturk_batch_jobs_on_mturk_auto_batch_id"
     t.index ["mturk_worker_qualification_list_id"], name: "index_mturk_batch_jobs_on_mturk_worker_qualification_list_id"
+    t.index ["primary_mturk_batch_job_id"], name: "index_mturk_batch_jobs_on_primary_mturk_batch_job_id"
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
   end
 
@@ -161,6 +175,13 @@ ActiveRecord::Schema.define(version: 2022_04_06_091611) do
     t.datetime "updated_at", null: false
     t.integer "status", default: 0, null: false
     t.boolean "manually_reviewed", default: false, null: false
+  end
+
+  create_table "primary_mturk_batch_jobs", force: :cascade do |t|
+    t.bigint "project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_primary_mturk_batch_jobs_on_project_id", unique: true
   end
 
   create_table "projects", id: :serial, force: :cascade do |t|
@@ -271,6 +292,14 @@ ActiveRecord::Schema.define(version: 2022_04_06_091611) do
     t.index ["user_id"], name: "index_results_on_user_id"
   end
 
+  create_table "settings", force: :cascade do |t|
+    t.string "var", null: false
+    t.text "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["var"], name: "index_settings_on_var", unique: true
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.string "hit_id"
     t.integer "lifecycle_status", default: 0
@@ -330,8 +359,12 @@ ActiveRecord::Schema.define(version: 2022_04_06_091611) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "local_batch_jobs", "mturk_auto_batches"
+  add_foreign_key "mturk_batch_jobs", "mturk_auto_batches"
   add_foreign_key "mturk_batch_jobs", "mturk_worker_qualification_lists"
+  add_foreign_key "mturk_batch_jobs", "primary_mturk_batch_jobs"
   add_foreign_key "mturk_batch_jobs", "projects"
+  add_foreign_key "primary_mturk_batch_jobs", "projects"
   add_foreign_key "public_tweets", "projects"
   add_foreign_key "question_answers", "answers"
   add_foreign_key "question_answers", "questions"

@@ -5,7 +5,7 @@ class AdminAbility
 
   def initialize(user)
     user ||= User.new
-    if user.admin?
+    if user.admin? || user.super_admin?
       can :manage, :all
     elsif user.collaborator?
       can :view, :manage_dashboard

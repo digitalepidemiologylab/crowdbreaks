@@ -1,19 +1,24 @@
 class LocalBatchJob < ApplicationRecord
   include ActiveModel::Validations
   include S3UploadableAssociation
+  include CsvFileHandler
 
   extend FriendlyId
   friendly_id :name, use: :slugged
 
   has_and_belongs_to_many :users
   belongs_to :project
+  belongs_to :mturk_auto_batch
   has_many :local_tweets, dependent: :delete_all
   has_many :results
 
   validates :name, presence: true, uniqueness: { message: 'Name must be unique' }
-  validates :name, presence: true, uniqueness: {message: "Name must be unique"}
+  validates :name, format: {
+    with: /\A[a-z0-9_]+\z/, message: 'Name must only include small letters, numbers, and underscores'
+  }
   validates_presence_of :project
   validates_with CsvValidator, fields: [:job_file]
+  validate :mturk_auto_batch_for_auto_true
 
   enum processing_mode: { default: 0, test: 1 }, _suffix: :processing_mode
   enum check_availability: %i[do_not do], _suffix: true
@@ -90,6 +95,13 @@ class LocalBatchJob < ApplicationRecord
 
     'ready'
   end
-    return tmp_file_path
+
+  private
+
+  def mturk_auto_batch_for_auto_true
+    return if auto == false
+    return if auto == true && !mturk_auto_batch.nil?
+
+    errors.add(:base, 'No mturk_auto_batch for an local_batch_job.auto == true.')
   end
 end

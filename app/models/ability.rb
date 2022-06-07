@@ -2,14 +2,13 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-
     user ||= User.new
 
     can :manage, :question_sequence
     can :manage, :page
     can :read, Project
 
-    if user.admin?
+    if user.admin? || user.super_admin?
       can :manage, :all
     elsif user.collaborator?
       can :manage, LocalBatchJob
@@ -18,6 +17,5 @@ class Ability
     elsif user.contributor?
       can :manage, LocalBatchJob
     end
-
   end
 end

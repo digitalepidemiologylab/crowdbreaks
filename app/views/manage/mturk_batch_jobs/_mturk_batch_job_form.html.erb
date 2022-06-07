@@ -5,9 +5,16 @@
     <%= f.error :base %>
   </div>
 
+  <% edit_condition = params[:controller] == 'manage/mturk_batch_jobs' && params[:action] == 'edit' %>
+  <% if edit_condition && @mturk_batch_job.auto == true %>
+    <fieldset disabled>
+  <% end %>
   <div class="form-group">
-    <%= f.input :name, hint: 'Has to be unique' %>
+    <%= f.input :name, hint: 'Has to be unique, must only include small letters, numbers, and underscores' %>
   </div>
+  <% if edit_condition && @mturk_batch_job.auto == true %>
+    </fieldset>
+  <% end %>
 
   <div class="form-group">
     <%= f.input :title, hint: 'Title of each HIT on Mturk, short and descriptive', input_html: {value: f.object.title || "Label tweet"} %>

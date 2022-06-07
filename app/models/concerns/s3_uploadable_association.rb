@@ -14,21 +14,16 @@ module S3UploadableAssociation
   end
 
   def assoc_s3_key(type, records, attribute_name: 'name')
-    attribute_name = self.read_attribute(attribute_name)&.parameterize
-    if attribute_name.nil?
-      attribute_name = self.id.to_s
-    end
+    attribute_name = read_attribute(attribute_name)&.parameterize
+    attribute_name = id.to_s if attribute_name.nil?
     if self.class.method_defined? 'project'
       project_name = project&.name
-      project_id = project.id.to_s
-    elsif self.has_attribute? 'es_index_name'
+    elsif has_attribute? 'es_index_name'
       project_name = name
-      project_id = id.to_s
     end
-    if project_name.blank?
-      project_name = 'unknown_project'
-    end
-    "other/csv/#{project_name}/#{type}/#{type}-#{attribute_name}-#{project_id}-#{records.maximum(:updated_at).to_i}-#{records.count}.csv"
+    project_name = 'unknown_project' if project_name.blank?
+    "other/csv/#{type}/project_#{project_name}/#{type.underscore}-#{attribute_name.underscore}-#{project_name}-" \
+    "#{records.maximum(:updated_at).strftime('%Y%m%d%H%M%S')}-#{records.count}.csv"
   end
 
   def assoc_dump_to_local(records, cols)
@@ -39,6 +34,6 @@ module S3UploadableAssociation
         csv << rec.attributes.values_at(*cols)
       end
     end
-    return tmp_file_path
+    tmp_file_path
   end
 end

@@ -1,6 +1,8 @@
 module UsersHelper
   def role_badge(role)
     case role
+    when 'super_admin'
+      tag.span(role, class: 'badge badge-dark')
     when 'admin'
       tag.span(role, class: 'badge badge-danger')
     when 'collaborator'

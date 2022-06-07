@@ -5,6 +5,7 @@ class Project < ApplicationRecord
   include CsvFileHandler
   extend FriendlyId
 
+  has_one :primary_mturk_batch_job, dependent: :destroy
   has_many :questions
   has_many :transitions
   has_many :results
@@ -48,6 +49,7 @@ class Project < ApplicationRecord
   def auto_mturking_validations
     return unless auto_mturking == true
 
+    errors.add(:base, 'You should activate Twitter streaming to turn the Auto Mturking on.') unless active_stream?
     errors.add(:storage_mode, :choose_es_mode) unless %w[s3-es s3-es-no-retweets].include? storage_mode
     errors.add(:tweets_per_batch, :cannot_be_blank) if tweets_per_batch.nil?
     errors.add(:tweets_per_batch, :must_be_more_than_zero) unless tweets_per_batch&.positive?

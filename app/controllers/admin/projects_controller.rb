@@ -12,8 +12,9 @@ module Admin
 
     def create
       if @project.primary?
-        # create new primary project
+        # Create new primary project
         if @project.save
+          PrimaryMturkBatchJob.create!(project: @project)
           if @project.job_file.present?
             CreatePublicTweetsJob.perform_later(@project.id, current_user.id, @project.retrieve_tweet_rows)
             redirect_to admin_projects_path, notice: "Project #{@project.name} is being created..."
@@ -25,7 +26,7 @@ module Admin
           render :new
         end
       else
-        # add new question sequence
+        # Add new question sequence
         @project = copy_fields_from_primary_project(@project)
         if @project.save
           redirect_to admin_question_sequences_path, notice: "Question sequence for #{@project.name} successfully created!"
@@ -40,6 +41,13 @@ module Admin
 
     def update
       if @project.update_attributes(sanitized_projects_params)
+        auto_mturking = sanitized_projects_params.fetch(:auto_mturking, nil)
+        unless auto_mturking.nil?
+          question_sequences = Project.where(name: @project.name, primary: false)
+          question_sequences.each do |qs|
+            qs.update_attributes(auto_mturking: auto_mturking, tweets_per_batch: @project.tweets_per_batch)
+          end
+        end
         if @project.job_file.present?
           CreatePublicTweetsJob.perform_later(@project.id, current_user.id, @project.retrieve_tweet_rows, destroy_first: true)
           redirect_to admin_projects_path, notice: "Project #{@project.name} is being updated..."

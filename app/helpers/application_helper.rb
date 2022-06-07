@@ -1,4 +1,15 @@
 module ApplicationHelper
+  def open_csv(csv_file)
+    csv_stringio = if csv_file.instance_of?(StringIO)
+                     csv_file
+                   elsif csv_file.instance_of?(String)
+                     File.open(csv_file, 'r')
+                   elsif csv_file.instance_of?(ActionDispatch::Http::UploadedFile)
+                     File.open(csv_file.path, 'r')
+                   end
+    CSV.new(csv_stringio)
+  end
+
   def flash_messages
     # Bootstrap notifications
     flash.each do |msg_type, message|

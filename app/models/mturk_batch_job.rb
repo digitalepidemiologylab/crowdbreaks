@@ -8,8 +8,13 @@ class MturkBatchJob < ApplicationRecord
   has_many :results, through: :tasks
   belongs_to :project
   belongs_to :mturk_worker_qualification_list
+  belongs_to :mturk_auto_batch
+  belongs_to :primary_mturk_batch_job
 
   validates :name, presence: true, uniqueness: { message: 'Name must be unique' }
+  validates :name, format: {
+    with: /\A[a-z0-9_]+\z/, message: 'Name must only include small letters, numbers, and underscores'
+  }
   validates_presence_of :description, :title, :keywords, :lifetime_in_seconds, :assignment_duration_in_seconds, :project, :reward
   validates_inclusion_of :sandbox, in: [true, false]
   validates_inclusion_of :minimal_approval_rate, in: 0..100, message: 'Minimal approval rate needs to be between 0 and 100', allow_nil: true
@@ -17,6 +22,7 @@ class MturkBatchJob < ApplicationRecord
   validates_with CsvValidator, fields: [:job_file]
   validates_with HitTypeValidator, on: :create
   validates_with QualificationListValidator
+  validate :mturk_auto_batch_for_auto_true
 
   enum check_availability: %i[before after before_and_after never], _prefix: true
 
@@ -137,4 +143,10 @@ class MturkBatchJob < ApplicationRecord
 
   private
 
+  def mturk_auto_batch_for_auto_true
+    return if auto == false
+    return if auto == true && !mturk_auto_batch.nil?
+
+    errors.add(:base, 'No mturk_auto_batch for an mturk_batch_job.auto == true.')
+  end
 end

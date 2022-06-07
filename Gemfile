@@ -76,6 +76,8 @@ gem 'faraday'
 gem 'faraday_middleware-aws-sigv4'
 # Turbolinks
 gem 'turbolinks', '~> 5.2.0'
+# Storing global settings
+gem 'rails-settings-cached'
 
 group :development, :test do
   gem 'rspec-rails'

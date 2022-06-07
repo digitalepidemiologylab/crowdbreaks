@@ -1,0 +1,169 @@
+<h1>Evaluate Auto MTurk Batch</h1><br/>
+
+<h4 class="mb-3">Project: <%= @mturk_batch_job.project.name %></h4>
+<div class="row justify-content-center mb-4">
+  <div class="col-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Batch name (MTurk/evaluation)</th>
+          <th>Created</th>
+          <th>Status</th>
+          <th>Progress</th>
+          <th>Num tweets</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= @mturk_batch_job.name %></td>
+          <td><%= time_ago(@mturk_batch_job.created_at) %></td>
+          <td><span class='badge badge-sentiment'><%= status(@mturk_batch_job.status) %></span></td>
+          <td><%= @mturk_batch_job.percentage_completed %> %</td>
+          <td><%= @mturk_batch_job.num_tweets %></td>
+          <td>
+            <% if can? :read, @mturk_batch_job %>
+              <%= link_to fa_icon('eye'), mturk_batch_job_path(@mturk_batch_job), title: 'Expand' %>
+              <% if @mturk_batch_job.results.count > 0 %>
+                <%= tag.span id: "mturk-batch-job-results-#{@mturk_batch_job.id}-spinner", class: 'mr-4', style: 'display:none;' do %>
+                  <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
+                <% end %>
+                <%= tag.span id: "mturk-batch-job-results-#{@mturk_batch_job.id}-icon" do %>
+                  <% if @mturk_batch_job.assoc_s3_key_exists?('mturk-batch-job-results', @mturk_batch_job.results) %>
+                    <%= link_to fa_icon('download'), mturk_batch_job_path(@mturk_batch_job, format: 'csv'), title: 'Download CSV' %>
+                  <% else %>
+                    <%= link_to fa_icon('download'), mturk_batch_job_path(@mturk_batch_job), title: 'Download CSV', remote: true %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <% if @local_batch_job.nil? %>
+            <td><i>Evaluation batch not created yet</i></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          <% else %>
+            <td><%= @local_batch_job.name %></td>
+            <td><%= time_ago(@local_batch_job.created_at) %></td>
+            <td>
+              <div id="progress-circle-record-<%= @local_batch_job.id %>-local-tweets-context">
+                <span class='badge badge-sentiment'><%= local_batch_job_status(@local_batch_job.status)%></span>
+              </div>
+              <%= progress_circle("progress-circle-record-#{@local_batch_job.id}-local-tweets") %>
+            </td>
+            <td>
+              <% @local_batch_job.users.limit(5).each_with_index do |user, i| %>
+                <div class='progress-with-label-sm'>
+                  <%= progress_circle("progress-circle-record-#{@local_batch_job.id}-user-#{user.id}", progress: @local_batch_job.progress_by_user(user), visible: true, small: true) %>
+                  <div class="progress-label", data-toggle="tooltip" title=<%="#{@local_batch_job.progress_by_user(user)}%" %>>
+                    <%= user.username %>
+                  </div>
+                </div>
+              <% end %>
+              <% if @local_batch_job.users.count > 5 %>
+                <%= "... and #{@local_batch_job.users.count - 5} more" %>
+              <% end %>
+            </td>
+            <td><%= num(@local_batch_job.local_tweets.count) %></td>
+            <td>
+              <% if can? :read, @local_batch_job %>
+                <%= link_to fa_icon('eye'), manage_local_batch_job_path(@local_batch_job) %>
+                <% if @local_batch_job.results.count > 0 %>
+                  <%= tag.span id: "local-batch-job-results-#{@local_batch_job.id}-spinner", class: 'mr-4', style: 'display:none;' do %>
+                    <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
+                  <% end %>
+                  <%= tag.span id: "local-batch-job-results-#{@local_batch_job.id}-icon" do %>
+                    <% if @local_batch_job.assoc_s3_key_exists?('local-batch-job-results', @local_batch_job.results) %>
+                      <%= link_to fa_icon('download'), manage_local_batch_job_path(@local_batch_job, format: 'csv'), title: 'Download CSV' %>
+                    <% else %>
+                      <%= link_to fa_icon('download'), manage_local_batch_job_path(@local_batch_job), title: 'Download CSV', remote: true %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3>Qualification list</h3>
+<p><i>Last updated: <%= @mturk_batch_job.mturk_worker_qualification_list.updated_at.strftime('%e %b %Y') %></i></p>
+<% mturk_workers = @mturk_batch_job.mturk_worker_qualification_list.mturk_workers %>
+<div class="row justify-content mb-4">
+  <div class="col-6">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Worker Id</th>
+          <th>Num tweets</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% mturk_workers.each do |mturk_worker| %>
+          <tr>
+            <td><%= mturk_worker.worker_id %></td>
+            <td><%= mturk_worker.mturk_tweets.count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<% unless @mturk_auto_batch.evaluated? %>
+  <h3 class="mb-3">Update qualification list</h4>
+  <%= simple_form_for(@mturk_batch_job.mturk_worker_qualification_list) do |f| %>
+    <%= f.error_notification %>
+    <div class="form-group">
+      <%= f.error :base %>
+    </div>
+
+    <div class="form-group">
+      <%= f.input :name, hint: 'Short name of the qualification list. Has to be unique. Is public to workers.', readonly: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.input :description, hint: 'Description shown to Mturk workers', input_html: {value: f.object.description.blank? ? "You've been granted a positive qualifiction for this task." : f.object.description}  %>
+    </div>
+
+    <div class="form-group">
+      <%= f.input 'job_file_wrapper',
+        label: 'Upload CSV of worker IDs',
+        hint: 'Please use a header-less CSV in which each row corresponds to a worker ID. Once workers are associated with a qualification list, the worker list cannot be modified anymore.',
+        label_html: {class: 'label-no-wrap'} do %>
+        <div class="btn btn-secondary" onClick="document.getElementById('job-file').click();">
+          <%= fa_icon 'upload', class: 'mr-2' %>
+          <span>Choose file</span>
+        </div>
+      <% end %>
+      <div class='hidden-file-upload'>
+        <%= f.input :job_file, as: :file, input_html: {id: 'job-file', class: 'input-file'} %>
+      </div>
+      <%= f.error :job_file %>
+    </div>
+
+    <div class="form-group">
+      <%= f.input :sandbox, hint: 'Note that in production, workers will be notified that they have been granted a new qualification.', input_html: {class: "mr-2", checked: f.object.sandbox}, label_html: {class: 'checkbox-inline'} %>
+    </div>
+
+    <div class="form-group">
+      <%= f.button :submit, 'Update qualification list', class: 'btn btn-primary btn-lg' %>
+    </div>
+  <% end %>
+
+  <%= simple_form_for(@mturk_auto_batch) do |f| %>
+    <div class="actions">
+      <%= f.hidden_field :evaluated, value: '1' %>
+    </div>
+    <div class="form-group">
+      <%= f.button :submit, 'Finish evaluation', class: 'btn btn-primary btn-lg' %>
+    </div>
+  <% end %>
+<% end %>
