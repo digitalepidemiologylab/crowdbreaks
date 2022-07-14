@@ -77,9 +77,9 @@ class StatusMailer
 
   def counts_by_project(total: false)
     align = ['left'] + ['right'] * 4
-    modes = %w[public local mturk all]
+    modes = %w[public local mturk other all]
     date_range = @date_range unless total
-    table(header: %w[Project Public Local Mturk Total]) do
+    table(header: %w[Project Public Local Mturk Other Total]) do
       Project.primary.each do |primary_project|
         projects = primary_project.question_sequences
         counts = {}
@@ -109,6 +109,8 @@ class StatusMailer
       results.num_mturk_annotations
     when 'local'
       results.num_local_annotations
+    when 'other'
+      results.num_other_annotations
     else
       raise 'Unsupported mode'
     end
