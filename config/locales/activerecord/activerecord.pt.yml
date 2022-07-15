@@ -35,6 +35,15 @@ pt:
           has_one: Não é possível excluir o registro pois existe um %{record} dependente
         taken: já foi tomada
       models:
+        project:
+          attributes:
+            accessible_by_email_pattern:
+              invalid: Os padrões precisam ser padrões de e-mail, incluindo "@".
+            storage_mode:
+              choose_es_mode: Se você quiser que o projeto seja elegível para o MTurking automático, escolha um modo de armazenamento que inclua o armazenamento em Elasticseach (ES).
+            tweets_per_batch:
+              cannot_be_blank: Os tweets por lote não podem estar em branco se o MTurking automático estiver ligado.
+              must_be_more_than_zero: O tamanho do lote deve ser maior que zero.
         user:
           attributes:
             email:

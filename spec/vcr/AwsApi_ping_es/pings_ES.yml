@@ -1,0 +1,39 @@
+---
+http_interactions:
+- request:
+    method: head
+    uri: https://d4e60a0d5891432e9a4ff86bc4a3a73a.eu-central-1.aws.cloud.es.io/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - ApiKey bzc1Ql8zOEJtS3RLdGZsZmpNZGw6YjFuTjJLUzFReUtnY001cFhiUTB6Zw==
+      X-Elastic-Client-Meta:
+      - es=7.17.1,rb=2.5.8,t=7.17.1,fd=1.10.0,nh=1.1
+      User-Agent:
+      - 'elasticsearch-ruby/7.17.1 (RUBY_VERSION: 2.5.8; darwin x86_64; Faraday v1.10.0)'
+      Content-Type:
+      - application/json
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Cloud-Request-Id:
+      - gZFrsi5gSbm5YxiuV1y7Jg
+      X-Elastic-Product:
+      - Elasticsearch
+      X-Found-Handling-Cluster:
+      - d4e60a0d5891432e9a4ff86bc4a3a73a
+      X-Found-Handling-Instance:
+      - instance-0000000000
+      Date:
+      - Fri, 24 Jun 2022 14:13:33 GMT
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Fri, 24 Jun 2022 14:13:33 GMT
+recorded_with: VCR 6.0.0

@@ -35,6 +35,15 @@ en:
           has_one: Cannot delete record because a dependent %{record} exists
         taken: has already been taken
       models:
+        project:
+          attributes:
+            accessible_by_email_pattern:
+              invalid: Patterns need to be email patterns including "@".
+            storage_mode:
+              choose_es_mode: If you want the project to be eligible for auto MTurking, please choose a storage mode which includes storing in Elasticseach (ES).
+            tweets_per_batch:
+              cannot_be_blank: Tweets per batch cannot be blank if auto MTurking is on.
+              must_be_more_than_zero: Batch size must be more than zero.
         user:
           attributes:
             email:
@@ -45,14 +54,5 @@ en:
               confirmation: Doesn't match password.
             username:
               taken: This username has already been taken.
-        project:
-          attributes:
-            accessible_by_email_pattern:
-              invalid: Patterns need to be email patterns including "@".
-            storage_mode:
-              choose_es_mode: If you want the project to be eligible for auto MTurking, please choose a storage mode which includes storing in Elasticseach (ES).
-            tweets_per_batch:
-              cannot_be_blank: Tweets per batch cannot be blank if auto MTurking is on.
-              must_be_more_than_zero: Batch size must be more than zero.
     models:
       user: User

@@ -2,24 +2,20 @@
 http_interactions:
 - request:
     method: post
-    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_vaccine_2021-05-01_08-01-21/_doc/1394723048364859394/_update?refresh=true
+    uri: https://d4e60a0d5891432e9a4ff86bc4a3a73a.eu-central-1.aws.cloud.es.io/project_vaccine_sentiment_2022-04-02_20-35-22/_doc/1540297383401213954/_update?refresh=true
     body:
       encoding: UTF-8
       string: '{"script":{"source":"if (ctx._source.annotations == null) ctx._source.annotations
         = new ArrayList();ctx._source.annotations.add(params.annotation)","lang":"painless","params":{"annotation":{"user_id":12345}}}}'
     headers:
+      Authorization:
+      - ApiKey bzc1Ql8zOEJtS3RLdGZsZmpNZGw6YjFuTjJLUzFReUtnY001cFhiUTB6Zw==
+      X-Elastic-Client-Meta:
+      - es=7.17.1,rb=2.5.8,t=7.17.1,fd=1.10.0,nh=1.1
+      User-Agent:
+      - 'elasticsearch-ruby/7.17.1 (RUBY_VERSION: 2.5.8; darwin x86_64; Faraday v1.10.0)'
       Content-Type:
       - application/json
-      User-Agent:
-      - Faraday v1.4.1
-      X-Amz-Date:
-      - 20210531T173644Z
-      X-Amz-Content-Sha256:
-      - 582c81a3b14601fffb65f55aca027bd8b3291d4b5394cbd14d78d32588ce434b
-      Authorization:
-      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210531/eu-central-1/es/aws4_request,
-        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
-        Signature=528729758f5fe0f723a3d49826a05b852026d72a57c9e10d861e39e8a1205a52
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -29,18 +25,26 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Date:
-      - Mon, 31 May 2021 17:36:44 GMT
+      Content-Length:
+      - '203'
       Content-Type:
       - application/json; charset=UTF-8
-      Content-Length:
-      - '228'
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
+      Warning:
+      - 299 Elasticsearch-7.17.2-de7261de50d90919ae53b0eff9413fd7e5307301 "[types
+        removal] Specifying types in document update requests is deprecated, use the
+        endpoint /{index}/_update/{id} instead."
+      X-Cloud-Request-Id:
+      - qTHJSN5YSrm0FUMBG6G7gQ
+      X-Elastic-Product:
+      - Elasticsearch
+      X-Found-Handling-Cluster:
+      - d4e60a0d5891432e9a4ff86bc4a3a73a
+      X-Found-Handling-Instance:
+      - instance-0000000000
+      Date:
+      - Fri, 24 Jun 2022 13:56:43 GMT
     body:
-      encoding: UTF-8
-      string: '{"_index":"project_vaccine_2021-05-01_08-01-21","_type":"_doc","_id":"1394723048364859394","_version":3,"result":"updated","forced_refresh":true,"_shards":{"total":2,"successful":2,"failed":0},"_seq_no":33941,"_primary_term":22}'
-  recorded_at: Mon, 31 May 2021 17:36:44 GMT
+      encoding: ASCII-8BIT
+      string: '{"_index":"project_vaccine_sentiment_2022-04-02_20-35-22","_type":"_doc","_id":"1540297383401213954","_version":5,"result":"updated","forced_refresh":true,"_shards":{"total":2,"successful":2,"failed":0},"_seq_no":8953964,"_primary_term":2}'
+  recorded_at: Fri, 24 Jun 2022 13:56:43 GMT
 recorded_with: VCR 6.0.0

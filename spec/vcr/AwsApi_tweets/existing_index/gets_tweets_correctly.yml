@@ -1,28 +1,20 @@
 ---
 http_interactions:
 - request:
-    method: get
-    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_vaccine_*/_search?size=5
+    method: post
+    uri: https://d4e60a0d5891432e9a4ff86bc4a3a73a.eu-central-1.aws.cloud.es.io/project_vaccine_sentiment_2022-04-02_20-35-22/_search?size=5
     body:
       encoding: UTF-8
-      string: '{"query":{"function_score":{"script_score":{"script":{"source":"if
-        (_score \u003e params[''_source''][''predictions''][''sentiment''][''endpoints''][''primary_probability''])
-        { _score } else { 0 }"}},"query":{"function_score":{"boost_mode":"replace","functions":[{"random_score":{}}],"query":{"bool":{"must":[{"range":{"created_at":{"gte":"2021-07-07T16:38:15.000Z"}}},{"exists":{"field":"predictions"}}],"must_not":[{"exists":{"field":"is_retweet"}},{"exists":{"field":"has_quote"}},{"terms":{"annotations.user_id":[0]}}],"filter":[{"script":{"script":"doc.containsKey(''annotations.user_id'')
-        \u0026\u0026 doc[''annotations.user_id''].size() \u003e 0 \u0026\u0026 doc[''annotations.user_id''].size()
-        \u003c 2"}}]}}}}}}}'
+      string: '{"query":{"function_score":{"boost_mode":"replace","functions":[{"random_score":{}}],"query":{"bool":{"must":[{"range":{"created_at":{"gte":"2022-06-17T14:47:29.000Z","lte":"2022-06-24T14:47:29.000Z"}}}],"must_not":[{"exists":{"field":"is_retweet"}},{"exists":{"field":"has_quote"}},{"exists":{"field":"annotations"}}]}}}}}'
     headers:
+      Authorization:
+      - ApiKey bzc1Ql8zOEJtS3RLdGZsZmpNZGw6YjFuTjJLUzFReUtnY001cFhiUTB6Zw==
+      X-Elastic-Client-Meta:
+      - es=7.17.1,rb=2.5.8,t=7.17.1,fd=1.10.0,nh=1.1
+      User-Agent:
+      - 'elasticsearch-ruby/7.17.1 (RUBY_VERSION: 2.5.8; darwin x86_64; Faraday v1.10.0)'
       Content-Type:
       - application/json
-      User-Agent:
-      - Faraday v0.17.4
-      X-Amz-Date:
-      - 20210714T163815Z
-      X-Amz-Content-Sha256:
-      - d2ef4cdf16cf2358262b4601e90c7cd9ffb67aa20c9d77cd571951f660d60c5c
-      Authorization:
-      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210714/eu-central-1/es/aws4_request,
-        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
-        Signature=1bb5b1959735ba62446706d80735e71508887cce4fc609e50a31581a3d62f202
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -32,21 +24,61 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Date:
-      - Wed, 14 Jul 2021 16:38:17 GMT
+      Content-Length:
+      - '1639'
       Content-Type:
       - application/json; charset=UTF-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - close
-      Access-Control-Allow-Origin:
-      - "*"
-      Vary:
-      - Accept-Encoding, User-Agent
+      X-Cloud-Request-Id:
+      - naFsETL4QCmqaAJI2rTkyg
+      X-Elastic-Product:
+      - Elasticsearch
+      X-Found-Handling-Cluster:
+      - d4e60a0d5891432e9a4ff86bc4a3a73a
+      X-Found-Handling-Instance:
+      - instance-0000000000
+      Date:
+      - Fri, 24 Jun 2022 14:47:31 GMT
     body:
       encoding: ASCII-8BIT
-      string: !binary |-
-        eyJ0b29rIjoyMjI3LCJ0aW1lZF9vdXQiOmZhbHNlLCJfc2hhcmRzIjp7InRvdGFsIjo1LCJzdWNjZXNzZnVsIjo1LCJza2lwcGVkIjowLCJmYWlsZWQiOjB9LCJoaXRzIjp7InRvdGFsIjp7InZhbHVlIjo0NCwicmVsYXRpb24iOiJlcSJ9LCJtYXhfc2NvcmUiOjAuOTEyMDMwNSwiaGl0cyI6W3siX2luZGV4IjoicHJvamVjdF92YWNjaW5lX3NlbnRpbWVudF8yMDIxLTA3LTAxXzA4LTAzLTQ4IiwiX3R5cGUiOiJfZG9jIiwiX2lkIjoiMTQxNTIyNzkwNDM4OTEyNDA5OCIsIl9zY29yZSI6MC45MTIwMzA1LCJfc291cmNlIjp7ImNyZWF0ZWRfYXQiOiIyMDIxLTA3LTE0VDA4OjMzOjIwLjAwMFoiLCJ0ZXh0IjoiQHR3aXR0eWRvb2RsZSBUaGVuIHlvdSd2ZSBiZWVuIHZhY2NpbmF0ZWQgd2l0aCBmYWtlIHZhY2NpbmUgXHVEODNEXHVERTAyIiwiaW5fcmVwbHlfdG9fdXNlcl9pZCI6IjEwMDc5MjQ0OCIsInVzZXIiOnsiaWQiOiIxMzc2NTU0Njc1Njk3MTQ3OTA0IiwibmFtZSI6IlNhZmZyb24gRGV2IOWNkFx1RDgzRFx1REVBOSIsInNjcmVlbl9uYW1lIjoic2FmZnJvbl9kZXYiLCJsb2NhdGlvbiI6IuCkreCkvuCksOCkpOCkteCksOCljeCktyIsImRlc2NyaXB0aW9uIjoiVGhhbmsgeW91LCBjb21lIGFnYWluLiJ9LCJnZW9faW5mbyI6eyJsb2NhdGlvbl90eXBlIjoiY291bnRyeSIsImNvdW50cnlfY29kZSI6IklOIiwiZ2VvX3R5cGUiOiJ1c2VyLmxvY2F0aW9uIiwiY29vcmRpbmF0ZXMiOnsibGF0IjoyMi4wLCJsb24iOjc5LjB9fSwibGFuZyI6ImVuIiwicHJvamVjdCI6InZhY2NpbmVfc2VudGltZW50IiwibWF0Y2hpbmdfa2V5d29yZHMiOlsidmFjY2luZSIsInZhY2NpbmF0ZWQiXSwicHJlZGljdGlvbnMiOnsic2VudGltZW50Ijp7ImVuZHBvaW50cyI6eyJwcmltYXJ5X3Byb2JhYmlsaXR5IjowLjM3MTAyODIxNDY5MzA2OTQ2LCJwcmltYXJ5X2xhYmVsIjoibmV1dHJhbCIsInByaW1hcnlfbGFiZWxfdmFsIjowLCJmYXN0dGV4dF92MiI6eyJwcm9iYWJpbGl0eSI6MC4zNzEwMjgyMTQ2OTMwNjk0NiwibGFiZWwiOiJuZXV0cmFsIiwibGFiZWxfdmFsIjowfX19fSwiYW5ub3RhdGlvbnMiOlt7InVzZXJfaWQiOjN9XX19LHsiX2luZGV4IjoicHJvamVjdF92YWNjaW5lX3NlbnRpbWVudF8yMDIxLTA3LTAxXzA4LTAzLTQ4IiwiX3R5cGUiOiJfZG9jIiwiX2lkIjoiMTQxNDkxNjQ0MjYxNzc4NjM3MyIsIl9zY29yZSI6MC44ODczNTIzLCJfc291cmNlIjp7ImNyZWF0ZWRfYXQiOiIyMDIxLTA3LTEzVDExOjU1OjQyLjAwMFoiLCJ0ZXh0IjoiQEtLX2JlYXR6MSBATWlzc0tzbWl0aDA4IEBCcmlhbk1hbWFybyBAS2dvbW9kem8yNCBAU2l6d2VEaGxvbW8gSGUgaGFkIG5vIGlsbG5lc3NlcyBiZWZvcmUsIHBvc3QgdmFjY2luZSBoZSBoYXMgZGlmZmljdWx0eSBicmVhdGhpbmcgc29tZSBkYXlzIGhlIHdha2VzIHVwIGluIHRoZSBtaWRkbGUgb2YgdGhlIG5pZ2h0IGFuZCBjYW5ub3QgYnJlYXRoZSBhdCBhbGwsIGhlIGhhcyBzZXZlcmUgaGVhZGFjaGVzIG5vdy4gQW5kIHdlIHdlcmUgdG9sZCB0aGVzZSBhcmUgdGhlIHNpZGUgZWZmZWN0cyBvZiB0aGUgdmFjY2luZS4iLCJpbl9yZXBseV90b191c2VyX2lkIjoiMjc2MDk0NDU1OSIsInVzZXIiOnsiaWQiOiIzMzExNTI5MzIzIiwibmFtZSI6IlpvbGlfTWNEYW5pZWwiLCJzY3JlZW5fbmFtZSI6InpvbGlsZW0yMCIsImxvY2F0aW9uIjoiSm9oYW5uZXNidXJnLCBTb3V0aCBBZnJpY2EiLCJkZXNjcmlwdGlvbiI6IlVqIEFsdW1uaSBcdUQ4M0RcdURDNjhcdUQ4M0NcdURGRkRcdUQ4M0NcdURGOTMgXHVEODNDXHVERjkzIEJyYW5kIEFtYmFzc2Fkb3IsTWFya2V0aW5nIE1hbmFnZXIsIEVudHJlcHJlbmV1cixDb29sZXN0IHRoaW5nIHNpbmNlIGljZS1jcmVhbSJ9LCJnZW9faW5mbyI6eyJsb2NhdGlvbl90eXBlIjoiY2l0eSIsImNvdW50cnlfY29kZSI6IlpBIiwiZ2VvX3R5cGUiOiJ1c2VyLmxvY2F0aW9uIiwiY29vcmRpbmF0ZXMiOnsibGF0IjotMjYuMjAyMjcwMDAwMDAwMDAyLCJsb24iOjI4LjA0MzYzfX0sImxhbmciOiJlbiIsInByb2plY3QiOiJ2YWNjaW5lX3NlbnRpbWVudCIsIm1hdGNoaW5nX2tleXdvcmRzIjpbInZhY2NpbmUiXSwicHJlZGljdGlvbnMiOnsic2VudGltZW50Ijp7ImVuZHBvaW50cyI6eyJwcmltYXJ5X3Byb2JhYmlsaXR5IjowLjg0MjQ3MDQ2NzA5MDYwNjcsInByaW1hcnlfbGFiZWwiOiJuZXV0cmFsIiwicHJpbWFyeV9sYWJlbF92YWwiOjAsImZhc3R0ZXh0X3YyIjp7InByb2JhYmlsaXR5IjowLjg0MjQ3MDQ2NzA5MDYwNjcsImxhYmVsIjoibmV1dHJhbCIsImxhYmVsX3ZhbCI6MH19fX0sImFubm90YXRpb25zIjpbeyJ1c2VyX2lkIjozfV19fSx7Il9pbmRleCI6InByb2plY3RfdmFjY2luZV9zZW50aW1lbnRfMjAyMS0wNy0wMV8wOC0wMy00OCIsIl90eXBlIjoiX2RvYyIsIl9pZCI6IjE0MTUyOTQ4MzczMzk4MjQxMzAiLCJfc2NvcmUiOjAuODU5Mzc3OCwiX3NvdXJjZSI6eyJjcmVhdGVkX2F0IjoiMjAyMS0wNy0xNFQxMjo1OToxOC4wMDBaIiwidGV4dCI6IlRyeWluZyB0byByZWdpc3RlciBmb3IgYSB2YWNjaW5lIGhlcmUgaXMgbGlrZSB0cnlpbmcgdG8gZ2V0IGV4c28gdGlja2V0cy4gRXZlbiBpIHVzZWQgdG8gZ2V0IGFsbCBzaXggZGF5IHRpY2tldHMgaW4gZXhzbyBjb25jZXJ0IGJ1dCBpIGp1c3QgZmFpbGVkIGF0IHRoaXMhISBMbWFvIGh0dHBzOi8vdC5jby9scnpmWHFrOG4xIiwidXNlciI6eyJpZCI6IjEzNTA0NzU0MjY2OTU1MDc5NjgiLCJuYW1lIjoiUGVhY2ggXHVEODNDXHVERjUxIiwic2NyZWVuX25hbWUiOiJkcnVncGVhY2h5IiwibG9jYXRpb24iOiLrho3snqUiLCJkZXNjcmlwdGlvbiI6IuuzteyIreyVhCJ9LCJsYW5nIjoiZW4iLCJwcm9qZWN0IjoidmFjY2luZV9zZW50aW1lbnQiLCJtYXRjaGluZ19rZXl3b3JkcyI6WyJ2YWNjaW5lIl0sInByZWRpY3Rpb25zIjp7InNlbnRpbWVudCI6eyJlbmRwb2ludHMiOnsicHJpbWFyeV9wcm9iYWJpbGl0eSI6MC43NzY2NjE2OTQwNDk4MzUyLCJwcmltYXJ5X2xhYmVsIjoibmV1dHJhbCIsInByaW1hcnlfbGFiZWxfdmFsIjowLCJmYXN0dGV4dF92MiI6eyJwcm9iYWJpbGl0eSI6MC43NzY2NjE2OTQwNDk4MzUyLCJsYWJlbCI6Im5ldXRyYWwiLCJsYWJlbF92YWwiOjB9fX19LCJhbm5vdGF0aW9ucyI6W3sidXNlcl9pZCI6M31dfX0seyJfaW5kZXgiOiJwcm9qZWN0X3ZhY2NpbmVfc2VudGltZW50XzIwMjEtMDctMDFfMDgtMDMtNDgiLCJfdHlwZSI6Il9kb2MiLCJfaWQiOiIxNDE1MjEzODE4NjI0NDkxNTIxIiwiX3Njb3JlIjowLjg1MzM0NjUsIl9zb3VyY2UiOnsiY3JlYXRlZF9hdCI6IjIwMjEtMDctMTRUMDc6Mzc6MjIuMDAwWiIsInRleHQiOiJVTlRWTmV3c1Jlc2N1ZTogUlQgQW4gaW5mZWN0aW91cyBkaXNlYXNlIGV4cGVydCBleHBsYWluZWQgdGhhdCB1bnZhY2NpbmF0ZWQgcGVvcGxlIGhhdmUgbW9yZSBjaGFuY2VzIHRvIGV4cGVyaWVuY2Ug4oCcY29pbmZlY3Rpb27igJ0gb3IgYmUgaW5mZWN0ZWQgd2l0aCB0d28gZGlmZmVyZW50IENPVklELTE5IHZhcmlhbnRzLiBodHRwczovL3QuY28vUGRFYjJ4SmFQcCIsInVzZXIiOnsiaWQiOiIzOTYwMzQ2MiIsIm5hbWUiOiJOb2x5QklHIiwic2NyZWVuX25hbWUiOiJub2x5YmlnIiwibG9jYXRpb24iOiJtb2pvb2QhIiwiZGVzY3JpcHRpb24iOiJHdWVzcyB3aGF0Li4uIHlvdSBkaWRuJ3QgY2hlY2sgbXkgdHdlZXRzIGJ5IGFjY2lkZW50IHJpZ2h0PyJ9LCJsYW5nIjoiZW4iLCJwcm9qZWN0IjoidmFjY2luZV9zZW50aW1lbnQiLCJtYXRjaGluZ19rZXl3b3JkcyI6WyJ2YWNjaW5hdGVkIiwidW52YWNjaW5hdGVkIl0sInByZWRpY3Rpb25zIjp7InNlbnRpbWVudCI6eyJlbmRwb2ludHMiOnsicHJpbWFyeV9wcm9iYWJpbGl0eSI6MC41MTUyMDY5OTI2MjYxOTAyLCJwcmltYXJ5X2xhYmVsIjoibmV1dHJhbCIsInByaW1hcnlfbGFiZWxfdmFsIjowLCJmYXN0dGV4dF92MiI6eyJwcm9iYWJpbGl0eSI6MC41MTUyMDY5OTI2MjYxOTAyLCJsYWJlbCI6Im5ldXRyYWwiLCJsYWJlbF92YWwiOjB9fX19LCJhbm5vdGF0aW9ucyI6W3sidXNlcl9pZCI6M31dfX0seyJfaW5kZXgiOiJwcm9qZWN0X3ZhY2NpbmVfc2VudGltZW50XzIwMjEtMDctMDFfMDgtMDMtNDgiLCJfdHlwZSI6Il9kb2MiLCJfaWQiOiIxNDE0OTk4NDk1MjI5MDU0OTgyIiwiX3Njb3JlIjowLjg0OTk5NjQsIl9zb3VyY2UiOnsiY3JlYXRlZF9hdCI6IjIwMjEtMDctMTNUMTc6MjE6NDUuMDAwWiIsInRleHQiOiJAU2hhcnBpZURqIFRlbmVyaWZlIGlzIGJhZCBhdCB0aGUgbW9tZW50IGJ1dCB3ZSBrbm93IGl0J3MgdGhlIHZheHhlZCB1cCBma3RhcmRzLiBTdGlsbCB0aGV5IGNvbnRpbnVlIHdpdGggdGhlaXIgZXZpbCBwbGFucyBhbmQgdGhlIGR1bWIgc3RpbGwgcXVldWUgdXAgZm9yIHRoZWlyIGphYnMiLCJpbl9yZXBseV90b191c2VyX2lkIjoiMTMyMTAwMTY4ODI3OTQ4NjQ2NCIsInVzZXIiOnsiaWQiOiIyOTIxMjA2NDYyIiwibmFtZSI6IkVtbWEiLCJzY3JlZW5fbmFtZSI6ImVtbWFvaGFyYTE5NjkiLCJkZXNjcmlwdGlvbiI6IlRydXRoIGZyZWVkb20gYW5kIGp1c3RpY2UuV2lsbCBub3QgdG9sZXJhdGUgYnMgb3IgY29udHJvbCBpbiBhbnkgZm9ybS4ifSwibGFuZyI6ImVuIiwicHJvamVjdCI6InZhY2NpbmVfc2VudGltZW50IiwibWF0Y2hpbmdfa2V5d29yZHMiOlsidmF4eGVkIl0sInByZWRpY3Rpb25zIjp7InNlbnRpbWVudCI6eyJlbmRwb2ludHMiOnsicHJpbWFyeV9wcm9iYWJpbGl0eSI6MC44NDI0NzA0NjcwOTA2MDY3LCJwcmltYXJ5X2xhYmVsIjoibmV1dHJhbCIsInByaW1hcnlfbGFiZWxfdmFsIjowLCJmYXN0dGV4dF92MiI6eyJwcm9iYWJpbGl0eSI6MC44NDI0NzA0NjcwOTA2MDY3LCJsYWJlbCI6Im5ldXRyYWwiLCJsYWJlbF92YWwiOjB9fX19LCJhbm5vdGF0aW9ucyI6W3sidXNlcl9pZCI6M31dfX1dfX0=
-  recorded_at: Wed, 14 Jul 2021 16:38:17 GMT
+      string: '{"took":981,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":10000,"relation":"gte"},"max_score":0.99999815,"hits":[{"_index":"project_vaccine_sentiment_2022-04-02_20-35-22","_type":"_doc","_id":"1538651402427318272","_score":0.99999815,"_source":{"created_at":
+        "2022-06-19T22:34:15.000Z", "text": "Covid Vaccine for young children? https://t.co/uZLZGjxDqY",
+        "user": {"id": "2535213616", "name": "Eunice C. Riemer", "screen_name": "riemer_eunice",
+        "description": "Certified Registered Nurse Anesthetist (CRNA) - Retired; MBA
+        Aurora University; Lt Col - Retired USAFR"}, "lang": "en", "project": "vaccine_sentiment",
+        "matching_keywords": ["vaccine"]}},{"_index":"project_vaccine_sentiment_2022-04-02_20-35-22","_type":"_doc","_id":"1539704876782866439","_score":0.99999326,"_source":{"created_at":
+        "2022-06-22T20:20:23.000Z", "text": "@SethPlaut @Breaking911 Define vaccine
+        lol(is it just me, or have we collectively lost our handle on what a \u201cvaccine\u201d
+        is supposed to do....)", "in_reply_to_user_id": "514560443", "user": {"id":
+        "1271852553383243776", "name": "\ud83c\uddfa\ud83c\uddf8TheConservative\ud83c\uddfa\ud83c\uddf8",
+        "screen_name": "Conserv1023", "description": "Search for the truth, not the
+        truth you wish to find."}, "lang": "en", "project": "vaccine_sentiment", "matching_keywords":
+        ["vaccine"]}},{"_index":"project_vaccine_sentiment_2022-04-02_20-35-22","_type":"_doc","_id":"1538514406455353346","_score":0.99999297,"_source":{"created_at":
+        "2022-06-19T13:29:53.000Z", "text": "No more mandates on the Hill, as Senate
+        ends COVID-19 vaccine requirement https://t.co/ovqIuNFnmz", "user": {"id":
+        "765296237331357696", "name": "brian o", "screen_name": "proudCanadavet",
+        "location": "Canada ", "description": "I am a Proud Canadian Veteran.#BidenHarrisCanadian
+        for Democrats#Resistersvoting rights#blue 2022#CanadaStandsWithUkraine"},
+        "geo_info": {"location_type": "country", "country_code": "CA", "geo_type":
+        "user.location", "coordinates": {"lat": 60.10867, "lon": -113.64258000000001}},
+        "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccine"]}},{"_index":"project_vaccine_sentiment_2022-04-02_20-35-22","_type":"_doc","_id":"1539661539770126338","_score":0.9999891,"_source":{"created_at":
+        "2022-06-22T17:28:11.000Z", "text": "@thecamizzx @EwwCman @fullerwx @SnotopherBoyson
+        Vaccine? A Vaccine that doesn\u2019t stop you from getting Covid? They said
+        it would. A Vaccine that doesn\u2019t stop you from spreading it? They said
+        it would. A vaccine that you need multiple boosters to be affective? Etc etc
+        etc", "in_reply_to_user_id": "709852977176170497", "user": {"id": "3291688577",
+        "name": "Craig Rivet", "screen_name": "craigrivet52", "description": "NHLer
+        of 16yrs...Co-Host of \u201cAfter the Whistle\u201dPodcast with Andrew Peters
+        and Craig Rivet. @theinstigator76 @AfterLeWhistle Email us: atw5276@gmail.com"},
+        "lang": "en", "project": "vaccine_sentiment", "matching_keywords": ["vaccine"]}},{"_index":"project_vaccine_sentiment_2022-04-02_20-35-22","_type":"_doc","_id":"1538814403960786945","_score":0.9999815,"_source":{"created_at":
+        "2022-06-20T09:21:58.000Z", "text": "@Jasonngoose I sat in a car at Xmas with
+        someone who had it and I didn\u2019t get it... but now I\u2019ve got it from
+        holiday. I\u2019m guessing it depends which variant you get as some can easily
+        break through the vaccine and others can\u2019t.", "in_reply_to_user_id":
+        "17939524", "user": {"id": "1486417203092148227", "name": "Sam \ud83d\udea9
+        \ud83c\uddfa\ud83c\udde6", "screen_name": "Socialdemmo", "location": "Leeds,
+        England", "description": "Democratic Socialist. He/Him"}, "geo_info": {"location_type":
+        "city", "country_code": "GB", "geo_type": "user.location", "coordinates":
+        {"lat": 53.79648, "lon": -1.54785}}, "lang": "en", "project": "vaccine_sentiment",
+        "matching_keywords": ["vaccine"]}}]}}'
+  recorded_at: Fri, 24 Jun 2022 14:47:31 GMT
 recorded_with: VCR 6.0.0

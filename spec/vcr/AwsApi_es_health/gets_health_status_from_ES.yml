@@ -2,23 +2,19 @@
 http_interactions:
 - request:
     method: get
-    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/_cluster/health
+    uri: https://d4e60a0d5891432e9a4ff86bc4a3a73a.eu-central-1.aws.cloud.es.io/_cluster/health
     body:
       encoding: US-ASCII
       string: ''
     headers:
+      Authorization:
+      - ApiKey bzc1Ql8zOEJtS3RLdGZsZmpNZGw6YjFuTjJLUzFReUtnY001cFhiUTB6Zw==
+      X-Elastic-Client-Meta:
+      - es=7.17.1,rb=2.5.8,t=7.17.1,fd=1.10.0,nh=1.1
+      User-Agent:
+      - 'elasticsearch-ruby/7.17.1 (RUBY_VERSION: 2.5.8; darwin x86_64; Faraday v1.10.0)'
       Content-Type:
       - application/json
-      User-Agent:
-      - Faraday v0.17.4
-      X-Amz-Date:
-      - 20210609T183754Z
-      X-Amz-Content-Sha256:
-      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-      Authorization:
-      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210609/eu-central-1/es/aws4_request,
-        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
-        Signature=cb197d50eec51c25ccc458aae1e85b9f0f016c8f51fef024ab66fcb3d529de44
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -28,20 +24,22 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Date:
-      - Wed, 09 Jun 2021 18:37:57 GMT
+      Content-Length:
+      - '257'
       Content-Type:
       - application/json; charset=UTF-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Vary:
-      - Accept-Encoding, User-Agent
+      X-Cloud-Request-Id:
+      - 1EHVQX7nQs6hnueJzNvgVg
+      X-Elastic-Product:
+      - Elasticsearch
+      X-Found-Handling-Cluster:
+      - d4e60a0d5891432e9a4ff86bc4a3a73a
+      X-Found-Handling-Instance:
+      - instance-0000000000
+      Date:
+      - Fri, 24 Jun 2022 13:56:43 GMT
     body:
       encoding: ASCII-8BIT
-      string: '{"cluster_name":"874942657130:crowdbreaks-stg","status":"green","timed_out":false,"number_of_nodes":2,"number_of_data_nodes":2,"discovered_master":true,"active_primary_shards":126,"active_shards":252,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}'
-  recorded_at: Wed, 09 Jun 2021 18:37:57 GMT
+      string: '{"cluster_name":"d4e60a0d5891432e9a4ff86bc4a3a73a","status":"green","timed_out":false,"number_of_nodes":3,"number_of_data_nodes":2,"active_primary_shards":118,"active_shards":236,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}'
+  recorded_at: Fri, 24 Jun 2022 13:56:43 GMT
 recorded_with: VCR 6.0.0

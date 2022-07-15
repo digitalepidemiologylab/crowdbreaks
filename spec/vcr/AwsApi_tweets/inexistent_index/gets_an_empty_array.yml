@@ -1,51 +1,45 @@
 ---
 http_interactions:
 - request:
-    method: get
-    uri: https://search-crowdbreaks-stg-r7ijs3a6awevjffrehacjkygn4.eu-central-1.es.amazonaws.com/project_inexistent/_search?size=5
+    method: post
+    uri: https://d4e60a0d5891432e9a4ff86bc4a3a73a.eu-central-1.aws.cloud.es.io/project_inexistent/_search?size=5
     body:
       encoding: UTF-8
-      string: '{"query":{"function_score":{"script_score":{"script":{"source":"if
-        (_score \u003e params[''_source''][''predictions''][''sentiment''][''endpoints''][''primary_probability''])
-        { _score } else { 0 }"}},"query":{"function_score":{"boost_mode":"replace","functions":[{"random_score":{}}],"query":{"bool":{"must":[{"range":{"created_at":{"gte":"2021-07-07T16:38:17.000Z"}}},{"exists":{"field":"predictions"}}],"must_not":[{"exists":{"field":"is_retweet"}},{"exists":{"field":"has_quote"}},{"terms":{"annotations.user_id":[0]}}],"filter":[{"script":{"script":"doc.containsKey(''annotations.user_id'')
-        \u0026\u0026 doc[''annotations.user_id''].size() \u003e 0 \u0026\u0026 doc[''annotations.user_id''].size()
-        \u003c 2"}}]}}}}}}}'
+      string: '{"query":{"function_score":{"boost_mode":"replace","functions":[{"random_score":{}}],"query":{"bool":{"must":[{"range":{"created_at":{"gte":"2022-06-17T14:47:31.000Z","lte":"2022-06-24T14:47:31.000Z"}}}],"must_not":[{"exists":{"field":"is_retweet"}},{"exists":{"field":"has_quote"}},{"exists":{"field":"annotations"}}]}}}}}'
     headers:
+      Authorization:
+      - ApiKey bzc1Ql8zOEJtS3RLdGZsZmpNZGw6YjFuTjJLUzFReUtnY001cFhiUTB6Zw==
+      X-Elastic-Client-Meta:
+      - es=7.17.1,rb=2.5.8,t=7.17.1,fd=1.10.0,nh=1.1
+      User-Agent:
+      - 'elasticsearch-ruby/7.17.1 (RUBY_VERSION: 2.5.8; darwin x86_64; Faraday v1.10.0)'
       Content-Type:
       - application/json
-      User-Agent:
-      - Faraday v0.17.4
-      X-Amz-Date:
-      - 20210714T163817Z
-      X-Amz-Content-Sha256:
-      - f66167090df038183927429afffbaf43a6941910ec0f0ef53c9b81bad96b9913
-      Authorization:
-      - AWS4-HMAC-SHA256 Credential=AKIA4XNVFOJVGS4AHXED/20210714/eu-central-1/es/aws4_request,
-        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
-        Signature=4c26b948c8ad5f867d9a41bdddf009db55029e163eced63e1f9b7642c346c240
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
   response:
     status:
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
     headers:
-      Date:
-      - Wed, 14 Jul 2021 16:38:18 GMT
+      Content-Length:
+      - '139'
       Content-Type:
       - application/json; charset=UTF-8
-      Content-Length:
-      - '437'
-      Connection:
-      - close
-      Access-Control-Allow-Origin:
-      - "*"
+      X-Cloud-Request-Id:
+      - wJioPzI-QSKHdQJGIN84GA
+      X-Elastic-Product:
+      - Elasticsearch
+      X-Found-Handling-Cluster:
+      - d4e60a0d5891432e9a4ff86bc4a3a73a
+      X-Found-Handling-Instance:
+      - instance-0000000000
+      Date:
+      - Fri, 24 Jun 2022 14:47:31 GMT
     body:
-      encoding: UTF-8
-      string: '{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no
-        such index [project_inexistent]","resource.type":"index_or_alias","resource.id":"project_inexistent","index_uuid":"_na_","index":"project_inexistent"}],"type":"index_not_found_exception","reason":"no
-        such index [project_inexistent]","resource.type":"index_or_alias","resource.id":"project_inexistent","index_uuid":"_na_","index":"project_inexistent"},"status":404}'
-  recorded_at: Wed, 14 Jul 2021 16:38:18 GMT
+      encoding: ASCII-8BIT
+      string: '{"took":0,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":0,"relation":"eq"},"max_score":null,"hits":[]}}'
+  recorded_at: Fri, 24 Jun 2022 14:47:31 GMT
 recorded_with: VCR 6.0.0
