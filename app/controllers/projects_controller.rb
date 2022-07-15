@@ -9,8 +9,8 @@ class ProjectsController < ApplicationController
   def show
     redirect_to projects_path and return unless @project.public? && @project.locales.include?(I18n.locale.to_s)
 
-    case @project.es_index_name
-    when 'project_vaccine_sentiment'
+    case @project.slug
+    when 'vaccine_sentiment'
       counts = @project.results.joins(:answer).group('answers.label').count
       unless counts.empty?
         @pro_vaccine_count = counts['pro-vaccine'] || 0
@@ -18,14 +18,14 @@ class ProjectsController < ApplicationController
         @neutral_vaccine_count = counts['neutral'] || 0
       end
       @total_count = @pro_vaccine_count + @anti_vaccine_count + @neutral_vaccine_count
-    when 'project_wuhan'
-      # No setup for Wuhan project
+    when 'covid'
+      # No setup for covid project
     else
       redirect_to projects_path and return
     end
   end
 
   def viz
-    @project = Project.find_by(es_index_name: 'project_vaccine_sentiment')
+    @project = Project.find_by(es_index_name: 'project_vaccine_sentiment_*')
   end
 end

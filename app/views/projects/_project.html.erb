@@ -9,12 +9,12 @@
   <div class="card-footer">
     <div class="buttons">
       <%= link_to t('projects.index.contribute'), project_question_sequence_path(project), class: 'btn btn-primary btn-lg' %>
-      <% if project.es_index_name == 'project_vaccine_sentiment' %>
+      <% if project.slug == 'vaccine_sentiment' %>
         <%= link_to t('projects.index.explore'), project_path(project), class: 'btn btn-secondary btn-lg' %>
       <% end %>
-      <%# <% if project.es_index_name == 'project_wuhan' %>
-      <%#   <%= link_to t('projects.index.explore'), project_path(project), class: 'btn btn-secondary btn-lg' %>
-      <%# <% end %>
+      <% if project.slug == 'covid' %>
+        <%= link_to t('projects.index.explore'), project_path(project), class: 'btn btn-secondary btn-lg' %>
+      <% end %>
     </div>
   </div>
 </div>
