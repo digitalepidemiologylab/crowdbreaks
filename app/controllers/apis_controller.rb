@@ -99,31 +99,25 @@ class ApisController < ApplicationController
   end
 
   def get_stream_graph_keywords_data
-    # TODO: Update for the new AwsApi.get_all_data
     options = {
-      interval: Helpers::TimeParser.new(api_params_stream_graph_keywords[:interval]).time,
+      interval: api_params_stream_graph_keywords[:interval],
       start_date: api_params_stream_graph_keywords[:start_date],
-      end_date: api_params_stream_graph_keywords[:end_date],
-      round_to_sec: api_params_stream_graph_keywords[:round_to_sec].to_i
+      end_date: api_params_stream_graph_keywords[:end_date]
     }
     query = api_params_stream_graph_keywords[:query]
-    resp = {}
+    response = {}
+    options[:keywords] = [query] if query.present?
+    api_response = @api.get_all_data(index: api_params_stream_graph_keywords[:es_index_name], **options)
+    if api_response.is_a?(Hash) && api_response.key?('success') && !api_response['success']
+      render json: api_response.to_json, status: api_response['status'] and return
+    end
+
     if query.present?
-      options[:keywords] = [query]
-    end
-    _resp = @api.get_all_data(
-      index: api_params_stream_graph_keywords[:es_index_name], **options
-    )
-    if _resp.is_a?(Hash) and _resp.has_key?('success') and not _resp['success']
-      render json: _resp.to_json, status: _resp['status'] and return
+      response[query] = api_response
     else
-      if query.present?
-        resp[query] = _resp
-      else
-        resp['__other'] = _resp
-      end
+      response['__other'] = api_response
     end
-    render json: resp.to_json, status: 200
+    render json: response.to_json, status: 200
   end
 
   def get_trending_tweets
