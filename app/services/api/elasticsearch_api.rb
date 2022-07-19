@@ -7,8 +7,6 @@ require 'json'
 module ElasticsearchApi
   extend ActiveSupport::Concern
 
-  MAX_ASSIGNMENTS = 2
-  MAX_VALIDATIONS = 5
   MAX_RETRIES = 5
   SLEEP_TIME = 5
   TIMEOUT = 20
@@ -51,19 +49,17 @@ module ElasticsearchApi
   # ES queries
   def get_all_data(
     index:, keywords: nil, not_keywords: nil,
-    start_date: 'now-20y', end_date: 'now', interval: 1.month, round_to_sec: nil, use_cache: true
+    start_date: 'now-20y', end_date: 'now', interval: '1M', use_cache: true
   )
-    start_date = process_date(start_date, round_to_sec)
-    end_date = process_date(end_date, round_to_sec)
     keywords = keywords.nil? ? [] : keywords
     not_keywords = not_keywords.nil? ? [] : not_keywords
 
-    ranges = get_ranges(start_date, end_date, interval)
     definition = {
-      aggs: { all_data_agg: { date_range: { field: 'created_at', format: 'strict_date_optional_time', ranges: ranges } } }
+      size: 0,
+      aggs: { all_data_agg: { date_histogram: { field: 'created_at', calendar_interval: interval } } },
+      query: { bool: { filter: [{ range: { created_at: { gte: start_date, lte: end_date } } }] } }
     }
 
-    definition[:query] = {} unless keywords.empty? && not_keywords.empty?
     keywords.each do |keyword|
       if definition.dig(:query, :bool, :must).nil?
         definition[:query][:bool] = { must: [{ match_phrase: { text: keyword } }] }
