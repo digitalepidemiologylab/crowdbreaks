@@ -47,12 +47,15 @@ class Project < ApplicationRecord
   end
 
   def auto_mturking_validations
+    # Options necessary for both primary projects and question sequences are auto_mturking and tweets_per_batch
     return unless auto_mturking == true
+
+    errors.add(:tweets_per_batch, :cannot_be_blank) if tweets_per_batch.nil?
+    errors.add(:tweets_per_batch, :must_be_more_than_zero) unless tweets_per_batch&.positive?
+    return unless primary == true
 
     errors.add(:base, 'You should activate Twitter streaming to turn the Auto Mturking on.') unless active_stream?
     errors.add(:storage_mode, :choose_es_mode) unless %w[s3-es s3-es-no-retweets].include? storage_mode
-    errors.add(:tweets_per_batch, :cannot_be_blank) if tweets_per_batch.nil?
-    errors.add(:tweets_per_batch, :must_be_more_than_zero) unless tweets_per_batch&.positive?
   end
 
   def display_name

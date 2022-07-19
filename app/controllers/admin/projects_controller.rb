@@ -40,13 +40,17 @@ module Admin
     end
 
     def update
+      # If a project was renamed, store the old name for renaming the corresponding question sequences
+      project_name_old = sanitized_projects_params.include?(:name) ? @project.name : nil
+      Rails.logger.info("Old name: #{project_name_old}")
       if @project.update_attributes(sanitized_projects_params)
+        # If a project was renamed, rename question sequences as well
+        update_question_sequences_attributes(project_name_old, { name: @project.name }) unless project_name_old.nil?
         auto_mturking = sanitized_projects_params.fetch(:auto_mturking, nil)
+        # Changing auto MTurking option also need to be updated for all question sequences
         unless auto_mturking.nil?
-          question_sequences = Project.where(name: @project.name, primary: false)
-          question_sequences.each do |qs|
-            qs.update_attributes(auto_mturking: auto_mturking, tweets_per_batch: @project.tweets_per_batch)
-          end
+          attributes = { auto_mturking: auto_mturking, tweets_per_batch: @project.tweets_per_batch }
+          update_question_sequences_attributes(@project.name, attributes)
         end
         if @project.job_file.present?
           CreatePublicTweetsJob.perform_later(@project.id, current_user.id, @project.retrieve_tweet_rows, destroy_first: true)
@@ -80,6 +84,13 @@ module Admin
     end
 
     private
+
+    def update_question_sequences_attributes(project_name, attributes)
+      question_sequences = Project.where(name: project_name, primary: false)
+      question_sequences.each do |qs|
+        qs.update_attributes(**attributes)
+      end
+    end
 
     def project_params
       params.require(:project).permit(

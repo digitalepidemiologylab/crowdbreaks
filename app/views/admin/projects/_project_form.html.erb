@@ -23,7 +23,8 @@
       <% end %>
     </div>
     <div class="form-group">
-      <%= f.input :name, input_html: { value: @project.name || "" }, hint: "Name of the project, without the 'project_' prefix (sic!). Use latin symbols, numbers and underscores." %>
+      <%= f.input :name, input_html: { value: @project.name || "" }, disabled: !@project.name.nil? && !current_user.admin?, hint: "Name of the project, without the 'project_' prefix (sic!). Use latin symbols, numbers and underscores." %>
+      <small class="form-text text-danger">Renaming is dangerous. Only admins can do it. After renaming a project, one needs to manually rename corresponding AWS resources.</small>
     </div>
     <div class="form-group">
       <%= f.input :active_question_sequence_id, collection: @project.question_sequences, include_blank: false, selected: @project.active_question_sequence, hint: 'A project can have multiple question sequences. The active question sequence is the one which will be on public display.' %>
