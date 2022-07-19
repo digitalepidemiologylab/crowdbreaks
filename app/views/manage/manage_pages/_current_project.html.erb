@@ -1,12 +1,10 @@
 <tr>
   <td><%= current_project.title %></td>
-  <td><%= current_project.es_index_name %></td>
-  <td><%= truncate(current_project&.keywords&.join(', '), length: 80, separator: ',') %></td>
+  <td><%= truncate(current_project&.keywords&.join(', '), length: 40, separator: ',') %></td>
   <td><%= current_project&.lang&.join(', ') %></td>
   <td><%= current_project.storage_mode %></td>
   <td><%= status_yes_no(current_project.active_stream?) %></td>
   <td><%= status_yes_no(current_project.covid?) %></td>
-  <td><%= status_yes_no(current_project.auto_mturking?) %></td>
   <td>
     <span class="no-wrap">
       <% if can? :read, current_project %>
