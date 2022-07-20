@@ -1,9 +1,14 @@
+# frozen_string_literal: true
+
 require 'timeout'
 require 'elasticsearch'
 require 'faraday_middleware/aws_sigv4'
 require 'stretchy'
 require 'json'
 
+##
+# Elasticsearch (ES) API for the Project s with +storage_mode+ in <tt>[s3-es, s3-es-no-retweets]</tt>.
+# Uses {Elasticsearch Ruby client}[https://github.com/elastic/elasticsearch-ruby] to send requests to ES.
 module ElasticsearchApi
   extend ActiveSupport::Concern
 
@@ -11,7 +16,7 @@ module ElasticsearchApi
   SLEEP_TIME = 5
   TIMEOUT = 20
   JSON_HEADER = { 'Content-Type' => 'application/json', :Accept => 'application/json' }.freeze
-  DATE_FORMAT = '%Y-%m-%dT%T.000Z'.freeze
+  DATE_FORMAT = '%Y-%m-%dT%T.000Z'
 
   @@es_client = Elasticsearch::Client.new(
     request_timeout: 15, retry_on_status: [403], retry_on_failure: 2,
@@ -21,7 +26,11 @@ module ElasticsearchApi
 
   Stretchy.client = @@es_client
 
-  # Basic ES commands
+  ##
+  # :section: Basic ES commands
+
+  ##
+  # Pings ES to check whether it is up.
   def ping_es
     handle_es_errors(occured_when: 'pinging ES') do
       Timeout.timeout(TIMEOUT) do
@@ -30,6 +39,10 @@ module ElasticsearchApi
     end
   end
 
+  ##
+  # Checks for ES stats.
+  #
+  # Used in Manage::ElasticsearchIndexesController#index.
   def es_stats
     handle_es_errors(occured_when: 'fetching ES stats') do
       Timeout.timeout(TIMEOUT) do
@@ -38,6 +51,10 @@ module ElasticsearchApi
     end
   end
 
+  ##
+  # Checks for the ES cluster health status.
+  #
+  # Used in WatchStream#check_es, Manage::ElasticsearchIndexesController#index.
   def es_health
     handle_es_errors(occured_when: 'fetching ES cluster health') do
       Timeout.timeout(TIMEOUT) do
@@ -46,39 +63,48 @@ module ElasticsearchApi
     end
   end
 
-  # ES queries
-  def get_all_data(
-    index:, keywords: nil, not_keywords: nil,
+  ##
+  # :section: ES calls
+
+  ##
+  # {Date Histogram}[https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html]
+  # aggregation.
+  #
+  # Used in ApisController#get_stream_graph_keywords_data, which is leveraged in the +StreamGraphKeywords+ vizualisation
+  # (+app/javascript/components/stream_graph_keywords/StreamGraphKeywords.js+).
+  #
+  # [keywords]
+  #   Array of keywords for a {Match}[https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html]
+  #   query (aggregation is performed on top of that match).
+  # [not_keywords]
+  #   Array of keywords to exclude.
+  # [start_date, end_date]
+  #   +start_date+ < query date range < +end_date+, in {Date Math}[https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math]
+  #   or +strict_date_optional_time+ format.
+  # [interval]
+  #   +calendar_interval+ for the date histogram aggregation.
+  # [use_cache]
+  #   Enable Rails cache.
+  def date_histogram(
+    index:, keywords: [], not_keywords: [],
     start_date: 'now-20y', end_date: 'now', interval: '1M', use_cache: true
   )
-    keywords = keywords.nil? ? [] : keywords
-    not_keywords = not_keywords.nil? ? [] : not_keywords
-
     definition = {
       size: 0,
       aggs: { all_data_agg: { date_histogram: { field: 'created_at', calendar_interval: interval } } },
       query: { bool: { filter: [{ range: { created_at: { gte: start_date, lte: end_date } } }] } }
     }
 
-    keywords.each do |keyword|
-      if definition.dig(:query, :bool, :must).nil?
-        definition[:query][:bool] = { must: [{ match_phrase: { text: keyword } }] }
-      else
-        definition[:query][:bool][:must] << { match_phrase: { text: keyword } }
-      end
-    end
-    not_keywords.each do |keyword|
-      if definition.dig(:query, :bool, :must_not).nil?
-        definition[:query][:bool] = { must_not: [{ match_phrase: { text: keyword } }] }
-      else
-        definition[:query][:bool][:must_not] << { match_phrase: { text: keyword } }
-      end
-    end
+    definition = add_keywords(definition, keywords)
+    definition = add_keywords(definition, not_keywords)
 
-    handle_es_errors(occured_when: 'aggregating tweets by keywords on ES') do
-      Timeout.timeout(TIMEOUT) do
-        result = @@es_client.search index: index, body: definition
-        Helpers::ApiResponse.new(status: :success, body: result['aggregations']['all_data_agg']['buckets'])
+    cache_key = "date-histogram-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+    cached(cache_key, use_cache: use_cache) do
+      handle_es_errors(occured_when: 'aggregating tweets by keywords on ES') do
+        Timeout.timeout(TIMEOUT) do
+          result = @@es_client.search index: index, body: definition
+          Helpers::ApiResponse.new(status: :success, body: result['aggregations']['all_data_agg']['buckets'])
+        end
       end
     end
   end
@@ -144,33 +170,90 @@ module ElasticsearchApi
     raise NotImplementedError
   end
 
-  def get_trending_topics(slug:, **kwargs)
-    raise NotImplementedError
-  end
+  ##
+  # Trending tokens using ES
+  # {Significant Text}[https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-significanttext-aggregation.html]
+  # and {Sampler}[https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-sampler-aggregation.html]
+  # aggregations. Sampler is used to not overwhelm the system and for shorter waiting times.
+  #
+  # Used in ApisController#get_trending_topics, which is leveraged in the +StreamGraphKeywords+ vizualisation
+  # (+app/javascript/components/stream_graph_keywords/StreamGraphKeywords.js+).
+  # [size]
+  #   How many trending tokens to return.
+  # [start_date, end_date]
+  #   +start_date+ < query date range < +end_date+, in {Date Math}[https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math]
+  #   or +strict_date_optional_time+ format.
+  # [use_cache]
+  #   Enable Rails cache.
+  def trending_tokens(index:, size: 10, start_date: 'now-2w', end_date: 'now', use_cache: true)
+    definition = {
+      size: 0, query: { range: { created_at: { gte: start_date, lte: end_date } } },
+      aggs: { sample: {
+        sampler: { shard_size: 100_000 },
+        aggs: { trending_tokens: { significant_text: { field: 'text' } } }
+      } }
+    }
 
-  def get_trending_tweets(
-    index:, term: nil, start_date: 'now-1w', end_date: 'now',
-    size: 10, min_doc_count: 10
-  )
-    # project_slug -> index
-    # TODO: Example queries and Response, handle errors
-    start_date = parse_dates(start_date)
-    end_date = parse_dates(end_date)
-    query = query.query(
-      index: index,
-      aggs: {
-        trending_tweets_agg: { terms: { field: 'retweeted_status_id', size: size, min_doc_count: min_doc_count } }
-      }
-    ).fields('aggregations.trending_tweets_agg').range(created_at: { gte: start_date, lte: end_date })
-    query = query.query(term: { text: term }) unless term.nil?
-    handle_es_errors(occured_when: 'aggregating trending tweets on ES') do
-      Timeout.timeout(TIMEOUT) do
-        result = query.results[0]&.fetch('aggregations', nil)&.fetch('trending_tweets_agg', nil)&.fetch('buckets', [])
-        Helpers::ApiResponse.new(status: :success, body: result)
+    cache_key = "trending-tokens-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+    cached(cache_key, use_cache: use_cache) do
+      handle_es_errors(occured_when: 'aggregating trending tokens on ES') do
+        Timeout.timeout(TIMEOUT) do
+          result = @@es_client.search index: index, body: definition
+          tokens = result['aggregations']['sample']['trending_tokens']['buckets'][0..size - 1].map { |d| d['key'] }
+          Helpers::ApiResponse.new(status: :success, body: tokens)
+        end
       end
     end
   end
 
+  ##
+  # Trending tweets within a specified datetime window using ES {Terms}[https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html]
+  # aggregation.
+  #
+  # Used in ApisController#get_trending_tweets, which is leveraged in the +StreamGraphKeywords+ vizualisation
+  # (+app/javascript/components/stream_graph_keywords/StreamGraphKeywords.js+).
+  #
+  # [keywords]
+  #   List of keywords for a {Match}[https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html]
+  #   query (aggregation is performed on top of that match).
+  # [start_date, end_date]
+  #   +start_date+ < query date range < +end_date+, in {Date Math}[https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math]
+  #   or +strict_date_optional_time+ format.
+  # [size]
+  #   How many trending tweets to return.
+  # [min_doc_count]
+  #   Minimum retweets a tweet needs to get to be considered for this query.
+  # [use_cache]
+  #   Enable Rails cache.
+  def trending_tweets(
+    index:, keywords: [], start_date: 'now-2w', end_date: 'now',
+    size: 10, min_doc_count: 1, use_cache: true
+  )
+    definition = {
+      size: 0,
+      query: { bool: { must: [range: { created_at: { gte: start_date, lte: end_date } }] } },
+      aggs: {
+        trending_tweets: { terms: { field: 'retweeted_status_id', size: size, min_doc_count: min_doc_count } }
+      }
+    }
+    definition = add_keywords(definition, keywords)
+
+    cache_key = "trending-tweets-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+    cached(cache_key, use_cache: use_cache) do
+      handle_es_errors(occured_when: 'aggregating trending tweets on ES') do
+        Timeout.timeout(TIMEOUT) do
+          result = @@es_client.search index: index, body: definition
+          tweets = result['aggregations']['trending_tweets']['buckets'].map { |d| d['key'] }
+          Helpers::ApiResponse.new(status: :success, body: tweets)
+        end
+      end
+    end
+  end
+
+  ##
+  # Checks whether the ES streams are runnning.
+  #
+  # Used in WatchStream#check_stream.
   def stream_activity(es_activity_threshold_min: 10)
     handle_es_errors(occured_when: 'counting ES activity') do
       Timeout.timeout(TIMEOUT) do
@@ -180,12 +263,30 @@ module ElasticsearchApi
     end
   end
 
-  def tweets(index:, user_id: 0, new_prob: 0.5, start_days_back: 7, end_days_back: 0)
+  ##
+  # Fetches tweets for annotations for Project s with the +stream+ annotation mode.
+  #
+  # Calls sequence: QuestionSequencesController#show -> Project#tweet -> ElasticsearchApi#tweets.
+  #
+  # [user_id]
+  #   Current user ID to exclude tweets that the user has already annotated.
+  # [new_prob]
+  #   Probability to get a new tweet, not an already annotated one.
+  # [start_days_back, end_days_back]
+  #   +start_days_back+ < query date range < +end_days_back+
+  # [max_assignments]
+  #   Maximum amount of users to annotate one tweet.
+  # [max_validations]
+  #   Output size of the search query, representing the capacity for tweet validations down the line
+  #   (in Project#tweet).
+  def tweets(
+    index:, user_id: 0, new_prob: 0.5, start_days_back: 7, end_days_back: 0, max_assignments: 2, max_validations: 5
+  )
     query_new = { bool: { must_not: [{ exists: { field: 'annotations' } }] } }
     query_not_finished = { bool: {
       filter: [{ "script": {
         "script": "doc.containsKey('annotations.user_id') && doc['annotations.user_id'].size() > 0 && " \
-                  "doc['annotations.user_id'].size() < #{MAX_ASSIGNMENTS}"
+                  "doc['annotations.user_id'].size() <= #{max_assignments}"
       } }],
       must_not: [{ terms: { 'annotations.user_id': [user_id] } }]
     } }
@@ -196,7 +297,7 @@ module ElasticsearchApi
       )
       handle_es_errors(occured_when: 'fetching a new tweet from ES') do
         Timeout.timeout(TIMEOUT) do
-          @@es_client.search(index: index, size: MAX_VALIDATIONS, body: query)['hits']['hits']
+          @@es_client.search(index: index, size: max_validations, body: query)['hits']['hits']
         end
       end
     end
@@ -215,6 +316,8 @@ module ElasticsearchApi
     Helpers::ApiResponse.new(status: :success, body: tweets)
   end
 
+  ##
+  # Updates a tweet on ES with a +user_id+ that annotated it.
   def update_tweet(index:, user_id:, tweet_id:)
     handle_es_errors(occured_when: 'updating a tweet on ES') do
       Timeout.timeout(TIMEOUT) do
@@ -234,6 +337,17 @@ module ElasticsearchApi
   end
 
   private
+
+  def add_keywords(definition, keywords)
+    keywords.each do |keyword|
+      if definition.dig(:query, :bool, :must).nil?
+        definition[:query][:bool] = { must: [{ match: { text: keyword } }] }
+      else
+        definition[:query][:bool][:must] << { match: { text: keyword } }
+      end
+    end
+    definition
+  end
 
   def aggregation_query(aggs, question_tag, run_name, start_date, end_date, include_retweets)
     {
