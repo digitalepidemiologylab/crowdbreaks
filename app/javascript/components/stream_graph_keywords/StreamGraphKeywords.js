@@ -42,7 +42,7 @@ export class StreamGraphKeywords extends React.Component {
     this.queryColor = '#FF9E4B'
     this.defaultKey = '__other'
     this.caption = "Real-time keyword Twitter stream for all content which matches at least one of the keywords \"ncov\", \"wuhan\", \"coronavirus\", \"covid\", or \"sars-cov-2\". Tracking started January 13, 2020. Y-axis shows counts per hour (for the '1m' option counts are per day)."
-    this.momentTimeFormat = 'YYYY-MM-DD HH:mm:ss'
+    this.momentTimeFormat = 'YYYY-MM-DDTHH:mm:ss'
     this.numTrendingTweets = 10;
     this.numTrendingTopics = numTrendingTopics;
     let timeOption = props.timeOption;
@@ -113,17 +113,17 @@ export class StreamGraphKeywords extends React.Component {
     switch(option) {
       case '1':
         interval = 'day'
-        endDate = moment.utc().startOf(interval)
+        endDate = moment.utc().endOf(interval)
         startDate = endDate.clone().subtract(1, 'month')
         break;
       case '2':
         interval = 'hour'
-        endDate = moment.utc().startOf(interval)
+        endDate = moment.utc().endOf(interval)
         startDate = endDate.clone().subtract(14, 'days')
         break;
       case '3':
         interval = 'hour'
-        endDate = moment.utc().startOf(interval)
+        endDate = moment.utc().endOf(interval)
         startDate = endDate.clone().subtract(1, 'day')
         break;
     }
@@ -134,7 +134,7 @@ export class StreamGraphKeywords extends React.Component {
       start_date: startDate.format(this.momentTimeFormat),
       end_date: endDate.format(this.momentTimeFormat),
       timeOption: option,
-      es_index_name: this.props.es_index_name,
+      es_index_name: this.props.esIndexName,
       query: this.state.query
     }
   }
@@ -246,7 +246,7 @@ export class StreamGraphKeywords extends React.Component {
     let postData = {
       'viz': {
         'num_trending_tweets': this.numTrendingTweets,
-        'project_slug': this.props.projectSlug,
+        'es_index_name': this.props.esIndexName,
         'query': this.state.query
       }
     }
@@ -283,7 +283,7 @@ export class StreamGraphKeywords extends React.Component {
     let postData = {
       'viz': {
         'num_trending_topics': this.numTrendingTopics,
-        'project_slug': this.props.projectSlug,
+        'es_index_name': this.props.esIndexName
       }
     }
     $.ajax({
@@ -447,7 +447,7 @@ export class StreamGraphKeywords extends React.Component {
 
     const prevThis = this;
     trendingTopics = !this.state.trendingTopicsError && !this.state.isLoadingTrendingTopics && this.state.trendingTopics.length > 0 && <div className='trending-topics-container'>
-      <span>Trending now:</span>
+      <span>Text tokens trending now:</span>
       <span className="trending-topics">
         {this.state.trendingTopics.map((item, i) => {
           return <button className='btn btn-link trending-topic' onClick={() => prevThis.onTrendingTopicClick(item)} key={i}>{item}</button>

@@ -99,52 +99,45 @@ class ApisController < ApplicationController
   end
 
   def get_stream_graph_keywords_data
-    options = {
+    query = api_params_stream_graph_keywords[:query]
+    api_response = @api.date_histogram(
+      index: api_params_stream_graph_keywords[:es_index_name],
       interval: api_params_stream_graph_keywords[:interval],
       start_date: api_params_stream_graph_keywords[:start_date],
-      end_date: api_params_stream_graph_keywords[:end_date]
-    }
-    query = api_params_stream_graph_keywords[:query]
-    response = {}
-    options[:keywords] = [query] if query.present?
-    api_response = @api.get_all_data(index: api_params_stream_graph_keywords[:es_index_name], **options)
-    if api_response.is_a?(Hash) && api_response.key?('success') && !api_response['success']
-      render json: api_response.to_json, status: api_response['status'] and return
-    end
+      end_date: api_params_stream_graph_keywords[:end_date],
+      keywords: query.present? ? query.split(', ') : []
+    )
+    render json: api_response.body.to_json and return unless api_response.success?
 
+    response = {}
     if query.present?
-      response[query] = api_response
+      response[query] = api_response.body
     else
-      response['__other'] = api_response
+      response['__other'] = api_response.body
     end
     render json: response.to_json, status: 200
   end
 
   def get_trending_tweets
-    # TODO: Check the response format and render it correctly
-    resp = @api.get_trending_tweets(
+    query = api_params_stream_graph_keywords[:query]
+    api_response = @api.trending_tweets(
       index: api_params_stream_graph_keywords[:es_index_name],
       size: api_params_stream_graph_keywords[:num_trending_tweets],
-      term: api_params_stream_graph_keywords[:query]
+      keywords: query.present? ? query.split(', ') : []
     )
-    if resp.is_a?(Hash) and resp.has_key?('success') and not resp['success']
-      render json: resp.to_json, status: resp['status'] and return
-    else
-      render json: resp.to_json, status: 200
-    end
+    render json: api_response.body.to_json and return unless api_response.success?
+
+    render json: api_response.body.to_json, status: 200
   end
 
   def get_trending_topics
-    # TODO: Check the response format and render it correctly
-    resp = @api.get_trending_topics(
-      slug: api_params_stream_graph_keywords[:project_slug],
-      num_topics: api_params_stream_graph_keywords[:num_trending_topics]
+    api_response = @api.trending_tokens(
+      index: api_params_stream_graph_keywords[:es_index_name],
+      size: api_params_stream_graph_keywords[:num_trending_topics]
     )
-    if resp.is_a?(Hash) and resp.has_key?('success') and not resp['success']
-      render json: resp.to_json, status: resp['status'] and return
-    else
-      render json: resp.to_json, status: 200
-    end
+    render json: api_response.body.to_json and return unless api_response.success?
+
+    render json: api_response.body.to_json, status: 200
   end
 
   # Monitor streams
