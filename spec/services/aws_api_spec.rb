@@ -37,11 +37,11 @@ describe AwsApi, '#es_health', :vcr do
   end
 end
 
-describe AwsApi, '#get_predictions', :vcr do
+describe AwsApi, '#predictions', :vcr do
   subject { AwsApi.new }
 
   it 'get predictions' do
-    response = subject.get_predictions(
+    response = subject.predictions(
       index: ES_TEST_INDEX,
       question_tag: 'sentiment',
       answer_tags: %w[negative neutral positive],

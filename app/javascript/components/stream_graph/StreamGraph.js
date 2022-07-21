@@ -117,7 +117,6 @@ export class StreamGraph extends React.Component {
         return
       },
       success: (result) => {
-        console.log(result);
         const arrayLengths = this.keys.map((key) => result[key].length)
         const maxLengthKey = this.keys[arrayLengths.indexOf(Math.max(...arrayLengths))]
         let data = [];

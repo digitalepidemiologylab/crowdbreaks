@@ -78,24 +78,20 @@ class ApisController < ApplicationController
   end
 
   def get_stream_graph_data
-    options = {
+    api_response = @api.predictions(
+      index: 'project_vaccine_sentiment_*',
+      question_tag: 'sentiment',
+      answer_tags: %w[positive negative neutral],
+      run_name: 'fasttext_v2',
       interval: api_params_predictions[:interval],
       start_date: api_params_predictions[:start_date],
       end_date: api_params_predictions[:end_date],
-      include_retweets: true
-    }
-    resp = @api.get_predictions(
-        'project_vaccine_sentiment',
-        'sentiment',
-        ['positive', 'negative', 'neutral'],
-        run_name='',
-        options=options,
-        use_cache=false)
-    if resp.has_key?('success') and not resp['success']
-      render json: resp.to_json, status: resp['status']
-    else
-      render json: resp.to_json, status: 200
-    end
+      include_retweets: true,
+      use_cache: false
+    )
+    render json: api_response.body.to_json and return unless api_response.success?
+
+    render json: api_response.body.to_json, status: 200
   end
 
   def get_stream_graph_keywords_data

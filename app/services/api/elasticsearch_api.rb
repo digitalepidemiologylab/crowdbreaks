@@ -14,7 +14,7 @@ module ElasticsearchApi
 
   MAX_RETRIES = 5
   SLEEP_TIME = 5
-  TIMEOUT = 20
+  TIMEOUT = 40
   JSON_HEADER = { 'Content-Type' => 'application/json', :Accept => 'application/json' }.freeze
   DATE_FORMAT = '%Y-%m-%dT%T.000Z'
 
@@ -142,14 +142,15 @@ module ElasticsearchApi
     raise NotImplementedError
   end
 
-  def get_predictions(
+  def predictions(
     index:, question_tag:, answer_tags:, run_name:,
     start_date: 'now-20y', end_date: 'now', interval: 'month', include_retweets: true, use_cache: true
   )
     aggs = {
-      prediction_agg: { date_histogram: { field: 'created_at', fixed_interval: interval, format: 'yyyy-MM-dd HH:mm:ss' } }
+      predictions: { date_histogram: { field: 'created_at', calendar_interval: interval } }
     }
-    cache_key = "get-predictions-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
+
+    cache_key = "predictions-#{method_args_from_parameters(method_binding: binding).except(use_cache)}"
     cached(cache_key, use_cache: use_cache) do
       handle_es_errors(occured_when: 'aggregating predictions on ES') do
         predictions = {}
@@ -157,7 +158,7 @@ module ElasticsearchApi
           definition = aggregation_query(aggs, question_tag, run_name, start_date, end_date, include_retweets)
           definition[:query][:bool][:filter] << { term: { "predictions.#{question_tag}.endpoints.#{run_name}.label": answer_tag } }
           result = @@es_client.search index: index, body: definition
-          predictions[answer_tag] = result['aggregations']['prediction_agg']['buckets']
+          predictions[answer_tag] = result['aggregations']['predictions']['buckets']
         end
         Timeout.timeout(TIMEOUT) do
           Helpers::ApiResponse.new(status: :success, body: predictions)
