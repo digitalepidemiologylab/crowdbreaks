@@ -11,7 +11,7 @@ module Manage
       @health_status = get_value_and_flash_now(@api.es_health, default: {}).fetch('status', nil)
       @groups = {}
       indices_stats.each do |k, v|
-        next if k.starts_with?('.')
+        next if %w[. apm].map { |prefix| k.starts_with?(prefix) }.any?
 
         # @groups << { name: k, num_docs: v['total']['docs']['count'], size_bytes: v['total']['store']['size_in_bytes'] }
 
@@ -25,6 +25,10 @@ module Manage
         puts @groups
       end
       @groups = @groups.map { |k, v| { name: k }.merge(v) }
+      @groups << {
+        name: 'Total', num_indices: @groups.sum { |h| h[:num_indices] }, num_docs: @groups.sum { |h| h[:num_docs] },
+        size_bytes: @groups.sum { |h| h[:size_bytes] }
+      }
     end
   end
 end

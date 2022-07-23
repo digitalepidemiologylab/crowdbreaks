@@ -1,4 +1,4 @@
-<tr>
+<% if group[:name] == 'Total' %><tr class="font-weight-bold"><% else %><tr><% end %>
   <td><%= group[:name] %></td>
   <td><%= number_with_delimiter(group[:num_indices], delimiter: ' ') %></td>
   <td><%= number_with_delimiter(group[:num_docs], delimiter: ' ') %></td>
