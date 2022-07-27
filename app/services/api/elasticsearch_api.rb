@@ -342,7 +342,7 @@ module ElasticsearchApi
   def add_keywords(definition, keywords)
     keywords.each do |keyword|
       if definition.dig(:query, :bool, :must).nil?
-        definition[:query][:bool] = { must: [{ match: { text: keyword } }] }
+        definition[:query][:bool][:must] = [{ match: { text: keyword } }]
       else
         definition[:query][:bool][:must] << { match: { text: keyword } }
       end

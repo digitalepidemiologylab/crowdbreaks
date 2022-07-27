@@ -59,27 +59,25 @@ export class StreamGraph extends React.Component {
     let interval, startDate, endDate;
     switch(option) {
       case '1':
-        interval = 'day'
-        endDate = moment.utc().startOf(interval)
-        startDate = endDate.clone().subtract(1, 'year')
+        interval = 'day';
+        endDate = 'now';
+        startDate = 'now-1M';
         break;
       case '2':
-        interval = 'day'
-        endDate = moment.utc().startOf(interval)
-        startDate = endDate.clone().subtract(3, 'month')
+        interval = 'hour';
+        endDate = 'now';
+        startDate = 'now-2w';
         break;
       case '3':
-        interval = 'hour'
-        endDate = moment.utc().startOf(interval)
-        startDate = endDate.clone().subtract(1, 'day')
+        interval = 'hour';
+        endDate = 'now';
+        startDate = 'now-1d';
         break;
     }
-    // avoid first interval of endDate
-    endDate.subtract(1, 'second')
     return {
       interval: interval,
-      start_date: startDate.format(this.momentTimeFormat),
-      end_date: endDate.format(this.momentTimeFormat),
+      start_date: startDate,
+      end_date: endDate,
       timeOption: option
     }
   }
