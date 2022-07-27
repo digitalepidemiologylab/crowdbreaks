@@ -16,9 +16,18 @@
         <span>Vaccination sentiment</span>
       </h4>
       <div>
-        <%= react_component 'StreamGraph', {
+        <%# react_component 'StreamGraph', {
           'dataEndpoint': get_stream_graph_data_path,
           'project': @project.name,
+        } %>
+        <%= react_component 'StreamGraphKeywords', {
+          'dataEndpoint': get_stream_graph_keywords_data_path,
+          'dataEndpointTrendingTweets': get_trending_tweets_path,
+          'dataEndpointTrendingTopics': get_trending_topics_path,
+          'project': @project.name,
+          'query': params[:q],
+          'timeOption': params[:t],
+          'esIndexName': @project.es_index_name
         } %>
       </div>
     </div>
