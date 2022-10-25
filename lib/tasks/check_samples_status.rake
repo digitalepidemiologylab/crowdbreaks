@@ -11,13 +11,10 @@ task check_samples_status: :environment do
   Project.where(auto_mturking: true).each do |project|
     next unless project_batches.include?(project.slug)
 
-    if MturkWorkerQualificationList.where(name: "#{project.name}_auto").empty?
-      Rails.logger.error(
-        "No '#{project.name}_auto' qualification list. Create one for an automatic batch to get created."
-      )
-      next
+    mturk_worker_qualification_list_id = nil
+    unless MturkWorkerQualificationList.where(name: "#{project.name}_auto").empty?
+      mturk_worker_qualification_list_id = MturkWorkerQualificationList.find_by_name("#{project.name}_auto").id
     end
-    mturk_worker_qualification_list_id = MturkWorkerQualificationList.find_by_name("#{project.name}_auto").id
 
     mturk_batch_job_clone = PrimaryMturkBatchJob.find_by(project_id: project.id)&.mturk_batch_job
     Rails.logger.info("No primary job set for project '#{project.name}'.") and next if mturk_batch_job_clone.nil?
