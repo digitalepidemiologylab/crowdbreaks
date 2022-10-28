@@ -8,7 +8,7 @@ class MturkBatchJob < ApplicationRecord
   has_many :results, through: :tasks
   belongs_to :project
   belongs_to :mturk_worker_qualification_list
-  belongs_to :mturk_auto_batch
+  belongs_to :mturk_auto_batch, dependent: :destroy
   belongs_to :primary_mturk_batch_job
 
   validates :name, presence: true, uniqueness: { message: 'Name must be unique' }
