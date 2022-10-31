@@ -6,17 +6,13 @@ task check_samples_status: :environment do
   response = api.check_samples_status
   Rails.logger.info(response.message) if response.fail? || response.error?
   exit if response.fail? || response.error?
-  project_batches = response.body
+  project_batches, s3_keys = response.body
 
   Project.where(auto_mturking: true).each do |project|
     next unless project_batches.include?(project.slug)
 
-    mturk_worker_qualification_list_id = nil
-    unless MturkWorkerQualificationList.where(name: "#{project.name}_auto").empty?
-      mturk_worker_qualification_list_id = MturkWorkerQualificationList.find_by_name("#{project.name}_auto").id
-    end
-
-    mturk_batch_job_clone = PrimaryMturkBatchJob.find_by(project_id: project.id)&.mturk_batch_job
+    primary_job = PrimaryMturkBatchJob.find_by(project_id: project.id)
+    mturk_batch_job_clone = primary_job&.mturk_batch_job
     Rails.logger.info("No primary job set for project '#{project.name}'.") and next if mturk_batch_job_clone.nil?
 
     cloned_attributes = mturk_batch_job_clone.attributes.select do |a|
@@ -32,12 +28,15 @@ task check_samples_status: :environment do
     mturk_batch_job.title = "#{mturk_batch_job.title} [#{hex[0..5]}]"
     mturk_batch_job.auto = true
     mturk_batch_job.job_file = project_batches[project.slug]
-    mturk_batch_job.mturk_worker_qualification_list_id = mturk_worker_qualification_list_id
+    mturk_batch_job.mturk_worker_qualification_list_id = primary_job.mturk_worker_qualification_list&.id
+    mturk_batch_job.max_tasks_per_worker = primary_job.max_tasks_per_worker
 
     mturk_auto_batch = MturkAutoBatch.new
     mturk_auto_batch.mturk_batch_job = mturk_batch_job
-    mturk_auto_batch.save!
+
     mturk_batch_job.save!
+    mturk_auto_batch.save!
+    Setting.sampled_status = s3_keys
 
     # Generate tasks
     CreateTasksJob.perform_later(mturk_batch_job.id, mturk_batch_job.retrieve_tweet_rows)

@@ -103,8 +103,7 @@ module PipelineApi
     Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'downloading the config from S3') do
       s3_keys = get_s3_json(BUCKET_NAME, SAMPLES_STATUS_KEY)['no_text'].sort
     end
-    # file = File.read(SAMPLES_STATUS_PATH)
-    # s3_keys_old = JSON.parse(file).sort
+
     s3_keys_old = Setting.sampled_status
     unless s3_keys != s3_keys_old
       return Helpers::ApiResponse.new(
@@ -114,8 +113,6 @@ module PipelineApi
       )
     end
 
-    # File.write(SAMPLES_STATUS_PATH, s3_keys)
-    Setting.sampled_status = s3_keys
     tweets = {}
     slug_errors = []
     s3_keys.each do |s3_key|
@@ -136,10 +133,7 @@ module PipelineApi
         body: tweets
       )
     else
-      Helpers::ApiResponse.new(
-        status: :success,
-        body: tweets
-      )
+      Helpers::ApiResponse.new(status: :success, body: [tweets, s3_keys])
     end
   end
 
