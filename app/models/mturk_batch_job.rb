@@ -3,13 +3,15 @@ class MturkBatchJob < ApplicationRecord
   include S3UploadableAssociation
   include CsvFileHandler
 
-  has_many :tasks, dependent: :delete_all
-  has_many :mturk_tweets, dependent: :delete_all
-  has_many :results, through: :tasks
   belongs_to :project
   belongs_to :mturk_worker_qualification_list
   belongs_to :mturk_auto_batch, dependent: :destroy
-  belongs_to :primary_mturk_batch_job
+
+  has_one :primary_mturk_batch_job, inverse_of: :mturk_batch_job
+
+  has_many :tasks, dependent: :delete_all
+  has_many :mturk_tweets, dependent: :delete_all
+  has_many :results, through: :tasks
 
   validates :name, presence: true, uniqueness: { message: 'Name must be unique' }
   validates :name, format: {
