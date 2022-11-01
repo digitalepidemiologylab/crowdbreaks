@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_31_093701) do
+ActiveRecord::Schema.define(version: 2022_10_31_090224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,10 +115,8 @@ ActiveRecord::Schema.define(version: 2022_10_31_093701) do
     t.bigint "mturk_worker_qualification_list_id"
     t.boolean "auto", default: false, null: false
     t.bigint "mturk_auto_batch_id"
-    t.bigint "primary_mturk_batch_job_id"
     t.index ["mturk_auto_batch_id"], name: "index_mturk_batch_jobs_on_mturk_auto_batch_id"
     t.index ["mturk_worker_qualification_list_id"], name: "index_mturk_batch_jobs_on_mturk_worker_qualification_list_id"
-    t.index ["primary_mturk_batch_job_id"], name: "index_mturk_batch_jobs_on_primary_mturk_batch_job_id"
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
   end
 
@@ -167,8 +165,6 @@ ActiveRecord::Schema.define(version: 2022_10_31_093701) do
     t.text "description", default: ""
     t.integer "status", default: 0, null: false
     t.boolean "sandbox", default: true
-    t.bigint "primary_mturk_batch_job_id"
-    t.index ["primary_mturk_batch_job_id"], name: "index_mturk_qualification_lists_on_primary_mturk_batch_job_id"
   end
 
   create_table "mturk_workers", force: :cascade do |t|
@@ -369,9 +365,7 @@ ActiveRecord::Schema.define(version: 2022_10_31_093701) do
   add_foreign_key "local_batch_jobs", "mturk_auto_batches"
   add_foreign_key "mturk_batch_jobs", "mturk_auto_batches"
   add_foreign_key "mturk_batch_jobs", "mturk_worker_qualification_lists"
-  add_foreign_key "mturk_batch_jobs", "primary_mturk_batch_jobs"
   add_foreign_key "mturk_batch_jobs", "projects"
-  add_foreign_key "mturk_worker_qualification_lists", "primary_mturk_batch_jobs"
   add_foreign_key "primary_mturk_batch_jobs", "mturk_batch_jobs"
   add_foreign_key "primary_mturk_batch_jobs", "mturk_worker_qualification_lists"
   add_foreign_key "primary_mturk_batch_jobs", "projects"

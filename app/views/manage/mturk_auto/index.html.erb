@@ -50,7 +50,7 @@
           <td><%= f.text_field :max_tasks_per_worker, as: :integer, class: "form-control" %></td>
           <% options_ql = MturkWorkerQualificationList.all %>
           <% collection_ql = options_ql.collect{ |s| [s.name, s.id] } %>
-          <td><%= f.select :mturk_worker_qualification_list_id, options_for_select(collection_ql, primary_job.mturk_worker_qualification_list&.id), { include_blank: primary_job.mturk_worker_qualification_list.nil? }, { class: "form-control" } %></td>
+          <td><%= f.select :mturk_worker_qualification_list_id, options_for_select(collection_ql, primary_job.mturk_worker_qualification_list&.id), { include_blank: true }, { class: "form-control" } %></td>
           <td><%= f.submit 'Update', class: "btn btn-secondary ml-1", data: {confirm: "Are you sure?"} %></td>
         </tr>
       <% end %>
