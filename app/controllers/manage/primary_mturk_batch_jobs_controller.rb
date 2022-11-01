@@ -18,17 +18,7 @@ module Manage
     # OR put this method directly to MturkAutoController
     def update
       authorize! :update, :mturk_auto
-      mturk_batch_job_id = primary_job_params[:mturk_batch_job_id]
-      mturk_worker_qualification_list_id = primary_job_params[:mturk_worker_qualification_list_id]
-      mturk_batch_job = MturkBatchJob.find(mturk_batch_job_id)
-      mturk_worker_qualification_list = MturkWorkerQualificationList.find(mturk_worker_qualification_list_id)
-      update_1_successful = @primary_mturk_batch_job.update(
-        primary_job_params.except(:mturk_batch_job_id, :mturk_worker_qualification_list_id)
-      )
-      update_2_successful = @primary_mturk_batch_job.update(
-        mturk_batch_job: mturk_batch_job, mturk_worker_qualification_list: mturk_worker_qualification_list
-      )
-      if update_1_successful && update_2_successful
+      if @primary_mturk_batch_job.update(primary_job_params)
         respond_with_flash(
           Helpers::ApiResponse.new(
             status: :success,
