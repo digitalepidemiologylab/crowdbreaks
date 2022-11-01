@@ -34,9 +34,11 @@ task check_samples_status: :environment do
     mturk_auto_batch = MturkAutoBatch.new
     mturk_auto_batch.mturk_batch_job = mturk_batch_job
 
-    mturk_batch_job.save!
-    mturk_auto_batch.save!
-    Setting.sampled_status = s3_keys
+    ActiveRecord::Base.transaction do
+      mturk_batch_job.save!
+      mturk_auto_batch.save!
+      Setting.sampled_status = s3_keys
+    end
 
     # Generate tasks
     CreateTasksJob.perform_later(mturk_batch_job.id, mturk_batch_job.retrieve_tweet_rows)

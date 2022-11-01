@@ -58,7 +58,7 @@ module Manage
       @mturk_auto_batch = MturkAutoBatch.find(evaluate_params[:mturk_auto_batch_id])
       @mturk_batch_job = @mturk_auto_batch.mturk_batch_job
       @local_batch_job = @mturk_auto_batch.local_batch_job
-      unless @mturk_batch_job.percentage_completed > 98
+      unless @mturk_batch_job.percentage_completed > Setting.min_batch_completeness
         respond_with_flash_now(
           Helpers::ApiResponse.new(
             status: :error,
@@ -76,7 +76,7 @@ module Manage
         return
       end
       @local_batch_job.users.each do |user|
-        next if @local_batch_job.progress_by_user(user) > 98
+        next if @local_batch_job.progress_by_user(user) > Setting.min_batch_completeness
 
         respond_with_flash_now(
           Helpers::ApiResponse.new(
@@ -86,7 +86,7 @@ module Manage
         )
         break
       end
-      # unless @mturk_batch_job.percentage_completed > 98
+      # unless @mturk_batch_job.percentage_completed > Setting.min_batch_completeness
       #   respond_with_flash(
       #     Helpers::ApiResponse.new(
       #       status: :error, message: "MTurk batch job '#{@mturk_batch_job.name}' has not been completed yet. Cannot evaluate."
@@ -96,7 +96,7 @@ module Manage
       #   return
       # end
       # @local_batch_job.users.each do |user|
-      #   unless @local_batch_job.progress_by_user(user) > 98
+      #   unless @local_batch_job.progress_by_user(user) > Setting.min_batch_completeness
       #     respond_with_flash(
       #       Helpers::ApiResponse.new(
       #         status: :error, message: "Local batch job '#{@local_batch_job.name}' has not been completed yet. Cannot evaluate."
@@ -117,10 +117,6 @@ module Manage
     end
 
     private
-
-    def primary_jobs_params
-      params.require(:mturk_auto).permit(primary_jobs: {}, max_tasks_per_worker: {}, copy_qualification_list: {})
-    end
 
     def api_init
       @api = AwsApi.new
