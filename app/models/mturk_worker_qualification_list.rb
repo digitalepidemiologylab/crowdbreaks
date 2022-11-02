@@ -1,8 +1,12 @@
 class MturkWorkerQualificationList < ApplicationRecord
   include CsvFileHandler
+
+  has_one :primary_mturk_batch_job, inverse_of: :mturk_worker_qualification_list
+
   has_many :qualified_workers, dependent: :delete_all
   has_many :mturk_workers, through: :qualified_workers
   has_many :mturk_batch_jobs
+
 
   enum status: { default: 0, updating: 1, deleting: 2, failed: 3 }, _suffix: true
 

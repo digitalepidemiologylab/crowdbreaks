@@ -16,40 +16,6 @@ module Manage
       end
       @new_batch_each = Setting.new_batch_each
       @mturk_auto_batches = MturkAutoBatch.all.order('created_at DESC').page(params[:page]).per(10)
-      # nil.zero?
-    end
-
-    def update_primary_jobs
-      authorize! :update, :mturk_auto
-      primary_jobs = @primary_jobs.map(&:project_id).zip(@primary_jobs.map(&:mturk_batch_job))
-      primary_jobs = primary_jobs.map { |k, v| [k.to_s, v&.id&.to_s] }.to_h
-      primary_jobs = primary_jobs.sort_by { |k, _| k }.to_h
-      primary_jobs_updated = params.require(:mturk_auto).permit(primary_jobs: {})['primary_jobs'].to_h
-      primary_jobs_updated = primary_jobs_updated.sort_by { |k, _| k }.to_h
-      if primary_jobs != primary_jobs_updated
-        # Update primary jobs locally
-        primary_jobs_updated.each_pair do |project_id, mturk_batch_job_id|
-          Rails.logger.info "[DEV] Project id: #{project_id}, mturk batch job id: #{mturk_batch_job_id}"
-
-          # One cannot make a primary job blank once it's not
-          next if mturk_batch_job_id.nil?
-
-          Rails.logger.info '[DEV] Being updated'
-
-          primary_job = PrimaryMturkBatchJob.find_by(project_id: project_id.to_i)
-          mturk_batch_job = MturkBatchJob.find(mturk_batch_job_id.to_i)
-          primary_job.update_attributes!(mturk_batch_job: mturk_batch_job)
-          primary_job.save!
-        end
-        # respond_with_flash(@api.upload_primary_jobs(primary_jobs.to_json), mturk_auto_path)
-        respond_with_flash(
-          Helpers::ApiResponse.new(status: :success, message: 'Successfully updated primary jobs.'), mturk_auto_path
-        )
-      else
-        respond_with_flash(
-          Helpers::ApiResponse.new(status: :fail, message: "Primary jobs didn't change."), mturk_auto_path
-        )
-      end
     end
 
     def update_cron
@@ -92,26 +58,54 @@ module Manage
       @mturk_auto_batch = MturkAutoBatch.find(evaluate_params[:mturk_auto_batch_id])
       @mturk_batch_job = @mturk_auto_batch.mturk_batch_job
       @local_batch_job = @mturk_auto_batch.local_batch_job
-      unless @mturk_batch_job.percentage_completed > 98
-        respond_with_flash(
+      unless @mturk_batch_job.percentage_completed > Setting.min_batch_completeness
+        respond_with_flash_now(
           Helpers::ApiResponse.new(
-            status: :error, message: "MTurk batch job '#{@mturk_batch_job.name}' has not been completed yet. Cannot evaluate."
-          ),
-          mturk_auto_path
+            status: :error,
+            message: "MTurk batch job '#{@mturk_batch_job.name}' has not been completed yet. Evaluate at your own risk."
+          )
+        )
+      end
+      if @local_batch_job.nil?
+        respond_with_flash_now(
+          Helpers::ApiResponse.new(
+            status: :error,
+            message: 'Local batch job has not been created yet. Evaluate at your own risk.'
+          )
         )
         return
       end
       @local_batch_job.users.each do |user|
-        unless @local_batch_job.progress_by_user(user) > 98
-          respond_with_flash(
-            Helpers::ApiResponse.new(
-              status: :error, message: "Local batch job '#{@local_batch_job.name}' has not been completed yet. Cannot evaluate."
-            ),
-            mturk_auto_path
+        next if @local_batch_job.progress_by_user(user) > Setting.min_batch_completeness
+
+        respond_with_flash_now(
+          Helpers::ApiResponse.new(
+            status: :error,
+            message: "Local batch job '#{@local_batch_job.name}' has not been completed yet. Evaluate at your own risk."
           )
-          return
-        end
+        )
+        break
       end
+      # unless @mturk_batch_job.percentage_completed > Setting.min_batch_completeness
+      #   respond_with_flash(
+      #     Helpers::ApiResponse.new(
+      #       status: :error, message: "MTurk batch job '#{@mturk_batch_job.name}' has not been completed yet. Cannot evaluate."
+      #     ),
+      #     mturk_auto_path
+      #   )
+      #   return
+      # end
+      # @local_batch_job.users.each do |user|
+      #   unless @local_batch_job.progress_by_user(user) > Setting.min_batch_completeness
+      #     respond_with_flash(
+      #       Helpers::ApiResponse.new(
+      #         status: :error, message: "Local batch job '#{@local_batch_job.name}' has not been completed yet. Cannot evaluate."
+      #       ),
+      #       mturk_auto_path
+      #     )
+      #     return
+      #   end
+      # end
       # if @mturk_auto_batch.evaluated?
       #   respond_with_flash(
       #     Helpers::ApiResponse.new(

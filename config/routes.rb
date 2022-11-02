@@ -78,6 +78,7 @@ Rails.application.routes.draw do
       post 'mturk_auto/update_cron', to: 'mturk_auto#update_cron', as: 'mturk_auto_update_cron'
       post 'mturk_auto/update_primary_jobs', to: 'mturk_auto#update_primary_jobs', as: 'mturk_auto_update_primary_jobs'
       get 'mturk_auto/evaluate_batch/:mturk_auto_batch_id', to: 'mturk_auto#evaluate_batch', as: 'mturk_auto_evaluate_batch'
+      resources :primary_mturk_batch_jobs, except: %i[show edit]
       resources :mturk_auto_batches
       resources :mturk_batch_jobs do
         resources :tasks

@@ -14,7 +14,7 @@ module Admin
       if @project.primary?
         # Create new primary project
         if @project.save
-          PrimaryMturkBatchJob.create!(project: @project)
+          PrimaryMturkBatchJob.create!(project: @project, max_tasks_per_worker: Setting.max_tasks_per_worker)
           if @project.job_file.present?
             CreatePublicTweetsJob.perform_later(@project.id, current_user.id, @project.retrieve_tweet_rows)
             redirect_to admin_projects_path, notice: "Project #{@project.name} is being created..."

@@ -19,24 +19,45 @@
       </small>
     </div>
   <% end %>
-<% end %>
+<% end %><br/>
 
-<%= form_tag mturk_auto_update_primary_jobs_path do %>
-  <%= fields_for :mturk_auto do |ff| %>
-    <h4 class="mb-3">Primary MTurk jobs</h4>
+<h4 class="mb-3">Primary MTurk jobs</h4>
+<%
+  text = '<p class="text-left"><small>Make sure that each project with auto MTurking turned on has a primary batch job to copy parameters from (except max tasks per worker and qualification list).</small><br/><br/>'
+  text += '<small class="text-danger">If a primary job is not set at the time of creation of a new auto batch, the creation will fail.</small><br/><br/>'
+  text += "<small>The <i>check_samples_status</i> rake task (which creates new auto MTurk batches) runs every hour, so in case you forget to set up a primary job, do it as soon as you remember.</small></p>"
+%>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Project name</th>
+      <th><span style="border-bottom: 1px dotted;" data-toggle="tooltip" data-placement="top" data-html="true" title="<%= text %>">
+        Primary job [question sequence]
+      </span></th>
+      <th>Max tasks per worker</th>
+      <th>Qualification list</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
     <% @primary_jobs.each do |primary_job| %>
-      <div class="form-group mb-3">
-        <div class="input-group">
-          <span class="input-group-text mr-1"><i><%= primary_job.project.name %></i></span>
+      <%= simple_form_for primary_job do |f| %>
+        <tr>
+          <td class="align-middle"><i><%= primary_job.project.name %></i></td>
           <% options = MturkBatchJob.includes(:project).where(auto: false, 'projects.name': primary_job.project.name) %>
           <% collection = options.collect{ |s| ["#{s.name} [#{s.project.question_sequence_name.nil? && s.project.primary? ? 'primary' : s.project.question_sequence_name}]", s.id] } %>
-          <%= ff.select "primary_jobs[#{primary_job.project.id}]", options_for_select(collection, primary_job.mturk_batch_job&.id), { include_blank: primary_job.mturk_batch_job&.id.nil? }, { class: "form-control" } %>
-        </div>
-      </div>
+          <td><%= f.select :mturk_batch_job_id, options_for_select(collection, primary_job.mturk_batch_job&.id), { include_blank: primary_job.mturk_batch_job&.id.nil? }, { class: "form-control" } %></td>
+          <td><%= f.text_field :max_tasks_per_worker, as: :integer, class: "form-control" %></td>
+          <% options_ql = MturkWorkerQualificationList.all %>
+          <% collection_ql = options_ql.collect{ |s| [s.name, s.id] } %>
+          <td><%= f.select :mturk_worker_qualification_list_id, options_for_select(collection_ql, primary_job.mturk_worker_qualification_list&.id), { include_blank: true }, { class: "form-control" } %></td>
+          <td><%= f.submit 'Update', class: "btn btn-secondary ml-1", data: {confirm: "Are you sure?"} %></td>
+        </tr>
+      <% end %>
     <% end %>
-    <%= submit_tag 'Update', class: "btn btn-secondary", data: {confirm: "Are you sure?"} %>
-  <% end %>
-<% end %><br/><br/>
+  </tbody>
+</table>
+<br/>
 
 <h4 class="mb-3">Auto MTurk jobs</h4>
 <div class="row justify-content-center mb-4">

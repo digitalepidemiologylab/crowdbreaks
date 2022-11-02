@@ -74,7 +74,7 @@
                 <%= link_to fa_icon('eye'), manage_local_batch_job_path(@local_batch_job) %>
                 <% if @local_batch_job.results.count > 0 %>
                   <%= tag.span id: "local-batch-job-results-#{@local_batch_job.id}-spinner", class: 'mr-4', style: 'display:none;' do %>
-                    <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;'  %>
+                    <%= tag.div class: "spinner-small", style: 'display:inline-block;position:absolute;' %>
                   <% end %>
                   <%= tag.span id: "local-batch-job-results-#{@local_batch_job.id}-icon" do %>
                     <% if @local_batch_job.assoc_s3_key_exists?('local-batch-job-results', @local_batch_job.results) %>
@@ -94,39 +94,45 @@
 </div>
 
 <h3>Qualification list</h3>
-<p><i>Last updated: <%= @mturk_batch_job.mturk_worker_qualification_list.updated_at.strftime('%e %b %Y') %></i></p>
-<% mturk_workers = @mturk_batch_job.mturk_worker_qualification_list.mturk_workers %>
-<div class="row justify-content mb-4">
-  <div class="col-6">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Worker Id</th>
-          <th>Num tweets</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% mturk_workers.each do |mturk_worker| %>
+<% if @mturk_batch_job.mturk_worker_qualification_list.nil? %>
+  <p>No qualification list was indicated for this batch. A new qualification list for the future batches will be formed by evaluating the results.</p>
+<% else %>
+  <p><i>Last updated: <%= @mturk_batch_job.mturk_worker_qualification_list.updated_at.strftime('%e %b %Y') %></i></p>
+  <% mturk_workers = @mturk_batch_job.mturk_worker_qualification_list.mturk_workers %>
+  <div class="row justify-content mb-4">
+    <div class="col-6">
+      <table class="table">
+        <thead>
           <tr>
-            <td><%= mturk_worker.worker_id %></td>
-            <td><%= mturk_worker.mturk_tweets.count %></td>
+            <th>Worker Id</th>
+            <th>Num tweets</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% mturk_workers.each do |mturk_worker| %>
+            <tr>
+              <td><%= mturk_worker.worker_id %></td>
+              <td><%= mturk_worker.mturk_tweets.count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
+<% end %><br/>
 
 <% unless @mturk_auto_batch.evaluated? %>
-  <h3 class="mb-3">Update qualification list</h4>
-  <%= simple_form_for(@mturk_batch_job.mturk_worker_qualification_list) do |f| %>
+  <% new_ql = @mturk_batch_job.mturk_worker_qualification_list.nil? %>
+  <h3><%= new_ql ? 'Create a' : 'Update' %> qualification list</h3>
+  <% mturk_worker_qualification_list = @mturk_batch_job.mturk_worker_qualification_list || MturkWorkerQualificationList.new %>
+  <%= simple_form_for(mturk_worker_qualification_list) do |f| %>
     <%= f.error_notification %>
     <div class="form-group">
       <%= f.error :base %>
     </div>
 
     <div class="form-group">
-      <%= f.input :name, hint: 'Short name of the qualification list. Has to be unique. Is public to workers.', readonly: true %>
+      <%= f.input :name, hint: 'Short name of the qualification list. Has to be unique. Is public to workers.', readonly: f.object.persisted? %>
     </div>
 
     <div class="form-group">
@@ -154,7 +160,7 @@
     </div>
 
     <div class="form-group">
-      <%= f.button :submit, 'Update qualification list', class: 'btn btn-primary btn-lg' %>
+      <%= f.button :submit, "#{new_ql ? 'Create a' : 'Update'} qualification list", class: 'btn btn-primary btn-lg' %>
     </div>
   <% end %>
 
