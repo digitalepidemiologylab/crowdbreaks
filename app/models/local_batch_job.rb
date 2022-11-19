@@ -70,7 +70,7 @@ class LocalBatchJob < ApplicationRecord
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
       results.find_each do |result|
-        row = result.attributes.values_at(*model_cols)
+        row = result.attributes.values_at(*model_cols).map(&:as_json)
         tweet_text = result.local_batch_job.local_tweets.find_by(tweet_id: result.tweet_id)&.tweet_text
         log = result.question_sequence_log&.log
         total_duration_ms = !log.nil? && log.key?('totalDurationQuestionSequence') ? log['totalDurationQuestionSequence'] : 0

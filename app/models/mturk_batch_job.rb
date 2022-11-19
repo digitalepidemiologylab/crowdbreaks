@@ -125,7 +125,7 @@ class MturkBatchJob < ApplicationRecord
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
       results.find_each do |result|
-        row = result.attributes.values_at(*model_cols)
+        row = result.attributes.values_at(*model_cols).map(&:as_json)
         log = result.question_sequence_log&.log
         total_duration_ms = !log.nil? && log.key?('totalDurationQuestionSequence') ? log['totalDurationQuestionSequence'] : 0
         row += [

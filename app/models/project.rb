@@ -202,7 +202,7 @@ class Project < ApplicationRecord
     CSV.open(tmp_file_path, 'w') do |csv|
       csv << model_cols + added_cols
       results_.find_each do |result|
-        row = result.attributes.values_at(*model_cols)
+        row = result.attributes.values_at(*model_cols).map(&:as_json)
         log = result.question_sequence_log&.log
         tweet_text = public_tweets.find_by(tweet_id: result.tweet_id)&.tweet_text
         total_duration_ms = !log.nil? && log.key?('totalDurationQuestionSequence') ? log['totalDurationQuestionSequence'] : 0
