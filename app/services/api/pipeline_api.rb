@@ -46,36 +46,32 @@ module PipelineApi
   )
 
   def check_subsamples_status(project_name)
-    yesterday = Date.yesterday.strftime('%Y%m%d')
-    # For testing in development
-    # yesterday = Date.today.strftime('%Y%m%d')
-    prefix = "other/csv/mturk-batch-job-results/project_#{project_name}/evaluate_ids-#{yesterday}"
+    latest_use = LocalBatchJob.where(auto: true).last.created_at
+    prefix = "other/csv/mturk-batch-job-results/project_#{project_name}/evaluate_ids"
     response = nil
     Helpers::ErrorHandler.handle_error(
       AWS_SERVICE_ERROR, occured_when: "Checking subsamples status for project #{project_name}"
     ) do
-      response = @@s3_client.list_objects_v2({ bucket: BUCKET_NAME, max_keys: 5, prefix: prefix })
+      response = @@s3_client.list_objects_v2({ bucket: BUCKET_NAME, prefix: prefix })
     end
 
-    s3_keys = response.contents.map(&:key)
-    message = nil
-    case s3_keys.length
-    when 0
+    s3_objs = response.contents.map do |obj|
+      datetime = DateTime.parse(obj.key.split('/')[-1].split('-')[1]) # evaluate_ids-<_datetime_>-<type>-<batch_name>-...
+      mturk_batch_name = obj.key.split('/')[-1].split('-')[3] # evaluate_ids-<datetime>-<type>-<_batch_name_>-...
+      if datetime > latest_use # Only include S3 files that haven't been processed
+        tweets = get_s3_object(BUCKET_NAME, s3_key).read
+        { subsample_s3_key: obj.key, job_file: tweets, mturk_batch_name: mturk_batch_name }
+      end
+    end
+    s3_objs = s3_objs.sort_by! { |k| k[:created_at] }
+
+    if s3_objs.length.zero?
       return Helpers::ApiResponse.new(
-        status: :error, message: "Evaluation file not found for project '#{project_name}'."
+        status: :error, message: "Evaluation files not found for project '#{project_name}'."
       )
-    when ->(l) { l > 1 }
-      message = "More than one file for project '#{project_name}'."
     end
 
-    s3_key = s3_keys[0]
-    mturk_batch_name = s3_key.split('/')[-1].split('-')[3] # evaluate_ids-<date>-<type>-<batch_name>-...
-    tweets = get_s3_object(BUCKET_NAME, s3_key).read
-    if message.nil?
-      Helpers::ApiResponse.new(status: :success, body: [mturk_batch_name, tweets])
-    else
-      Helpers::ApiResponse.new(status: :fail, message: message, body: [mturk_batch_name, tweets])
-    end
+    Helpers::ApiResponse.new(status: :success, body: s3_objs)
   end
 
   # def upload_primary_jobs(primary_jobs)
@@ -97,44 +93,32 @@ module PipelineApi
     end
   end
 
-  # Checks 'other/csv/automated-samples/state.json'
-  def check_samples_status
-    s3_keys = nil
-    Helpers::ErrorHandler.handle_error(AWS_SERVICE_ERROR, occured_when: 'downloading the config from S3') do
-      s3_keys = get_s3_json(BUCKET_NAME, SAMPLES_STATUS_KEY)['no_text'].sort
+  def check_samples_status(project_name)
+    latest_use = MturkBatchJob.where(auto: true).last.created_at
+    prefix = "other/csv/automatic-samples/project_#{project_name}/auto_sample-no_text"
+    response = nil
+    Helpers::ErrorHandler.handle_error(
+      AWS_SERVICE_ERROR, occured_when: "Checking samples status for project #{project_name}"
+    ) do
+      response = @@s3_client.list_objects_v2({ bucket: BUCKET_NAME, prefix: prefix })
     end
 
-    s3_keys_old = Setting.sampled_status
-    unless s3_keys != s3_keys_old
-      return Helpers::ApiResponse.new(
-        status: :fail,
-        message: 'No new samples available.',
-        body: nil
-      )
-    end
-
-    tweets = {}
-    slug_errors = []
-    s3_keys.each do |s3_key|
-      slug = s3_key.split('/')[3]
-      if slug.start_with?('project_')
-        slug = slug[8..-1]
-      else
-        slug_errors << s3_key
-        next
+    s3_objs = response.contents.map do |obj|
+      datetime = DateTime.parse(obj.key.split('/')[-1].split('-')[1]) # auto_sample-no_text-<project_name>-<_datetime_>-...
+      if datetime > latest_use # Only include S3 files that haven't been processed
+        tweets = get_s3_object(BUCKET_NAME, s3_key).read
+        { sample_s3_key: obj.key, job_file: tweets }
       end
-      tweets[slug] = get_s3_object(BUCKET_NAME, s3_key).read
     end
-    if slug_errors.length.positive?
-      Helpers::ApiResponse.new(
-        status: :fail,
-        message: "Could not identify project slug from key(s) #{slug_errors}. " \
-                "Expected to be prefixed with 'project_'.",
-        body: tweets
+    s3_objs = s3_objs.sort_by! { |k| k[:created_at] }
+
+    if s3_objs.length.zero?
+      return Helpers::ApiResponse.new(
+        status: :error, message: "Sample files not found for project '#{project_name}'."
       )
-    else
-      Helpers::ApiResponse.new(status: :success, body: [tweets, s3_keys])
     end
+
+    Helpers::ApiResponse.new(status: :success, body: s3_objs)
   end
 
   # List group resources

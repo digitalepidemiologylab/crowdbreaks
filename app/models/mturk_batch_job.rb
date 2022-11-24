@@ -3,6 +3,8 @@ class MturkBatchJob < ApplicationRecord
   include S3UploadableAssociation
   include CsvFileHandler
 
+  default_scope { order(created_at: :asc) }
+
   belongs_to :project
   belongs_to :mturk_worker_qualification_list
   belongs_to :mturk_auto_batch, dependent: :destroy

@@ -6,6 +6,8 @@ class LocalBatchJob < ApplicationRecord
   extend FriendlyId
   friendly_id :name, use: :slugged
 
+  default_scope { order(created_at: :asc) }
+
   has_and_belongs_to_many :users
   belongs_to :project
   belongs_to :mturk_auto_batch
