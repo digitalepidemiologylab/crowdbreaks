@@ -16,5 +16,10 @@ FactoryBot.define do
       qualification_type_id { SecureRandom.hex }
       hittype_id { SecureRandom.hex }
     end
+
+    trait :with_auto do
+      auto { true }
+      mturk_auto_batch
+    end
   end
 end
