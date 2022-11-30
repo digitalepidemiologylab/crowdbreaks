@@ -28,9 +28,9 @@ task check_samples_status: :environment do
   end
 
   def new_attributes(mturk_batch_job, primary_job, s3_attrs)
-    hex = SecureRandom.hex
-    { name: "#{mturk_batch_job.name}_auto_#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{hex[0..5]}",
-      cloned_name: mturk_batch_job.name, title: "#{mturk_batch_job.title} [#{hex[0..5]}]", auto: true,
+    hex = SecureRandom.hex(3)
+    { name: "#{mturk_batch_job.name}_auto_#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{hex}",
+      cloned_name: mturk_batch_job.name, title: "#{mturk_batch_job.title} [#{hex}]", auto: true,
       mturk_worker_qualification_list_id: primary_job.mturk_worker_qualification_list&.id,
       max_tasks_per_worker: primary_job.max_tasks_per_worker, **s3_attrs }
   end
