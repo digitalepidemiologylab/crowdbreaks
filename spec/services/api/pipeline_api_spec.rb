@@ -20,7 +20,9 @@ describe PipelineApi do
     let(:s3_file_2_data) { "4\n6\n9\n" }
     let(:s3_client) {
       Aws::S3::Client.new(stub_responses: {
-        list_objects_v2: {contents: [{key: s3_file_1_key}, {key: s3_file_2_key}]},
+        list_objects_v2: lambda do |inst|
+          {contents: [{key: s3_file_1_key}, {key: s3_file_2_key}].map { |x| x if x[:key].starts_with?(inst.params.fetch(:prefix)) }.compact }
+        end,
         get_object: lambda do |inst|
           case inst.params.fetch(:key)
           when s3_file_1_key
@@ -47,7 +49,7 @@ describe PipelineApi do
 
       it do
         expect(subject.status).to eq(:error)
-        expect(subject.message).to eq("Sample files not found for project '#{project_1.name}'.")
+        expect(subject.message).to eq("Sample files not found for project 'bad_name'.")
       end
     end
 

@@ -94,7 +94,7 @@ module PipelineApi
   end
 
   def check_samples_status(project_name)
-    latest_use = MturkBatchJob.where(auto: true).last.created_at
+    latest_use = MturkBatchJob.where(auto: true).order(created_at: :asc).last.created_at
     prefix = "other/csv/automatic-samples/project_#{project_name}/auto_sample-no_text"
     response = nil
     Helpers::ErrorHandler.handle_error(
@@ -104,13 +104,13 @@ module PipelineApi
     end
 
     s3_objs = response.contents.map do |obj|
-      datetime = DateTime.parse(obj.key.split('/')[-1].split('-')[1]) # auto_sample-no_text-<project_name>-<_datetime_>-...
+      datetime = DateTime.parse(obj.key.split('/')[-1].split('-')[-2]) # auto_sample-no_text-<name>-<datetime>-<digest>.csv
       if datetime > latest_use # Only include S3 files that haven't been processed
-        tweets = get_s3_object(BUCKET_NAME, s3_key).read
+        tweets = get_s3_object(BUCKET_NAME, obj.key).read
         { sample_s3_key: obj.key, job_file: tweets }
       end
     end
-    s3_objs = s3_objs.sort_by! { |k| k[:created_at] }
+    s3_objs = s3_objs.compact.sort_by { |k| k[:created_at] }
 
     if s3_objs.length.zero?
       return Helpers::ApiResponse.new(
