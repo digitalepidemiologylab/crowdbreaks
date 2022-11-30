@@ -3,41 +3,45 @@ task check_samples_status: :environment do
   include MturkAutoHelper
   Rails.logger = Logger.new($stdout) if defined?(Rails) && (Rails.env == 'development')
   api = AwsApi.new
-  response = api.check_samples_status
-  Rails.logger.info(response.message) if response.fail? || response.error?
-  exit if response.fail? || response.error?
-  project_batches, s3_keys = response.body
 
-  Project.where(auto_mturking: true).each do |project|
-    next unless project_batches.include?(project.slug)
+  Project.where(auto_mturking: true, primary: true).each do |project|
+    response = api.check_samples_status(project.name)
+    Rails.logger.error(response.message) and next if response.error?
 
     primary_job = PrimaryMturkBatchJob.find_by(project_id: project.id)
     mturk_batch_job_clone = primary_job&.mturk_batch_job
     Rails.logger.info("No primary job set for project '#{project.name}'.") and next if mturk_batch_job_clone.nil?
 
-    cloned_attributes = mturk_batch_job_clone.attributes.select do |a|
+    s3_objs = response.body
+    s3_objs.each do |s3_attrs|
+      new_attributes = new_attributes(mturk_batch_job, primary_job, s3_attrs)
+      create_auto_mturk_batch_job(new_attributes)
+    end
+  end
+
+  def cloned_attributes
+    mturk_batch_job_clone.attributes.select do |a|
       %w[name project_id description title keywords reward lifetime_in_seconds auto_approval_delay_in_seconds
          assignment_duration_in_seconds instructions number_of_assignments minimal_approval_rate max_tasks_per_worker
          exclude_blacklisted check_availability min_num_hits_approved delay_start delay_next_question sandbox].include?(a)
     end
+  end
 
-    hex = SecureRandom.hex
-    mturk_batch_job = MturkBatchJob.new(cloned_attributes)
-    mturk_batch_job.cloned_name = mturk_batch_job.name
-    mturk_batch_job.name = "#{mturk_batch_job.name}_auto_#{Time.now.strftime('%Y%m%d%H%M%S')}_#{hex[0..5]}"
-    mturk_batch_job.title = "#{mturk_batch_job.title} [#{hex[0..5]}]"
-    mturk_batch_job.auto = true
-    mturk_batch_job.job_file = project_batches[project.slug]
-    mturk_batch_job.mturk_worker_qualification_list_id = primary_job.mturk_worker_qualification_list&.id
-    mturk_batch_job.max_tasks_per_worker = primary_job.max_tasks_per_worker
+  def new_attributes(mturk_batch_job, primary_job, s3_attrs)
+    hex = SecureRandom.hex(3)
+    { name: "#{mturk_batch_job.name}_auto_#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{hex}",
+      cloned_name: mturk_batch_job.name, title: "#{mturk_batch_job.title} [#{hex}]", auto: true,
+      mturk_worker_qualification_list_id: primary_job.mturk_worker_qualification_list&.id,
+      max_tasks_per_worker: primary_job.max_tasks_per_worker, **s3_attrs }
+  end
 
-    mturk_auto_batch = MturkAutoBatch.new
-    mturk_auto_batch.mturk_batch_job = mturk_batch_job
+  def create_auto_mturk_batch_job(new_attributes)
+    mturk_batch_job = MturkBatchJob.new(cloned_attributes.merge(new_attributes))
+    mturk_auto_batch = MturkAutoBatch.create!({ mturk_batch_job: mturk_batch_job })
 
     ActiveRecord::Base.transaction do
       mturk_batch_job.save!
       mturk_auto_batch.save!
-      Setting.sampled_status = s3_keys
     end
 
     # Generate tasks

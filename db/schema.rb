@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_31_090224) do
+ActiveRecord::Schema.define(version: 2022_11_22_061439) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 2022_10_31_090224) do
     t.integer "annotation_display_mode", default: 0, null: false
     t.boolean "auto", default: false, null: false
     t.bigint "mturk_auto_batch_id"
+    t.string "subsample_s3_key"
     t.index ["check_availability"], name: "index_local_batch_jobs_on_check_availability"
     t.index ["mturk_auto_batch_id"], name: "index_local_batch_jobs_on_mturk_auto_batch_id"
     t.index ["project_id"], name: "index_local_batch_jobs_on_project_id"
@@ -115,6 +116,7 @@ ActiveRecord::Schema.define(version: 2022_10_31_090224) do
     t.bigint "mturk_worker_qualification_list_id"
     t.boolean "auto", default: false, null: false
     t.bigint "mturk_auto_batch_id"
+    t.string "sample_s3_key"
     t.index ["mturk_auto_batch_id"], name: "index_mturk_batch_jobs_on_mturk_auto_batch_id"
     t.index ["mturk_worker_qualification_list_id"], name: "index_mturk_batch_jobs_on_mturk_worker_qualification_list_id"
     t.index ["project_id"], name: "index_mturk_batch_jobs_on_project_id"
