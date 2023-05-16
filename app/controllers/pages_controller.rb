@@ -32,4 +32,8 @@ class PagesController < ApplicationController
 
   def terms_of_use
   end
+
+  def maintenance
+    render layout: false
+  end
 end

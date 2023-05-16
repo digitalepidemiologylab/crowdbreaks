@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'pages#index'
+  root 'pages#maintenance'
 
   # cables
   mount ActionCable.server => '/cable'
@@ -38,25 +38,25 @@ Rails.application.routes.draw do
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do |locale|
     devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
-    get 'about', to: 'pages#about'
-    get 'privacy', to: 'pages#privacy'
-    get 'terms_of_use', to: 'pages#terms_of_use'
-    get 'data_sharing', to: 'pages#data_sharing'
-    get 'projects/ncov', to: redirect('/projects/covid')
-    resources :projects, only: [:show, :index] do
-      resource :question_sequence, only: [:show, :create] do
-        post 'final'
-      end
-    end
-    resources :local_batch_jobs, only: [:show] do
-      post 'final'
-    end
+    # get 'about', to: 'pages#about'
+    # get 'privacy', to: 'pages#privacy'
+    # get 'terms_of_use', to: 'pages#terms_of_use'
+    # get 'data_sharing', to: 'pages#data_sharing'
+    # get 'projects/ncov', to: redirect('/projects/covid')
+    # resources :projects, only: [:show, :index] do
+    #   resource :question_sequence, only: [:show, :create] do
+    #     post 'final'
+    #   end
+    # end
+    # resources :local_batch_jobs, only: [:show] do
+    #   post 'final'
+    # end
 
-    namespace :mturk do
-      resource :question_sequence, only: [:show, :create] do
-        post 'final'
-      end
-    end
+    # namespace :mturk do
+    #   resource :question_sequence, only: [:show, :create] do
+    #     post 'final'
+    #   end
+    # end
 
     scope module: 'manage', path: 'manage' do
       get '/', to: redirect('manage/dashboard')
@@ -123,4 +123,6 @@ Rails.application.routes.draw do
   %w( 404 422 500 ).each do |status_code|
     match status_code, :to => "errors#show", :via => :all, :status_code => status_code
   end
+
+  match '*path', to: 'pages#maintenance', via: :all
 end

@@ -11,7 +11,7 @@ RSpec.describe ProjectsController, type: :controller do
   let!(:public_project2) { FactoryBot.create(:project, :public, accessible_by_email_pattern: ['email@example.com']) }
   let!(:public_project_epfl) { FactoryBot.create(:project, :public, accessible_by_email_pattern: ["\\w@epfl.ch"]) }
 
-  describe "GET #index" do
+  xdescribe "GET #index" do
     it "returns http success" do
       get :index
       expect(response).to render_template("index")

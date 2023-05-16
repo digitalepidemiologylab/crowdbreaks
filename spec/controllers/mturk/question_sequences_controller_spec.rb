@@ -77,7 +77,7 @@ RSpec.describe Mturk::QuestionSequencesController, type: :controller do
   let!(:task_submitted13) { FactoryBot.create(:task, :submitted, mturk_batch_job: mturk_batch_job8) }
 
   # SHOW ACTION
-  describe "GET show" do
+  xdescribe "GET show" do
     it "throws an error if HIT id is missing in params" do
       get :show
       expect(response).to be_a_bad_request

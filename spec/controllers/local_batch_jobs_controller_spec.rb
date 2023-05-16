@@ -20,7 +20,7 @@ RSpec.describe LocalBatchJobsController, type: :controller do
   # User3 did tweet 1 in batch
   let!(:result3) { FactoryBot.create(:result, project: project, local_batch_job: local_batch_job, tweet_id: local_tweet1.tweet_id, user: user3) }
 
-  describe 'GET #show' do
+  xdescribe 'GET #show' do
     it 'allows users belonging to batch' do
       sign_in user1
       get :show, params: { id: local_batch_job.slug }
