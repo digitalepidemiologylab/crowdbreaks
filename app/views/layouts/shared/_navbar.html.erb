@@ -3,17 +3,6 @@
     <div class="row align-items-center">
       <div class="col-4 site-nav-container">
         <ul class="site-nav">
-          <li class="nav-item">
-            <%= link_to t('navbar.buttons.projects'), projects_path, class: current_page?(projects_path)? 'nav-link active' : 'nav-link' %>
-          </li>
-          <li class="nav-item">
-            <%= link_to t('navbar.buttons.about'), about_path, class: current_page?(about_path)? 'nav-link active' : 'nav-link' %>
-          </li>
-          <% if can? :view, :manage_dashboard %>
-            <li class="nav-item">
-              <%= link_to t('navbar.buttons.manage'), dashboard_path, class: current_namespace?('manage')? 'nav-link active' : 'nav-link' %>
-            </li>
-          <% end %>
           <% if can? :view, :admin_dashboard %>
             <li class="nav-item">
               <%= link_to t('navbar.buttons.admin'), admin_dashboard_path, class: current_namespace?('admin')? 'nav-link active' : 'nav-link' %>
@@ -38,16 +27,11 @@
                 <%= current_user.username %>
               </button>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
-                 <%= link_to t('navbar.account.edit'), edit_user_registration_path, class: 'dropdown-item' %>
-                <div class="dropdown-divider"></div>
                 <%= link_to t('navbar.account.logout_label'), destroy_user_session_path, class: 'dropdown-item', method: :delete %>
               </div>
             </div>
           <% else %>
             <ul class="site-nav">
-              <li class="nav-item">
-                <%= link_to t('navbar.account.sign_up_label'), new_user_registration_path, class: 'nav-link' %>
-              </li>
               <li class="nav-item">
                 <%= link_to t('navbar.account.login'), new_user_session_path, class: 'nav-link' %>
               </li>
@@ -61,22 +45,13 @@
               </span>
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
-              <%= link_to t('navbar.buttons.projects'), projects_path, class: 'dropdown-item' %>
-              <%= link_to t('navbar.buttons.about'), about_path, class: 'dropdown-item' %>
-              <% if can? :view, :manage_dashboard %>
-                <%= link_to t('navbar.buttons.manage'), dashboard_path, class: 'dropdown-item'%>
-              <% end %>
               <% if can? :view, :admin_dashboard %>
                 <%= link_to t('navbar.buttons.admin'), admin_dashboard_path, class: 'dropdown-item' %>
               <% end %>
               <div class="dropdown-divider"></div>
               <% if user_signed_in? %>
-                 <%= link_to t('navbar.account.edit'), edit_user_registration_path, class: 'dropdown-item' %>
-                <div class="dropdown-divider"></div>
                 <%= link_to t('navbar.account.logout_label'), destroy_user_session_path, class: 'dropdown-item', method: :delete %>
               <% else %>
-                <%= link_to t('navbar.account.sign_up_label'), new_user_registration_path, class: 'nav-link' %>
-                <div class="dropdown-divider"></div>
                 <%= link_to t('navbar.account.login'), new_user_session_path, class: 'nav-link' %>
               <% end %>
             </div>
